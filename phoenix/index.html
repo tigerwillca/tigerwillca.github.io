@@ -9,14 +9,14 @@
 <meta property="og:title" content="Soft7" />
 <meta property="og:description" content="Seven cards. One phoenix. One chain." />
 <meta property="og:url" content="https://tigerwillca.github.io/phoenix/" />
-<meta property="og:image" content="https://tigerwillca.github.io/phoenix/assets/phoenix-poster.jpg" />
+<meta property="og:image" content="https://tigerwillca.github.io/phoenix/assets/phoenix-poster.jpg?v=20260929g" />
 <meta property="og:image:width" content="720" />
 <meta property="og:image:height" content="1280" />
 <meta property="og:image:alt" content="Reynard Soft7 phoenix" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Soft7" />
 <meta name="twitter:description" content="Seven cards. One phoenix. One chain." />
-<meta name="twitter:image" content="https://tigerwillca.github.io/phoenix/assets/phoenix-poster.jpg" />
+<meta name="twitter:image" content="https://tigerwillca.github.io/phoenix/assets/phoenix-poster.jpg?v=20260929g" />
 <meta name="theme-color" content="#06040c" />
 <title>Soft7 · Reynard on Robinhood Chain</title>
 <style>
@@ -26,7 +26,11 @@
   body { min-height:100vh; min-height:100dvh; overflow-x:hidden; }
   html, body, a, button, .card, .cta, .contract a, .hero-frame, .hero-img { cursor: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2732%27%20height%3D%2732%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202c3%206%209%208%209%2015a9%209%200%200%201-18%200c0-4%202-6%204-8%200%203%201%205%203%206-1-5%200-9%202-13z%27%20fill%3D%27%23ff7a2a%27%2F%3E%3Cpath%20d%3D%27M16%2013c2%203%204%204%204%207a4%204%200%200%201-8%200c0-2%201-3%202-4%200%201%201%202%202%202-1-2%200-4%200-5z%27%20fill%3D%27%23CCFF00%27%2F%3E%3C%2Fsvg%3E") 16 16, auto; }
   .bg-poster, .bgvid { position:fixed; inset:0; width:100%; height:100%; z-index:0; object-fit:cover; object-position:50% 35%; pointer-events:none; }
-  .bg-poster { background:#06040c url("assets/phoenix-poster.jpg?v=20260929") 50% 35% / cover no-repeat; }
+  .bg-poster { background:#06040c url("assets/phoenix-poster.jpg?v=20260929g") 50% 35% / cover no-repeat; }
+  #phoenixCursor { position:fixed; left:0; top:0; width:36px; height:36px; z-index:5; pointer-events:none; opacity:0; will-change:transform; }
+  #phoenixCursor svg { display:block; width:36px; height:36px; filter:drop-shadow(0 0 5px rgba(255,122,42,.8)) drop-shadow(0 0 2px rgba(204,255,0,.55)); }
+  html.phoenix-on, html.phoenix-on body, html.phoenix-on .hero-frame, html.phoenix-on .hero-img { cursor:none; }
+  html.phoenix-on a, html.phoenix-on button, html.phoenix-on input, html.phoenix-on textarea, html.phoenix-on select, html.phoenix-on label { cursor:auto; }
   #sky, #trail { position:fixed; inset:0; width:100%; height:100%; display:block; pointer-events:none; }
   #sky { z-index:0; }
   #trail { z-index:4; }
@@ -114,7 +118,7 @@
 </head>
 <body>
 <div class="bg-poster" aria-hidden="true"></div>
-<video class="bgvid" id="bgvid" autoplay muted loop playsinline webkit-playsinline preload="none" poster="assets/phoenix-poster.jpg?v=20260929" disablepictureinpicture aria-hidden="true"></video>
+<video class="bgvid" id="bgvid" autoplay muted loop playsinline webkit-playsinline preload="none" poster="assets/phoenix-poster.jpg?v=20260929g" disablepictureinpicture aria-hidden="true"></video>
 <script>
 (function(){
   var v=document.getElementById('bgvid');
@@ -122,10 +126,8 @@
   v.muted=true; v.defaultMuted=true; v.playsInline=true;
   v.setAttribute('muted',''); v.setAttribute('playsinline',''); v.setAttribute('webkit-playsinline','');
   var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var webm=v.canPlayType('video/webm; codecs="vp9"');
   var s=document.createElement('source');
-  if(!reduce && (webm==='probably'||webm==='maybe')){ s.src='assets/phoenix.webm?v=20260929'; s.type='video/webm'; v.dataset.kind='webm'; }
-  else { s.src='assets/phoenix.mp4?v=20260929'; s.type='video/mp4'; v.dataset.kind='mp4'; }
+  s.src='assets/phoenix.mp4?v=20260929g'; s.type='video/mp4'; v.dataset.kind='mp4';
   v.appendChild(s);
   if(reduce){ v.removeAttribute('autoplay'); v.pause(); return; }
   function kick(){ var p=v.play(); if(p&&p.catch) p.catch(function(){}); }
@@ -138,6 +140,12 @@
 </script>
 <canvas id="sky" aria-hidden="true"></canvas>
 <canvas id="trail" aria-hidden="true"></canvas>
+<div id="phoenixCursor" aria-hidden="true"><svg viewBox="0 0 64 64" width="36" height="36">
+  <path d="M32 46c-1.2 6-3.4 11-6.2 14 2.4-1.2 4.2-3.6 5-6.2.6 2.8 2.2 5.4 4.6 6.6C33.6 57 31.6 52 32 46z" fill="#ff7a2a"/>
+  <path d="M30 34c-8-1-16-8-20-12 6 1 12 4 16 8-6-2-14-2-20 2 8 0 14 3 18 6-4 1-10 4-14 8 6-2 12-3 16-2-2 4-2 9 0 13 1-5 3-9 6-12 3 3 5 7 6 12 2-4 2-9 0-13 4-1 10 0 16 2-4-4-10-7-14-8 4-3 10-6 18-6-6-4-14-4-20-2 4-4 10-7 16-8-4 4-12 11-20 12-1 2-1.4 4-1.6 6h-1.2c-.2-2-.6-4-1.6-6z" fill="#E6B85C"/>
+  <path d="M32 18c2.4 3 3.2 6.4 3.2 10.2 0 2.2-.4 4.2-1 6-1.6-1.2-2.6-3-3-5.2-.2 2.2-1.2 4-2.6 5.2-.6-1.8-1-3.8-1-6C27.6 24.4 29 20.6 32 18z" fill="#F6DFA0"/>
+  <circle cx="32" cy="20" r="2.3" fill="#CCFF00"/>
+</svg></div>
 <div class="veil" aria-hidden="true"></div>
 <main>
   <div class="badge">7 of 7 · Robinhood Chain</div>
@@ -146,7 +154,7 @@
   <a class="cta" href="https://opensea.io/collection/reynard-soft7">See Soft7 on OpenSea</a>
   <div class="hero" id="hero">
     <div class="hero-frame">
-      <img class="hero-img" id="heroImg" src="assets/phoenix-poster.jpg?v=20260929" alt="Reynard Soft7 phoenix" width="720" height="1280" />
+      <img class="hero-img" id="heroImg" src="assets/phoenix-poster.jpg?v=20260929g" alt="Reynard Soft7 phoenix" width="720" height="1280" />
       <div class="shimmer" aria-hidden="true"></div>
     </div>
     <p class="flame-line" id="flameLine" hidden>The seventh flame answers.</p>
@@ -317,10 +325,25 @@
     for (var s=1;s<=steps;s++) emit(px+(cx-px)*s/steps, py+(cy-py)*s/steps, s===steps?n:3, 0.22, false);
     last=now; px=cx; py=cy;
   }
-  addEventListener('pointerdown', function(ev){ if(ev.pointerType==='touch') return; pointer(ev.clientX, ev.clientY); }, {passive:true});
-  addEventListener('pointermove', function(ev){ if(ev.pointerType==='touch') return; pointer(ev.clientX, ev.clientY); }, {passive:true});
-  addEventListener('touchstart', function(ev){ var t=ev.changedTouches&&ev.changedTouches[0]; if(t) pointer(t.clientX, t.clientY); }, {passive:true});
-  addEventListener('touchmove', function(ev){ var t=ev.touches&&ev.touches[0]; if(t) pointer(t.clientX, t.clientY); }, {passive:true});
+  var bird=document.getElementById('phoenixCursor');
+  var tx=0, ty=0, bx=0, by=0, has=false, fade=0, mode='', linkScale=1, heading=-Math.PI/2, tilt=0;
+  var fine=window.matchMedia&&matchMedia('(hover:hover) and (pointer:fine)').matches;
+  function kickLoop(){ if(idle){ idle=false; lt=0; requestAnimationFrame(frame); } }
+  function aim(cx,cy,kind){
+    if(!has){ bx=cx; by=cy; has=true; }
+    tx=cx; ty=cy; mode=kind; fade=1;
+    if(kind==='mouse' && fine) document.documentElement.classList.add('phoenix-on');
+    var el=document.elementFromPoint(cx,cy);
+    linkScale=el&&el.closest&&el.closest('a,button,input,textarea,select,label')?1.28:1;
+    kickLoop();
+  }
+  addEventListener('pointerdown', function(ev){ if(ev.pointerType==='touch') return; aim(ev.clientX, ev.clientY, 'mouse'); pointer(ev.clientX, ev.clientY); }, {passive:true});
+  addEventListener('pointermove', function(ev){ if(ev.pointerType==='touch') return; aim(ev.clientX, ev.clientY, 'mouse'); }, {passive:true});
+  addEventListener('touchstart', function(ev){ var t=ev.changedTouches&&ev.changedTouches[0]; if(!t) return; aim(t.clientX, t.clientY, 'touch'); pointer(t.clientX, t.clientY); }, {passive:true});
+  addEventListener('touchmove', function(ev){ var t=ev.touches&&ev.touches[0]; if(t) aim(t.clientX, t.clientY, 'touch'); }, {passive:true});
+  addEventListener('touchend', function(){ if(mode==='touch'){ mode='fade'; kickLoop(); } }, {passive:true});
+  addEventListener('touchcancel', function(){ if(mode==='touch'){ mode='fade'; kickLoop(); } }, {passive:true});
+  document.documentElement.addEventListener('mouseout', function(ev){ if(ev.relatedTarget) return; mode='fade'; document.documentElement.classList.remove('phoenix-on'); kickLoop(); });
   addEventListener('soft7-flame', function(){
     var img=document.getElementById('heroImg'); if(!img) return;
     var r=img.getBoundingClientRect(), waves=[3,6,9];
@@ -345,7 +368,31 @@
       x.drawImage(spr[p.hue], p.x-d/2, p.y-d/2, d, d);
     }
     x.globalAlpha=1; x.globalCompositeOperation='source-over';
-    if (parts.length) requestAnimationFrame(frame); else { idle=true; }
+    var catching=false;
+    if (bird && has){
+      var ease=reduce?0.45:0.18;
+      var dx=tx-bx, dy=ty-by;
+      bx+=dx*ease; by+=dy*ease;
+      var spd=Math.hypot(dx,dy);
+      if (spd>0.8){
+        var want=Math.atan2(dy,dx);
+        var diff=Math.atan2(Math.sin(want-heading), Math.cos(want-heading));
+        heading+=diff*(reduce?0.55:0.24);
+        tilt+=(diff*(reduce?8:26)-tilt)*0.2;
+      } else tilt*=0.8;
+      if (mode==='fade') fade=Math.max(0, fade-0.05);
+      var back=16, trailX=bx-Math.cos(heading)*back, trailY=by-Math.sin(heading)*back;
+      if ((mode==='mouse'||mode==='touch') && spd>(reduce?2.4:1.05) && ts-last>(reduce?80:34)){
+        emit(trailX, trailY, bursts[bi++%3], reduce?0.08:0.18, false);
+        last=ts;
+      }
+      var deg=heading*180/Math.PI+90;
+      var skew=Math.max(reduce?-6:-16, Math.min(reduce?6:16, tilt));
+      bird.style.transform='translate3d('+(bx-18)+'px,'+(by-18)+'px,0) rotate('+deg.toFixed(2)+'deg) skewX('+skew.toFixed(2)+'deg) scale('+(linkScale)+')';
+      bird.style.opacity=String(fade);
+      catching=spd>0.7 || (mode==='fade' && fade>0.02);
+    }
+    if (parts.length || catching) requestAnimationFrame(frame); else { idle=true; }
   }
   addEventListener('resize', size); size();
 })();
