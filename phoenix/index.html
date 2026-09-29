@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Soft7 · Reynard on Robinhood Chain</title>
 <style>
-  :root { color-scheme: dark; --lime:#CCFF00; --gold:#f0e0a8; --ember:#ff7a2a; --muted:#a79bbd; }
+  :root { color-scheme: dark; --lime:#CCFF00; --gold:#E6B85C; --gold-hi:#F6DFA0; --gold-glow:rgba(230,184,92,.35); --gold-soft:rgba(230,184,92,.14); --ember:#ff7a2a; --muted:#a79bbd; }
   * { box-sizing: border-box; }
   html, body { margin:0; background:#06040c; color:#ece6f6; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif; }
   body { min-height:100vh; overflow-x:hidden;
@@ -21,10 +21,10 @@
   .badge { display:inline-block; font:600 .7rem ui-monospace, Menlo, monospace; letter-spacing:.18em; text-transform:uppercase;
     color:var(--lime); border:1px solid rgba(204,255,0,.35); border-radius:999px; padding:.4rem .9rem; background:rgba(204,255,0,.06); }
   h1 { margin:1rem 0 .4rem; font-weight:500; font-size:clamp(2.4rem, 9vw, 4.6rem); letter-spacing:-.04em; color:var(--gold);
-    text-shadow:0 0 30px rgba(255,122,42,.35); }
+    text-shadow:0 0 30px var(--gold-glow); }
   .lede { color:var(--muted); max-width:34rem; margin:0 auto 1.8rem; line-height:1.6; text-shadow:0 1px 3px rgba(6,4,12,.9), 0 0 14px rgba(6,4,12,.8); }
   .hero-img { display:block; width:100%; max-width:720px; aspect-ratio:4/5; max-height:78vh; object-fit:cover; object-position:50% 30%;
-    margin:2rem auto 0; border-radius:16px; border:1px solid rgba(255,122,42,.35); box-shadow:0 0 30px rgba(255,122,42,.18); background:#0b0716; }
+    margin:2rem auto 0; border-radius:16px; border:1px solid var(--gold-glow); box-shadow:0 0 30px var(--gold-soft); background:#0b0716; }
   .cta { display:inline-block; text-decoration:none; color:#06040c; background:var(--lime); font-weight:600;
     padding:.9rem 1.5rem; border-radius:999px; box-shadow:0 0 26px rgba(204,255,0,.25); cursor:inherit; }
   .grid { margin:22vh auto 0; display:grid; grid-template-columns:repeat(7, 1fr); gap:.7rem; }
@@ -32,15 +32,15 @@
   @media (max-width: 440px) { .grid { grid-template-columns:repeat(2, 1fr); } }
   .card { display:block; text-decoration:none; color:var(--muted); cursor:inherit; opacity:0; transform:translateY(18px);
     animation: rise .9s ease-out forwards; }
-  .card img { width:100%; aspect-ratio:1; object-fit:cover; border-radius:10px; border:1px solid rgba(255,122,42,.35);
-    box-shadow:0 0 18px rgba(255,122,42,.12); background:#0b0716; transition:transform .2s, box-shadow .2s; }
+  .card img { width:100%; aspect-ratio:1; object-fit:cover; border-radius:10px; border:1px solid var(--gold-glow);
+    box-shadow:0 0 18px var(--gold-soft); background:#0b0716; transition:transform .2s, box-shadow .2s; }
   .card:hover img { transform:translateY(-3px); box-shadow:0 0 26px rgba(204,255,0,.25); }
   .card span { display:block; font:.72rem ui-monospace, Menlo, monospace; margin-top:.35rem; }
   @keyframes rise { to { opacity:1; transform:none; } }
-  .manifesto { margin:3rem 0 0; font-size:.95rem; letter-spacing:.08em; color:#e9dcc0; opacity:0;
+  .manifesto { margin:3rem 0 0; font-size:.95rem; letter-spacing:.08em; color:var(--gold-hi); opacity:0;
     animation: sig 1.2s ease-out forwards, glowfade 3s ease-out forwards; animation-delay: 6.8s, 6.8s; }
   @keyframes sig { to { opacity:1; } }
-  @keyframes glowfade { 0% { text-shadow:0 0 18px rgba(255,122,42,.9); } 100% { text-shadow:0 0 0 rgba(255,122,42,0); } }
+  @keyframes glowfade { 0% { text-shadow:0 0 18px var(--gold-glow); } 100% { text-shadow:0 0 0 rgba(230,184,92,0); } }
   .contract { margin-top:1.4rem; font:.72rem ui-monospace, Menlo, monospace; color:#8d82a3; word-break:break-all; text-shadow:0 1px 3px rgba(6,4,12,.9); }
   .contract a { color:var(--gold); cursor:inherit; }
 </style>
@@ -62,7 +62,7 @@
 
   <section class="grid" aria-label="The seven Soft7 cards" id="grid"></section>
 
-  <p class="manifesto">seven pieces. seven holders. one treasury.</p>
+  <p class="manifesto">Seven pieces. Seven holders. One treasury.</p>
   <p class="contract">Contract <a href="https://robinhoodchain.blockscout.com/address/0x73D7b2611509C14078e16f572bE5aC7D91879DC2">0x73D7b2611509C14078e16f572bE5aC7D91879DC2</a></p>
 </main>
 <script>
