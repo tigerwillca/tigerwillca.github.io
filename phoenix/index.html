@@ -10,16 +10,21 @@
   html, body { margin:0; background:#06040c; color:#ece6f6; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif; }
   body { min-height:100vh; overflow-x:hidden;
     cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'><path d='M16 2c3 6 9 8 9 15a9 9 0 0 1-18 0c0-4 2-6 4-8 0 3 1 5 3 6-1-5 0-9 2-13z' fill='%23ff7a2a'/><path d='M16 13c2 3 4 4 4 7a4 4 0 0 1-8 0c0-2 1-3 2-4 0 1 1 2 2 2-1-2 0-4 0-5z' fill='%23CCFF00'/></svg>") 16 16, auto; }
-  #sky { position:fixed; inset:0; width:100%; height:100%; z-index:0; display:block; }
+  .bg-poster, .bgvid { position:fixed; inset:0; width:100%; height:100%; z-index:0; object-fit:cover; object-position:50% 35%; pointer-events:none; }
+  .bg-poster { background:#06040c url("assets/phoenix-poster.jpg") 50% 35% / cover no-repeat; }
+  #sky { position:fixed; inset:0; width:100%; height:100%; z-index:0; display:block; pointer-events:none; }
   .veil { position:fixed; inset:0; z-index:1; pointer-events:none;
     background: radial-gradient(ellipse 60% 45% at 50% 35%, rgba(255,122,42,.10), transparent 60%),
-                linear-gradient(180deg, rgba(6,4,12,.15), rgba(6,4,12,.75) 70%, rgba(6,4,12,.95)); }
+                linear-gradient(180deg, rgba(6,4,12,.45), rgba(6,4,12,.35) 35%, rgba(6,4,12,.62) 70%, rgba(6,4,12,.82)); }
+  @media (prefers-reduced-motion: reduce) { .bgvid, #sky { display:none; } }
   main { position:relative; z-index:2; width:min(100% - 2rem, 64rem); margin:0 auto; padding:14vh 0 4rem; text-align:center; }
   .badge { display:inline-block; font:600 .7rem ui-monospace, Menlo, monospace; letter-spacing:.18em; text-transform:uppercase;
     color:var(--lime); border:1px solid rgba(204,255,0,.35); border-radius:999px; padding:.4rem .9rem; background:rgba(204,255,0,.06); }
   h1 { margin:1rem 0 .4rem; font-weight:500; font-size:clamp(2.4rem, 9vw, 4.6rem); letter-spacing:-.04em; color:var(--gold);
     text-shadow:0 0 30px rgba(255,122,42,.35); }
-  .lede { color:var(--muted); max-width:34rem; margin:0 auto 1.8rem; line-height:1.6; }
+  .lede { color:var(--muted); max-width:34rem; margin:0 auto 1.8rem; line-height:1.6; text-shadow:0 1px 3px rgba(6,4,12,.9), 0 0 14px rgba(6,4,12,.8); }
+  .hero-img { display:block; width:100%; max-width:720px; aspect-ratio:4/5; max-height:78vh; object-fit:cover; object-position:50% 30%;
+    margin:2rem auto 0; border-radius:16px; border:1px solid rgba(255,122,42,.35); box-shadow:0 0 30px rgba(255,122,42,.18); background:#0b0716; }
   .cta { display:inline-block; text-decoration:none; color:#06040c; background:var(--lime); font-weight:600;
     padding:.9rem 1.5rem; border-radius:999px; box-shadow:0 0 26px rgba(204,255,0,.25); cursor:inherit; }
   .grid { margin:22vh auto 0; display:grid; grid-template-columns:repeat(7, 1fr); gap:.7rem; }
@@ -36,11 +41,16 @@
     animation: sig 1.2s ease-out forwards, glowfade 3s ease-out forwards; animation-delay: 6.8s, 6.8s; }
   @keyframes sig { to { opacity:1; } }
   @keyframes glowfade { 0% { text-shadow:0 0 18px rgba(255,122,42,.9); } 100% { text-shadow:0 0 0 rgba(255,122,42,0); } }
-  .contract { margin-top:1.4rem; font:.72rem ui-monospace, Menlo, monospace; color:#8d82a3; word-break:break-all; }
+  .contract { margin-top:1.4rem; font:.72rem ui-monospace, Menlo, monospace; color:#8d82a3; word-break:break-all; text-shadow:0 1px 3px rgba(6,4,12,.9); }
   .contract a { color:var(--gold); cursor:inherit; }
 </style>
 </head>
 <body>
+<div class="bg-poster" aria-hidden="true"></div>
+<video class="bgvid" autoplay muted loop playsinline preload="auto" poster="assets/phoenix-poster.jpg" aria-hidden="true">
+  <source src="assets/phoenix.webm" type="video/webm" />
+  <source src="assets/phoenix.mp4" type="video/mp4" />
+</video>
 <canvas id="sky" aria-hidden="true"></canvas>
 <div class="veil" aria-hidden="true"></div>
 <main>
@@ -48,6 +58,7 @@
   <h1>Soft7</h1>
   <p class="lede">Seven Reynard cards. A small first circle, built to give back.</p>
   <a class="cta" href="https://opensea.io/collection/reynard-soft7">See Soft7 on OpenSea</a>
+  <img class="hero-img" src="assets/phoenix-poster.jpg" alt="Reynard Soft7 phoenix" width="720" height="1280" />
 
   <section class="grid" aria-label="The seven Soft7 cards" id="grid"></section>
 
@@ -61,7 +72,7 @@
   var g=document.getElementById('grid');
   for (var i=1;i<=7;i++){
     var a=document.createElement('a'); a.className='card';
-    a.href='https://opensea.io/item/robinhood/'+C+'/'+i;
+    a.href='https://opensea.io/collection/reynard-soft7';
     a.style.animationDelay=(1.2+i*0.7)+'s';
     var img=document.createElement('img'); img.alt='Reynard Soft7 #'+i; img.loading='lazy';
     img.src=IMG+String(32+i).padStart(3,'0')+'.jpg';
@@ -70,37 +81,18 @@
   }
 })();
 (function(){
+  if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    var v=document.querySelector('.bgvid'); if (v) { v.removeAttribute('autoplay'); v.pause(); }
+    return;
+  }
   var c=document.getElementById('sky'), x=c.getContext('2d');
   var dpr=Math.min(window.devicePixelRatio||1,2), w, h, t=0, embers=[];
   function size(){ w=innerWidth; h=innerHeight; c.width=w*dpr; c.height=h*dpr; c.style.width=w+'px'; c.style.height=h+'px'; x.setTransform(dpr,0,0,dpr,0,0); }
   function ember(){ return { x: w/2+(Math.random()-.5)*w*0.5, y: h+10, vy: .6+Math.random()*1.6, vx:(Math.random()-.5)*.4,
     r: .8+Math.random()*2.2, life: 1, hue: Math.random()<.2 ? 'lime':'fire' }; }
-  function wing(side, flap, cx, cy, s){
-    x.beginPath(); x.moveTo(cx, cy);
-    x.bezierCurveTo(cx+side*s*0.6, cy-s*(0.5+flap), cx+side*s*1.4, cy-s*(0.2+flap*1.2), cx+side*s*1.7, cy-s*(0.35+flap*1.4));
-    x.bezierCurveTo(cx+side*s*1.2, cy+s*0.05, cx+side*s*0.6, cy+s*0.25, cx, cy+s*0.2);
-    x.closePath();
-  }
   function frame(){
     t+=0.016;
-    x.fillStyle='rgba(6,4,12,0.35)'; x.fillRect(0,0,w,h);
-    // rising phoenix: slow ascent loop
-    var cycle=(t%14)/14;                     // 14s loop
-    var cy=h*(0.95-cycle*0.75), cx=w/2+Math.sin(t*0.6)*w*0.04;
-    var s=Math.min(w,h)*0.16, flap=Math.sin(t*3.2)*0.35;
-    var alpha=Math.min(1, cycle*4, (1-cycle)*3);
-    var grad=x.createRadialGradient(cx,cy,2,cx,cy,s*2);
-    grad.addColorStop(0,'rgba(255,190,90,'+(0.55*alpha)+')'); grad.addColorStop(1,'rgba(255,90,20,0)');
-    x.fillStyle=grad; x.beginPath(); x.arc(cx,cy,s*2,0,Math.PI*2); x.fill();
-    x.fillStyle='rgba(255,122,42,'+(0.75*alpha)+')'; wing(-1,flap,cx,cy,s); x.fill(); wing(1,flap,cx,cy,s); x.fill();
-    x.fillStyle='rgba(255,210,120,'+(0.9*alpha)+')';
-    x.beginPath(); x.ellipse(cx, cy+s*0.1, s*0.12, s*0.32, 0, 0, Math.PI*2); x.fill();          // body
-    x.beginPath(); x.arc(cx, cy-s*0.28, s*0.09, 0, Math.PI*2); x.fill();                        // head
-    x.strokeStyle='rgba(204,255,0,'+(0.5*alpha)+')'; x.lineWidth=2;                               // tail streamers
-    for (var k=-1;k<=1;k++){ x.beginPath(); x.moveTo(cx, cy+s*0.4);
-      x.quadraticCurveTo(cx+k*s*0.4+Math.sin(t*2+k)*s*0.2, cy+s*0.9, cx+k*s*0.6, cy+s*1.4); x.stroke(); }
-    // embers trail
-    for (var e=0;e<3;e++) embers.push({x:cx+(Math.random()-.5)*s*0.6,y:cy+s*0.5,vy:.4+Math.random(),vx:(Math.random()-.5)*.8,r:1+Math.random()*2,life:1,hue:Math.random()<.25?'lime':'fire'});
+    x.clearRect(0,0,w,h);
     if (Math.random()<.5) embers.push(ember());
     for (var i=embers.length-1;i>=0;i--){ var p=embers[i]; p.y-=p.vy; p.x+=p.vx; p.life-=0.008;
       if (p.life<=0||p.y<-10){ embers.splice(i,1); continue; }
