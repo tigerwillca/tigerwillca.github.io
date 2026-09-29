@@ -11,20 +11,47 @@
   body { min-height:100vh; overflow-x:hidden;
     cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'><path d='M16 2c3 6 9 8 9 15a9 9 0 0 1-18 0c0-4 2-6 4-8 0 3 1 5 3 6-1-5 0-9 2-13z' fill='%23ff7a2a'/><path d='M16 13c2 3 4 4 4 7a4 4 0 0 1-8 0c0-2 1-3 2-4 0 1 1 2 2 2-1-2 0-4 0-5z' fill='%23CCFF00'/></svg>") 16 16, auto; }
   .bg-poster, .bgvid { position:fixed; inset:0; width:100%; height:100%; z-index:0; object-fit:cover; object-position:50% 35%; pointer-events:none; }
-  .bg-poster { background:#06040c url("assets/phoenix-poster.jpg") 50% 35% / cover no-repeat; }
-  #sky { position:fixed; inset:0; width:100%; height:100%; z-index:0; display:block; pointer-events:none; }
+  .bg-poster { background:#06040c url("assets/phoenix-poster.jpg?v=20260929") 50% 35% / cover no-repeat; }
+  #sky, #trail { position:fixed; inset:0; width:100%; height:100%; display:block; pointer-events:none; }
+  #sky { z-index:0; }
+  #trail { z-index:4; }
   .veil { position:fixed; inset:0; z-index:1; pointer-events:none;
-    background: radial-gradient(ellipse 60% 45% at 50% 35%, rgba(255,122,42,.10), transparent 60%),
-                linear-gradient(180deg, rgba(6,4,12,.45), rgba(6,4,12,.35) 35%, rgba(6,4,12,.62) 70%, rgba(6,4,12,.82)); }
-  @media (prefers-reduced-motion: reduce) { .bgvid, #sky { display:none; } }
+    background:
+      linear-gradient(180deg, rgba(6,4,12,.58) 0%, rgba(6,4,12,.22) 18%, rgba(6,4,12,.1) 42%, rgba(6,4,12,.36) 70%, rgba(6,4,12,.8) 100%),
+      radial-gradient(ellipse 70% 55% at 50% 42%, rgba(255,122,42,.14), transparent 64%); }
+  @media (min-width: 1100px) {
+    .veil { background:
+      linear-gradient(180deg, rgba(6,4,12,.64) 0%, rgba(6,4,12,.3) 14%, rgba(6,4,12,.06) 38%, rgba(6,4,12,.16) 60%, rgba(6,4,12,.74) 100%),
+      radial-gradient(ellipse 48% 72% at 50% 46%, rgba(6,4,12,0) 0%, rgba(6,4,12,.42) 80%); }
+  }
+  @media (prefers-reduced-motion: reduce) { .bgvid, #sky, #trail { display:none; } }
   main { position:relative; z-index:2; width:min(100% - 2rem, 64rem); margin:0 auto; padding:14vh 0 4rem; text-align:center; }
   .badge { display:inline-block; font:600 .7rem ui-monospace, Menlo, monospace; letter-spacing:.18em; text-transform:uppercase;
-    color:var(--lime); border:1px solid rgba(204,255,0,.35); border-radius:999px; padding:.4rem .9rem; background:rgba(204,255,0,.06); }
+    color:var(--lime); border:1px solid rgba(204,255,0,.35); border-radius:999px; padding:.4rem .9rem; background:rgba(204,255,0,.06);
+    text-shadow:0 1px 3px rgba(6,4,12,.9); }
   h1 { margin:1rem 0 .4rem; font-weight:500; font-size:clamp(2.4rem, 9vw, 4.6rem); letter-spacing:-.04em; color:var(--gold);
-    text-shadow:0 0 30px var(--gold-glow); }
-  .lede { color:var(--muted); max-width:34rem; margin:0 auto 1.8rem; line-height:1.6; text-shadow:0 1px 3px rgba(6,4,12,.9), 0 0 14px rgba(6,4,12,.8); }
+    text-shadow:0 0 30px var(--gold-glow), 0 1px 3px rgba(6,4,12,.95); }
+  .lede { color:var(--muted); max-width:34rem; margin:0 auto 1.8rem; line-height:1.6; text-shadow:0 1px 3px rgba(6,4,12,.95), 0 0 14px rgba(6,4,12,.85); }
+  .hero { position:relative; width:min(100%, 720px); margin:2rem auto 0; }
+  .hero-frame { position:relative; }
   .hero-img { display:block; width:100%; max-width:720px; aspect-ratio:4/5; max-height:78vh; object-fit:cover; object-position:50% 30%;
-    margin:2rem auto 0; border-radius:16px; border:1px solid var(--gold-glow); box-shadow:0 0 30px var(--gold-soft); background:#0b0716; }
+    margin:0 auto; border-radius:16px; border:1px solid var(--gold-glow); box-shadow:0 0 30px var(--gold-soft); background:#0b0716; touch-action:manipulation; }
+  .shimmer { position:absolute; inset:0; border-radius:16px; pointer-events:none; opacity:0;
+    background: radial-gradient(ellipse at 50% 78%, rgba(255,122,42,.55), transparent 58%), radial-gradient(ellipse at 50% 30%, rgba(230,184,92,.38), transparent 52%);
+    mix-blend-mode:screen; }
+  .hero.lit .hero-img { box-shadow:0 0 36px rgba(255,122,42,.7), 0 0 84px rgba(230,184,92,.48); border-color:rgba(246,223,160,.85); }
+  .hero.lit .shimmer { opacity:1; }
+  @media (prefers-reduced-motion: no-preference) {
+    .hero.lit .shimmer { animation: heat 2.2s ease-out forwards; }
+    .hero.lit .hero-img { animation: ignite 2.2s ease-out; }
+  }
+  @keyframes heat { 0% { opacity:0; transform:scale(1); } 22% { opacity:1; } 100% { opacity:0; transform:scale(1.035) translateY(-8px); filter:blur(1px); } }
+  @keyframes ignite { 0% { filter:saturate(1) brightness(1); } 28% { filter:saturate(1.35) brightness(1.12); } 100% { filter:saturate(1.05) brightness(1); } }
+  .flame-line { margin:.85rem 0 0; min-height:1.1em; font:.75rem ui-monospace, Menlo, monospace; letter-spacing:.14em; text-transform:uppercase; color:var(--gold-hi); text-shadow:0 0 16px var(--gold-glow), 0 1px 3px rgba(6,4,12,.9); }
+  .embers { display:flex; gap:.42rem; justify-content:center; margin:.7rem 0 0; }
+  .embers[hidden], .flame-line[hidden] { display:none; }
+  .embers i { width:.5rem; height:.5rem; border-radius:50%; background:rgba(230,184,92,.18); box-shadow:inset 0 0 0 1px rgba(230,184,92,.45); }
+  .embers i.on { background:var(--ember); box-shadow:0 0 8px rgba(255,122,42,.85); }
   .cta { display:inline-block; text-decoration:none; color:#06040c; background:var(--lime); font-weight:600;
     padding:.9rem 1.5rem; border-radius:999px; box-shadow:0 0 26px rgba(204,255,0,.25); cursor:inherit; }
   .grid { margin:22vh auto 0; display:grid; grid-template-columns:repeat(7, 1fr); gap:.7rem; }
@@ -47,28 +74,129 @@
   .countdown + .grid { margin-top:1.4rem; }
   .card.sealed .seal { width:100%; aspect-ratio:1; border-radius:10px; border:1px dashed var(--gold-glow); background:radial-gradient(circle at 50% 40%, rgba(230,184,92,.12), #0b0716 70%); display:flex; align-items:center; justify-content:center; }
   .card.sealed .seal b { font-weight:500; font-size:1.6rem; color:var(--gold); opacity:.8; }
+  .cadence { display:flex; justify-content:center; align-items:center; gap:.7rem; margin:2.8rem 0 0; }
+  .cadence i { display:flex; gap:.22rem; }
+  .cadence b { width:.28rem; height:.28rem; border-radius:50%; background:var(--gold); display:block; opacity:.9; }
+  .cadence i:nth-child(2) b { background:var(--ember); }
+  .cadence i:nth-child(3) b { background:var(--lime); opacity:.75; }
+  .titans, .warpaint { margin-top:2.4rem; }
+  .titans h2, .warpaint h2 { margin:0; font-weight:500; font-size:.74rem; letter-spacing:.2em; text-transform:uppercase; color:var(--gold); text-shadow:0 1px 3px rgba(6,4,12,.9); }
+  .titan-row { list-style:none; display:flex; justify-content:center; flex-wrap:wrap; gap:1.1rem 1.4rem; padding:1.1rem 0 0; margin:0; }
+  .titan-row li { width:5.5rem; color:var(--gold); }
+  .titan-row svg { width:2.35rem; height:2.35rem; display:block; margin:0 auto .4rem; }
+  .titan-row span { display:block; font:.66rem ui-monospace, Menlo, monospace; letter-spacing:.04em; color:var(--gold-hi); text-shadow:0 1px 3px rgba(6,4,12,.9); }
+  .proof-note { margin:.7rem auto 0; max-width:28rem; color:var(--muted); font:.78rem ui-monospace, Menlo, monospace; letter-spacing:.04em; line-height:1.5; text-shadow:0 1px 3px rgba(6,4,12,.9); }
+  .proofs { margin-top:1rem; display:grid; grid-template-columns:repeat(7, 1fr); gap:.55rem; }
+  @media (max-width: 900px) { .proofs { grid-template-columns:repeat(4, 1fr); } }
+  @media (max-width: 520px) { .proofs { grid-template-columns:repeat(2, 1fr); } }
+  .proof { margin:0; }
+  .proof img { width:100%; aspect-ratio:3/4; object-fit:cover; border-radius:10px; border:1px solid var(--gold-glow); box-shadow:0 0 16px var(--gold-soft); background:#0b0716; }
+  .proof figcaption { font:.64rem ui-monospace, Menlo, monospace; color:var(--muted); margin-top:.35rem; line-height:1.35; }
+  .proofs .card.sealed .seal { aspect-ratio:3/4; }
 </style>
 </head>
 <body>
 <div class="bg-poster" aria-hidden="true"></div>
-<video class="bgvid" autoplay muted loop playsinline preload="auto" poster="assets/phoenix-poster.jpg" aria-hidden="true">
-  <source src="assets/phoenix.webm" type="video/webm" />
-  <source src="assets/phoenix.mp4" type="video/mp4" />
-</video>
+<video class="bgvid" id="bgvid" autoplay muted loop playsinline webkit-playsinline preload="none" poster="assets/phoenix-poster.jpg?v=20260929" disablepictureinpicture aria-hidden="true"></video>
+<script>
+(function(){
+  var v=document.getElementById('bgvid');
+  if(!v) return;
+  v.muted=true; v.defaultMuted=true; v.playsInline=true;
+  v.setAttribute('muted',''); v.setAttribute('playsinline',''); v.setAttribute('webkit-playsinline','');
+  var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var webm=v.canPlayType('video/webm; codecs="vp9"');
+  var s=document.createElement('source');
+  if(!reduce && (webm==='probably'||webm==='maybe')){ s.src='assets/phoenix.webm?v=20260929'; s.type='video/webm'; v.dataset.kind='webm'; }
+  else { s.src='assets/phoenix.mp4?v=20260929'; s.type='video/mp4'; v.dataset.kind='mp4'; }
+  v.appendChild(s);
+  if(reduce){ v.removeAttribute('autoplay'); v.pause(); return; }
+  function kick(){ var p=v.play(); if(p&&p.catch) p.catch(function(){}); }
+  v.addEventListener('canplay', kick);
+  v.load(); kick();
+  document.addEventListener('visibilitychange', function(){ if(!document.hidden) kick(); });
+  document.addEventListener('touchstart', kick, {passive:true, once:true});
+  document.addEventListener('pointerdown', kick, {passive:true, once:true});
+})();
+</script>
 <canvas id="sky" aria-hidden="true"></canvas>
+<canvas id="trail" aria-hidden="true"></canvas>
 <div class="veil" aria-hidden="true"></div>
 <main>
   <div class="badge">7 of 7 · Robinhood Chain</div>
   <h1>Soft7</h1>
-  <p class="lede">Seven Reynard cards. A small first circle, built to give back.</p>
+  <p class="lede">Seven Reynard cards. A small first circle.</p>
   <a class="cta" href="https://opensea.io/collection/reynard-soft7">See Soft7 on OpenSea</a>
-  <img class="hero-img" src="assets/phoenix-poster.jpg" alt="Reynard Soft7 phoenix" width="720" height="1280" />
+  <div class="hero" id="hero">
+    <div class="hero-frame">
+      <img class="hero-img" id="heroImg" src="assets/phoenix-poster.jpg?v=20260929" alt="Reynard Soft7 phoenix" width="720" height="1280" />
+      <div class="shimmer" aria-hidden="true"></div>
+    </div>
+    <p class="flame-line" id="flameLine" hidden>The seventh flame answers.</p>
+    <div class="embers" id="embers" hidden aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  </div>
 
   <p class="countdown" id="countdown" aria-live="polite"></p>
   <section class="grid" aria-label="The seven Soft7 cards" id="grid"></section>
 
-  <p class="manifesto">Seven pieces. Seven holders. One treasury.</p>
+  <p class="manifesto">Seven cards. One phoenix. One chain.</p>
   <p class="contract">Contract <a href="https://robinhoodchain.blockscout.com/address/0x73D7b2611509C14078e16f572bE5aC7D91879DC2">0x73D7b2611509C14078e16f572bE5aC7D91879DC2</a></p>
+
+  <div class="cadence" aria-hidden="true">
+    <i><b></b><b></b><b></b></i>
+    <i><b></b><b></b><b></b><b></b><b></b><b></b></i>
+    <i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b></i>
+  </div>
+
+  <section class="titans" aria-label="The Five Titans">
+    <h2>The Five Titans</h2>
+    <ul class="titan-row">
+      <li>
+        <svg viewBox="0 0 48 48" aria-hidden="true">
+          <path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" d="M16 8c8 0 10 3.2 10 6.2S22 18 22 21s8 3.2 8 6.4-8 3.4-8 6.6 7 3 7 6"/>
+          <path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" d="M31 12l-3.2 6.2h4.2L28 26"/>
+        </svg>
+        <span>The Current</span>
+      </li>
+      <li>
+        <svg viewBox="0 0 48 48" aria-hidden="true">
+          <path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" d="M24 7c5.2 6.4 7.2 13.2 7.2 19.2L24 31l-7.2-4.8C16.8 20.2 18.8 13.4 24 7z"/>
+          <path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" d="M16.8 26.2L12 34l6.2-2.2M31.2 26.2L36 34l-6.2-2.2"/>
+          <circle cx="24" cy="18.5" r="1.7" fill="currentColor"/>
+        </svg>
+        <span>The Ascent</span>
+      </li>
+      <li>
+        <svg viewBox="0 0 48 48" aria-hidden="true">
+          <path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M7 33C14 16 34 16 41 33"/>
+        </svg>
+        <span>The Line</span>
+      </li>
+      <li>
+        <svg viewBox="0 0 48 48" aria-hidden="true">
+          <ellipse cx="24" cy="24" rx="15" ry="6.2" fill="none" stroke="currentColor" stroke-width="1.6" transform="rotate(-32 24 24)"/>
+          <circle cx="24" cy="24" r="2.1" fill="currentColor"/>
+          <circle cx="35.2" cy="16.6" r="1.7" fill="currentColor"/>
+        </svg>
+        <span>The Orbit</span>
+      </li>
+      <li>
+        <svg viewBox="0 0 48 48" aria-hidden="true">
+          <circle cx="24" cy="20" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/>
+          <path fill="none" stroke="currentColor" stroke-width="1.45" stroke-linejoin="round" stroke-linecap="round" d="M19 23.5l2.2-6 2.3 6 2.3-6 2.2 6"/>
+          <path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" d="M20.5 29h7M22.2 29v3.6h3.6V29"/>
+        </svg>
+        <span>The Filament</span>
+      </li>
+    </ul>
+  </section>
+
+  <section class="warpaint" id="warpaint" aria-label="War Paint art proofs">
+    <h2>War Paint · Art Proofs</h2>
+    <p class="proof-note" id="proofCaption">Art proofs. Not the on-chain token images.</p>
+    <p class="proof-note" id="proofNote">Sealed until 7:07 PM PT.</p>
+    <div class="proofs" id="proofs"></div>
+  </section>
 </main>
 <script>
 (function(){
@@ -136,6 +264,121 @@
     requestAnimationFrame(frame);
   }
   addEventListener('resize', size); size(); requestAnimationFrame(frame);
+})();
+(function(){
+  if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var c=document.getElementById('trail'), x=c.getContext('2d');
+  var dpr=Math.min(window.devicePixelRatio||1,2), w, h, parts=[], cap=140;
+  var bursts=[3,6,9], bi=0, last=0, px=-1, py=-1;
+  function size(){ w=innerWidth; h=innerHeight; c.width=w*dpr; c.height=h*dpr; c.style.width=w+'px'; c.style.height=h+'px'; x.setTransform(dpr,0,0,dpr,0,0); }
+  function emit(cx,cy,n,lift,hot){
+    for (var i=0;i<n;i++){
+      if (parts.length>=cap) parts.shift();
+      var ang=Math.random()*6.283, sp=.35+Math.random()*1.5;
+      parts.push({ x:cx+(Math.random()-.5)*8, y:cy+(Math.random()-.5)*8, vx:Math.cos(ang)*sp, vy:Math.sin(ang)*sp-(lift||0.2),
+        r:.55+Math.random()*1.7, life:1, hue: hot ? (Math.random()<.4?'gold':'ember') : (Math.random()<.2?'gold':(Math.random()<.55?'ember':'lime')) });
+    }
+  }
+  function pointer(cx,cy){
+    var now=performance.now();
+    if (px<0){ px=cx; py=cy; last=now; emit(cx,cy,bursts[bi++%3],0.2,false); return; }
+    var dist=Math.hypot(cx-px,cy-py);
+    if (now-last<55 && dist<8) return;
+    var steps=Math.max(1, Math.min(5, Math.round(dist/22)));
+    var n=bursts[bi++%3];
+    for (var s=1;s<=steps;s++) emit(px+(cx-px)*s/steps, py+(cy-py)*s/steps, s===steps?n:3, 0.22, false);
+    last=now; px=cx; py=cy;
+  }
+  addEventListener('pointerdown', function(ev){ if(ev.pointerType==='touch') return; pointer(ev.clientX, ev.clientY); }, {passive:true});
+  addEventListener('pointermove', function(ev){ if(ev.pointerType==='touch') return; pointer(ev.clientX, ev.clientY); }, {passive:true});
+  addEventListener('touchstart', function(ev){ var t=ev.changedTouches&&ev.changedTouches[0]; if(t) pointer(t.clientX, t.clientY); }, {passive:true});
+  addEventListener('touchmove', function(ev){ var t=ev.touches&&ev.touches[0]; if(t) pointer(t.clientX, t.clientY); }, {passive:true});
+  addEventListener('soft7-flame', function(){
+    var img=document.getElementById('heroImg'); if(!img) return;
+    var r=img.getBoundingClientRect(), waves=[3,6,9];
+    waves.forEach(function(n,i){
+      setTimeout(function(){
+        var y=r.top+r.height*(0.32+i*0.2);
+        emit(r.left+r.width*0.5, y, n, 1.15, true);
+        emit(r.left+r.width*0.28, y+10, n, 1.05, true);
+        emit(r.left+r.width*0.72, y+10, n, 1.05, true);
+      }, i*130);
+    });
+  });
+  function frame(){
+    x.clearRect(0,0,w,h);
+    for (var i=parts.length-1;i>=0;i--){
+      var p=parts[i]; p.x+=p.vx; p.y+=p.vy; p.vy-=0.012; p.life-=0.028;
+      if (p.life<=0){ parts.splice(i,1); continue; }
+      var col=p.hue==='gold'?'230,184,92':p.hue==='lime'?'204,255,0':'255,122,42';
+      x.fillStyle='rgba('+col+','+(p.life*0.9)+')';
+      x.beginPath(); x.arc(p.x,p.y,p.r,0,6.283); x.fill();
+    }
+    requestAnimationFrame(frame);
+  }
+  addEventListener('resize', size); size(); requestAnimationFrame(frame);
+})();
+(function(){
+  var hero=document.getElementById('hero'), img=document.getElementById('heroImg');
+  var line=document.getElementById('flameLine'), box=document.getElementById('embers');
+  if(!hero||!img) return;
+  var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var taps=[], lock=0, dots=box?box.querySelectorAll('i'):[];
+  function paint(n){
+    if(box) box.hidden=n<=0;
+    for(var i=0;i<dots.length;i++) dots[i].classList.toggle('on', i<n);
+  }
+  function fire(){
+    lock=Date.now()+2600; taps=[];
+    hero.classList.add('lit');
+    if(line) line.hidden=false;
+    paint(7);
+    if(!reduce) document.dispatchEvent(new CustomEvent('soft7-flame'));
+    setTimeout(function(){ hero.classList.remove('lit'); if(line) line.hidden=true; paint(0); lock=0; }, reduce?1400:2300);
+  }
+  img.addEventListener('pointerup', function(){
+    if(lock && Date.now()<lock) return;
+    var now=Date.now();
+    taps.push(now);
+    taps=taps.filter(function(t){ return now-t<=4000; });
+    paint(Math.min(7, taps.length));
+    if(taps.length>=7) fire();
+  });
+  setInterval(function(){
+    if(!taps.length||(lock&&Date.now()<lock)) return;
+    var now=Date.now(), n=taps.filter(function(t){ return now-t<=4000; }).length;
+    if(n!==taps.length){ taps=taps.filter(function(t){ return now-t<=4000; }); paint(taps.length); }
+  }, 250);
+})();
+(function(){
+  var T0=Date.UTC(2026,8,30,2,0,0), OPEN=T0+7*60000;
+  var names=['Crouched Oath','Stormstripe Magus','Emberbow Seer','Ash Shaman','Nightleap Duelist','Bloodmoon Warden','Seventh Flame'];
+  var box=document.getElementById('proofs'), note=document.getElementById('proofNote'), opened=false;
+  function seal(){
+    box.textContent='';
+    for(var i=1;i<=7;i++){
+      var d=document.createElement('div'); d.className='card sealed';
+      d.innerHTML='<div class="seal"><b>'+i+'</b></div><span>7:07</span>';
+      d.setAttribute('aria-label','War paint proof '+i+' sealed until 7:07 PM PT');
+      box.appendChild(d);
+    }
+    if(note){ note.hidden=false; note.textContent='Sealed until 7:07 PM PT.'; }
+  }
+  function open(){
+    if(opened) return; opened=true; box.textContent='';
+    for(var i=1;i<=7;i++){
+      var f=document.createElement('figure'); f.className='proof';
+      var img=document.createElement('img');
+      img.alt='War paint art proof, '+names[i-1];
+      img.width=1080; img.height=1440;
+      img.src='assets/warpaint/'+String(i).padStart(2,'0')+'.jpg';
+      var cap=document.createElement('figcaption'); cap.textContent=names[i-1];
+      f.appendChild(img); f.appendChild(cap); box.appendChild(f);
+    }
+    if(note) note.hidden=true;
+  }
+  function tick(){ if(Date.now()>=OPEN){ open(); return; } if(!opened && !box.children.length) seal(); setTimeout(tick, 1000); }
+  tick();
 })();
 </script>
 </body>
