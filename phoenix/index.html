@@ -43,6 +43,10 @@
   @keyframes glowfade { 0% { text-shadow:0 0 18px var(--gold-glow); } 100% { text-shadow:0 0 0 rgba(230,184,92,0); } }
   .contract { margin-top:1.4rem; font:.72rem ui-monospace, Menlo, monospace; color:#8d82a3; word-break:break-all; text-shadow:0 1px 3px rgba(6,4,12,.9); }
   .contract a { color:var(--gold); cursor:inherit; }
+  .countdown { margin:22vh 0 0; font:600 .8rem ui-monospace, Menlo, monospace; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); text-shadow:0 1px 3px rgba(6,4,12,.9), 0 0 14px var(--gold-glow); min-height:1.2em; }
+  .countdown + .grid { margin-top:1.4rem; }
+  .card.sealed .seal { width:100%; aspect-ratio:1; border-radius:10px; border:1px dashed var(--gold-glow); background:radial-gradient(circle at 50% 40%, rgba(230,184,92,.12), #0b0716 70%); display:flex; align-items:center; justify-content:center; }
+  .card.sealed .seal b { font-weight:500; font-size:1.6rem; color:var(--gold); opacity:.8; }
 </style>
 </head>
 <body>
@@ -60,6 +64,7 @@
   <a class="cta" href="https://opensea.io/collection/reynard-soft7">See Soft7 on OpenSea</a>
   <img class="hero-img" src="assets/phoenix-poster.jpg" alt="Reynard Soft7 phoenix" width="720" height="1280" />
 
+  <p class="countdown" id="countdown" aria-live="polite"></p>
   <section class="grid" aria-label="The seven Soft7 cards" id="grid"></section>
 
   <p class="manifesto">Seven pieces. Seven holders. One treasury.</p>
@@ -67,18 +72,47 @@
 </main>
 <script>
 (function(){
-  var C='0x73D7b2611509C14078e16f572bE5aC7D91879DC2';
   var IMG='https://cdn.jsdelivr.net/gh/tigerwillca/reynard-soft7-sepolia@ae7d304699989b945bfe8c0f4225f3a7fc952f83/images/';
-  var g=document.getElementById('grid');
-  for (var i=1;i<=7;i++){
+  var T0=Date.UTC(2026,8,30,2,0,0); // 7:00 PM PT, Tue Sep 29 2026
+  var MIN=60000;
+  var g=document.getElementById('grid'), cd=document.getElementById('countdown');
+  var cards=[], opened=[], done=0;
+  function at(i){ return T0+(i-1)*MIN; }
+  function label(i){ return '7:0'+(i-1)+' PM PT'; }
+  function reveal(i, delay){
+    if (opened[i]) return; opened[i]=true; var el=cards[i];
     var a=document.createElement('a'); a.className='card';
     a.href='https://opensea.io/collection/reynard-soft7';
-    a.style.animationDelay=(1.2+i*0.7)+'s';
-    var img=document.createElement('img'); img.alt='Reynard Soft7 #'+i; img.loading='lazy';
+    a.style.animationDelay=delay+'s';
+    var img=document.createElement('img'); img.alt='Reynard Soft7 #'+i;
     img.src=IMG+String(32+i).padStart(3,'0')+'.jpg';
     var s=document.createElement('span'); s.textContent='Soft7 #'+i;
-    a.appendChild(img); a.appendChild(s); g.appendChild(a);
+    a.appendChild(img); a.appendChild(s);
+    g.replaceChild(a, el); cards[i]=a; done++;
   }
+  for (var i=1;i<=7;i++){
+    var d=document.createElement('div'); d.className='card sealed';
+    d.style.animationDelay=(1.2+i*0.7)+'s';
+    d.innerHTML='<div class="seal"><b>'+i+'</b></div><span>'+label(i)+'</span>';
+    d.setAttribute('aria-label','Soft7 #'+i+' arrives at '+label(i));
+    g.appendChild(d); cards[i]=d;
+  }
+  var first=true;
+  function pad(n){ return (n<10?'0':'')+n; }
+  function tick(){
+    var now=Date.now();
+    for (var i=1;i<=7;i++){ if (now>=at(i)) reveal(i, first ? (1.2+i*0.7) : 0); }
+    first=false;
+    if (cd){
+      if (done>=7){ cd.style.display='none'; }
+      else if (now<T0){ var r=Math.floor((T0-now)/1000);
+        cd.textContent='The seven arrive at 7:00 PM PT \u00b7 '+pad(Math.floor(r/3600))+':'+pad(Math.floor(r%3600/60))+':'+pad(r%60); }
+      else { var nx=done+1, r2=Math.max(0,Math.ceil((at(nx)-now)/1000));
+        cd.textContent='Card '+nx+' of 7 in '+Math.floor(r2/60)+':'+pad(r2%60); }
+    }
+    if (done<7) setTimeout(tick, 1000);
+  }
+  tick();
 })();
 (function(){
   if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) {
