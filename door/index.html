@@ -1,0 +1,105 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pulse · the door</title>
+<style>
+:root{--ember:#ff6a1a;--gold:#f2c14e;--ash:#9a8f86}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:radial-gradient(ellipse at 50% 85%,#3a1206 0%,#120604 45%,#050202 100%);color:#f3e9df;font-family:Georgia,"Times New Roman",serif}
+.door{width:min(440px,92vw);padding:44px 36px 30px;border:1px solid #5a2a14;border-radius:220px 220px 14px 14px;background:linear-gradient(#1a0a05cc,#0b0403ee);text-align:center;box-shadow:0 0 80px #ff6a1a22,inset 0 0 40px #000}
+.fire{font-size:44px;filter:drop-shadow(0 0 14px var(--ember));animation:f 2.4s ease-in-out infinite}@keyframes f{50%{transform:scale(1.08);filter:drop-shadow(0 0 24px var(--ember))}}
+h1{font-weight:normal;letter-spacing:.32em;font-size:15px;color:var(--gold);margin:14px 0 6px}
+p{color:var(--ash);font-size:15px;line-height:1.5;margin:8px 0}
+button{margin-top:20px;padding:12px 30px;border:1px solid var(--ember);background:transparent;color:var(--gold);border-radius:30px;letter-spacing:.25em;font:14px Georgia,serif;cursor:pointer}
+button:hover{background:#ff6a1a22}button:disabled{opacity:.5;cursor:wait}
+.ans{display:none}.ans h2{font-weight:normal;font-size:26px;margin:16px 0 8px}
+.yes h2{color:var(--gold);text-shadow:0 0 18px #ff6a1a88}.no h2{color:#d9cfc6}
+.tier{display:inline-block;margin-top:10px;padding:5px 14px;border:1px solid #5a2a14;border-radius:20px;font-size:12px;letter-spacing:.2em;color:var(--ember)}
+.small{font:11px ui-monospace,monospace;color:#6b5f57;margin-top:18px;word-break:break-word}
+.status{min-height:18px;font-size:13px;color:var(--ember)}
+.guard{margin-top:22px;padding-top:14px;border-top:1px solid #2a140a;font-size:12px;color:#8a7f76;line-height:1.5}
+.back{display:none;margin-top:14px;font-size:12px}
+.wake{margin-top:14px;font-size:12px;letter-spacing:.12em;color:var(--gold);opacity:.75}
+</style></head><body>
+<div class="door">
+  <div class="fire">🔥</div>
+  <div id="knock">
+    <h1>THE DOOR</h1>
+    <p>Pulse opens to those the fire already knows.<br>Knock, and the gate will answer.</p>
+    <button id="go">KNOCK</button>
+    <p class="status" id="status"></p>
+    <p class="small">Your wallet signs one free message. No gas, nothing moves.</p>
+  </div>
+  <div id="yes" class="ans yes">
+    <h2>the gate knows you</h2>
+    <p id="yesline"></p>
+    <span class="tier" id="tier"></span>
+    <p class="wake">the eighth card wakes soon.</p>
+    <p class="small" id="yesproof"></p>
+  </div>
+  <div id="no" class="ans no">
+    <h2>not yet, watch the fire</h2>
+    <p>The door stays shut for now. It opens wider in time.</p>
+    <p class="small" id="noproof"></p>
+  </div>
+  <p class="back" id="again"><a href="" onclick="location.reload();return false" style="color:#6b5f57">knock again</a></p>
+  <p class="guard">We never DM you first. We never ask you to send a transaction, a token, or your seed phrase. The knock is a free signature, nothing more.</p>
+</div>
+<script src="ethers.umd.min.js"></script>
+<script src="door-data.js"></script>
+<script>
+// Sealed roots are hardcoded here, NOT read from door-data.js (proofs only). build.py asserts these match.
+const ROOTS = {
+  holders: "0x9e8f30505ef733b062b3a252f9e08e37f01407e793d70a0b6a907189d76af8cb", // Soft7 holders @ block 76172262 + insider (deployer), 7 leaves
+  wl:      "0x3285fdf3af6c643cc1b737e1de349b6bde547e308b288b523f78c95b2916a680"  // the 702
+};
+const {keccak256, getBytes, concat, verifyMessage, getAddress, hexlify, toUtf8Bytes} = ethers;
+const $ = id => document.getElementById(id);
+const pairH = (a,b) => a.toLowerCase() <= b.toLowerCase() ? keccak256(concat([a,b])) : keccak256(concat([b,a]));
+const leafOf = addr => keccak256(getAddress(addr));  // keccak256(abi.encodePacked(address))
+function proofFor(tier, lf){
+  const p = (window.DOOR && DOOR[tier] || {})[lf];
+  return p && p.reduce(pairH, lf) === ROOTS[tier] ? p : null;
+}
+// EIP-4361 Sign-In with Ethereum message, built by hand (no extra library). Exact line layout per the spec.
+const SIWE = { chainId: 4663, fallbackHost: "tigerwillca.github.io", fallbackUri: "https://tigerwillca.github.io/door/",
+  statement: "Knock at the Pulse door. This signature is free. It is not a transaction and it moves nothing." };
+function siweNonce(len){                     // alphanumeric, crypto.getRandomValues, rejection sampling (no modulo bias)
+  const A = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"; let out = "";
+  while(out.length < len){ for(const b of crypto.getRandomValues(new Uint8Array(len))){ if(b < 248 && out.length < len) out += A[b % 62]; } }
+  return out;
+}
+function knockMessage(account){
+  const onWeb = !!location.host && location.origin && location.origin !== "null";
+  const domain = onWeb ? location.host : SIWE.fallbackHost;
+  const uri = onWeb ? location.origin + location.pathname : SIWE.fallbackUri;
+  return domain + " wants you to sign in with your Ethereum account:\n" +
+         getAddress(account) + "\n\n" +
+         SIWE.statement + "\n\n" +
+         "URI: " + uri + "\n" +
+         "Version: 1\n" +
+         "Chain ID: " + SIWE.chainId + "\n" +
+         "Nonce: " + siweNonce(16) + "\n" +
+         "Issued At: " + new Date().toISOString();
+}
+function show(which){ $('knock').style.display='none'; $(which).style.display='block'; $('again').style.display='block'; }
+async function knock(){
+  const eth = window.ethereum;
+  if(!eth){ $('status').textContent = 'No wallet found. Open this page in your wallet\u2019s browser.'; return; }
+  $('go').disabled = true; $('status').textContent = 'Check your wallet to sign\u2026';
+  try{
+    const [account] = await eth.request({method:'eth_requestAccounts'});
+    const msg = knockMessage(account);
+    const sig = await eth.request({method:'personal_sign', params:[hexlify(toUtf8Bytes(msg)), account]});
+    const signer = verifyMessage(msg, sig);             // the wallet comes from the signature itself
+    if(getAddress(signer) !== getAddress(account)) throw new Error('mismatch');
+    const lf = leafOf(signer), short = signer.slice(0,6)+'\u2026'+signer.slice(-4);
+    let p = proofFor('holders', lf), tier='FIRST LIGHT \u00b7 SOFT7 HOLDER', line=' may pass. First access to Pulse is yours.';
+    if(!p){ p = proofFor('wl', lf); tier='SECOND LIGHT \u00b7 THE 702'; line=' may pass. Your door opens right after first light.'; }
+    if(p){ show('yes'); $('yesline').textContent = short + line; $('tier').textContent = tier;
+           $('yesproof').textContent = 'signature checked \u00b7 proof checked against sealed root \u00b7 ' + p.length + ' steps'; }
+    else { show('no'); $('noproof').textContent = short + ' \u00b7 signature checked \u00b7 no proof under the sealed roots'; }
+  }catch(e){
+    $('go').disabled = false;
+    $('status').textContent = e && e.message === 'mismatch' ? 'That signature didn\u2019t match your wallet. Try again.' : (e && e.code === 4001 ? 'The knock was cancelled. Nothing was signed.' : 'Something went wrong, try again.');
+  }
+}
+$('go').onclick = knock;
+</script></body></html>
