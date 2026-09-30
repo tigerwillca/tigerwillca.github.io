@@ -296,7 +296,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       if (linksOn){ showLinks(false); lastTap = 0; return; }
       if (inCore(t.clientX,t.clientY)){ portalTap(); lastTap = 0; return; }
       if (!portalOn && nearDot(t.clientX,t.clientY)){ openMemories(); lastTap = 0; return; }
-      if (now-lastTap < 320){ togglePortal(); lastTap=0; }
+      if (now-lastTap < 450){ togglePortal(); lastTap=0; }
       else { lastTap=now; buzz(); for (let i=0;i<5;i++) star(t.clientX+(Math.random()-.5)*14, t.clientY+(Math.random()-.5)*14, false); }
     }, {passive:false});
     cv.addEventListener("mousemove", e => trail(e.clientX, e.clientY));
