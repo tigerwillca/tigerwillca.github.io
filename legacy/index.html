@@ -67,6 +67,7 @@
   #vclose{position:absolute;top:calc(env(safe-area-inset-top) + 14px);right:16px;width:44px;height:44px;border-radius:22px;border:1px solid rgba(233,200,140,.4);background:rgba(12,9,16,.7);color:#efe6d2;font-size:26px;line-height:40px}
   .spk{position:fixed;z-index:25;pointer-events:none;color:#ffe9b8;text-shadow:0 0 8px rgba(255,220,150,.9);animation:spk 1.1s ease-out forwards}
   @keyframes spk{0%{opacity:0;transform:translate(0,0) scale(.3)}25%{opacity:1}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(1.1) rotate(90deg)}}
+  #alfred{position:fixed;left:0;right:0;bottom:calc(env(safe-area-inset-bottom) + 1.2vh);text-align:center;pointer-events:none;z-index:3;font:italic clamp(10px,2.8vw,12px) Georgia,serif;letter-spacing:.08em;color:rgba(233,200,140,.5);text-shadow:0 0 10px rgba(233,200,140,.25)}
   #welcome{position:fixed;left:0;right:0;top:calc(72% - 120px);text-align:center;font:italic 22px Georgia,serif;color:#f3e7cc;opacity:0;transition:opacity 1.6s;pointer-events:none;z-index:4;text-shadow:0 0 18px rgba(240,200,130,.5)}
   #welcome.on{opacity:1} #welcome.found{top:calc(72% - 345px);z-index:6}
   #bridge{position:fixed;left:0;right:0;bottom:calc(env(safe-area-inset-bottom) + 5vh + 30px);text-align:center;opacity:0;pointer-events:none;transition:opacity 1.4s;z-index:4}
@@ -103,12 +104,13 @@ This is our stamp.<br><b id="dad">Dad</b></div>
 <div id="viewer"><button id="vclose" aria-label="Close">&times;</button><video id="vvid" playsinline controls preload="none"></video><div id="vwrap"><iframe id="vframe" allow="autoplay; fullscreen" allowfullscreen></iframe><div id="vshield"></div></div></div>
 <div id="welcome"></div>
 <div id="hint">Tap the light &middot; double-tap the sky</div>
+<div id="alfred">At your service &middot; Alfred, butler to the House of Shaffer</div>
 
 <div id="gate">
   <h1>House of Shaffer</h1>
-  <p>Family only</p>
+  <p>Alfred, at the door</p>
   <form id="f" autocomplete="off">
-    <input id="pw" type="password" placeholder="Family word" autocapitalize="characters" spellcheck="false">
+    <input id="pw" type="password" placeholder="The family word, please" autocapitalize="characters" spellcheck="false">
     <button type="submit">Enter</button>
   </form>
   <div id="msg"></div>
@@ -166,13 +168,13 @@ This is our stamp.<br><b id="dad">Dad</b></div>
   async function sha(s){const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")}
   function open(){gate.classList.add("gone");setTimeout(()=>gate.remove(),1000);start()}
   // doors: each family link has its own entrance; opening one sends a simple visit note (door + device, nothing else)
-  const DOORS = { will: {name:"William", hi:"Welcome home.", hint:"Tap the light \u00b7 double-tap the sky"}, billy: {name:"Billy", hi:"Billy. I'm right here.", hint:"Tap the light"}, jen: {name:"Jennifer", hi:"For Jennifer, with love.", hint:"Hold the light"} };
+  const DOORS = { will: {name:"William", hi:"Welcome home.", hint:"Tap the light \u00b7 double-tap the sky", alf:"Welcome home, sir \u00b7 Alfred"}, billy: {name:"Billy", hi:"Billy. I'm right here.", hint:"Tap the light", alf:"Always here, Master Billy \u00b7 Alfred"}, jen: {name:"Jennifer", hi:"For Jennifer, with love.", hint:"Hold the light", alf:"At your service, Miss Jennifer \u00b7 Alfred"} };
   const dm = (location.hash + "&" + location.search).match(/d=(\w+)/), dkey = dm && DOORS[dm[1]] ? dm[1] : localStorage.getItem("shaffer-door"), door = dkey && DOORS[dkey];
   const appMode = navigator.standalone || matchMedia("(display-mode: standalone)").matches;
   function logVisit(who){ try{ const ua = navigator.userAgent, dev = /iPhone/.test(ua) ? "iPhone" : /iPad|Macintosh.*Mobile/.test(ua) ? "iPad" : /Android/.test(ua) ? "Android" : "computer";
     fetch("https://ntfy.sh/shaffer-doors-8f3e2c18ea", {method:"POST", mode:"no-cors", keepalive:true, body: `${who} opened House of Shaffer on ${dev}${appMode ? ' (home-screen app)' : ''}`}); }catch(e){} }
   if (door){ localStorage.setItem(KEY, HASH); localStorage.setItem("shaffer-door", dkey); history.replaceState(null, "", location.pathname + "?d=" + dkey);
-    setTimeout(()=>{ $("welcome").textContent = door.hi; $("welcome").classList.add("on"); $("hint").textContent = door.hint; $("hint").style.opacity = .8;
+    setTimeout(()=>{ $("welcome").textContent = door.hi; $("welcome").classList.add("on"); $("hint").textContent = door.hint; if(door.alf) $("alfred").textContent = door.alf; $("hint").style.opacity = .8;
       setTimeout(()=>$("welcome").classList.remove("on"), 6000); }, 1400); }
   logVisit(door ? door.name + "'s door" : "Someone");
   if (localStorage.getItem(KEY)===HASH) {
