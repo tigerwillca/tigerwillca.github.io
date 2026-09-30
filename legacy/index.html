@@ -6,9 +6,9 @@
 <meta name="robots" content="noindex,nofollow">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Shaffer Legacy">
+<meta name="apple-mobile-web-app-title" content="House of Shaffer">
 <meta name="theme-color" content="#07060a">
-<title>Shaffer Legacy</title>
+<title>House of Shaffer</title>
 <style>
   html,body{margin:0;height:100%;background:#07060a;color:#efe6d2;overflow:hidden;
     font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
@@ -37,24 +37,31 @@
     color:#efe6d2;font:16px Georgia,serif;letter-spacing:.12em;text-align:center;outline:none}
   #gate button{padding:12px 16px;border-radius:12px;border:1px solid rgba(233,200,140,.5);background:rgba(233,200,140,.12);color:#efe6d2;font:15px Georgia,serif}
   #msg{min-height:1.2em;font-size:14px;color:rgba(239,230,210,.6)}
+  #mute{position:fixed;right:calc(env(safe-area-inset-right) + 16px);top:calc(env(safe-area-inset-top) + 14px);z-index:3;width:38px;height:38px;border-radius:50%;
+    border:1px solid rgba(233,200,140,.3);background:rgba(255,255,255,.03);color:rgba(239,230,210,.6);font-size:16px;display:none}
+  #mute.off{opacity:.35} #hapt{position:fixed;left:-99px;top:0;width:1px;height:1px;overflow:hidden;opacity:0}
+  #bg,#title{will-change:transform}
   .gone{opacity:0;pointer-events:none}
 </style>
 </head>
 <body>
 <div id="bg"><span>Legacy</span></div>
 <canvas id="c"></canvas>
-<div id="title"><h1>Shaffer Legacy</h1><p>Carried forward</p></div>
+<div id="title"><h1>House of Shaffer</h1><p>Where the stars come down</p></div>
 <div id="note"><b>To my son</b><br>
 I started this, and built it with Alfred, year after year.<br>
 It grows on its own, and it will keep growing.<br>
 When I'm gone, this is how I'll find you.<br>
+One day, it brings us together again.<br>
 We stay together. Always aligned.<br>
 Use it in the world. Pass it to your kids, and their kids.<br>
 This is our stamp.<br><b>Dad</b></div>
+<button id="mute" aria-label="Music">&#9835;</button>
+<div id="hapt" aria-hidden="true"><input type="checkbox" switch id="hsw"><label for="hsw" id="hlab"></label></div>
 <div id="hint">Double-tap to open the portal</div>
 
 <div id="gate">
-  <h1>Shaffer Legacy</h1>
+  <h1>House of Shaffer</h1>
   <p>Family only</p>
   <form id="f" autocomplete="off">
     <input id="pw" type="password" placeholder="Family word" autocapitalize="characters" spellcheck="false">
@@ -67,29 +74,75 @@ This is our stamp.<br><b>Dad</b></div>
 (() => {
   const HASH = "e396c33d99318aa669ce64d95283ab9720cfc2d9ee765b9e8860bf06085480e3";
   const KEY = "schaefer-legacy-open";
-  const gate = document.getElementById("gate"), msg = document.getElementById("msg");
+  const $ = id => document.getElementById(id);
+  const gate = $("gate"), msg = $("msg");
+
+  // shared audio + motion, unlocked inside a real tap
+  let ac = null, musicOut = null, musicOn = false, muted = false;
+  function unlockAudio(){ try{ ac = ac || new (window.AudioContext||window.webkitAudioContext)(); if (ac.state==="suspended") ac.resume(); }catch(e){} }
+  let tiltX = 0, tiltY = 0, tx = 0, ty = 0, motionAsked = false;
+  function askMotion(){
+    if (motionAsked) return; motionAsked = true;
+    const on = () => addEventListener("deviceorientation", e => {
+      if (e.gamma == null) return; tx = Math.max(-1, Math.min(1, e.gamma/30)); ty = Math.max(-1, Math.min(1, (e.beta-45)/30)); });
+    if (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === "function")
+      DeviceOrientationEvent.requestPermission().then(r => { if (r==="granted") on(); }).catch(()=>{});
+    else on();
+  }
+  addEventListener("pointermove", e => { if (e.pointerType==="mouse"){ tx = e.clientX/innerWidth*2-1; ty = e.clientY/innerHeight*2-1; } });
+
+  // haptic tick: Android vibrate, iPhone (iOS 18+) switch-toggle haptic
+  function buzz(){ try{ if (navigator.vibrate) navigator.vibrate(10); else $("hlab").click(); }catch(e){} }
+
+  // quiet atmospheric pad in A minor, rooted on A (55 Hz family)
+  function music(){
+    if (musicOn || !ac) return; musicOn = true; $("mute").style.display = "block";
+    musicOut = ac.createGain(); musicOut.gain.value = 0; musicOut.connect(ac.destination);
+    musicOut.gain.setTargetAtTime(muted ? 0 : .16, ac.currentTime, 4);
+    const conv = ac.createConvolver(), len = ac.sampleRate*4, ir = ac.createBuffer(2, len, ac.sampleRate);
+    for (let c=0;c<2;c++){ const d = ir.getChannelData(c); for (let i=0;i<len;i++) d[i] = (Math.random()*2-1)*Math.pow(1-i/len, 3); }
+    conv.buffer = ir;
+    const lp = ac.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 800; lp.Q.value = .6;
+    const wet = ac.createGain(); wet.gain.value = .9; const dry = ac.createGain(); dry.gain.value = .25;
+    lp.connect(conv); conv.connect(wet); wet.connect(musicOut); lp.connect(dry); dry.connect(musicOut);
+    const lfo = ac.createOscillator(), lfoG = ac.createGain(); lfo.frequency.value = .05; lfoG.gain.value = 350; lfo.connect(lfoG); lfoG.connect(lp.frequency); lfo.start();
+    const chords = [[110,130.81,164.81],[87.31,110,130.81],[130.81,164.81,196],[98,123.47,146.83]];
+    const voices = [0,1,2].map(i => { const g = ac.createGain(); g.gain.value = .12; g.connect(lp);
+      const os = [-6,6].map(dt => { const o = ac.createOscillator(); o.type = "sawtooth"; o.detune.value = dt; o.frequency.value = chords[0][i]; o.connect(g); o.start(); return o; });
+      const air = ac.createOscillator(), ag = ac.createGain(); air.type="sine"; air.frequency.value = chords[0][i]*2; ag.gain.value = .05; air.connect(ag); ag.connect(lp); air.start(); os.push(air);
+      return os; });
+    const bass = ac.createOscillator(), bg = ac.createGain(); bass.type="sine"; bass.frequency.value = 55; bg.gain.value = .22; bass.connect(bg); bg.connect(musicOut); bass.start();
+    let k = 0;
+    setInterval(() => { k = (k+1) % chords.length; const t = ac.currentTime;
+      voices.forEach((os,i) => os.forEach((o,j) => o.frequency.setTargetAtTime(chords[k][i]*(j===2?2:1), t, 1.4))); }, 9000);
+  }
+  $("mute").addEventListener("click", e => { e.stopPropagation(); muted = !muted; $("mute").classList.toggle("off", muted);
+    if (musicOut) musicOut.gain.setTargetAtTime(muted ? 0 : .16, ac.currentTime, .5); });
+
   async function sha(s){const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")}
   function open(){gate.classList.add("gone");setTimeout(()=>gate.remove(),1000);start()}
-  if (localStorage.getItem(KEY)===HASH) open();
-  document.getElementById("f").addEventListener("submit", async e => {
-    e.preventDefault();
-    const v = document.getElementById("pw").value.trim().toUpperCase();
-    if (await sha(v) === HASH) { localStorage.setItem(KEY, HASH); open(); }
-    else { msg.textContent = "Not quite. Try again."; }
+  if (localStorage.getItem(KEY)===HASH) {
+    open();
+    const first = () => { unlockAudio(); askMotion(); music(); };
+    addEventListener("touchend", first, {once:true}); addEventListener("click", first, {once:true});
+  }
+  $("f").addEventListener("submit", async e => {
+    e.preventDefault(); unlockAudio(); askMotion();
+    const v = $("pw").value.trim().toUpperCase();
+    if (await sha(v) === HASH) { localStorage.setItem(KEY, HASH); music(); open(); }
+    else { msg.textContent = "Not quite. Try again."; buzz(); }
   });
 
   let started = false;
   function start(){
     if (started) return; started = true;
-    setTimeout(()=>document.getElementById("note").classList.add("on"),900);
-    const cv = document.getElementById("c"), cx = cv.getContext("2d");
+    setTimeout(()=>$("note").classList.add("on"),900);
+    const cv = $("c"), cx = cv.getContext("2d");
     let W, H, DPR;
     function size(){DPR=Math.min(2,window.devicePixelRatio||1);W=innerWidth;H=innerHeight;cv.width=W*DPR;cv.height=H*DPR;cx.setTransform(DPR,0,0,DPR,0,0)}
     size(); addEventListener("resize", size);
 
-    // dust
     const dust = Array.from({length: 90}, () => ({x:Math.random(),y:Math.random(),r:Math.random()*1.4+.3,s:Math.random()*.00012+.00003,p:Math.random()*6.28}));
-    // flame trail, 3-6-9
     const sparks = []; const seq = [3,6,9]; let si = 0, lastSpawn = 0;
     function trail(x,y){
       const now = performance.now(); if (now - lastSpawn < 45) return; lastSpawn = now;
@@ -97,44 +150,62 @@ This is our stamp.<br><b>Dad</b></div>
       for (let i=0;i<n;i++){const a=(i/n)*6.283+Math.random()*.4, v=.25+Math.random()*.6;
         sparks.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-.6,life:1,h:28+Math.random()*22})}
     }
-    // 55 Hz dot + portal
+    // wand stars
+    const stars = []; let wand = null, nextWand = performance.now() + 2500;
+    function star(x,y,big){ stars.push({x,y,vx:(Math.random()-.5)*.25,vy:.25+Math.random()*.5,life:1,sz:(big?2.5:1.2)+Math.random()*2,p:Math.random()*6.28}); }
+    function drawStar(s,t,ox,oy){
+      const a = s.life*(.55+.45*Math.sin(t*5+s.p)), L = s.sz*2.2, x = s.x+ox, y = s.y+oy;
+      cx.strokeStyle = `rgba(255,240,210,${a})`; cx.lineWidth = .8;
+      cx.beginPath(); cx.moveTo(x-L,y); cx.lineTo(x+L,y); cx.moveTo(x,y-L); cx.lineTo(x,y+L); cx.stroke();
+      cx.fillStyle = `rgba(255,248,230,${a})`; cx.beginPath(); cx.arc(x,y,s.sz*.45,0,6.283); cx.fill();
+    }
     const dot = {x:()=>W/2, y:()=>H*.72};
     let portal = 0, portalOn = false, t0 = performance.now();
 
-    // audio
-    let ac, master, voices = [];
-    function audioOn(){
-      ac = ac || new (window.AudioContext||window.webkitAudioContext)();
-      if (ac.state === "suspended") ac.resume();
-      if (voices.length) return;
-      master = ac.createGain(); master.gain.value = 0; master.connect(ac.destination);
+    let pv = [];
+    function portalAudioOn(){
+      unlockAudio(); if (!ac || pv.length) return;
+      const m = ac.createGain(); m.gain.value = 0; m.connect(ac.destination);
       [[55,.5],[165,.16],[330,.07],[495,.04]].forEach(([f,g]) => {
         const o = ac.createOscillator(), gn = ac.createGain(); o.type="sine"; o.frequency.value=f; gn.gain.value=g;
-        o.connect(gn); gn.connect(master); o.start(); voices.push(o);
-      });
-      master.gain.setTargetAtTime(.35, ac.currentTime, 1.2);
+        o.connect(gn); gn.connect(m); o.start(); pv.push(o); });
+      pv.m = m; m.gain.setTargetAtTime(.35, ac.currentTime, 1.2);
     }
-    function audioOff(){ if (!master) return; master.gain.setTargetAtTime(0, ac.currentTime, .6);
-      const vs = voices; voices = []; setTimeout(()=>vs.forEach(o=>{try{o.stop()}catch(e){}}), 3000); }
+    function portalAudioOff(){ if (!pv.length) return; const vs = pv; pv = []; vs.m.gain.setTargetAtTime(0, ac.currentTime, .6);
+      setTimeout(()=>vs.forEach(o=>{try{o.stop()}catch(e){}}), 3000); }
+    function togglePortal(){ portalOn = !portalOn; portalOn ? portalAudioOn() : portalAudioOff(); buzz();
+      $("hint").style.opacity = 0; $("note").classList.toggle("dim", portalOn); }
 
-    function togglePortal(){ portalOn = !portalOn; portalOn ? audioOn() : audioOff();
-      document.getElementById("hint").style.opacity = 0; document.getElementById("note").classList.toggle("dim", portalOn); }
-
-    // input: double-tap (touch) / dblclick (mouse), trail on move
     let lastTap = 0;
     cv.addEventListener("touchstart", e => { const t=e.touches[0]; trail(t.clientX,t.clientY); }, {passive:true});
     cv.addEventListener("touchmove", e => { const t=e.touches[0]; trail(t.clientX,t.clientY); }, {passive:true});
-    cv.addEventListener("touchend", e => { const now=Date.now(); if (now-lastTap < 320){ togglePortal(); lastTap=0; } else lastTap=now; e.preventDefault(); }, {passive:false});
+    cv.addEventListener("touchend", e => { const now=Date.now(), t=e.changedTouches[0];
+      if (now-lastTap < 320){ togglePortal(); lastTap=0; }
+      else { lastTap=now; buzz(); for (let i=0;i<5;i++) star(t.clientX+(Math.random()-.5)*14, t.clientY+(Math.random()-.5)*14, false); }
+      e.preventDefault(); }, {passive:false});
     cv.addEventListener("mousemove", e => trail(e.clientX, e.clientY));
+    cv.addEventListener("click", e => { for (let i=0;i<5;i++) star(e.clientX, e.clientY, false); });
     cv.addEventListener("dblclick", togglePortal);
 
     function frame(now){
       const t = (now - t0) / 1000;
+      tiltX += (tx - tiltX)*.06; tiltY += (ty - tiltY)*.06;
+      $("bg").style.transform = `translate(${-tiltX*14}px,${-tiltY*14}px)`;
+      $("title").style.transform = `translate(${tiltX*5}px,${tiltY*5}px)`;
       cx.clearRect(0,0,W,H);
-      // dust
       for (const d of dust){ d.y -= d.s*16; d.x += Math.sin(t*.3+d.p)*.00008*16; if (d.y < -.02){d.y=1.02;d.x=Math.random()}
-        const a = .25+.35*Math.sin(t*.8+d.p)**2; cx.fillStyle=`rgba(236,208,150,${a})`; cx.beginPath(); cx.arc(d.x*W,d.y*H,d.r,0,6.283); cx.fill(); }
-      // portal
+        const a = .25+.35*Math.sin(t*.8+d.p)**2, dz = d.r*7; cx.fillStyle=`rgba(236,208,150,${a})`;
+        cx.beginPath(); cx.arc(d.x*W+tiltX*dz,d.y*H+tiltY*dz,d.r,0,6.283); cx.fill(); }
+      // wand sweep: a slow glowing arc that sheds stars
+      if (!wand && now > nextWand){ const l2r = Math.random() < .5;
+        wand = {p:0, x0: l2r ? W*.08 : W*.92, x1: l2r ? W*.88 : W*.12, y0: H*(.06+Math.random()*.1), lift: H*(.05+Math.random()*.08)}; }
+      if (wand){ wand.p += .0045; const p = wand.p, x = wand.x0 + (wand.x1-wand.x0)*p, y = wand.y0 - Math.sin(p*Math.PI)*wand.lift + p*H*.06;
+        const hg = cx.createRadialGradient(x,y,0,x,y,14); hg.addColorStop(0,"rgba(255,246,220,.9)"); hg.addColorStop(1,"rgba(255,220,160,0)");
+        cx.fillStyle = hg; cx.beginPath(); cx.arc(x,y,14,0,6.283); cx.fill();
+        if (Math.random() < .16) star(x, y, Math.random() < .2);
+        if (p >= 1){ wand = null; nextWand = now + 7000 + Math.random()*6000; } }
+      for (let i=stars.length-1;i>=0;i--){ const s = stars[i]; s.x += s.vx; s.y += s.vy; s.life -= .0035;
+        if (s.life <= 0 || s.y > H+10){ stars.splice(i,1); continue; } drawStar(s, t, tiltX*9, tiltY*9); }
       portal += ((portalOn?1:0) - portal) * .045;
       const px = dot.x(), py = dot.y();
       if (portal > .01){
@@ -149,12 +220,10 @@ This is our stamp.<br><b>Dad</b></div>
         for (let i=0;i<9;i++){ const a=t*.6+i*.698, rr=R*.7; cx.fillStyle=`rgba(255,230,180,${.6*portal})`;
           cx.beginPath(); cx.arc(px+Math.cos(a)*rr, py+Math.sin(a)*rr*.92, 1.6, 0, 6.283); cx.fill(); }
       }
-      // 55 Hz dot (slow breath)
       const b = .5 + .5*Math.sin(t*2*Math.PI*.55);
       const dg = cx.createRadialGradient(px,py,0,px,py,22+8*b);
       dg.addColorStop(0,"rgba(255,244,215,.95)"); dg.addColorStop(.25,`rgba(240,200,130,${.5+.3*b})`); dg.addColorStop(1,"rgba(0,0,0,0)");
       cx.fillStyle=dg; cx.beginPath(); cx.arc(px,py,30+8*b,0,6.283); cx.fill();
-      // sparks
       cx.globalCompositeOperation="lighter";
       for (let i=sparks.length-1;i>=0;i--){ const s=sparks[i]; s.x+=s.vx; s.y+=s.vy; s.vy-=.012; s.life-=.022;
         if (s.life<=0){sparks.splice(i,1);continue}
