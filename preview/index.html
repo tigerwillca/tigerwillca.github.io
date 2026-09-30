@@ -14,13 +14,21 @@ html,body{margin:0;min-height:100vh;background:#07050f;color:#F6DFA0;font-family
 .veil{position:fixed;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(7,5,15,.78),rgba(7,5,15,.42) 40%,rgba(7,5,15,.82))}
 #trail,#dot{position:fixed;left:0;top:0;z-index:4;pointer-events:none}
 #dot{width:14px;height:14px;border-radius:50%;opacity:0;background:radial-gradient(circle,#fff 0%,#E6B85C 35%,rgba(255,122,42,0) 72%);box-shadow:0 0 12px rgba(255,122,42,.85)}
-main{position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem 1.25rem 3rem}
+main{position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:4.5rem 1.25rem 3rem}
 h1{margin:0;font-weight:500;font-size:clamp(2rem,7vw,3.6rem);letter-spacing:-.03em;text-shadow:0 2px 18px rgba(7,5,15,.9)}
 .line{margin:.8rem 0 0;font-size:clamp(1.15rem,3.5vw,1.7rem);color:#d9c8ff;text-shadow:0 2px 14px rgba(7,5,15,.95)}
-.globe{width:min(52vw,200px);aspect-ratio:1;margin:1.6rem auto 0;border-radius:50%;display:grid;place-items:center;position:relative;text-decoration:none;color:#F6DFA0;background:radial-gradient(circle at 32% 28%,rgba(246,223,160,.7),transparent 26%),radial-gradient(circle at 50% 55%,#24143f 0%,#07050f 72%);box-shadow:0 0 36px rgba(155,109,255,.4),inset 0 0 24px rgba(255,122,42,.28);overflow:hidden}
+.cap{margin:1.1rem 0 .2rem;font:.8rem ui-monospace,Menlo,monospace;letter-spacing:.08em;color:#F6DFA0;text-shadow:0 1px 8px rgba(7,5,15,.9)}
+.globe{width:min(52vw,200px);aspect-ratio:1;margin:.4rem auto 0;border-radius:50%;display:grid;place-items:center;position:relative;text-decoration:none;color:#F6DFA0;background:radial-gradient(circle at 32% 28%,rgba(246,223,160,.7),transparent 26%),radial-gradient(circle at 50% 55%,#24143f 0%,#07050f 72%);box-shadow:0 0 36px rgba(155,109,255,.4),inset 0 0 24px rgba(255,122,42,.28);overflow:hidden;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .globe i{position:absolute;inset:7%;border-radius:50%;background:repeating-linear-gradient(90deg,transparent 0 14px,rgba(230,184,92,.45) 14px 15px),repeating-linear-gradient(0deg,transparent 0 14px,rgba(204,255,0,.22) 14px 15px);-webkit-mask:radial-gradient(circle,#000 62%,transparent 72%);mask:radial-gradient(circle,#000 62%,transparent 72%)}
 .globe b{position:relative;z-index:1;font:.78rem ui-monospace,Menlo,monospace;font-weight:600;letter-spacing:.22em;text-transform:uppercase}
-.globe:hover,.globe:focus-visible{box-shadow:0 0 28px rgba(255,122,42,.65),0 0 64px rgba(155,109,255,.5);outline:none}
+.globe:hover,.globe:focus-visible,.globe:active{box-shadow:0 0 28px rgba(255,122,42,.75),0 0 64px rgba(155,109,255,.55);outline:none}
+.globe.zoom{transform:scale(1.18);transition:transform .45s ease}
+.hots{display:flex;justify-content:center;gap:.7rem;margin:1.15rem 0 0;padding:0;flex-wrap:wrap}
+.hots a{min-width:2.75rem;min-height:2.75rem;padding:.7rem .85rem;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;color:#140c08;background:radial-gradient(circle at 35% 30%,#fff,#E6B85C 42%,#ff7a2a);box-shadow:0 0 16px rgba(255,122,42,.85);font:.68rem ui-monospace,Menlo,monospace;font-weight:700;letter-spacing:.04em;touch-action:manipulation}
+.hots a:hover,.hots a:focus-visible,.hots a:active{box-shadow:0 0 22px rgba(204,255,0,.7),0 0 28px rgba(255,122,42,.9);outline:none}
+.lights{margin:1.4rem 0 0;max-width:22rem;font-size:.95rem;color:#d9c8ff;text-shadow:0 1px 8px rgba(7,5,15,.9)}
+.tune{position:fixed;top:1rem;right:1rem;z-index:6;border:1px solid rgba(230,184,92,.5);background:rgba(7,5,15,.72);color:#F6DFA0;border-radius:999px;padding:.55rem .8rem;font:.72rem ui-monospace,Menlo,monospace;letter-spacing:.06em;cursor:pointer;touch-action:manipulation}
+.tune:hover,.tune:focus-visible,.tune:active{box-shadow:0 0 16px rgba(204,255,0,.4);outline:none}
 @media (prefers-reduced-motion:no-preference){.globe i{animation:spin 22s linear infinite}}
 @media (prefers-reduced-motion:reduce){.bg,#trail,#dot{display:none}}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -34,15 +42,32 @@ h1{margin:0;font-weight:500;font-size:clamp(2rem,7vw,3.6rem);letter-spacing:-.03
 <div class="veil" aria-hidden="true"></div>
 <canvas id="trail" aria-hidden="true"></canvas>
 <div id="dot" aria-hidden="true"></div>
+<button class="tune" type="button">Tune in. Three. Six. Nine.</button>
 <main>
 <h1>Soft7 is the first door.</h1>
 <p class="line">Seven cards. One phoenix rising.</p>
-<a class="globe" href="/phoenix"><i aria-hidden="true"></i><b>Enter</b></a>
+<p class="cap">Touch the signal. Enter.</p>
+<a class="globe" id="globe" href="/phoenix"><i aria-hidden="true"></i><b>Enter</b></a>
+<nav class="hots" aria-label="Signals">
+<a href="/phoenix">Enter</a>
+<a href="https://opensea.io/collection/reynard-soft7" target="_blank" rel="noopener noreferrer">OpenSea</a>
+<a href="https://x.com/tigerwillca" target="_blank" rel="noopener noreferrer">X</a>
+</nav>
+<p class="lights">Seven lights. Seven nods. Find them in the signal.</p>
 </main>
 <script>
 (function(){
   var v=document.getElementById('bg');
   if(v){ v.muted=true; v.defaultMuted=true; v.playsInline=true; v.setAttribute('muted',''); v.setAttribute('playsinline',''); }
+  var globe=document.getElementById('globe');
+  if(globe){
+    globe.addEventListener('click',function(ev){
+      if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      ev.preventDefault();
+      globe.classList.add('zoom');
+      setTimeout(function(){ location.href='/phoenix'; }, 480);
+    });
+  }
   if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   var c=document.getElementById('trail'), dot=document.getElementById('dot');
   if(!c||!c.getContext) return;
@@ -74,6 +99,7 @@ h1{margin:0;font-weight:500;font-size:clamp(2rem,7vw,3.6rem);letter-spacing:-.03
     if(parts.length) requestAnimationFrame(frame); else idle=true;
   }
   addEventListener('pointermove',function(e){ if(e.pointerType==='touch') return; place(e.clientX,e.clientY); },{passive:true});
+  addEventListener('touchstart',function(e){ var t=e.changedTouches&&e.changedTouches[0]; if(t) place(t.clientX,t.clientY); },{passive:true});
   addEventListener('touchmove',function(e){ var t=e.touches&&e.touches[0]; if(t) place(t.clientX,t.clientY); },{passive:true});
   addEventListener('resize',size); size();
 })();
