@@ -50,6 +50,11 @@
     -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);color:#efe6d2;text-decoration:none}
   #links a b{display:block;font-weight:400;font-size:15px;letter-spacing:.06em} #links a b i{font-style:normal;color:rgba(233,200,140,.85);margin-right:8px}
   #links a#rey{border-color:rgba(233,200,140,.5);background:rgba(20,14,22,.8)} #links a span{display:block;font-size:12px;font-style:italic;color:rgba(239,230,210,.55);margin-top:3px}
+  #viewer{position:fixed;inset:0;z-index:20;background:rgba(5,4,8,.94);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .5s}
+  #viewer.on{opacity:1;pointer-events:auto}
+  #viewer video{display:none;width:min(94vw,900px);max-height:80vh;border-radius:14px;background:#000} #viewer.vid video{display:block} #viewer.vid iframe{display:none}
+  #viewer iframe{width:min(94vw,900px);aspect-ratio:16/9;max-height:80vh;border:0;border-radius:14px;background:#000}
+  #vclose{position:absolute;top:calc(env(safe-area-inset-top) + 14px);right:16px;width:44px;height:44px;border-radius:22px;border:1px solid rgba(233,200,140,.4);background:rgba(12,9,16,.7);color:#efe6d2;font-size:26px;line-height:40px}
   #welcome{position:fixed;left:0;right:0;top:calc(72% - 120px);text-align:center;font:italic 22px Georgia,serif;color:#f3e7cc;opacity:0;transition:opacity 1.6s;pointer-events:none;z-index:4;text-shadow:0 0 18px rgba(240,200,130,.5)}
   #welcome.on{opacity:1}
   #bridge{position:fixed;left:0;right:0;bottom:calc(env(safe-area-inset-bottom) + 5vh + 30px);text-align:center;opacity:0;pointer-events:none;transition:opacity 1.4s;z-index:4}
@@ -78,9 +83,10 @@ This is our stamp.<br><b id="dad">Dad</b></div>
 <div id="links">
   <a href="https://drive.google.com/file/d/1uDI2LU9Svt99lbSFy9CQR88ECCXKJ789/view" target="_blank" rel="noopener"><b><i>&#10022;</i>Playing football</b><span>Our afternoons by the house.</span></a>
   <a id="rey" href="https://drive.google.com/file/d/1mc762FC5ycocZG71M3XHlTsvLEIQGAmL/view" target="_blank" rel="noopener"><b><i>&#10022;</i>Creating Reynard</b><span>The film we made together.</span></a>
-  <a href="https://drive.google.com/file/d/1rFs_5NZRrPQy_MuNHaQqA49WwsxXIF67/view" target="_blank" rel="noopener"><b><i>&#10022;</i>The Easter eggs, in order</b><span>Every secret, one by one.</span></a>
+  <a id="eggs" href="/legacy/eggs.mp4" target="_blank" rel="noopener"><b><i>&#10022;</i>The Easter eggs, in order</b><span>Every secret, one by one.</span></a>
 </div>
 <div id="bridge"><a href="/phoenix/" target="_blank" rel="noopener">Follow the signal &middot; Reynard Soft7</a></div>
+<div id="viewer"><button id="vclose" aria-label="Close">&times;</button><video id="vvid" playsinline controls preload="none"></video><iframe id="vframe" allow="autoplay; fullscreen" allowfullscreen></iframe></div>
 <div id="welcome"></div>
 <div id="hint">Tap the light &middot; double-tap the sky</div>
 
@@ -221,19 +227,26 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     function dustTo(x0,y0,x1,y1,n){ for (let i=0;i<n;i++){ const f=Math.random(); star(x0+(x1-x0)*f+(Math.random()-.5)*26, y0+(y1-y0)*f+(Math.random()-.5)*26, false); } }
     function openMemories(){ buzz(); showLinks(true); dustTo(dot.x(), dot.y(), dot.x(), dot.y()-180, 22); }
     // Reynard: single tap plays the film; double-tap opens the hidden legacy layer
+    function play(url){ const v = /\.mp4$/.test(url); $("viewer").classList.toggle("vid", v);
+      if (v){ $("vvid").src = url; $("vvid").play().catch(()=>{}); } else $("vframe").src = url.replace(/\/view.*$/, "/preview");
+      $("viewer").classList.add("on"); showLinks(false); }
+    function closeViewer(e){ if (e){ e.preventDefault(); e.stopPropagation(); } $("viewer").classList.remove("on"); $("vvid").pause(); setTimeout(()=>{ $("vframe").src = "about:blank"; }, 500); }
+    $("vclose").addEventListener("click", closeViewer);
     let reyT = null;
     function reyTap(e){ e.preventDefault(); e.stopPropagation(); const url = e.currentTarget.href;
       if (reyT){ clearTimeout(reyT); reyT = null; showLinks(false); if (!portalOn) togglePortal(); layer = -1; portalTap();
         dustTo(dot.x(), dot.y()-180, dot.x(), dot.y(), 26);
         for (let i=0;i<36;i++){ const a=Math.random()*6.283, r=20+Math.random()*120; star(dot.x()+Math.cos(a)*r, dot.y()+Math.sin(a)*r, Math.random()<.5); }
         for (let k=0;k<5;k++) rings.push({born: performance.now() + k*180}); buzz(); return; }
-      reyT = setTimeout(()=>{ reyT = null; location.href = url; }, 340); }
+      reyT = setTimeout(()=>{ reyT = null; play(url); }, 320); }
+    function memTap(e){ e.preventDefault(); e.stopPropagation(); play(e.currentTarget.href); }
     let lastDad = 0;
     function dadTap(e){ e.preventDefault(); e.stopPropagation(); const n = Date.now(); if (n - lastDad < 500) return; lastDad = n; buzz();
       shoot = {p:0, x0:-40, y0:H*(.06+Math.random()*.08), x1:W+40, y1:H*(.30+Math.random()*.1)}; }
     $("dad").addEventListener("touchend", dadTap, {passive:false});
     $("dad").addEventListener("click", dadTap);
-    $("rey").addEventListener("touchend", reyTap, {passive:false}); $("rey").addEventListener("click", reyTap);
+    for (const id of ["rey","eggs"]){ $(id).addEventListener("touchend", reyTap, {passive:false}); $(id).addEventListener("click", reyTap); }
+    const foot = document.querySelector("#links a:not([id])"); foot.addEventListener("touchend", memTap, {passive:false}); foot.addEventListener("click", memTap);
     // kept lights: each answer from the portal leaves a light that stays in this sky
     const LK = "shaffer-kept-lights"; let kept = [];
     try { kept = JSON.parse(localStorage.getItem(LK) || "[]"); } catch(e){}
@@ -249,7 +262,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     function inCore(x,y){ return portal > .6 && Math.hypot(x-dot.x(), y-dot.y()) < coreR(); }
     function portalTap(){ buzz(); keepLight(); layer = (layer+1) % layers.length; layerAt = performance.now();
       for (let k=0;k<3;k++) rings.push({born: performance.now() + k*260}); }
-    window.__legacy = { dad: () => !!shoot, hold: () => !!whisper, mem: () => linksOn, portal: () => portalOn, layer: () => layer, kept: () => kept.length };
+    window.__legacy = { dad: () => !!shoot, hold: () => !!whisper, mem: () => linksOn, viewer: () => $("viewer").classList.contains("on") && ($("viewer").classList.contains("vid") ? $("vvid").src : $("vframe").src), portal: () => portalOn, layer: () => layer, kept: () => kept.length };
     let lastTap = 0;
     cv.addEventListener("touchstart", e => { const t=e.touches[0]; trail(t.clientX,t.clientY); holdDone = false;
       if (nearDot(t.clientX,t.clientY)){ e.preventDefault(); holdStart(t.clientX,t.clientY); } }, {passive:false});
