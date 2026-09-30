@@ -96,7 +96,7 @@
   .spk{position:fixed;z-index:25;pointer-events:none;color:#ffe9b8;text-shadow:0 0 8px rgba(255,220,150,.9);animation:spk 1.1s ease-out forwards}
   @keyframes spk{0%{opacity:0;transform:translate(0,0) scale(.3)}25%{opacity:1}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(1.1) rotate(90deg)}}
   #alfred{position:fixed;left:0;right:0;bottom:calc(env(safe-area-inset-bottom) + 1.2vh);text-align:center;pointer-events:none;z-index:3;font:italic clamp(10px,2.8vw,12px) Georgia,serif;letter-spacing:.08em;color:rgba(233,200,140,.5);text-shadow:0 0 10px rgba(233,200,140,.25)}
-  #alfred::before{content:"";display:inline-block;width:6px;height:6px;margin-right:8px;border-radius:50%;background:#e9c88c;vertical-align:middle;box-shadow:0 0 8px #e9c88c;animation:alf 3.2s ease-in-out infinite}
+  #alfred::before{content:"";display:inline-block;width:6px;height:6px;margin-right:8px;border-radius:50%;background:#e9c88c;vertical-align:middle;box-shadow:0 0 8px #e9c88c;animation:alf 3.32s ease-in-out infinite}
   @keyframes alf{0%,100%{opacity:.35;transform:scale(.8)}50%{opacity:1;transform:scale(1.15)}}
   #welcome{position:fixed;left:0;right:0;top:var(--wt,calc(72% - 120px));text-align:center;font:italic 22px Georgia,serif;color:#f3e7cc;opacity:0;transition:opacity 1.6s;pointer-events:none;z-index:4;text-shadow:0 0 18px rgba(240,200,130,.5)}
   #welcome.on{opacity:1} #welcome.nowel:not(.found){display:none} #welcome.found{top:calc(72% - 345px);z-index:6}
@@ -116,7 +116,7 @@
   #title,#brand{transition:opacity .6s}
   body.pon #title,body.pon #brand,body.mon #title,body.mon #brand,body.pon #hint,body.pon #welcome,body.pon #membtn{opacity:0!important;pointer-events:none!important}
   body.pon #dotbtn{pointer-events:none}
-  #membtn{position:fixed;left:50%;top:calc(72% + 44px);transform:translateX(-50%);z-index:3;padding:8px 20px;border-radius:20px;border:1px solid rgba(233,200,140,.5);background:rgba(12,9,16,.66);color:rgba(243,222,170,.95);font:13px Georgia,serif;letter-spacing:.22em;text-transform:uppercase;white-space:nowrap;transition:opacity .6s;animation:pill 4.5s ease-in-out infinite;-webkit-tap-highlight-color:transparent;cursor:pointer}
+  #membtn{position:fixed;left:50%;top:calc(72% + 44px);transform:translateX(-50%);z-index:3;padding:8px 20px;border-radius:20px;border:1px solid rgba(233,200,140,.5);background:rgba(12,9,16,.66);color:rgba(243,222,170,.95);font:13px Georgia,serif;letter-spacing:.22em;text-transform:uppercase;white-space:nowrap;transition:opacity .6s;animation:pill 4.98s ease-in-out infinite;-webkit-tap-highlight-color:transparent;cursor:pointer}
   @keyframes pill{0%,100%{box-shadow:0 0 10px rgba(233,200,140,.14)}50%{box-shadow:0 0 22px rgba(233,200,140,.4)}}
   #pclose{position:fixed;z-index:6;top:calc(env(safe-area-inset-top) + 14px);left:16px;width:44px;height:44px;border-radius:22px;border:1px solid rgba(233,200,140,.45);background:rgba(12,9,16,.7);color:#efe6d2;font-size:26px;line-height:40px;padding:0;opacity:0;pointer-events:none;transition:opacity .6s;cursor:pointer}
   body.pon #pclose{opacity:1;pointer-events:auto}
@@ -128,18 +128,20 @@
   .cn.focal{font-size:14px;color:#ffe3a6;padding-top:19px} .cn.focal::before{width:11px;height:11px;margin-left:-5.5px;top:3px;background:#ffe7ae;box-shadow:0 0 16px 6px rgba(255,200,110,.85)}
   .cn.owner::before{box-shadow:0 0 10px 3px rgba(255,236,200,.9)}
   @media (min-width:700px){.cn{font-size:14px}.cn.focal{font-size:16px}}
-  .au{position:absolute;left:-14px;right:-14px;top:-8px;bottom:-8px;border-radius:50%;pointer-events:none;z-index:-1;background:radial-gradient(closest-side,rgba(255,238,205,.28),rgba(255,238,205,0));animation:breathe 5.2s ease-in-out infinite}
+  .au{position:absolute;left:-14px;right:-14px;top:-8px;bottom:-8px;border-radius:50%;pointer-events:none;z-index:-1;background:radial-gradient(closest-side,rgba(255,238,205,.28),rgba(255,238,205,0));animation:breathe 4.98s ease-in-out infinite}
   @keyframes breathe{0%,100%{opacity:.35;transform:scale(.92)}50%{opacity:1;transform:scale(1.06)}}
   .owner>.au{left:-26px;right:-26px;top:-16px;bottom:-16px;background:radial-gradient(closest-side,rgba(255,242,212,.42),rgba(255,236,200,.12) 70%,rgba(255,236,200,0));box-shadow:inset 0 0 0 1px rgba(255,230,180,.2)}
-  .focal>.au{left:-34px;right:-34px;top:-22px;bottom:-22px;background:radial-gradient(closest-side,rgba(255,206,120,.36),rgba(255,190,90,.10) 65%,rgba(255,190,90,0));animation-duration:6.5s}
+  .focal>.au{left:-34px;right:-34px;top:-22px;bottom:-22px;background:radial-gradient(closest-side,rgba(255,206,120,.36),rgba(255,190,90,.10) 65%,rgba(255,190,90,0));animation-duration:6.64s}
   .du{position:absolute;left:50%;top:55%;width:0;height:0;pointer-events:none;z-index:-1}
   .du i{position:absolute;left:0;top:0;width:var(--s);height:var(--s);margin:calc(var(--s) / -2) 0 0 calc(var(--s) / -2);border-radius:50%;background:#ffd58a;box-shadow:0 0 5px 1px rgba(255,196,100,.85);opacity:0;animation:rise var(--t) linear var(--d) infinite}
   @keyframes rise{0%{opacity:0;transform:translate(var(--x0),6px)}12%{opacity:.9}45%{opacity:.55}62%{opacity:.95}100%{opacity:0;transform:translate(var(--x1),var(--h))}}
   .fn.departed{color:#ffe6b0} .fn.focal{color:#ffe0a0;text-shadow:0 0 18px rgba(255,196,100,.95)}
   .sn.focal{font-size:14px;padding:8px 13px;border-color:rgba(255,214,140,.75);color:#ffe8b8;box-shadow:0 0 16px rgba(255,200,110,.35)}
   .sn.hot{box-shadow:0 0 22px var(--hc,rgba(255,214,140,.7))}
-  .ov::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(1px 1px at 20px 30px,rgba(255,255,255,.8),rgba(0,0,0,0)),radial-gradient(1px 1px at 120px 80px,rgba(255,255,255,.6),rgba(0,0,0,0)),radial-gradient(1.5px 1.5px at 60px 150px,rgba(255,233,190,.7),rgba(0,0,0,0)),radial-gradient(1px 1px at 170px 120px,rgba(200,215,255,.6),rgba(0,0,0,0)),radial-gradient(1px 1px at 90px 10px,rgba(255,255,255,.5),rgba(0,0,0,0));background-size:190px 190px;animation:twk 5s ease-in-out infinite alternate}
-  .ov::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(1px 1px at 40px 60px,rgba(255,255,255,.7),rgba(0,0,0,0)),radial-gradient(1.2px 1.2px at 200px 170px,rgba(200,215,255,.6),rgba(0,0,0,0)),radial-gradient(1px 1px at 150px 20px,rgba(255,240,210,.6),rgba(0,0,0,0)),radial-gradient(50% 40% at 20% 25%,rgba(64,58,168,.16),rgba(0,0,0,0) 70%),radial-gradient(50% 40% at 80% 75%,rgba(118,56,150,.13),rgba(0,0,0,0) 70%);background-size:250px 230px,250px 230px,250px 230px,100% 100%,100% 100%;animation:twk 7s ease-in-out -3s infinite alternate}
+  .ov::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(1px 1px at 20px 30px,rgba(255,255,255,.8),rgba(0,0,0,0)),radial-gradient(1px 1px at 120px 80px,rgba(255,255,255,.6),rgba(0,0,0,0)),radial-gradient(1.5px 1.5px at 60px 150px,rgba(255,233,190,.7),rgba(0,0,0,0)),radial-gradient(1px 1px at 170px 120px,rgba(200,215,255,.6),rgba(0,0,0,0)),radial-gradient(1px 1px at 90px 10px,rgba(255,255,255,.5),rgba(0,0,0,0));background-size:190px 190px;animation:twk 4.98s ease-in-out infinite alternate}
+  .ov::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(1px 1px at 40px 60px,rgba(255,255,255,.7),rgba(0,0,0,0)),radial-gradient(1.2px 1.2px at 200px 170px,rgba(200,215,255,.6),rgba(0,0,0,0)),radial-gradient(1px 1px at 150px 20px,rgba(255,240,210,.6),rgba(0,0,0,0)),radial-gradient(50% 40% at 20% 25%,rgba(64,58,168,.16),rgba(0,0,0,0) 70%),radial-gradient(50% 40% at 80% 75%,rgba(118,56,150,.13),rgba(0,0,0,0) 70%);background-size:250px 230px,250px 230px,250px 230px,100% 100%,100% 100%;animation:twk 6.64s ease-in-out -3.32s infinite alternate}
+  #gate::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(1px 1px at 20px 30px,rgba(255,255,255,.8),rgba(0,0,0,0)),radial-gradient(1px 1px at 120px 80px,rgba(255,255,255,.6),rgba(0,0,0,0)),radial-gradient(1.5px 1.5px at 60px 150px,rgba(255,233,190,.7),rgba(0,0,0,0)),radial-gradient(1px 1px at 170px 120px,rgba(200,215,255,.6),rgba(0,0,0,0)),radial-gradient(1px 1px at 90px 10px,rgba(255,255,255,.5),rgba(0,0,0,0));background-size:190px 190px;animation:twk 4.98s ease-in-out infinite alternate}
+  #gate::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(1px 1px at 40px 60px,rgba(255,255,255,.7),rgba(0,0,0,0)),radial-gradient(1.2px 1.2px at 200px 170px,rgba(200,215,255,.6),rgba(0,0,0,0)),radial-gradient(1px 1px at 150px 20px,rgba(255,240,210,.6),rgba(0,0,0,0)),radial-gradient(50% 40% at 20% 25%,rgba(64,58,168,.16),rgba(0,0,0,0) 70%),radial-gradient(50% 40% at 80% 75%,rgba(118,56,150,.13),rgba(0,0,0,0) 70%);background-size:250px 230px,250px 230px,250px 230px,100% 100%,100% 100%;animation:twk 6.64s ease-in-out -3.32s infinite alternate}
   @keyframes twk{from{opacity:.55}to{opacity:1}}
   .spk.blue{color:#cfe6ff;text-shadow:0 0 8px rgba(120,180,255,.95),0 0 16px rgba(80,140,255,.7)}
   .bring{position:fixed;z-index:26;pointer-events:none;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;border:2px solid rgba(150,200,255,.9);box-shadow:0 0 18px rgba(110,170,255,.8),inset 0 0 12px rgba(110,170,255,.5);animation:bring 1.1s cubic-bezier(.15,.7,.3,1) both}
@@ -147,10 +149,11 @@
   #links a#legacy{border-color:rgba(160,205,255,.75);background:rgba(12,14,30,.86);box-shadow:0 0 22px rgba(120,175,255,.35)} #links a#legacy b i{color:#bcdcff}
   #links a#legacy.show{display:block;animation:lgin .9s cubic-bezier(.2,.9,.25,1.2)}
   @keyframes lgin{0%{opacity:0;transform:scale(.6);box-shadow:0 0 0 rgba(120,175,255,0)}40%{opacity:1;transform:scale(1.06);box-shadow:0 0 50px rgba(130,190,255,.95)}100%{transform:scale(1);box-shadow:0 0 22px rgba(120,175,255,.35)}}
-  #siglegacy{position:absolute;z-index:3;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 5vh + 66px);padding:8px 18px;border-radius:18px;border:1px solid rgba(160,205,255,.6);background:rgba(10,12,26,.88);color:#dcecff;font:italic 14px Georgia,serif;letter-spacing:.04em;white-space:nowrap;animation:sigl 3.6s ease-in-out infinite;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  #siglegacy{position:absolute;z-index:3;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 5vh + 66px);padding:8px 18px;border-radius:18px;border:1px solid rgba(160,205,255,.6);background:rgba(10,12,26,.88);color:#dcecff;font:italic 14px Georgia,serif;letter-spacing:.04em;white-space:nowrap;animation:sigl 3.32s ease-in-out infinite;cursor:pointer;-webkit-tap-highlight-color:transparent}
   @keyframes sigl{0%,100%{box-shadow:0 0 10px rgba(110,170,255,.22)}50%{box-shadow:0 0 24px rgba(130,190,255,.55)}}
   #sigcap{font-size:14px;line-height:1.3}
-  #viewer{z-index:30}
+  #sigflash{position:absolute;inset:0;z-index:2;pointer-events:none;opacity:0;background:radial-gradient(circle at var(--fx,50%) var(--fy,50%),rgba(255,214,140,.9),rgba(255,190,100,.25) 30%,rgba(0,0,0,0) 65%)}
+  #viewer{z-index:30} #dustcv{z-index:28;pointer-events:none;display:none}
   body.mon #links{max-height:calc(72% - 62px - env(safe-area-inset-top) - 14px)}
   @media (max-height:720px){#links{gap:6px} #links a{padding:7px 13px} #links a span{font-size:11px;margin-top:1px}}
   @media (max-height:600px){#links a span{display:none} #links a b{font-size:14px}}
@@ -161,6 +164,26 @@
   #edq p{margin:0;font:italic clamp(15px,4.2vw,20px)/1.4 Georgia,serif;color:#ffe3a8;text-shadow:0 0 14px rgba(255,196,110,.75),0 0 3px rgba(0,0,0,.9)}
   #edq small{display:block;margin-top:8px;font:italic 13px Georgia,serif;letter-spacing:.12em;color:rgba(239,220,180,.72)}
   @media (prefers-reduced-motion:reduce){.du i{animation-duration:calc(var(--t) * 1.8)}.au{animation-duration:10s}#bg::before{animation-duration:140s}}
+
+  .sn{transition:box-shadow .35s,border-color .35s,transform .35s,opacity .6s} #sigsvg line{transition:stroke .35s,stroke-width .35s,opacity .6s}
+  #sigv.moment .sn:not(.meet){opacity:.22} #sigv.moment #sigsvg line:not(.meet){opacity:.12} #sigv.moment #sighint{opacity:0!important} #sigv.moment #siglegacy{opacity:.35}
+  #sigv.moment.gold .sn:not(.meet){opacity:.1} #sigv.moment.gold #sigsvg line:not(.meet){opacity:.04}
+  #sigv.moment .sn.meet{border-color:rgba(255,226,170,.95);box-shadow:0 0 26px var(--hc,rgba(255,214,140,.8))}
+  #sigcap{transition:opacity .7s;z-index:3;text-shadow:0 0 8px rgba(0,0,0,.95),0 0 3px rgba(0,0,0,.9)} #sigcap.fade{opacity:0} #sighint{z-index:3}
+
+  /* v31 wave 3: no visible button UI. Glyphs breathe on the heartbeat; hit areas stay 44px; aria-labels kept */
+  #membtn{top:calc(72% + 37px);width:50px;height:50px;padding:0;border:0;background:transparent;box-shadow:none;font-size:18px;letter-spacing:0;color:rgba(243,214,150,.9);text-shadow:0 0 10px rgba(255,210,140,.8);animation:hbg 3.32s ease-in-out infinite;overflow:hidden}
+  @keyframes hbg{0%,100%{opacity:.45;transform:translateX(-50%) scale(.9)}50%{opacity:1;transform:translateX(-50%) scale(1.12)}}
+  #pclose,.ov .x,#vclose{border:0!important;background:transparent!important;color:rgba(239,230,210,.55)!important;font-size:24px!important;text-shadow:0 0 8px rgba(255,214,150,.5)}
+  #mute{display:block!important;border:0;background:transparent;opacity:.28;width:44px;height:44px;font-size:13px} #mute.off{opacity:.12}
+  #links a{border-color:transparent!important;background:rgba(8,6,13,.58)} #links a#rey{background:rgba(8,6,13,.62)}
+  #links a#legacy{border-color:transparent!important;box-shadow:0 0 20px rgba(120,175,255,.35)}
+  #bridge a{border-color:transparent;background:transparent;text-shadow:0 0 10px rgba(233,200,140,.5)}
+  #siglegacy{border-color:transparent;background:rgba(8,10,22,.5)}
+  .cn::before{animation:cnb .83s ease-out infinite} @keyframes cnb{0%{transform:scale(1.25)}35%{transform:scale(1)}100%{transform:scale(1)}}
+  #toast{position:fixed;left:0;right:0;top:calc(env(safe-area-inset-top) + 64px);text-align:center;z-index:29;font:italic 13px Georgia,serif;letter-spacing:.1em;color:rgba(243,222,170,.9);opacity:0;transition:opacity .6s;pointer-events:none;text-shadow:0 0 8px #000}
+  #toast.on{opacity:1}
+  #hint{transition:opacity 1.6s}
 </style>
 <link rel="apple-touch-icon" href="/legacy/apple-touch-icon.png?v=14">
 <link rel="icon" type="image/svg+xml" href="/legacy/favicon.svg?v=31">
@@ -182,7 +205,7 @@ One day, it brings us together again.<br>
 We stay together. Always aligned.<br>
 Use it in the world.<br>Pass it to your kids, and theirs.<br>
 This is our stamp.<br><b id="dad">Dad</b></div>
-<button id="mute" aria-label="Music">&#9835;</button>
+<button id="mute" aria-label="Music on or off">&#9835;</button>
 <div id="hapt" aria-hidden="true"><input type="checkbox" switch id="hsw" tabindex="-1"><label for="hsw" id="hlab"></label></div>
 <div id="links">
   <a role="button" data-src="/legacy/football.mp4"><b><i>&#10022;</i>Playing football</b><span>Our afternoons by the house.</span></a>
@@ -194,16 +217,18 @@ This is our stamp.<br><b id="dad">Dad</b></div>
 </div>
 <div id="bridge"><a href="/phoenix/">Follow the signal &middot; Reynard Soft7</a></div>
 <div id="viewer"><button id="vclose" aria-label="Close">&times;</button><div id="vtitle"></div><div id="vload">Loading&hellip;</div><video id="vvid" playsinline controls preload="none"></video><div id="vwrap"><iframe id="vframe" allow="autoplay; fullscreen" allowfullscreen></iframe><div id="vshield"></div></div></div>
+<canvas id="dustcv"></canvas>
 <div id="famv" class="ov"><button class="x" aria-label="Close">&times;</button><h3>Family</h3><div id="famcap"></div></div>
-<div id="sigv" class="ov"><button class="x" aria-label="Close">&times;</button><h3>Signal &#9889;</h3><div id="sigwrap"><svg id="sigsvg"></svg></div><canvas id="sigcv"></canvas><div id="sighint">Hold the screen. Someone is reaching for you.</div><div id="sigcap"></div><button id="siglegacy" data-src="/legacy/legacy.mp4">&#10022; Legacy Easter Eggs</button></div>
+<div id="sigv" class="ov"><button class="x" aria-label="Close">&times;</button><h3>Signal &#9889;</h3><div id="sigwrap"><svg id="sigsvg"></svg></div><canvas id="sigcv"></canvas><div id="sigflash"></div><div id="sighint">Hold the screen. Someone is reaching for you.</div><div id="sigcap"></div><button id="siglegacy" data-src="/legacy/legacy.mp4">&#10022; Legacy Easter Eggs</button></div>
 <button id="dotbtn" aria-label="Open the light"></button>
-<button id="membtn">&#10022; Memories</button>
+<button id="membtn" aria-label="Memories">&#10022;</button>
 <div id="constel"></div>
 <div id="pcap"></div>
 <div id="edq"><p>Find his rhythm, his echo rhythm, so you can find his voice.</p><small>&mdash; Edgardo</small></div>
 <button id="pclose" aria-label="Close the light">&times;</button>
 <div id="welcome"></div>
-<div id="hint">Tap the light</div>
+<div id="hint" style="opacity:0"></div>
+<div id="toast" role="status"></div>
 <div id="alfred">At your service &middot; Alfred, butler to the House of Shaffer</div>
 
 <div id="gate">
@@ -222,10 +247,12 @@ This is our stamp.<br><b id="dad">Dad</b></div>
   const HASH = "e396c33d99318aa669ce64d95283ab9720cfc2d9ee765b9e8860bf06085480e3";
   const KEY = "shaffer-key"; const TOKH = "5718fd85d9c00483a8cb0959a15b0d6961dd50bfb94f11314e26ec588acf6472"; localStorage.removeItem("schaefer-legacy-open");
   const $ = id => document.getElementById(id);
+  // one heartbeat clock for everything: light, portal, music, Signal (0.83 s)
+  const HBMS = 830, BASE = 73.42, hbT0 = performance.now(), toBeat = () => HBMS - ((performance.now() - hbT0) % HBMS);
   const gate = $("gate"), msg = $("msg");
 
   // shared audio + motion, unlocked inside a real tap
-  let ac = null, musicOut = null, musicOn = false, muted = false;
+  let ac = null, musicOut = null, musicOn = false, muted = false, swellFn = null, inView = false;
   function unlockAudio(){ try{ ac = ac || new (window.AudioContext||window.webkitAudioContext)(); if (ac.state==="suspended") ac.resume(); }catch(e){} }
   let tiltX = 0, tiltY = 0, tx = 0, ty = 0, motionAsked = false;
   function askMotion(){
@@ -241,30 +268,50 @@ This is our stamp.<br><b id="dad">Dad</b></div>
   // haptic tick: Android vibrate, iPhone (iOS 18+) switch-toggle haptic
   function buzz(){ try{ if (navigator.vibrate) navigator.vibrate(10); else { $("hlab").click(); if (document.activeElement && document.activeElement.id==="hsw") document.activeElement.blur(); } }catch(e){} }
 
-  // quiet atmospheric pad in A minor, rooted on A (55 Hz family)
+  // gothic night music: a dark organ, a soft choir (voices shaped by vowel formants), a distant bell now and then,
+  // all moving on the one heartbeat clock (0.83 s) shared with the light, the portal and Signal
   function music(){
-    if (musicOn || !ac) return; musicOn = true; $("mute").style.display = "block";
+    if (musicOn || !ac) return; musicOn = true;
     musicOut = ac.createGain(); musicOut.gain.value = 0; musicOut.connect(ac.destination);
-    musicOut.gain.setTargetAtTime(muted ? 0 : .16, ac.currentTime, 4);
-    const conv = ac.createConvolver(), len = ac.sampleRate*4, ir = ac.createBuffer(2, len, ac.sampleRate);
-    for (let c=0;c<2;c++){ const d = ir.getChannelData(c); for (let i=0;i<len;i++) d[i] = (Math.random()*2-1)*Math.pow(1-i/len, 3); }
-    conv.buffer = ir;
-    const lp = ac.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 800; lp.Q.value = .6;
-    const wet = ac.createGain(); wet.gain.value = .9; const dry = ac.createGain(); dry.gain.value = .25;
-    lp.connect(conv); conv.connect(wet); wet.connect(musicOut); lp.connect(dry); dry.connect(musicOut);
-    const lfo = ac.createOscillator(), lfoG = ac.createGain(); lfo.frequency.value = .05; lfoG.gain.value = 350; lfo.connect(lfoG); lfoG.connect(lp.frequency); lfo.start();
-    const chords = [[110,130.81,164.81],[87.31,110,130.81],[130.81,164.81,196],[98,123.47,146.83]];
-    const voices = [0,1,2].map(i => { const g = ac.createGain(); g.gain.value = .12; g.connect(lp);
-      const os = [-6,6].map(dt => { const o = ac.createOscillator(); o.type = "sawtooth"; o.detune.value = dt; o.frequency.value = chords[0][i]; o.connect(g); o.start(); return o; });
-      const air = ac.createOscillator(), ag = ac.createGain(); air.type="sine"; air.frequency.value = chords[0][i]*2; ag.gain.value = .05; air.connect(ag); ag.connect(lp); air.start(); os.push(air);
-      return os; });
-    const bass = ac.createOscillator(), bg = ac.createGain(); bass.type="sine"; bass.frequency.value = 55; bg.gain.value = .22; bass.connect(bg); bg.connect(musicOut); bass.start();
-    let k = 0;
-    setInterval(() => { k = (k+1) % chords.length; const t = ac.currentTime;
-      voices.forEach((os,i) => os.forEach((o,j) => o.frequency.setTargetAtTime(chords[k][i]*(j===2?2:1), t, 1.4))); }, 9000);
+    musicOut.gain.setTargetAtTime(muted || !inView ? 0 : .16, ac.currentTime, 2.5);
+    const conv = ac.createConvolver(), len = Math.round(ac.sampleRate*4.5), ir = ac.createBuffer(2, len, ac.sampleRate);
+    for (let c=0;c<2;c++){ const d = ir.getChannelData(c); for (let i=0;i<len;i++) d[i] = (Math.random()*2-1)*Math.pow(1-i/len, 2.6); }
+    conv.buffer = ir; const wet = ac.createGain(); wet.gain.value = .8; conv.connect(wet); wet.connect(musicOut);
+    const dry = ac.createGain(); dry.gain.value = .3; dry.connect(musicOut);
+    const bus = ac.createGain(); bus.gain.value = 1; bus.connect(conv); bus.connect(dry);
+    const HB = .83, chords = [[146.83,174.61,220],[116.54,146.83,174.61],[98,116.54,146.83],[110,138.59,164.81]], roots = [73.42,58.27,49,55]; // D minor on D2: Dm Bb Gm A
+    const orgF = ac.createBiquadFilter(); orgF.type = "lowpass"; orgF.frequency.value = 1300; orgF.Q.value = .5; orgF.connect(bus);
+    const orgG = ac.createGain(); orgG.gain.value = .5; orgG.connect(orgF);
+    const DRAW = [[.5,.35],[1,.5],[2,.3],[3,.12],[4,.08]];
+    const organ = [0,1,2].map(i => DRAW.map(([m,g]) => { const o = ac.createOscillator(), gn = ac.createGain(); o.type = "sine"; o.frequency.value = chords[0][i]*m; gn.gain.value = g*.16; o.connect(gn); gn.connect(orgG); o.start(); return [o,m]; }));
+    const choirOut = ac.createGain(); choirOut.gain.value = 0; choirOut.connect(bus); choirOut.gain.setTargetAtTime(1, ac.currentTime + 5, 5);
+    const choirIn = ac.createGain(); choirIn.gain.value = 1;
+    const vowA = [800,1150,2900], vowO = [350,800,2400];
+    const forms = vowA.map((f,k) => { const bp = ac.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.value = f; bp.Q.value = 8; const g = ac.createGain(); g.gain.value = [1,.55,.2][k]; choirIn.connect(bp); bp.connect(g); g.connect(choirOut); return bp; });
+    const choir = [0,1,2].map(i => [-10,0,9].map(dt => { const o = ac.createOscillator(); o.type = "sawtooth"; o.detune.value = dt; o.frequency.value = chords[0][i]*2; const v = ac.createGain(); v.gain.value = .07; o.connect(v); v.connect(choirIn); o.start(); return o; }));
+    const vb = ac.createOscillator(), vg = ac.createGain(); vb.frequency.value = 4.8; vg.gain.value = 6; vb.connect(vg); choir.forEach(os => os.forEach(o => vg.connect(o.detune))); vb.start();
+    const bass = ac.createOscillator(), bg = ac.createGain(); bass.type="sine"; bass.frequency.value = BASE; bg.gain.value = .2; bass.connect(bg); bg.connect(musicOut); bass.start();
+    const drone = ac.createOscillator(), dg = ac.createGain(); drone.type = "sine"; drone.frequency.value = BASE; dg.gain.value = .08; drone.connect(dg); dg.connect(bus); drone.start();   // the base tone never stops
+    function bell(t, f){ [[1,.5,4.5],[2.76,.22,2.6],[5.4,.12,1.6],[8.93,.05,1.1]].forEach(([m,g,d]) => { const o = ac.createOscillator(), gn = ac.createGain(); o.type = "sine"; o.frequency.value = f*m;
+      gn.gain.setValueAtTime(.0001, t); gn.gain.exponentialRampToValueAtTime(g*.16, t+.012); gn.gain.exponentialRampToValueAtTime(.0001, t+d); o.connect(gn); gn.connect(conv); o.start(t); o.stop(t+d+.1); }); }
+    let k = 0, n = 0;
+    const step = () => { n++; const t = ac.currentTime;
+      orgG.gain.setTargetAtTime(.55, t, .04); orgG.gain.setTargetAtTime(.5, t + .1, .3);   // the organ breathes on each heartbeat
+      if (n % 12 === 0){ k = (k+1) % chords.length;
+        organ.forEach((os,i) => os.forEach(([o,m]) => o.frequency.setTargetAtTime(chords[k][i]*m, t, .5)));
+        choir.forEach((os,i) => os.forEach(o => o.frequency.setTargetAtTime(chords[k][i]*2, t, 1.1)));
+        bass.frequency.setTargetAtTime(roots[k], t, .9); }
+      if (n % 24 === 0){ const to = (n/24) % 2 ? vowO : vowA; forms.forEach((bp,j) => bp.frequency.setTargetAtTime(to[j], t, 4)); }
+      if (n % 16 === 8 && Math.random() < .65) bell(t + .02, [BASE*8, BASE*6, BASE*4][Math.floor(Math.random()*3)]); };
+    setTimeout(() => { step(); setInterval(step, HB*1000); }, toBeat());
+    // a swell on the next heartbeat, with a person's own overtone of the base tone on top
+    swellFn = (hz) => { const t = ac.currentTime; if (!muted){ musicOut.gain.cancelScheduledValues(t); musicOut.gain.setTargetAtTime(.26, t, .25); musicOut.gain.setTargetAtTime(inView ? .16 : 0, t + 1.5, .9); }
+      bell(t + .01, BASE*2); if (hz){ const o = ac.createOscillator(), g = ac.createGain(); o.type = "sine"; o.frequency.value = hz; g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.05, t + .4); g.gain.exponentialRampToValueAtTime(.0001, t + 3.2); o.connect(g); g.connect(conv); o.start(t); o.stop(t + 3.3); } };
   }
+  // the music lives only where the tree and the people are: fade in on entering, out on leaving
+  function musicView(on){ inView = on; if (on){ unlockAudio(); music(); } if (musicOut && ac) musicOut.gain.setTargetAtTime(on && !muted ? .16 : 0, ac.currentTime, on ? 1.6 : .9); }
   $("mute").addEventListener("click", e => { e.stopPropagation(); muted = !muted; $("mute").classList.toggle("off", muted);
-    if (musicOut) musicOut.gain.setTargetAtTime(muted ? 0 : .16, ac.currentTime, .5); });
+    if (musicOut) musicOut.gain.setTargetAtTime(muted || !inView ? 0 : .16, ac.currentTime, .5); });
 
   async function sha(s){const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")}
   function open(){gate.classList.add("gone");setTimeout(()=>gate.remove(),1000);start()}
@@ -275,9 +322,11 @@ This is our stamp.<br><b id="dad">Dad</b></div>
   function logVisit(who, what){ try{ const ua = navigator.userAgent, dev = /iPhone/.test(ua) ? "iPhone" : /iPad|Macintosh.*Mobile/.test(ua) ? "iPad" : /Android/.test(ua) ? "Android" : "computer";
     fetch("https://ntfy.sh/shaffer-doors-8f3e2c18ea", {method:"POST", mode:"no-cors", keepalive:true, body: `${who} ${what || "opened House of Shaffer"} on ${dev}${appMode ? ' (home-screen app)' : ''}`}); }catch(e){} }
   if (door){ localStorage.setItem("shaffer-door", dkey); document.documentElement.classList.add("door-" + dkey); history.replaceState(null, "", location.pathname + "?d=" + dkey);
-    setTimeout(()=>{ $("welcome").textContent = door.hi; $("welcome").classList.add("on"); $("hint").textContent = door.hint; if(door.alf) $("alfred").textContent = door.alf; $("hint").style.opacity = .8;
+    setTimeout(()=>{ $("welcome").textContent = door.hi; $("welcome").classList.add("on"); if(door.alf) $("alfred").textContent = door.alf;
       setTimeout(()=>$("welcome").classList.remove("on"), 6000); }, 1400); }
   logVisit(door ? door.name + "'s door" : "Someone");
+  // a one-time whisper on the very first visit; it fades and never returns on this device
+  if (!localStorage.getItem("shaffer-hinted")){ $("hint").textContent = door && dkey === "jen" ? "Hold the light" : "Touch the light"; setTimeout(() => { $("hint").style.opacity = .85; try { localStorage.setItem("shaffer-hinted", "1"); } catch(e){} setTimeout(() => { $("hint").style.opacity = 0; }, 7000); }, 2600); } else $("hint").textContent = "";
   // ONE TIME ONLY: the family word is asked for once per device. After the first correct entry,
   // a key is kept on this device (local storage, with a one-year cookie as backup) and the gate never shows again here.
   const ck = (document.cookie.match(/(?:^|; )shaffer-key=([^;]+)/) || [])[1];
@@ -285,7 +334,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
   const saved = localStorage.getItem(KEY);
   if (saved) sha(saved).then(h => { if (h !== TOKH) return;
     open();
-    const first = () => { unlockAudio(); askMotion(); music(); };
+    const first = () => { unlockAudio(); askMotion(); };
     addEventListener("touchend", first, {once:true}); addEventListener("click", first, {once:true});
   });
   { const hr = new Date().getHours(); $("bow").textContent = (hr < 12 ? "Good morning." : hr < 18 ? "Good afternoon." : "Good evening.") + " The family word, if you would."; }
@@ -294,7 +343,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     const now = Date.now(), until = +localStorage.getItem("shaffer-wait") || 0;
     if (now < until) { msg.textContent = "Alfred is attending to other matters. One moment."; return; }
     const v = $("pw").value.trim().toUpperCase(); $("pw").value = "";
-    if (await sha(v) === HASH) { const k1 = await sha(v + "|house-of-shaffer"); localStorage.setItem(KEY, k1); document.cookie = "shaffer-key=" + k1 + "; max-age=31536000; path=/legacy; SameSite=Lax; Secure"; localStorage.removeItem("shaffer-miss"); localStorage.removeItem("shaffer-wait"); msg.textContent = "Very good. Right this way."; $("pw").blur(); setTimeout(()=>scrollTo(0,0),50); music(); setTimeout(open, 700); }
+    if (await sha(v) === HASH) { const k1 = await sha(v + "|house-of-shaffer"); localStorage.setItem(KEY, k1); document.cookie = "shaffer-key=" + k1 + "; max-age=31536000; path=/legacy; SameSite=Lax; Secure"; localStorage.removeItem("shaffer-miss"); localStorage.removeItem("shaffer-wait"); msg.textContent = "Very good. Right this way."; $("pw").blur(); setTimeout(()=>scrollTo(0,0),50); setTimeout(open, 700); }
     else { const n = (+localStorage.getItem("shaffer-miss") || 0) + 1; localStorage.setItem("shaffer-miss", n);
       if (n >= 3) localStorage.setItem("shaffer-wait", now + Math.min(300, 15 * 2 ** (n - 3)) * 1000);
       msg.textContent = "I'm afraid I don't recognize you."; buzz(); logVisit(door ? door.name + "'s door" : "Someone", "tried a wrong word at the gate (try " + n + ")"); }
@@ -318,7 +367,33 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     // v31 starry night: one canvas, slow twinkle and drift, faint nebula (CSS)
     let sky = [];
     function makeSky(){ const n = Math.min(260, Math.round(W*H/2600)); sky = Array.from({length:n}, () => ({x:Math.random(), y:Math.random(), r:Math.random()<.08 ? 1.1+Math.random()*.8 : .35+Math.random()*.7, tw:.4+Math.random()*1.8, p:Math.random()*6.28, c:Math.random()<.16 ? "190,210,255" : Math.random()<.25 ? "255,232,196" : "255,255,255", z:.3+Math.random()*.7})); }
-    function size(){DPR=Math.min(2,window.devicePixelRatio||1);const r=cv.getBoundingClientRect();W=Math.round(r.width)||innerWidth;H=Math.round(r.height)||innerHeight;cv.width=W*DPR;cv.height=H*DPR;cx.setTransform(DPR,0,0,DPR,0,0); makeSky(); if (portalOn) relayout();}
+    // the willow: its roots are the pulse light; gold strands hang from its limbs; neon purple and pink leaves fall and settle on them
+    let tree = null; const leaves = [], settled = []; let nextLeaf = 0;
+    function makeTree(){ const r = mulberryT(77), bx = W/2, by = H*.72, top = H*.3, limbs = [], strands = [];
+      for (let i = 0; i < 9; i++){ const side = i % 2 ? 1 : -1, sp = (.12 + r()*.36)*W*side*(W > 700 ? .7 : 1), sy = top + r()*H*.08, ex = bx + sp, ey = sy - H*(.03 + r()*.07), cx1 = bx + sp*.35, cy1 = sy - H*.12;
+        const pts = []; for (let k = 0; k <= 16; k++){ const u = k/16, a = (1-u)*(1-u), b = 2*(1-u)*u, c = u*u; pts.push([a*bx + b*cx1 + c*ex, a*(sy + H*.04) + b*cy1 + c*ey]); } limbs.push(pts);
+        for (let k = 4; k <= 16; k += 3){ const [x, y] = pts[k]; strands.push({x, y, len: H*(.1 + r()*.22), ph: r()*6.28}); } }
+      tree = {bx, by, top, limbs, strands}; settled.length = 0; }
+    function mulberryT(a){ return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0)/4294967296; }; }
+    function strandPt(s, u, t){ const sw = Math.sin(t*.5 + s.ph)*8*u*u; return [s.x + sw, s.y + s.len*u]; }
+    function drawTree(t, now, fade){ if (!tree || fade <= .02) return; const T = tree, br = .75 + .25*hbs(((now - hbT0) % HBMS)/HBMS)*.4;
+      cx.lineCap = "round"; cx.strokeStyle = `rgba(233,196,120,${(.13*fade*br).toFixed(3)})`; cx.lineWidth = 2.2;
+      cx.beginPath(); cx.moveTo(T.bx, T.by); cx.quadraticCurveTo(T.bx - 10, (T.by + T.top)/2, T.bx, T.top + H*.04); cx.stroke();
+      cx.lineWidth = 1.1; for (const L of T.limbs){ cx.beginPath(); cx.moveTo(L[0][0], L[0][1]); for (const p of L) cx.lineTo(p[0], p[1]); cx.stroke(); }
+      cx.strokeStyle = `rgba(240,206,140,${(.1*fade*br).toFixed(3)})`; cx.lineWidth = .7;
+      for (const s of T.strands){ cx.beginPath(); cx.moveTo(s.x, s.y); for (let k = 1; k <= 6; k++){ const [x, y] = strandPt(s, k/6, t); cx.lineTo(x, y); } cx.stroke(); }
+      // leaves: a few fall at a time, slowly, drifting, and gather along the strands
+      if (now > nextLeaf && leaves.length < 12){ nextLeaf = now + 1100 + Math.random()*1400; const s = T.strands[Math.floor(Math.random()*T.strands.length)], u = .2 + Math.random()*.8;
+        leaves.push({x: s.x + (Math.random() - .5)*120, y: -10, s, u, c: Math.random() < .5 ? "155,48,255" : "255,46,151", rot: Math.random()*6.28, vr: (Math.random() - .5)*.02, ph: Math.random()*6.28}); }
+      cx.globalCompositeOperation = "lighter";
+      const leaf = (x, y, rot, c, al) => { cx.fillStyle = `rgba(${c},${(al*.22).toFixed(3)})`; cx.beginPath(); cx.arc(x, y, 7, 0, 6.283); cx.fill();
+        cx.save(); cx.translate(x, y); cx.rotate(rot); cx.fillStyle = `rgba(${c},${al.toFixed(3)})`; cx.beginPath(); cx.ellipse(0, 0, 3.6, 1.5, 0, 0, 6.283); cx.fill(); cx.restore(); };
+      for (let i = leaves.length - 1; i >= 0; i--){ const L = leaves[i], [tx2, ty2] = strandPt(L.s, L.u, t); L.y += .35; L.x += (tx2 - L.x)*.012 + Math.sin(t*.9 + L.ph)*.35; L.rot += L.vr;
+        if (L.y >= ty2){ leaves.splice(i, 1); settled.push({s: L.s, u: L.u, c: L.c, rot: L.rot, born: now}); if (settled.length > 60) settled.shift(); continue; }
+        leaf(L.x, L.y, L.rot, L.c, .6*fade); }
+      for (const S of settled){ const [x, y] = strandPt(S.s, S.u, t); leaf(x, y, S.rot + Math.sin(t*.5 + S.u*6)*.2, S.c, .5*fade*Math.min(1, (now - S.born)/800)); }
+      cx.globalCompositeOperation = "source-over"; }
+    function size(){const r=cv.getBoundingClientRect();W=Math.round(r.width)||innerWidth;H=Math.round(r.height)||innerHeight;DPR=Math.min(W*H*9<=3.3e6?3:2,window.devicePixelRatio||1);cv.width=W*DPR;cv.height=H*DPR;cx.setTransform(DPR,0,0,DPR,0,0); makeSky(); makeTree(); if (portalOn) relayout();}
     size(); addEventListener("resize", size); addEventListener("orientationchange", ()=>setTimeout(size,300));
     if (window.visualViewport) visualViewport.addEventListener("resize", ()=>{ if (!document.activeElement || document.activeElement.tagName!=="INPUT") scrollTo(0,0); size(); });
     const fix = t => { const r = cv.getBoundingClientRect(); return {clientX: t.clientX - r.left, clientY: t.clientY - r.top}; };
@@ -334,7 +409,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       const now = performance.now(); if (now - lastSpawn < 45) return; lastSpawn = now;
       const n = seq[si++ % 3];
       for (let i=0;i<n;i++){const a=(i/n)*6.283+Math.random()*.4, v=.25+Math.random()*.6;
-        sparks.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-.6,life:1,h:28+Math.random()*22})}
+        if (sparks.length < 220) sparks.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-.6,life:1,h:28+Math.random()*22})}
     }
     // wand stars
     const stars = []; let wand = null, nextWand = performance.now() + 2500;
@@ -353,7 +428,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     function portalAudioOn(){
       unlockAudio(); if (!ac || pv.length) return;
       const m = ac.createGain(); m.gain.value = 0; m.connect(ac.destination);
-      const st = ac.currentTime + .05;  // pairs 0.55 Hz apart beat together: sound breathes at 0.55 Hz
+      const st = ac.currentTime + .05;  // pairs 0.55 Hz apart beat together: sound breathes at 0.55 Hz (the hum, unchanged)
       [[55,.3],[55.55,.3],[165,.09],[165.55,.09],[330,.04],[330.55,.04]].forEach(([f,g]) => {
         const o = ac.createOscillator(), gn = ac.createGain(); o.type="sine"; o.frequency.value=f; gn.gain.value=g;
         o.connect(gn); gn.connect(m); o.start(st); pv.push(o); });
@@ -374,13 +449,13 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       document.body.classList.toggle("pon", portalOn);
       if (!portalOn){ layer = -1; edT.forEach(clearTimeout); $("pcap").classList.remove("on"); $("edq").classList.remove("on"); constelOff(); }
       else { loadCards(); if (linksOn) showLinks(false); openAt = performance.now(); for (let k=0;k<4;k++) rings.push({born: openAt + k*220}); constelOn(); setPcap(); }
-      $("bridge").classList.toggle("on", portalOn); $("note").classList.toggle("dim", portalOn || linksOn); }
+      $("bridge").classList.toggle("on", portalOn); $("note").classList.toggle("dim", portalOn || linksOn); syncView(); }
 
     let whisper = null, shoot = null, holdAt = 0, holdDone = false;
     function nearDot(x,y){ return Math.hypot(x-dot.x(), y-dot.y()) < 110; }
     const HOLD = 700;
     function showLinks(on){ linksOn = on; $("links").classList.toggle("on", on); document.body.classList.toggle("mon", on);
-      $("membtn").textContent = on ? "Close" : "\u2726 Memories"; if (on && portalOn) togglePortal(true); $("note").classList.toggle("dim", on || portalOn); }
+      $("membtn").innerHTML = on ? "&times;" : "&#10022;"; $("membtn").setAttribute("aria-label", on ? "Close memories" : "Memories"); if (on && portalOn) togglePortal(true); $("note").classList.toggle("dim", on || portalOn); }
     function holdStart(x,y){ holdAt = nearDot(x,y) ? performance.now() : 0; }
     function holdEnd(){ holdAt = 0; }
     function dustTo(x0,y0,x1,y1,n){ for (let i=0;i<n;i++){ const f=Math.random(); star(x0+(x1-x0)*f+(Math.random()-.5)*26, y0+(y1-y0)*f+(Math.random()-.5)*26, false); } }
@@ -408,7 +483,8 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     function playLegacy(el){ buzz(); blueBurst(el); startVid("/legacy/legacy.mp4"); setTimeout(showViewer, 380); }
     let lastTouch = 0;
     const once = fn => e => { if (e.cancelable) e.preventDefault(); e.stopPropagation(); const n = Date.now(); if (e.type === "touchend") lastTouch = n; else if (n - lastTouch < 800) return; fn(e.currentTarget); };
-    const eggsTap = once(el => { revealPending = dkey !== "jen"; found(el, el.dataset.src); });
+    const eggsCount = tapCounter(320, c => { const el = $("eggs"); if (c >= 2 && dkey !== "jen") revealLegacy(); else { revealPending = dkey !== "jen"; found(el, el.dataset.src); } });
+    const eggsTap = once(el => { sparkle(el, 5, 24); eggsCount(); });   // 1 tap: the Reynard film; 2 taps: Legacy Easter Eggs appear right behind it
     const legTap = once(el => playLegacy(el));
     function memTap(e){ if (e.cancelable) e.preventDefault(); e.stopPropagation(); const n = Date.now(); if (e.type === "touchend") lastTouch = n; else if (n - lastTouch < 800) return; found(e.currentTarget, e.currentTarget.dataset.src); }
     let lastDad = 0;
@@ -439,11 +515,17 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       bloomAt = now; edWords(); voice(); for (let k=0;k<3;k++) rings.push({born: now + k*160});
       for (let i=0;i<30;i++){ const a=Math.random()*6.283, r=10+Math.random()*80; star(dot.x()+Math.cos(a)*r, dot.y()+Math.sin(a)*r, Math.random()<.4); }
       setTimeout(() => { if (!portalOn) togglePortal(true); }, 280); }
+    let skyHold = null; function toggleMute(){ muted = !muted; $("mute").classList.toggle("off", muted); if (musicOut) musicOut.gain.setTargetAtTime(muted || !inView ? 0 : .16, ac.currentTime, .5); buzz(); toast(muted ? "Music off" : "Music on"); }
+    function toast(txt){ const el = $("toast"); el.textContent = txt; el.classList.add("on"); clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove("on"), 1600); }
     function skyTap(x, y){ for (let i=0;i<10;i++) star(x+(Math.random()-.5)*22, y+(Math.random()-.5)*22, i < 3); taps.push({x, y, born: performance.now()}); }
 
-    // the light itself is a real button: one tap opens the portal, a 0.7s hold says "I'm right here"
+    // one shared tap counter: taps within ~320 ms are counted, and only the final count acts
+    function tapCounter(win, act){ let n = 0, tm = null; return () => { n++; clearTimeout(tm); tm = setTimeout(() => { const c = n; n = 0; act(c); }, win); }; }
+    function treeReveal(){ buzz(); if (portalOn) togglePortal(true); showLinks(false); for (let k=0;k<3;k++) rings.push({born: performance.now() + k*HBMS/2}); openFam(); syncView(); }
+    const dotTaps = tapCounter(320, c => { if (c >= 3) treeReveal(); else contact(); });
+    // the light itself: one tap = Edgardo's moment and the portal, three taps = the family tree, a 0.7s hold says "I'm right here"
     const db = $("dotbtn");
-    function tapDot(){ if (linksOn) showLinks(false); else if (portalOn) portalTap(); else contact(); }
+    function tapDot(){ if (linksOn) showLinks(false); else if (portalOn) portalTap(); else dotTaps(); }
     db.addEventListener("touchstart", e => { if (e.cancelable) e.preventDefault(); holdDone = false; holdAt = performance.now(); trail(dot.x(), dot.y()); }, {passive:false});
     db.addEventListener("touchmove", e => { const t = e.touches[0], r = db.getBoundingClientRect(); if (Math.hypot(t.clientX-(r.left+r.width/2), t.clientY-(r.top+r.height/2)) > 120) holdAt = 0; }, {passive:true});
     db.addEventListener("touchend", e => { if (e.cancelable) e.preventDefault(); lastTouch = Date.now(); const wasHold = holdDone; holdAt = 0; holdDone = false; if (!wasHold) tapDot(); }, {passive:false});
@@ -480,13 +562,59 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       return el; }
     function capFor(name, sub){ return MEM[name] ? name + ". " + MEM[name] : name === "Edgardo" ? "Edgardo, Jennifer\u2019s dad. His light leads the way." : name + (sub ? ", " + sub : "") + (GONE.has(name) ? ". Forever in this light." : ". Here, in this light."); }
 
+    // departed: tap a name and the gold dust rises from the ground like a small storm, swirls up in slow motion,
+    // gathers into an abstract figure of light (a soft silhouette, or a pet outline; never a face or likeness),
+    // holds on the heartbeat with the music swelling and their own overtone of the base tone, then dissolves.
+    const dcv = $("dustcv"), dcx = dcv.getContext("2d"); let dform = null;
+    const PETS = new Set(["Cindy", "Sonny", "Tutu", "Merlin", "Rusty"]), PATS = ["spiral", "helix", "vortex", "figure8", "rings"], SHAPES = ["dot", "star", "diamond", "ring"];
+    const mulberry = a => () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0)/4294967296; };
+    const seedOf = n => { let h = 2166136261; for (const ch of n) h = Math.imul(h ^ ch.charCodeAt(0), 16777619); return h >>> 0; };
+    const inHuman = (x, y) => Math.hypot(x, y + .62) < .13 || (y > -.5 && y < -.43 && Math.abs(x) < .06) || (y >= -.43 && y <= .8 && Math.abs(x) < .2 + .07*Math.sin(Math.min(1, (y + .43)/.3)*Math.PI/2) + .13*(y + .43)/1.23);
+    const inPet = (x, y) => ((x + .05)/.42)**2 + ((y - .05)/.17)**2 < 1 || Math.hypot(x - .42, y + .16) < .13 || Math.hypot(x - .36, y + .29) < .05 || Math.hypot(x - .5, y + .29) < .05
+      || (y > .12 && y < .45 && [-.32, -.12, .15, .29].some(c => Math.abs(x - c) < .035)) || (x < -.44 && x > -.66 && Math.abs(y - (-.02 - ((x + .44)/.22)**2*.24)) < .03);
+    function dustForm(name){ const r = mulberry(seedOf(name)), ed = name === "Edgardo", pet = PETS.has(name), mob = matchMedia("(pointer:coarse)").matches || innerWidth*innerHeight < 6e5;
+      const W2 = innerWidth, H2 = innerHeight, dpr = Math.min(2, devicePixelRatio || 1); dcv.width = W2*dpr; dcv.height = H2*dpr; dcx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const pat = ed ? "vortex" : PATS[Math.floor(r()*5)], speed = ed ? 1 : .8 + r()*.45, hue = ed ? 42 : 34 + r()*16, lig = ed ? 70 : 60 + r()*16, shape = ed ? "star" : SHAPES[Math.floor(r()*4)];
+      const N = ed ? (mob ? 380 : 650) : (mob ? 240 : 400), T = ed ? [1500, 2800, 3600, 4500] : [1300, 2300, 3000, 3800];
+      const S = pet ? Math.min(W2*.72, 380)/1.3 : Math.min(H2*.46, 340)/1.6, cx0 = W2/2, cy0 = H2*.43, bb = pet ? [-.7, .62, -.36, .46] : [-.42, .42, -.76, .81], P = [];
+      for (let i = 0, g = 0; i < N && g < N*40; g++){ const x = bb[0] + r()*(bb[1] - bb[0]), y = bb[2] + r()*(bb[3] - bb[2]); if (!(pet ? inPet(x, y) : inHuman(x, y))) continue;
+        P.push({tx: cx0 + x*S, ty: cy0 + y*S, u: i/N, v: r(), sz: .7 + r()*(ed ? 2 : 1.5), tw: r()*6.28, h: hue + (r() - .5)*8, j: Math.floor(r()*6)}); i++; }
+      const harm = ed ? 1 : [2, 3, 4, 5, 6, 8][Math.floor(r()*6)];   // their own overtone of the base tone (Edgardo is the root)
+      dform = {name, ed, pet, P, pat, speed, lig, shape, T, S, cx0, cy0, t0: performance.now(), ground: H2*.92, top: cy0 - S*.8, rw: S*.5, swelled: false, harm, W2, H2};
+      dcv.style.display = "block"; buzz(); requestAnimationFrame(dustLoop); }
+    function stormXY(f, p, t){ const hf = Math.min(1, t*f.speed/1.5*(.35 + .65*p.v)), y0 = f.ground - (f.ground - f.top)*hf, a0 = p.u*6.283, w = f.rw;
+      switch (f.pat){
+        case "spiral": { const a = t*2.6*f.speed + a0*3; return [f.cx0 + Math.cos(a)*w*(.25 + .75*(1 - hf)), y0]; }
+        case "helix": { const a = t*3.2*f.speed + a0*4 + (p.j % 2)*Math.PI; return [f.cx0 + Math.cos(a)*w*.6, y0 + Math.sin(a)*6]; }
+        case "vortex": { const a = t*4*f.speed + a0*6; return [f.cx0 + Math.cos(a)*w*(.12 + 1.05*hf), y0 + Math.sin(a)*w*.12*hf]; }
+        case "figure8": { const a = t*1.8*f.speed + a0; return [f.cx0 + Math.sin(a)*w, y0 + Math.sin(2*a)*w*.3]; }
+        default: { const ry = f.ground - ((t*f.speed*.55 + p.j/6) % 1)*(f.ground - f.top), yf = (f.ground - ry)/(f.ground - f.top), a = a0*5 + t*.8; return [f.cx0 + Math.cos(a)*w*(1 - .35*yf), ry + Math.sin(a)*w*.16]; } } }
+    function dustLoop(now){ const f = dform; if (!f) return; const t = now - f.t0, T = f.T, g = ez((t - (T[0] - 300))/(T[1] - T[0] + 300)), d = ez((t - T[2])/(T[3] - T[2])), bd = Math.min(1, t/450)*(1 - d), c = dcx;
+      c.clearRect(0, 0, f.W2, f.H2); c.fillStyle = `rgba(4,3,9,${.86*bd})`; c.fillRect(0, 0, f.W2, f.H2);
+      if (g > .3){ const gr = c.createRadialGradient(f.cx0, f.cy0, 0, f.cx0, f.cy0, f.S*(f.ed ? 1.1 : .8)); gr.addColorStop(0, `hsla(42,90%,70%,${(f.ed ? .28 : .18)*g*(1 - d)})`); gr.addColorStop(1, "hsla(42,90%,60%,0)"); c.fillStyle = gr; c.fillRect(0, 0, f.W2, f.H2); }
+      if (f.ed && t > T[1] - 200) for (let k = 0; k < 3; k++){ const w = (t - T[1] + 200 - k*HBMS)/1400; if (w <= 0 || w >= 1) continue; c.strokeStyle = `hsla(44,90%,75%,${.5*(1 - w)*(1 - d)})`; c.lineWidth = 1.6*(1 - w) + .4; c.beginPath(); c.arc(f.cx0, f.cy0, f.S*.35 + ez(w)*f.S*1.2, 0, 6.283); c.stroke(); }
+      if (!f.swelled && t > T[1] - 350){ f.swelled = true; setTimeout(() => { if (swellFn) swellFn(BASE*f.harm*2); pattern(f.ed ? [120,200,120,300,40,110,70] : [40,110,70]); }, toBeat()); }
+      c.globalCompositeOperation = "lighter"; const tt = t/1000, beatK = hbs(((now - hbT0) % HBMS)/HBMS);
+      for (const p of f.P){ const [sx, sy] = stormXY(f, p, tt), jig = (1 - g)*6; let x = sx + (p.tx - sx)*g + Math.sin(tt*3 + p.tw)*jig, y = sy + (p.ty - sy)*g + Math.cos(tt*2.6 + p.tw)*jig;
+        y -= d*(40 + 70*p.v); x += d*Math.sin(p.tw)*20;
+        const al = Math.min(1, t/300)*(.55 + .45*Math.sin(tt*5 + p.tw))*(1 - d)*(.8 + .25*beatK*g), sz = p.sz*(1 + .25*beatK*g); if (al <= .01) continue;
+        c.fillStyle = c.strokeStyle = `hsla(${p.h},92%,${f.lig}%,${al.toFixed(3)})`;
+        if (f.shape === "dot"){ c.beginPath(); c.arc(x, y, sz, 0, 6.283); c.fill(); }
+        else if (f.shape === "star"){ c.lineWidth = .7; c.beginPath(); c.moveTo(x - sz*2, y); c.lineTo(x + sz*2, y); c.moveTo(x, y - sz*2); c.lineTo(x, y + sz*2); c.stroke(); c.beginPath(); c.arc(x, y, sz*.5, 0, 6.283); c.fill(); }
+        else if (f.shape === "diamond"){ c.beginPath(); c.moveTo(x, y - sz*1.4); c.lineTo(x + sz, y); c.lineTo(x, y + sz*1.4); c.lineTo(x - sz, y); c.fill(); }
+        else { c.lineWidth = .6; c.beginPath(); c.arc(x, y, sz*1.3, 0, 6.283); c.stroke(); } }
+      c.globalCompositeOperation = "source-over";
+      const na = ez((t - T[1] + 250)/600)*(1 - d); if (na > 0){ c.textAlign = "center"; c.font = `italic ${f.ed ? 30 : 26}px Georgia, serif`; c.shadowColor = "rgba(255,196,110,.9)"; c.shadowBlur = 16;
+        c.fillStyle = `rgba(255,230,170,${na})`; c.fillText(f.name, f.cx0, f.cy0 + (f.pet ? .5 : .82)*f.S + 44); c.shadowBlur = 0; }
+      if (t >= T[3]){ dform = null; c.clearRect(0, 0, f.W2, f.H2); dcv.style.display = "none"; return; }
+      requestAnimationFrame(dustLoop); }
     // the family, moved into the pulse light: a constellation of named lights around the open portal, Edgardo leading
     const cnodes = []; let hotCn = null, hotAt = 0;
     function buildConstel(){ if (cnodes.length) return; const box = $("constel");
       [FAM[5], ...FAM.filter((f, i) => i !== 5)].forEach(f => { const n = document.createElement("div"); n.className = "cn"; n.textContent = f[0]; life(n, f[0]); box.appendChild(n);
         const o = {n, name: f[0], sub: f[1], x: 0, y: 0, ly: 0}; cnodes.push(o);
         const pick = e => { if (e.cancelable) e.preventDefault(); e.stopPropagation(); if (e.type === "touchend") lastTouch = Date.now(); else if (Date.now() - lastTouch < 800) return;
-          buzz(); sparkle(n, 16, 50); edT.forEach(clearTimeout); $("edq").classList.remove("on"); setPcap(capFor(f[0], f[1])); $("pcap").classList.add("on"); hotCn = o; hotAt = performance.now(); };
+          buzz(); sparkle(n, 16, 50); edT.forEach(clearTimeout); $("edq").classList.remove("on"); setPcap(capFor(f[0], f[1])); $("pcap").classList.add("on"); hotCn = o; hotAt = performance.now(); if (GONE.has(f[0])) dustForm(f[0]); };
         n.addEventListener("touchend", pick, {passive:false}); n.addEventListener("click", pick); }); }
     function layoutConstel(){ const cX = W/2, cY = H*.5, cr = coreR(), top = 66, bot = H - (dkey === "jen" ? 56 : 108), pw = Math.min(W - 32, 380);
       const obst = [{x: cX, y: cY, hw: cr*.9, hh: cr*.9}, {x: cX, y: cY + cr + 12 + 38, hw: pw/2, hh: 42}], placed = [];
@@ -517,25 +645,26 @@ This is our stamp.<br><b id="dad">Dad</b></div>
 
     let ovT = [], sigI = null;
     function mk(cls, name, sub){ const d = document.createElement("div"); d.className = cls; d.textContent = name; if (sub){ const s = document.createElement("small"); s.textContent = sub; d.appendChild(s); } return d; }
-    function closeOv(e){ if (e){ if (e.cancelable) e.preventDefault(); e.stopPropagation(); if (e.type === "touchend") lastTouch = Date.now(); } for (const t of ovT) clearTimeout(t); ovT = []; clearInterval(sigI); sigI = null; clearInterval(hbI); hbI = null; if (reach) vib(0); reach = null;
-      for (const o of document.querySelectorAll(".ov")) o.classList.remove("on"); }
+    function closeOv(e){ if (e){ if (e.cancelable) e.preventDefault(); e.stopPropagation(); if (e.type === "touchend") lastTouch = Date.now(); } for (const t of ovT) clearTimeout(t); ovT = []; clearInterval(sigI); sigI = null; clearInterval(hbI); hbI = null; if (reach) vib(0); reach = null; endMoment(true); clearTimeout(capT); $("sigcap").classList.remove("fade");
+      for (const o of document.querySelectorAll(".ov")) o.classList.remove("on"); syncView(); }
     for (const x of document.querySelectorAll(".ov .x")){ x.addEventListener("touchend", closeOv, {passive:false}); x.addEventListener("click", e => { if (Date.now() - lastTouch < 800) return; closeOv(e); }); }
+    function syncView(){ musicView(portalOn || !!document.querySelector(".ov.on")); }
     function openFam(){ const v = $("famv"); v.querySelectorAll(".fn").forEach(n => n.remove()); $("famcap").textContent = ""; v.classList.add("on");
       const me = life(mk("fn", FAM[0][0], FAM[0][1]), FAM[0][0]); me.style.left = "50%"; me.style.top = "48%"; v.appendChild(me);
       ovT.push(setTimeout(() => { me.classList.add("on"); sparkle(me, 26, 90); }, 300));
       ovT.push(setTimeout(() => { me.style.top = "15%"; }, 2600));
       FAM.slice(1).forEach((f, i) => { const n = life(mk("fn", f[0], f[1]), f[0]), row = Math.floor(i/2);
         n.style.left = (i % 2 ? 72 : 28) + (Math.random()*6-3) + "%"; n.style.top = (22 + row*6 + (i % 2 ? 2.4 : 0)) + "%"; v.appendChild(n);
-        const say = () => { $("famcap").textContent = MEM[f[0]] || (f[0] === "Edgardo" ? "Edgardo, Jennifer\u2019s dad. His light leads the way." : ""); }; n.addEventListener("click", () => { say(); sparkle(n, 14, 50); });
+        const say = () => { $("famcap").textContent = MEM[f[0]] || (f[0] === "Edgardo" ? "Edgardo, Jennifer\u2019s dad. His light leads the way." : ""); }; n.addEventListener("click", () => { say(); sparkle(n, 14, 50); if (GONE.has(f[0])) dustForm(f[0]); });
         ovT.push(setTimeout(() => { n.classList.add("on"); sparkle(n, 14, 50); if (MEM[f[0]]) say(); }, 3600 + i*1100)); });
       const end = mk("fn end", "One family. One light."); end.style.left = "50%"; end.style.top = "93%"; v.appendChild(end);
       ovT.push(setTimeout(() => { $("famcap").textContent = ""; end.classList.add("on"); sparkle(end, 30, 110); buzz(); }, 3600 + (FAM.length-1)*1100 + 600)); }
     // signal: every connection linked to William; each relationship fires its own haptic signature, colour, spark and note
     const SIG_IN = [["Jennifer"],["Billy"],["Mom"],["Dad","early thirties"]];
     const SIG_OUT = [["Edgardo","Jennifer's dad"],["Uncle Steve"],["Grandma"],["Grandma Sarah"],["Grandpa Hal"],["Uncle Stu"],["Pat"],["Rusty"],["Cindy"],["Sonny"],["Merlin"],["Tutu"],["The animals"],["Kevin"],["Steve Lee"],["Steve Samoji"]];
-    const REL = {parent:{v:[120,200,120],c:"255,196,120",hz:196}, spouse:{v:[80,60,40],c:"255,176,196",hz:247}, sibling:{v:[40,60,40],c:"190,220,255",hz:294},
-      grand:{v:[90,150,60,150,30],c:"255,228,168",hz:165}, uncle:{v:[60,120,60],c:"214,196,255",hz:220}, friend:{v:[25],c:"168,232,212",hz:330},
-      pet:{v:[15,40,15,40,15],c:"255,242,196",hz:392}, edgardo:{v:[120,200,120,300,40,110,70],c:"255,202,112",hz:147}};
+    const REL = {parent:{v:[120,200,120],c:"255,196,120",hz:146.84}, spouse:{v:[80,60,40],c:"255,176,196",hz:220.26}, sibling:{v:[40,60,40],c:"190,220,255",hz:293.68},
+      grand:{v:[90,150,60,150,30],c:"255,228,168",hz:110.13}, uncle:{v:[60,120,60],c:"214,196,255",hz:183.55}, friend:{v:[25],c:"168,232,212",hz:256.97},
+      pet:{v:[15,40,15,40,15],c:"255,242,196",hz:330.39}, edgardo:{v:[120,200,120,300,40,110,70],c:"255,202,112",hz:73.42}};
     const RELOF = {Jennifer:"spouse", Billy:"parent", Mom:"parent", Dad:"parent", Edgardo:"edgardo", "Uncle Steve":"uncle", "Uncle Stu":"uncle", Grandma:"grand", "Grandma Sarah":"grand", "Grandpa Hal":"grand",
       Pat:"friend", Kevin:"friend", "Steve Lee":"friend", "Steve Samoji":"friend", Cindy:"pet", Rusty:"pet", Sonny:"pet", Merlin:"pet", Tutu:"pet", "The animals":"pet"};
     const relOf = name => REL[RELOF[name] || "friend"];
@@ -547,7 +676,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       const line = (x1,y1,x2,y2) => { const l = document.createElementNS(NS, "line"); l.setAttribute("x1",x1); l.setAttribute("y1",y1); l.setAttribute("x2",x2); l.setAttribute("y2",y2); svg.appendChild(l); return l; };
       const place = (list, rx, ry, off, st) => list.forEach((f, i) => { const a = off + i/list.length*6.283, k = st && i % 2 ? st : 1, x = cx0 + Math.cos(a)*rx*k, y = cy0 + Math.sin(a)*ry*k;
         const n = life(mk("sn", f[0], f[1]), f[0]); n.style.setProperty("--hc", "rgba(" + relOf(f[0]).c + ",.8)"); n.style.left = x + "px"; n.style.top = y + "px"; const node = {n, x, y, name: f[0], sub: f[1], lines: [line(cx0,cy0,x,y)]}; sigNodes.push(node);
-        const pick = e => { if (e.cancelable) e.preventDefault(); e.stopPropagation(); if (e.type === "touchend") lastTouch = Date.now(); else if (Date.now() - lastTouch < 800) return; clearInterval(sigI); hot(node, true); sigI = setInterval(nextSig, 3200); };
+        const pick = e => { if (e.cancelable) e.preventDefault(); e.stopPropagation(); if (e.type === "touchend") lastTouch = Date.now(); else if (Date.now() - lastTouch < 800) return; clearInterval(sigI); sigI = null; buzz(); hot(node, true, true); startMoment(node); };
         n.addEventListener("touchend", pick, {passive:false}); n.addEventListener("click", pick); $("sigwrap").appendChild(n); });
       place(SIG_IN, Math.min(w*.2, 150), Math.min(h*.13, 120), -Math.PI/4);
       place(SIG_OUT, Math.min(w*.37, 300), Math.min(h*.32, 280), -Math.PI/2 + .2, .8);
@@ -565,15 +694,67 @@ This is our stamp.<br><b id="dad">Dad</b></div>
         if (!moved) break; }
       for (const o of sigNodes){ o.n.style.left = o.x + "px"; o.n.style.top = o.y + "px"; o.lines[0].setAttribute("x2", o.x); o.lines[0].setAttribute("y2", o.y); } }
     function nextSig(){ sigK = (sigK + 1) % sigNodes.length; hot(sigNodes[sigK], false); }
-    function hot(node, tapped){ sigK = sigNodes.indexOf(node); if (!reach) emT0 = performance.now(); document.querySelectorAll(".sn.hot,#sigsvg line.hot").forEach(el => el.classList.remove("hot"));
+    function hot(node, tapped, quiet){ sigK = sigNodes.indexOf(node); if (!reach) emT0 = performance.now(); document.querySelectorAll(".sn.hot,#sigsvg line.hot").forEach(el => el.classList.remove("hot"));
       node.n.classList.add("hot"); node.lines.forEach(l => l.classList.add("hot")); sparkle(node.n, tapped ? 16 : 8, 40);
       // the link fires like a synapse: its own haptic rhythm, and a spark travels the link on each pulse of that rhythm
-      const R = relOf(node.name), now = performance.now(); pattern(R.v); chime(R.hz);
-      for (let i = 0, at = 0; i < R.v.length; i += 2){ lsparks.push({node, at: now + at, c: R.c, jen: node.name === "Edgardo"}); at += R.v[i] + (R.v[i+1] || 0); }
+      const R = relOf(node.name), now = performance.now(); if (!quiet){ if (tapped) pattern(R.v); chime(R.hz); fireSparks(node, now); }
       $("sighint").style.opacity = MEM[node.name] ? 0 : ""; $("sigcap").textContent = MEM[node.name] ? node.name + ". " + MEM[node.name] : node.name + (node.sub ? ", " + node.sub : "") + ". Always linked to you."; }
 
+
+    function fireSparks(node, now){ const R = relOf(node.name); for (let i = 0, at = 0; i < R.v.length; i += 2){ lsparks.push({node, at: now + at, c: R.c, jen: node.name === "Edgardo"}); at += R.v[i] + (R.v[i+1] || 0); } }
+    // reunions: one tap on a name and the two lights meet along their link, the link's own rhythm plays,
+    // one line of memory fades in and out, and everything else dims. Edgardo and Jennifer get the cinematic one; Tutu curls around Billy.
+    let moment = null, momentT = null, capT = null; const mSparks = [];
+    function momentCap(text, at, out){ const cap = $("sigcap"); clearTimeout(capT); cap.classList.add("fade");
+      capT = setTimeout(() => { cap.textContent = text; cap.classList.remove("fade"); capT = setTimeout(() => cap.classList.add("fade"), out - at); }, at); }
+    function startMoment(node, touch){ const v = $("sigv"), nm = node.name, now = performance.now(), jen = sigNodes[0], billy = sigNodes.find(o => o.name === "Billy"), meEl = $("sigwrap").querySelector(".sn.me");
+      endMoment(true);
+      const type = touch ? "touch" : nm === "Edgardo" ? "edgardo" : nm === "Tutu" && billy ? "tutu" : "meet";
+      const a = type === "touch" ? touch : type === "edgardo" ? jen : type === "tutu" ? node : sigC, b = type === "touch" ? touch : type === "edgardo" ? node : type === "tutu" ? billy : node;
+      const gold = type === "edgardo" || type === "touch", dur = gold ? 5400 : type === "tutu" ? 4300 : 3300, meetAt = type === "touch" ? 0 : type === "edgardo" ? 1500 : type === "tutu" ? 1300 : 900;
+      moment = {type, node, a: {x: a.x, y: a.y}, b: {x: b.x, y: b.y}, c: type === "tutu" ? "222,228,240" : gold ? "255,206,112" : relOf(nm).c, t0: now, meetAt, dur, fired: type === "touch", gold, paws: []};
+      const lit = [node.n]; if (gold) lit.push(jen.n); else if (type === "tutu") lit.push(billy.n); else lit.push(meEl);
+      lit.forEach(e => e && e.classList.add("meet")); (gold ? [node.lines[1]] : type === "meet" ? [node.lines[0]] : []).forEach(l => l && l.classList.add("meet"));
+      v.classList.add("moment"); v.classList.toggle("gold", gold);
+      const line = gold ? "The same touch. From her dad, to her, to Billy." : MEM[nm] ? nm + ". " + MEM[nm] : nm + (node.sub ? ", " + node.sub : "") + ". Always linked to you.";
+      momentCap(line, type === "touch" ? 200 : meetAt*.7, dur - 800);
+      if (type === "touch") burst(moment, now);
+      momentT = setTimeout(() => endMoment(), dur); }
+    function burst(m, now){ const x = m.type === "tutu" ? m.b.x : (m.a.x + m.b.x)/2, y = m.type === "tutu" ? m.b.y : (m.a.y + m.b.y)/2, n = m.gold ? 46 : 18;
+      for (let i = 0; i < n && mSparks.length < 120; i++){ const a = Math.random()*6.283, sp = (m.gold ? 1.2 : .7) + Math.random()*(m.gold ? 2.6 : 1.4); mSparks.push({x, y, vx: Math.cos(a)*sp, vy: Math.sin(a)*sp, life: 1, c: m.c, r: .8 + Math.random()*(m.gold ? 2 : 1.3)}); }
+      if (m.type === "meet") fireSparks(m.node, now);
+      const fl = $("sigflash"); fl.style.setProperty("--fx", (x + tx*18) + "px"); fl.style.setProperty("--fy", (y + ty*18) + "px");
+      if (fl.animate) for (let k = 0; k < (m.gold ? 3 : 1); k++) fl.animate([{opacity: 0}, {opacity: m.gold ? .2 - k*.05 : .08}, {opacity: 0}], {duration: 620, delay: k*HBMS, easing: "ease-in-out"}); }
+    function endMoment(keep){ clearTimeout(momentT); moment = null; const v = $("sigv"); v.classList.remove("moment", "gold"); v.querySelectorAll(".meet").forEach(e => e.classList.remove("meet"));
+      if (!keep){ clearTimeout(capT); $("sigcap").classList.remove("fade"); if (v.classList.contains("on") && !sigI && (!reach || reach.out)) sigI = setInterval(nextSig, 3200); } }
+    function paw(c2, x, y, ang, al){ c2.save(); c2.translate(x, y); c2.rotate(ang + Math.PI/2); c2.fillStyle = `rgba(226,232,244,${al})`;
+      c2.beginPath(); c2.ellipse(0, 1.6, 2.4, 2, 0, 0, 6.283); c2.fill(); for (const [px, py] of [[-2.6,-1],[-1,-2.9],[1,-2.9],[2.6,-1]]){ c2.beginPath(); c2.arc(px, py, .95, 0, 6.283); c2.fill(); } c2.restore(); }
+    function drawMoment(c2, now, ox, oy){ const m = moment; if (m){ const e = now - m.t0, k = m.meetAt ? Math.min(1, e/m.meetAt) : 1, ek = ez(k);
+      const ax = m.a.x + ox, ay = m.a.y + oy, bx = m.b.x + ox, by = m.b.y + oy, mx = m.type === "tutu" ? bx : (ax + bx)/2, my = m.type === "tutu" ? by : (ay + by)/2;
+      const glow = (x, y, r, al) => { const g = c2.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, `rgba(255,255,250,${al})`); g.addColorStop(.35, `rgba(${m.c},${al*.7})`); g.addColorStop(1, `rgba(${m.c},0)`); c2.fillStyle = g; c2.beginPath(); c2.arc(x, y, r, 0, 6.283); c2.fill(); };
+      const aft = e < m.meetAt ? 0 : Math.max(0, 1 - (e - m.meetAt)/(m.dur - m.meetAt));
+      if (m.gold){ const jen = sigNodes[0], ed = m.node, la = Math.min(1, Math.max(0, (e - m.meetAt*.8)/700))*Math.max(aft, e < m.meetAt ? 1 : 0);
+        if (jen && la > 0){ const jx = jen.x + ox, jy = jen.y + oy, dx = ed.x + ox, dy = ed.y + oy;   // his gold line
+          c2.lineCap = "round"; c2.strokeStyle = `rgba(255,200,110,${.22*la})`; c2.lineWidth = 12; c2.beginPath(); c2.moveTo(dx, dy); c2.lineTo(jx, jy); c2.stroke();
+          c2.strokeStyle = `rgba(255,236,190,${.85*la})`; c2.lineWidth = 2.4; c2.beginPath(); c2.moveTo(dx, dy); c2.lineTo(jx, jy); c2.stroke(); } }
+      if (m.type === "tutu"){ const tx2 = ax + (bx - ax)*ek, ty2 = ay + (by - ay)*ek - Math.sin(Math.PI*ek)*26, ang = Math.atan2(by - ay, bx - ax);
+        for (let i = 1; i <= 7; i++){ const f = i/8; if (ek < f) break; const px = ax + (bx - ax)*f, py = ay + (by - ay)*f - Math.sin(Math.PI*f)*26, side = i % 2 ? 5 : -5, age = e - f*m.meetAt;
+          paw(c2, px - Math.sin(ang)*side, py + Math.cos(ang)*side, ang, Math.max(0, .8 - age/2200)); }
+        if (e < m.meetAt) glow(tx2, ty2, 11, .9);
+        else { const w = (e - m.meetAt)/1000*5, rr = 22 + 4*Math.sin(w*.5); glow(bx + Math.cos(w)*rr, by + Math.sin(w)*rr*.7, 9, .85*Math.max(.25, aft)); } }
+      else if (m.type !== "touch" && e < m.meetAt + 120){ glow(ax + (mx - ax)*ek, ay + (my - ay)*ek, (m.gold ? 12 : 9) + 5*ek, .9); glow(bx + (mx - bx)*ek, by + (my - by)*ek, (m.gold ? 12 : 9) + 5*ek, .9); }
+      if (!m.fired && e >= m.meetAt){ m.fired = true; pattern(relOf(m.node.name).v); chime(relOf(m.node.name).hz); burst(m, now); }
+      if (e >= m.meetAt){ for (let r = 0; r < (m.gold ? 3 : 1); r++){ const w = (e - m.meetAt - r*240)/(m.gold ? 1500 : 950); if (w <= 0 || w >= 1) continue;   // shockwave
+          c2.strokeStyle = `rgba(${m.c},${(1 - w)*(m.gold ? .9 : .6)})`; c2.lineWidth = m.gold ? 2.6*(1 - w) + .6 : 1.4; c2.beginPath(); c2.arc(mx, my, (m.gold ? 14 : 8) + ez(w)*(m.gold ? 200 : 64), 0, 6.283); c2.stroke(); }
+        glow(mx, my, m.gold ? 64 : 30, (m.gold ? .6 : .45)*aft);   // slow afterglow
+        for (let k = 0; k < (m.gold ? 3 : 1); k++){ const w = (e - m.meetAt - k*HBMS)/1300; if (w <= 0 || w >= 1) continue;   // a frequency wave on each heartbeat
+          for (let q = 0; q < 3; q++){ const rr = (m.gold ? 20 : 12) + ez(w)*(m.gold ? 150 : 70) - q*9; if (rr <= 2) continue; c2.strokeStyle = `rgba(${m.c},${(1 - w)*(.32 - q*.09)*(m.gold ? 1 : .7)})`; c2.lineWidth = 1; c2.beginPath(); c2.arc(mx, my, rr, 0, 6.283); c2.stroke(); } }
+        if (m.gold){ const ea = ez((e - m.meetAt)/900)*aft*(.55 + .35*hbs(((now - hbT0) % HBMS)/HBMS));   // two soft points of light meeting: abstract, no face
+          for (const sx2 of [-9, 9]){ const g2 = c2.createRadialGradient(mx + sx2, my - 30, 0, mx + sx2, my - 30, 7); g2.addColorStop(0, `rgba(255,250,235,${ea})`); g2.addColorStop(1, "rgba(255,220,160,0)"); c2.fillStyle = g2; c2.beginPath(); c2.arc(mx + sx2, my - 30, 7, 0, 6.283); c2.fill(); } } } }
+      for (let i = mSparks.length - 1; i >= 0; i--){ const s = mSparks[i]; s.x += s.vx; s.y += s.vy; s.vx *= .96; s.vy = s.vy*.96 + .015; s.life -= .014; if (s.life <= 0){ mSparks.splice(i, 1); continue; }
+        c2.fillStyle = `rgba(${s.c},${s.life})`; c2.beginPath(); c2.arc(s.x + ox, s.y + oy, s.r*s.life + .3, 0, 6.283); c2.fill(); } }
     // Signal comes alive: a heartbeat, the scene tilts with the phone, and a finger of light reaches for hers
-    let hbI = null, reach = null, emT0 = 0, hov = null, lastBeatAt = performance.now(), idleGlow = 0; const BEAT = 830, MEET_MS = 1100, MEET_PX = 16, EMERGE_MS = 1600;
+    let lastLife = 0, hbI = null, reach = null, emT0 = 0, hov = null, lastBeatAt = performance.now(), idleGlow = 0; const BEAT = 830, MEET_MS = 1100, MEET_PX = 16, EMERGE_MS = 1600;
     const qpt = (sx,sy,mx,my,px,py,u) => { const a = (1-u)*(1-u), b = 2*(1-u)*u, c = u*u; return [a*sx + b*mx + c*px, a*sy + b*my + c*py]; };
     // the finger of light: it grows out of the screen (z 0 to 1); a heartbeat pulse runs along it from base to tip,
     // brighter and quicker as she nears; the tip glow swells evenly with closeness (glow 0 to 1), sparks inside the tip
@@ -597,9 +778,9 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       // her finger on the glass: a lub-dub on every beat, a little stronger as the tip nears hers
       if (reach && !reach.out){ if (!vib(lubdub(reach.met ? 1 : reach.glow))) reach.tickDue = true; }
       try { if (ac && !muted && ac.state === "running" && !$("viewer").classList.contains("on")){ const t = ac.currentTime + .01; thump(t, 72); thump(t+.24, 60); } } catch(e){} }
-    function startSigLife(){ const v = $("sigv"), cv2 = $("sigcv"), c2 = cv2.getContext("2d"), dpr = Math.min(2, devicePixelRatio||1);
+    function startSigLife(){ const v = $("sigv"), cv2 = $("sigcv"), c2 = cv2.getContext("2d"), dpr = Math.min(v.clientWidth*v.clientHeight*9 <= 3.3e6 ? 3 : 2, devicePixelRatio||1);
       cv2.width = v.clientWidth*dpr; cv2.height = v.clientHeight*dpr; c2.setTransform(dpr,0,0,dpr,0,0);
-      clearInterval(hbI); beatOnce(); hbI = setInterval(beatOnce, BEAT); emT0 = performance.now();
+      clearInterval(hbI); hbI = setTimeout(() => { beatOnce(); if (v.classList.contains("on")) hbI = setInterval(beatOnce, BEAT); }, toBeat()); emT0 = performance.now();
       (function life(){ if (!v.classList.contains("on")) return; const ox = tx*18, oy = ty*18; $("sigwrap").style.transform = `translate(${ox}px,${oy}px)`;
         c2.clearRect(0, 0, v.clientWidth, v.clientHeight);
         const now = performance.now(), node0 = sigNodes[sigK];
@@ -608,19 +789,24 @@ This is our stamp.<br><b id="dad">Dad</b></div>
           const draw = (x0, y0, x1, y1) => { const e = p*p*(3-2*p), x = x0 + (x1 - x0)*e + ox, y = y0 + (y1 - y0)*e + oy, a = Math.sin(Math.PI*p), sg = c2.createRadialGradient(x, y, 0, x, y, 9);
             sg.addColorStop(0, `rgba(${s.c},${.95*a})`); sg.addColorStop(1, `rgba(${s.c},0)`); c2.fillStyle = sg; c2.beginPath(); c2.arc(x, y, 9, 0, 6.283); c2.fill(); };
           draw(sigC.x, sigC.y, s.node.x, s.node.y); if (s.jen && sigNodes[0]) draw(s.node.x, s.node.y, sigNodes[0].x, sigNodes[0].y); }
+        { const bf = ((now - hbT0) % HBMS)/HBMS, ra = (1 - bf)*(moment ? .05 : .11); c2.lineWidth = 1;
+          c2.strokeStyle = `rgba(255,226,170,${ra})`; c2.beginPath(); c2.arc(sigC.x + ox, sigC.y + oy, 44 + ez(bf)*70, 0, 6.283); c2.stroke();
+          if (node0 && !moment){ c2.strokeStyle = `rgba(${relOf(node0.name).c},${ra})`; c2.beginPath(); c2.arc(node0.x + ox, node0.y + oy, 14 + ez(bf)*44, 0, 6.283); c2.stroke(); } }
+        drawMoment(c2, now, ox, oy);
+        const fdt = Math.min(64, now - (lastLife || now)); lastLife = now; const L05 = 1 - Math.pow(.95, fdt/16.7), L04 = 1 - Math.pow(.96, fdt/16.7);   // time-based easing: same feel at any frame rate
         if (reach){ const r = reach, sx = r.node.x + ox, sy = r.node.y + oy, k = Math.min(1, (now - r.t0)/MEET_MS);
           // gentle tracking: the tip drifts about a third of the way toward her finger, then reaches her; slow smoothing, never snaps
           const gf = r.met ? 1 : .3 + .7*ez((k - .35)/.65), tgx = sx + (r.fx - sx)*gf, tgy = sy + (r.fy - sy)*gf;
-          r.px += (tgx - r.px)*.05; r.py += (tgy - r.py)*.05;
+          r.px += (tgx - r.px)*L05; r.py += (tgy - r.py)*L05;
           const d = Math.hypot(r.fx - r.px, r.fy - r.py);
-          if (!r.met && !r.out && d < MEET_PX && k >= 1){ r.met = now; pattern([60,90,110,300,60,90,110]);
+          if (!r.met && !r.out && d < MEET_PX && k >= 1){ r.met = now; pattern([60,90,110,300,60,90,110]); if (r.node.name === "Edgardo") startMoment(r.node, {x: r.fx - ox, y: r.fy - oy});
             sparkle({getBoundingClientRect: () => ({left: r.fx-24, top: r.fy-24, width: 48, height: 48})}, 22, 80); }
-          r.glow += ((r.met ? 1 : Math.max(0, 1 - d/320)) - r.glow)*.04;
+          r.glow += ((r.met ? 1 : Math.max(0, 1 - d/320)) - r.glow)*L04;
           const fade = r.out ? Math.max(0, 1 - (now - r.out)/1200) : 1; if (!fade){ reach = null; emT0 = now; }
           else finger(c2, now, sx, sy, r.px, r.py, 1, fade, r.glow, r.met); }
         else if (node0){ const z = Math.min(1, (now - emT0)/EMERGE_MS), e = 1 - Math.pow(1 - z, 3), sx = node0.x + ox, sy = node0.y + oy;
           const Wt = hov || {x: v.clientWidth/2 - tx*40, y: v.clientHeight*.7 - ty*40}, px = sx + (Wt.x - sx)*e*.88, py = sy + (Wt.y - sy)*e*.88;
-          idleGlow += ((hov ? Math.max(0, 1 - Math.hypot(hov.x - px, hov.y - py)/260) : 0) - idleGlow)*.04;
+          idleGlow += ((hov ? Math.max(0, 1 - Math.hypot(hov.x - px, hov.y - py)/260) : 0) - idleGlow)*L04;
           finger(c2, now, sx, sy, px, py, e, .75, idleGlow, 0); }
         requestAnimationFrame(life); })(); }
     const sv = $("sigv");
@@ -632,10 +818,10 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     const letGo = () => { if (!reach || reach.out) return; const r = reach; r.out = performance.now(); vib(0); if (r.met){ setTimeout(buzz, 160); lastTouch = Date.now();
         $("sigcap").textContent = (r.node.name === "Edgardo" || r.node.name === "Jennifer") ? "The same touch. From her dad, to her, to Billy." : r.node.name + " reached back. Always linked to you."; }
       else $("sigcap").textContent = "Hold a little longer. " + r.node.name + " is almost there.";
-      sigI = setInterval(nextSig, 3200); };
+      if (!moment){ clearInterval(sigI); sigI = setInterval(nextSig, 3200); } };
     sv.addEventListener("mousemove", e => { hov = {x: e.clientX, y: e.clientY}; }); sv.addEventListener("mouseleave", () => { hov = null; });
     sv.addEventListener("touchend", letGo); sv.addEventListener("touchcancel", letGo);
-    const ovTap = fn => e => { if (e.cancelable) e.preventDefault(); e.stopPropagation(); const n = Date.now(); if (e.type === "touchend") lastTouch = n; else if (n - lastTouch < 800) return; buzz(); showLinks(false); fn(); };
+    const ovTap = fn => e => { if (e.cancelable) e.preventDefault(); e.stopPropagation(); const n = Date.now(); if (e.type === "touchend") lastTouch = n; else if (n - lastTouch < 800) return; buzz(); showLinks(false); fn(); syncView(); };
     $("fam").addEventListener("touchend", ovTap(openFam), {passive:false}); $("fam").addEventListener("click", ovTap(openFam));
     $("sig").addEventListener("touchend", ovTap(openSig), {passive:false}); $("sig").addEventListener("click", ovTap(openSig));
 
@@ -648,8 +834,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     const layers = ["You found me.", "Every time you come back, I'm here.", "Look up tonight. The steady one is me.", "We don't end. We just move the light.", "Follow the signal home. Seven cards. One fire."];
     const cards = []; function loadCards(){ if (cards.length) return; for (let i=1;i<=7;i++){ const im = new Image(); im.src = `/phoenix/assets/drip/0${i}-sm.jpg`; cards.push(im); } }
     let layer = -1, layerAt = 0; const inflow = [], rings = [], taps = [], edust = []; let lastBeat = 0;
-    function beat(now){ if (ac && pv.length && pv.t0 != null) return Math.abs(Math.cos(Math.PI*.55*(ac.currentTime - pv.t0)));
-      return Math.abs(Math.cos(Math.PI*.55*now/1000)); }
+    function beat(now){ return Math.abs(Math.cos(Math.PI*(now - hbT0)/(2*HBMS))); }   // the portal breathes on the heartbeat clock
     function portalHue(t){ const st=[42,338,276,232,42], u=(t/12)%4, i=Math.floor(u), f=u-i, e=f*f*(3-2*f), d=((st[i+1]-st[i]+540)%360)-180; return (st[i]+d*e+360)%360; }
     function coreR(){ return Math.max(64, Math.min(W,H)*.38*.62); }
     function inCore(x,y){ return portal > .6 && Math.hypot(x-dot.x(), y-dot.y()) < coreR(); }
@@ -657,30 +842,31 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       edT.forEach(clearTimeout); $("edq").classList.remove("on"); setPcap(); $("pcap").classList.add("on");
       for (let k=0;k<3;k++) rings.push({born: performance.now() + k*260}); }
     window.__legacy = { dad: () => !!shoot, hold: () => !!whisper, mem: () => linksOn, viewer: () => $("viewer").classList.contains("on") && ($("viewer").classList.contains("vid") ? $("vvid").src : $("vframe").src), portal: () => portalOn, layer: () => layer, kept: () => kept.length,
-      constel: () => document.querySelectorAll("#constel .cn.on").length, edq: () => $("edq").classList.contains("on"), near: () => nearK, bloom: () => !!bloomAt,
+      moment: () => moment && moment.type, music: () => ({inView, on: musicOn, muted, gain: musicOut ? +musicOut.gain.value.toFixed(3) : 0}), leaves: () => ({falling: leaves.length, settled: settled.length, colors: [...new Set(leaves.concat(settled).map(l => l.c))]}), dust: () => dform && {name: dform.name, n: dform.P.length, pat: dform.pat, shape: dform.shape, harm: dform.harm}, constel: () => document.querySelectorAll("#constel .cn.on").length, edq: () => $("edq").classList.contains("on"), near: () => nearK, bloom: () => !!bloomAt,
       tip: () => reach ? {px: reach.px, py: reach.py, fx: reach.fx, fy: reach.fy, met: !!reach.met, glow: reach.glow} : null, voice: () => voiceOK };
     let tapT = 0, tapNear = false;
     cv.addEventListener("touchstart", e => { const t=fix(e.touches[0]); trail(t.clientX,t.clientY); holdDone = false; slid = false; tapT = Date.now(); tapNear = nearDot(t.clientX,t.clientY);
       if (portalOn || linksOn) return;
-      if (tapNear){ if (e.cancelable) e.preventDefault(); holdStart(t.clientX,t.clientY); } else apprStart(t.clientX, t.clientY); }, {passive:false});
+      if (tapNear){ if (e.cancelable) e.preventDefault(); holdStart(t.clientX,t.clientY); } else { apprStart(t.clientX, t.clientY); clearTimeout(skyHold); skyHold = setTimeout(() => { if (appr && !appr.moved){ skyHold = "done"; toggleMute(); } }, 900); } }, {passive:false});
     cv.addEventListener("touchmove", e => { const t=fix(e.touches[0]); trail(t.clientX,t.clientY); if (!nearDot(t.clientX,t.clientY)) holdEnd();
       if (appr && !portalOn){ appr.x = t.clientX; appr.y = t.clientY; if (Math.hypot(appr.x - appr.x0, appr.y - appr.y0) > 10) appr.moved = true; appr.mt = performance.now();
         if (Math.hypot(t.clientX - dot.x(), t.clientY - dot.y()) < 46){ slid = true; contact(); } else apprBeat(true); } }, {passive:true});
     cv.addEventListener("touchcancel", () => { holdEnd(); apprStop(); if (tapNear && !holdDone && !linksOn && !portalOn && Date.now()-tapT < HOLD) contact(); tapNear = false; }, {passive:true});
-    cv.addEventListener("touchend", e => { holdEnd(); if (e.cancelable) e.preventDefault(); const t = fix(e.changedTouches[0]); apprStop(); lastTouch = Date.now();
+    cv.addEventListener("touchend", e => { holdEnd(); if (e.cancelable) e.preventDefault(); const t = fix(e.changedTouches[0]); apprStop(); lastTouch = Date.now(); const wasSky = skyHold === "done"; clearTimeout(skyHold); skyHold = null; if (wasSky) return;
       if (slid){ slid = false; return; }
       if (holdDone){ holdDone = false; return; }
       if (linksOn){ showLinks(false); skyTap(t.clientX, t.clientY); return; }
       if (portalOn){ if (inCore(t.clientX,t.clientY)) portalTap(); else togglePortal(); return; }
-      if (nearDot(t.clientX,t.clientY)){ contact(); return; }
+      if (nearDot(t.clientX,t.clientY)){ tapDot(); return; }
       skyTap(t.clientX, t.clientY); }, {passive:false});
     cv.addEventListener("mousemove", e0 => { const e=fix(e0); trail(e.clientX, e.clientY); hoverXY = {x: e.clientX, y: e.clientY}; });
     cv.addEventListener("mouseleave", () => { hoverXY = null; });
-    cv.addEventListener("mousedown", e0 => { const e=fix(e0); holdDone = false; if (!portalOn && !linksOn) holdStart(e.clientX, e.clientY); }); cv.addEventListener("mouseup", holdEnd);
-    cv.addEventListener("click", e0 => { if (Date.now() - lastTouch < 800) return; const e=fix(e0); if (holdDone){ holdDone = false; return; }
+    let mHold = null, mHeld = false; cv.addEventListener("mousedown", e0 => { const e=fix(e0); holdDone = false; mHeld = false; if (!portalOn && !linksOn){ holdStart(e.clientX, e.clientY); if (!nearDot(e.clientX, e.clientY)){ clearTimeout(mHold); mHold = setTimeout(() => { mHeld = true; toggleMute(); }, 900); } } });
+    cv.addEventListener("mouseup", () => { holdEnd(); clearTimeout(mHold); }); cv.addEventListener("mousemove", () => { clearTimeout(mHold); }, {passive:true});
+    cv.addEventListener("click", e0 => { if (Date.now() - lastTouch < 800) return; const e=fix(e0); if (holdDone){ holdDone = false; return; } if (mHeld){ mHeld = false; return; }
       if (linksOn){ showLinks(false); return skyTap(e.clientX, e.clientY); }
       if (portalOn) return inCore(e.clientX,e.clientY) ? portalTap() : togglePortal();
-      if (nearDot(e.clientX,e.clientY)) return contact();
+      if (nearDot(e.clientX,e.clientY)) return tapDot();
       skyTap(e.clientX, e.clientY); });
 
     function frame(now){
@@ -693,6 +879,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       for (const d of dust){ d.y -= d.s*16; d.x += Math.sin(t*.3+d.p)*.00008*16; if (d.y < -.02){d.y=1.02;d.x=Math.random()}
         const a = .2+.3*Math.sin(t*.8+d.p)**2, dz = d.r*7; cx.fillStyle=`rgba(236,208,150,${a})`;
         cx.beginPath(); cx.arc(d.x*W+tiltX*dz,d.y*H+tiltY*dz,d.r,0,6.283); cx.fill(); }
+      drawTree(t, now, (1 - Math.min(1, portal*1.6))*(linksOn ? .45 : 1));
       // wand sweep: a slow glowing arc that sheds stars
       if (!wand && now > nextWand){ const l2r = Math.random() < .5;
         wand = {p:0, x0: l2r ? W*.08 : W*.92, x1: l2r ? W*.88 : W*.12, y0: H*(.06+Math.random()*.1), lift: H*(.05+Math.random()*.08)}; }
@@ -736,7 +923,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
           const al = Math.min(1,(R*1.8 - q.r)/(R*.5)) * Math.min(1, q.r/(R*.35)) * portal;
           cx.fillStyle = `hsla(${(hue + q.r/R*35)%360},90%,78%,${.5*al})`;
           cx.beginPath(); cx.arc(px + Math.cos(q.a)*q.r, py + Math.sin(q.a)*q.r*.94, .9 + .5*q.s, 0, 6.283); cx.fill(); }
-        if (bt > .985 && now - lastBeat > 900){ lastBeat = now; rings.push({born: now}); }
+        { const bi = Math.floor((now - hbT0)/HBMS); if (portalOn && bi !== lastBeat){ lastBeat = bi; rings.push({born: now}); } }   // a ripple on every heartbeat
         for (let i=rings.length-1;i>=0;i--){ const e = (now - rings[i].born)/2800; if (e < 0) continue; if (e > 1){ rings.splice(i,1); continue; }
           cx.strokeStyle = `hsla(${hue},75%,82%,${(1-e)*.42*portal})`; cx.lineWidth = .4 + 1.2*(1-e);
           cx.beginPath(); cx.arc(px,py, R*.62 + e*R*1.2, 0, 6.283); cx.stroke(); }
@@ -750,10 +937,11 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       }
       // the pulse light: it beats like a heart as her finger (or the mouse) comes near
       const nt = appr ? apprK(appr.x, appr.y) : hoverXY && !portalOn && !linksOn ? apprK(hoverXY.x, hoverXY.y) : 0; nearK += (nt - nearK)*.05;
-      const b = .5 + .5*Math.sin(t*2*Math.PI*.55), hp = nearK*hbs((now % BEAT)/BEAT), dr = 30 + 8*b + 24*hp;
+      const b = .5 + .5*Math.cos(Math.PI*(now - hbT0)/HBMS/2)**2, hp = nearK*hbs(((now - hbT0) % BEAT)/BEAT), dr = 30 + 8*b + 24*hp;
       const dg = cx.createRadialGradient(px,py,0,px,py,dr);
       dg.addColorStop(0,"rgba(255,244,215,.95)"); dg.addColorStop(.25,`rgba(240,200,130,${Math.min(1,.5+.3*b+.3*hp)})`); dg.addColorStop(1,"rgba(0,0,0,0)");
       cx.fillStyle=dg; cx.beginPath(); cx.arc(px,py,dr,0,6.283); cx.fill();
+      if (portal < .2){ const bf = ((now - hbT0) % HBMS)/HBMS; cx.strokeStyle = `rgba(255,226,170,${((1 - bf)*(.1 + .2*nearK)*(1 - portal*5)).toFixed(3)})`; cx.lineWidth = 1; cx.beginPath(); cx.arc(px, py, 26 + ez(bf)*(60 + 30*nearK), 0, 6.283); cx.stroke(); }
       // a faint column of golden dust rising from the light: Edgardo's presence on the front page
       if (!portalOn && portal < .1 && edust.length < 26 && Math.random() < .22) edust.push({x: px + (Math.random()-.5)*14, y: py - 8, vy: -(.16 + Math.random()*.28), vx: (Math.random()-.5)*.1, life: 1, r: .6 + Math.random()*1.2, p: Math.random()*6});
       for (let i=edust.length-1;i>=0;i--){ const e = edust[i]; e.y += e.vy; e.x += e.vx + Math.sin(t*1.4 + e.p)*.1; e.life -= .0065; if (e.life <= 0 || portal > .3){ edust.splice(i,1); continue; }
