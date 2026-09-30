@@ -22,7 +22,7 @@
     -webkit-text-stroke:1px rgba(233,200,140,.10);text-transform:uppercase;transform:rotate(-90deg);white-space:nowrap}
   @media (orientation:landscape){#bg span{transform:none}}
   canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
-  #title{position:fixed;left:0;right:0;top:calc(env(safe-area-inset-top) + 7vh);text-align:center;pointer-events:none}
+  #title{position:fixed;left:0;right:0;top:calc(env(safe-area-inset-top) + 9vh);text-align:center;pointer-events:none}
   #title h1{margin:0;font-weight:400;font-size:clamp(26px,8vw,44px);letter-spacing:.08em}
   #title p{margin:.5em 0 0;font-size:clamp(12px,3.4vw,15px);letter-spacing:.24em;text-transform:uppercase;color:rgba(239,230,210,.55)}
   #note{position:fixed;left:0;right:0;top:calc(env(safe-area-inset-top) + 7vh + 92px);padding:0 9vw;text-align:center;pointer-events:none;
@@ -45,6 +45,10 @@
     border:1px solid rgba(233,200,140,.3);background:rgba(255,255,255,.03);color:rgba(239,230,210,.6);font-size:16px;display:none}
   #mute.off{opacity:.35} #hapt{position:fixed;left:-99px;top:0;width:1px;height:1px;overflow:hidden;opacity:0}
   #brand{position:fixed;left:0;right:0;top:calc(env(safe-area-inset-top) + 2.2vh);text-align:center;pointer-events:none;z-index:3;font-size:clamp(11px,3vw,13px);letter-spacing:.42em;text-transform:uppercase;color:rgba(233,200,140,.78);text-shadow:0 0 12px rgba(233,200,140,.35)}
+  #brand small{display:block;margin-top:6px;font-size:clamp(10px,2.7vw,12px);letter-spacing:.16em;text-transform:none;font-style:italic;color:rgba(239,230,210,.42);text-shadow:none}
+  #links a#legacy{display:none;border-color:rgba(255,226,160,.75);background:rgba(28,20,24,.86);box-shadow:0 0 22px rgba(255,214,140,.35)}
+  #links a#legacy.show{display:block;animation:lgin 1.6s ease-out}
+  @keyframes lgin{0%{opacity:0;transform:scale(.92);box-shadow:0 0 0 rgba(255,214,140,0)}35%{opacity:1;transform:scale(1.03);box-shadow:0 0 46px rgba(255,220,150,.9)}100%{transform:scale(1);box-shadow:0 0 22px rgba(255,214,140,.35)}}
   #bg,#title{will-change:transform}
   .gone{opacity:0;pointer-events:none}
   #links{position:fixed;left:50%;top:calc(72% - 300px);transform:translateX(-50%);width:min(84vw,340px);display:flex;flex-direction:column;gap:10px;
@@ -77,7 +81,7 @@
 <div id="bg"><span>Legacy</span></div>
 <canvas id="c"></canvas>
 <div id="vig"></div>
-<div id="brand">Reynard Soft7</div>
+<div id="brand">Reynard Soft7<small>a legacy that keeps growing</small></div>
 <div id="title"><h1>House of Shaffer</h1><p>Where the stars come down</p></div>
 <div id="note"><b>To my son</b><br>
 I built this with Alfred, year by year.<br>
@@ -93,6 +97,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
   <a role="button" data-src="https://drive.google.com/file/d/1uDI2LU9Svt99lbSFy9CQR88ECCXKJ789/preview"><b><i>&#10022;</i>Playing football</b><span>Our afternoons by the house.</span></a>
   <a id="rey" role="button" data-src="/legacy/reynard.mp4"><b><i>&#10022;</i>Creating Reynard</b><span>The film we made together.</span></a>
   <a id="eggs" role="button" data-src="/legacy/eggs.mp4"><b><i>&#10022;</i>Reynard Easter eggs</b><span>Look close. Some things hide.</span></a>
+  <a id="legacy" role="button"><b><i>&#10022;</i>Legacy Easter Eggs</b><span>You found it. Touch to open.</span></a>
 </div>
 <div id="bridge"><a href="/phoenix/">Follow the signal &middot; Reynard Soft7</a></div>
 <div id="viewer"><button id="vclose" aria-label="Close">&times;</button><video id="vvid" playsinline controls preload="none"></video><div id="vwrap"><iframe id="vframe" allow="autoplay; fullscreen" allowfullscreen></iframe><div id="vshield"></div></div></div>
@@ -231,7 +236,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     let whisper = null, shoot = null, holdAt = 0, holdDone = false;
     function nearDot(x,y){ return Math.hypot(x-dot.x(), y-dot.y()) < 80; }
     const HOLD = 700; let linksOn = false;
-    function showLinks(on){ linksOn = on; $("links").classList.toggle("on", on); $("note").classList.toggle("dim", on || portalOn); }
+    function showLinks(on){ linksOn = on; if (!on) $("legacy").classList.remove("show"); $("links").classList.toggle("on", on); $("note").classList.toggle("dim", on || portalOn); }
     function holdStart(x,y){ holdAt = nearDot(x,y) ? performance.now() : 0; if (holdAt) buzz(); }
     function holdEnd(){ holdAt = 0; }
     function dustTo(x0,y0,x1,y1,n){ for (let i=0;i<n;i++){ const f=Math.random(); star(x0+(x1-x0)*f+(Math.random()-.5)*26, y0+(y1-y0)*f+(Math.random()-.5)*26, false); } }
@@ -245,18 +250,20 @@ This is our stamp.<br><b id="dad">Dad</b></div>
         s.style.left = (r.left + Math.random()*r.width) + "px"; s.style.top = (r.top + Math.random()*r.height) + "px"; s.style.fontSize = (8 + Math.random()*(spread>60?16:9)) + "px";
         const a = Math.random()*6.283, d = 10 + Math.random()*spread; s.style.setProperty("--dx", Math.cos(a)*d+"px"); s.style.setProperty("--dy", Math.sin(a)*d+"px");
         s.style.animationDelay = (Math.random()*.25)+"s"; document.body.appendChild(s); setTimeout(()=>s.remove(), 1500); } }
-    function startVid(url){ const v = $("vvid"); $("viewer").classList.add("vid"); v.src = url; v.muted = false; v.currentTime = 0; const pr = v.play(); if (pr) pr.catch(()=>{}); }
+    function startVid(url){ const v = $("vvid"); $("viewer").classList.add("vid"); v.src = url; v.muted = false; v.currentTime = 0; const pr = v.play(); if (pr) pr.catch(()=>{ v.muted = true; v.play().catch(()=>{}); }); }
     function showViewer(){ $("viewer").classList.add("on"); showLinks(false); }
-    function found(el, url){ buzz(); sparkle(el, 12, 40); if (/\.mp4$/.test(url)){ startVid(url); setTimeout(showViewer, 380); } else { $("viewer").classList.remove("vid"); $("vframe").src = url.replace(/\/view.*$/, "/preview"); setTimeout(showViewer, 250); } }
+    function found(el, url){ buzz(); sparkle(el, 12, 40); if (/\.mp4$/.test(url)){ startVid(url); setTimeout(showViewer, 120); } else { $("viewer").classList.remove("vid"); $("vframe").src = url.replace(/\/view.*$/, "/preview"); setTimeout(showViewer, 250); } }
     function closeViewer(e){ if (e){ e.preventDefault(); e.stopPropagation(); } $("viewer").classList.remove("on"); $("vvid").pause(); setTimeout(()=>{ $("vframe").src = "about:blank"; }, 500); }
     $("vclose").addEventListener("click", closeViewer);
     let reyT = null, lastTouch = 0;
     function reveal(el){ const v = $("vvid"); v.pause(); v.removeAttribute("src"); v.load(); $("viewer").classList.remove("on"); buzz(); sparkle(el, 34, 120);
       $("welcome").textContent = "You found something."; $("welcome").classList.add("on","found"); setTimeout(()=>$("welcome").classList.remove("on"), 2600); setTimeout(()=>$("welcome").classList.remove("found"), 4300);
-      setTimeout(()=>{ showLinks(false); if (!portalOn) togglePortal(); layer = -1; portalTap();
-        dustTo(dot.x(), dot.y()-180, dot.x(), dot.y(), 26);
-        for (let i=0;i<36;i++){ const a=Math.random()*6.283, r=20+Math.random()*120; star(dot.x()+Math.cos(a)*r, dot.y()+Math.sin(a)*r, Math.random()<.5); }
-        for (let k=0;k<5;k++) rings.push({born: performance.now() + k*180}); buzz(); }, 900); }
+      if (!linksOn) showLinks(true); const lg = $("legacy"); lg.classList.remove("show"); void lg.offsetWidth; lg.classList.add("show"); setTimeout(()=>{ sparkle(lg, 22, 70); buzz(); }, 350); }
+    function openLegacy(e){ e.preventDefault(); e.stopPropagation(); const n = Date.now(); if (e.type === "touchend") lastTouch = n; else if (n - lastTouch < 800) return;
+      buzz(); sparkle(e.currentTarget, 26, 90); showLinks(false); if (!portalOn) togglePortal(); layer = -1; portalTap();
+      dustTo(dot.x(), dot.y()-180, dot.x(), dot.y(), 26);
+      for (let i=0;i<36;i++){ const a=Math.random()*6.283, r=20+Math.random()*120; star(dot.x()+Math.cos(a)*r, dot.y()+Math.sin(a)*r, Math.random()<.5); }
+      for (let k=0;k<5;k++) rings.push({born: performance.now() + k*180}); }
     function reyTap(e){ e.preventDefault(); e.stopPropagation(); const n = Date.now();
       if (e.type === "touchend") lastTouch = n; else if (n - lastTouch < 800) return;
       const el = e.currentTarget, url = el.dataset.src;
@@ -268,8 +275,9 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       shoot = {p:0, x0:-40, y0:H*(.06+Math.random()*.08), x1:W+40, y1:H*(.30+Math.random()*.1)}; }
     $("dad").addEventListener("touchend", dadTap, {passive:false});
     $("dad").addEventListener("click", dadTap);
-    for (const id of ["rey","eggs"]){ $(id).addEventListener("touchend", reyTap, {passive:false}); $(id).addEventListener("click", reyTap); }
-    const foot = document.querySelector("#links a:not([id])"); foot.addEventListener("touchend", memTap, {passive:false}); foot.addEventListener("click", memTap);
+    $("eggs").addEventListener("touchend", reyTap, {passive:false}); $("eggs").addEventListener("click", reyTap);
+    $("legacy").addEventListener("touchend", openLegacy, {passive:false}); $("legacy").addEventListener("click", openLegacy);
+    for (const m of [document.querySelector("#links a:not([id])"), $("rey")]){ m.addEventListener("touchend", memTap, {passive:false}); m.addEventListener("click", memTap); }
     // kept lights: each answer from the portal leaves a light that stays in this sky
     const LK = "shaffer-kept-lights"; let kept = [];
     try { kept = JSON.parse(localStorage.getItem(LK) || "[]"); } catch(e){}
