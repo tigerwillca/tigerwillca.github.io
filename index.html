@@ -7,6 +7,7 @@
 <title>Family</title>
 <style>
 html{color-scheme:dark;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+*,*::before,*::after{box-sizing:border-box}
 html,body{margin:0;max-width:100%;overflow-x:hidden}
 body{min-height:100vh;display:flex;flex-direction:column;background:radial-gradient(ellipse 80% 42% at 50% 0%,rgba(255,138,61,.16),transparent 58%),#0b0908;color:#f4e9dc;font-family:Georgia,serif}
 main{flex:1 0 auto;display:flex;flex-direction:column;justify-content:center;align-items:center;width:100%;box-sizing:border-box;padding:72px 20px 12px}
@@ -24,11 +25,11 @@ footer{margin:0;padding:28px 20px 32px;text-align:center;color:#ffb070;font-size
 @keyframes glow{0%,100%{text-shadow:0 0 14px rgba(255,176,112,.28)}50%{text-shadow:0 0 30px rgba(255,176,112,.55)}}
 @media (prefers-reduced-motion:reduce){h1{animation:none;text-shadow:0 0 18px rgba(255,138,61,.35)}}
 .site-tabs{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;flex-wrap:nowrap;justify-content:center;align-items:center;width:100%;min-height:44px;margin:0;padding:0 6px;box-sizing:border-box;background:rgba(11,9,8,.92);border-bottom:1px solid rgba(255,176,112,.28);font-family:Georgia,serif;font-size:15px;line-height:1;white-space:nowrap;-webkit-text-size-adjust:none;text-size-adjust:none}
-.site-tabs a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 7px;color:#f4e9dc;text-decoration:none;text-shadow:0 1px 3px rgba(7,5,15,.85);touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.site-tabs a{box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 7px;color:#f4e9dc;text-decoration:none;text-shadow:0 1px 3px rgba(7,5,15,.85);touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .site-tabs a[aria-current="page"]{color:#ff8a3d;text-shadow:0 0 12px rgba(255,176,112,.65);box-shadow:inset 0 -2px 0 #ff8a3d}
-.site-tabs span{color:#ffb070;opacity:.75;pointer-events:none}
+.site-tabs span{padding:0 3px;color:#ffb070;opacity:.75;pointer-events:none}
 .site-tabs a:focus-visible{outline:1px solid rgba(255,176,112,.8);outline-offset:2px;border-radius:6px}
-body:has(.site-tabs) a.tune{top:calc(44px + .5rem)}
+body:has(.site-tabs) a.tune{top:calc(44px + .75rem)}
 </style>
 </head>
 <body>
