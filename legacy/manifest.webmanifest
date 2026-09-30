@@ -1,7 +1,6 @@
 {
  "name": "House of Shaffer",
  "short_name": "Shaffer",
- "start_url": "/legacy/",
  "scope": "/legacy/",
  "display": "standalone",
  "orientation": "portrait",
@@ -24,5 +23,6 @@
    "type": "image/png",
    "purpose": "maskable"
   }
- ]
+ ],
+ "id": "/legacy/"
 }

@@ -166,11 +166,12 @@ This is our stamp.<br><b id="dad">Dad</b></div>
   async function sha(s){const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")}
   function open(){gate.classList.add("gone");setTimeout(()=>gate.remove(),1000);start()}
   // doors: each family link has its own entrance; opening one sends a simple visit note (door + device, nothing else)
-  const DOORS = { billy: {name:"Billy", hi:"Billy. I'm right here.", hint:"Tap the light"}, jen: {name:"Jennifer", hi:"For Jennifer, with love.", hint:"Hold the light"} };
-  const dm = location.hash.match(/d=(\w+)/), door = dm && DOORS[dm[1]];
+  const DOORS = { will: {name:"William", hi:"Welcome home.", hint:"Tap the light \u00b7 double-tap the sky"}, billy: {name:"Billy", hi:"Billy. I'm right here.", hint:"Tap the light"}, jen: {name:"Jennifer", hi:"For Jennifer, with love.", hint:"Hold the light"} };
+  const dm = (location.hash + "&" + location.search).match(/d=(\w+)/), dkey = dm && DOORS[dm[1]] ? dm[1] : localStorage.getItem("shaffer-door"), door = dkey && DOORS[dkey];
+  const appMode = navigator.standalone || matchMedia("(display-mode: standalone)").matches;
   function logVisit(who){ try{ const ua = navigator.userAgent, dev = /iPhone/.test(ua) ? "iPhone" : /iPad|Macintosh.*Mobile/.test(ua) ? "iPad" : /Android/.test(ua) ? "Android" : "computer";
-    fetch("https://ntfy.sh/shaffer-doors-8f3e2c18ea", {method:"POST", mode:"no-cors", keepalive:true, body: `${who} opened House of Shaffer on ${dev}`}); }catch(e){} }
-  if (door){ localStorage.setItem(KEY, HASH); history.replaceState(null, "", location.pathname);
+    fetch("https://ntfy.sh/shaffer-doors-8f3e2c18ea", {method:"POST", mode:"no-cors", keepalive:true, body: `${who} opened House of Shaffer on ${dev}${appMode ? ' (home-screen app)' : ''}`}); }catch(e){} }
+  if (door){ localStorage.setItem(KEY, HASH); localStorage.setItem("shaffer-door", dkey); history.replaceState(null, "", location.pathname + "?d=" + dkey);
     setTimeout(()=>{ $("welcome").textContent = door.hi; $("welcome").classList.add("on"); $("hint").textContent = door.hint; $("hint").style.opacity = .8;
       setTimeout(()=>$("welcome").classList.remove("on"), 6000); }, 1400); }
   logVisit(door ? door.name + "'s door" : "Someone");
