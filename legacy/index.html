@@ -57,7 +57,7 @@
   #dotbtn{position:fixed;left:50%;top:72%;width:200px;height:200px;margin:-100px 0 0 -100px;border-radius:50%;z-index:2;background:transparent;border:0;padding:0;-webkit-tap-highlight-color:transparent;touch-action:none;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;outline:none}
   #vtitle{position:absolute;top:calc(env(safe-area-inset-top) + 24px);left:72px;right:72px;text-align:center;font:italic 16px Georgia,serif;color:#f3e7cc;letter-spacing:.04em}
   #vload{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom) + 6vh);text-align:center;font:italic 13px Georgia,serif;color:rgba(239,230,210,.6);opacity:0;transition:opacity .4s;pointer-events:none} #viewer.loading #vload{opacity:1}
-  .ov{position:fixed;inset:0;z-index:20;background:rgba(5,4,8,.96);opacity:0;pointer-events:none;transition:opacity .6s;overflow:hidden} .ov.on{opacity:1;pointer-events:auto}
+  .ov{position:fixed;inset:0;z-index:20;background:#050408;opacity:0;pointer-events:none;transition:opacity .6s;overflow:hidden} .ov.on{opacity:1;pointer-events:auto}
   .ov .x{position:absolute;z-index:3;top:calc(env(safe-area-inset-top) + 14px);right:16px;width:44px;height:44px;border-radius:22px;border:1px solid rgba(233,200,140,.4);background:rgba(12,9,16,.7);color:#efe6d2;font-size:26px;line-height:40px}
   .ov h3{position:absolute;top:calc(env(safe-area-inset-top) + 26px);left:0;right:0;margin:0;text-align:center;font:400 12px Georgia,serif;letter-spacing:.42em;text-transform:uppercase;color:rgba(233,200,140,.8)}
   .fn{position:absolute;transform:translate(-50%,-50%) scale(.9);font:italic clamp(17px,5vw,23px) Georgia,serif;color:#fff3da;text-shadow:0 0 14px rgba(255,210,140,.85);opacity:0;white-space:nowrap;text-align:center;transition:opacity 1.4s,transform 1.4s,top 1.6s}
@@ -98,8 +98,8 @@
   #alfred{position:fixed;left:0;right:0;bottom:calc(env(safe-area-inset-bottom) + 1.2vh);text-align:center;pointer-events:none;z-index:3;font:italic clamp(10px,2.8vw,12px) Georgia,serif;letter-spacing:.08em;color:rgba(233,200,140,.5);text-shadow:0 0 10px rgba(233,200,140,.25)}
   #alfred::before{content:"";display:inline-block;width:6px;height:6px;margin-right:8px;border-radius:50%;background:#e9c88c;vertical-align:middle;box-shadow:0 0 8px #e9c88c;animation:alf 3.2s ease-in-out infinite}
   @keyframes alf{0%,100%{opacity:.35;transform:scale(.8)}50%{opacity:1;transform:scale(1.15)}}
-  #welcome{position:fixed;left:0;right:0;top:calc(72% - 120px);text-align:center;font:italic 22px Georgia,serif;color:#f3e7cc;opacity:0;transition:opacity 1.6s;pointer-events:none;z-index:4;text-shadow:0 0 18px rgba(240,200,130,.5)}
-  #welcome.on{opacity:1} #welcome.found{top:calc(72% - 345px);z-index:6}
+  #welcome{position:fixed;left:0;right:0;top:var(--wt,calc(72% - 120px));text-align:center;font:italic 22px Georgia,serif;color:#f3e7cc;opacity:0;transition:opacity 1.6s;pointer-events:none;z-index:4;text-shadow:0 0 18px rgba(240,200,130,.5)}
+  #welcome.on{opacity:1} #welcome.nowel:not(.found){display:none} #welcome.found{top:calc(72% - 345px);z-index:6}
   #bridge{position:fixed;left:0;right:0;bottom:calc(env(safe-area-inset-bottom) + 5vh + 30px);text-align:center;opacity:0;pointer-events:none;transition:opacity 1.4s;z-index:4}
   #bridge.on{opacity:1;pointer-events:auto}
   #bridge a{display:inline-block;padding:11px 18px;border:1px solid rgba(233,200,140,.32);border-radius:22px;background:rgba(10,8,14,.62);
@@ -237,6 +237,14 @@ This is our stamp.<br><b id="dad">Dad</b></div>
   });
 
   var started = false;
+  // keep the front page words stacked cleanly: the letter sits under the title, "Welcome home" under the letter, all above the light
+  function layoutFront(){ const t = $("title"), n = $("note"), w = $("welcome"); if (!t || !n) return;
+    const top = t.querySelector("p").getBoundingClientRect().bottom - (t.getBoundingClientRect().top - t.offsetTop) + 18, H = innerHeight, lim = H*.72 - 110;
+    n.style.top = top + "px"; n.style.fontSize = ""; let fs = parseFloat(getComputedStyle(n).fontSize);
+    while (top + n.offsetHeight > lim && fs > 12){ fs -= .5; n.style.fontSize = fs + "px"; }
+    const wt = top + n.offsetHeight + 12; document.documentElement.style.setProperty("--wt", wt + "px");
+    w.classList.toggle("nowel", wt + 34 > H*.72 - 60); }
+  addEventListener("resize", layoutFront); addEventListener("load", layoutFront); if (document.fonts) document.fonts.ready.then(layoutFront); layoutFront();
   function start(){
     if (started) return; started = true;
     setTimeout(()=>$("note").classList.add("on"),900);
