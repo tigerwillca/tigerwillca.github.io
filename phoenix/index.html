@@ -96,7 +96,7 @@
     animation: sig 1.2s ease-out forwards, glowfade 3s ease-out forwards; animation-delay: 6.8s, 6.8s; }
   @keyframes sig { to { opacity:1; } }
   @keyframes glowfade { 0% { text-shadow:0 0 18px var(--gold-glow); } 100% { text-shadow:0 0 0 rgba(230,184,92,0); } }
-  .contract { margin-top:1.4rem; font:.72rem ui-monospace, Menlo, monospace; color:#8d82a3; word-break:break-all; text-shadow:0 1px 3px rgba(6,4,12,.9); }
+  .contract { margin-top:1.4rem; font:.72rem ui-monospace, Menlo, monospace; color:#a79bbd; word-break:break-all; text-shadow:0 1px 3px rgba(6,4,12,.9); }
   .contract a { color:var(--gold); }
   .countdown { margin:22vh 0 0; font:600 .8rem ui-monospace, Menlo, monospace; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); text-shadow:0 1px 3px rgba(6,4,12,.9), 0 0 14px var(--gold-glow); min-height:1.2em; }
   .countdown + .grid { margin-top:1.4rem; }
@@ -112,14 +112,14 @@
   .titan-row { list-style:none; display:flex; justify-content:center; flex-wrap:wrap; gap:1.1rem 1.4rem; padding:1.1rem 0 0; margin:0; }
   .titan-row li { width:5.5rem; color:var(--gold); }
   .titan-row svg { width:2.35rem; height:2.35rem; display:block; margin:0 auto .4rem; }
-  .titan-row span { display:block; font:.66rem ui-monospace, Menlo, monospace; letter-spacing:.04em; color:var(--gold-hi); text-shadow:0 1px 3px rgba(6,4,12,.9); }
+  .titan-row span { display:block; font:.72rem ui-monospace, Menlo, monospace; letter-spacing:.04em; color:var(--gold-hi); text-shadow:0 1px 3px rgba(6,4,12,.9); }
   .proof-note { margin:.7rem auto 0; max-width:28rem; color:var(--muted); font:.78rem ui-monospace, Menlo, monospace; letter-spacing:.04em; line-height:1.5; text-shadow:0 1px 3px rgba(6,4,12,.9); }
   .proofs { margin-top:1rem; display:grid; grid-template-columns:repeat(7, 1fr); gap:.55rem; }
   @media (max-width: 900px) { .proofs { grid-template-columns:repeat(4, 1fr); } }
   @media (max-width: 520px) { .proofs { grid-template-columns:repeat(2, 1fr); } }
   .proof { margin:0; }
   .proof img { width:100%; aspect-ratio:3/4; object-fit:cover; border-radius:10px; border:1px solid var(--gold-glow); box-shadow:0 0 16px var(--gold-soft); background:#0b0716; }
-  .proof figcaption { font:.64rem ui-monospace, Menlo, monospace; color:var(--muted); margin-top:.35rem; line-height:1.35; }
+  .proof figcaption { font:.72rem ui-monospace, Menlo, monospace; color:var(--muted); margin-top:.35rem; line-height:1.45; }
   .proofs .card.sealed .seal { aspect-ratio:3/4; }
   .drip { margin-top:2.8rem; }
   .drip[hidden] { display:none !important; }
@@ -133,10 +133,10 @@
   .drip-frame { border-radius:16px; padding:3px; background:linear-gradient(155deg,#F6DFA0 0%, #E6B85C 38%, #ff7a2a 68%, #6b3fa0 100%); box-shadow:0 0 0 1px rgba(230,184,92,.35), 0 0 22px rgba(255,122,42,.28), 0 0 36px rgba(107,63,160,.28); }
   .drip-card img { display:block; width:100%; aspect-ratio:682/1024; object-fit:cover; object-position:center 18%; border-radius:13px; background:#07060f; }
   .drip-meta { padding:.55rem .15rem 0; text-align:center; }
-  .drip-name { display:block; font:.68rem ui-monospace, Menlo, monospace; letter-spacing:.02em; color:var(--gold-hi); text-shadow:0 1px 3px rgba(6,4,12,.9); }
+  .drip-name { display:block; font:.72rem ui-monospace, Menlo, monospace; letter-spacing:.02em; color:var(--gold-hi); text-shadow:0 1px 3px rgba(6,4,12,.9); }
   .drip-line { display:block; margin-top:.35rem; font:.74rem/1.4 system-ui,sans-serif; letter-spacing:0; text-transform:none; color:#d9c8ff; text-shadow:0 1px 3px rgba(6,4,12,.9); }
-  .drip-preview { display:block; margin-top:.2rem; font:.62rem ui-monospace, Menlo, monospace; letter-spacing:.16em; text-transform:uppercase; color:#c9b6ff; }
-  .drip-os { display:inline-block; margin-top:.45rem; padding:.32rem .65rem; border-radius:999px; background:#E6B85C; color:#140c08; font:.62rem ui-monospace, Menlo, monospace; font-weight:700; letter-spacing:.12em; text-transform:uppercase; }
+  .drip-preview { display:block; margin-top:.2rem; font:.68rem ui-monospace, Menlo, monospace; letter-spacing:.16em; text-transform:uppercase; color:#c9b6ff; }
+  .drip-os { display:inline-block; margin-top:.45rem; padding:.32rem .65rem; border-radius:999px; background:#E6B85C; color:#140c08; font:.68rem ui-monospace, Menlo, monospace; font-weight:700; letter-spacing:.12em; text-transform:uppercase; }
   .drip-proof .drip-frame { background:linear-gradient(155deg,#d9c8ff 0%, #6b3fa0 42%, #E6B85C 78%, #ff7a2a 100%); box-shadow:0 0 0 1px rgba(155,109,255,.45), 0 0 22px rgba(107,63,160,.35), 0 0 28px rgba(230,184,92,.2); }
   @media (prefers-reduced-motion: no-preference) {
     .drip-card { animation:dripRise .85s ease both; }
@@ -640,5 +640,6 @@ var SOFT7_DRIP = [
 })();
 </script>
 <script>/* 🐦‍🔥 · ॐ */try{console.log("%c🐦‍🔥  3 · 6 · 9 · 7\n%cThe architect kept the fire. — AIFRED\n\n%cॐ  ma · ṇi · pad · me · hūṃ\n%cSix syllables. The jewel in the lotus.","font:600 14px serif;color:#e6b85c","font:italic 12px serif;color:#9a8fb8","font:600 14px serif;color:#e6b85c","font:italic 12px serif;color:#9a8fb8")}catch(e){}</script>
+<script src="/assets/ember-trail.js" defer></script>
 </body>
 </html>
