@@ -22,6 +22,10 @@
   #title{position:fixed;left:0;right:0;top:calc(env(safe-area-inset-top) + 7vh);text-align:center;pointer-events:none}
   #title h1{margin:0;font-weight:400;font-size:clamp(26px,8vw,44px);letter-spacing:.08em}
   #title p{margin:.5em 0 0;font-size:clamp(12px,3.4vw,15px);letter-spacing:.24em;text-transform:uppercase;color:rgba(239,230,210,.55)}
+  #note{position:fixed;left:0;right:0;top:calc(env(safe-area-inset-top) + 7vh + 92px);padding:0 9vw;text-align:center;pointer-events:none;
+    font-style:italic;font-size:clamp(14px,3.9vw,17px);line-height:1.65;color:rgba(239,230,210,.78);opacity:0;transition:opacity 2.5s}
+  #note.on{opacity:1} #note.dim{opacity:.12}
+  #note b{font-style:normal;font-weight:400;letter-spacing:.2em;font-size:.8em;text-transform:uppercase;color:rgba(233,200,140,.8)}
   #hint{position:fixed;left:0;right:0;bottom:calc(env(safe-area-inset-bottom) + 5vh);text-align:center;
     font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:rgba(239,230,210,.45);transition:opacity 1.2s;pointer-events:none}
   #gate{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;
@@ -40,6 +44,13 @@
 <div id="bg"><span>Legacy</span></div>
 <canvas id="c"></canvas>
 <div id="title"><h1>Shaffer Legacy</h1><p>Carried forward</p></div>
+<div id="note"><b>To my son</b><br>
+I started this, and built it with Alfred, year after year.<br>
+It grows on its own, and it will keep growing.<br>
+When I'm gone, this is how I'll find you.<br>
+We stay together. Always aligned.<br>
+Use it in the world. Pass it to your kids, and their kids.<br>
+This is our stamp.<br><b>Dad</b></div>
 <div id="hint">Double-tap to open the portal</div>
 
 <div id="gate">
@@ -70,6 +81,7 @@
   let started = false;
   function start(){
     if (started) return; started = true;
+    setTimeout(()=>document.getElementById("note").classList.add("on"),900);
     const cv = document.getElementById("c"), cx = cv.getContext("2d");
     let W, H, DPR;
     function size(){DPR=Math.min(2,window.devicePixelRatio||1);W=innerWidth;H=innerHeight;cv.width=W*DPR;cv.height=H*DPR;cx.setTransform(DPR,0,0,DPR,0,0)}
@@ -86,7 +98,7 @@
         sparks.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-.6,life:1,h:28+Math.random()*22})}
     }
     // 55 Hz dot + portal
-    const dot = {x:()=>W/2, y:()=>H*.62};
+    const dot = {x:()=>W/2, y:()=>H*.72};
     let portal = 0, portalOn = false, t0 = performance.now();
 
     // audio
@@ -106,7 +118,7 @@
       const vs = voices; voices = []; setTimeout(()=>vs.forEach(o=>{try{o.stop()}catch(e){}}), 3000); }
 
     function togglePortal(){ portalOn = !portalOn; portalOn ? audioOn() : audioOff();
-      document.getElementById("hint").style.opacity = 0; }
+      document.getElementById("hint").style.opacity = 0; document.getElementById("note").classList.toggle("dim", portalOn); }
 
     // input: double-tap (touch) / dblclick (mouse), trail on move
     let lastTap = 0;
@@ -133,7 +145,7 @@
         cx.fillStyle=g; cx.beginPath(); cx.arc(px,py,R,0,6.283); cx.fill();
         cx.lineWidth=1.2;
         for (let k=0;k<3;k++){ const rr = R*(.45+.18*k) + Math.sin(t*1.1+k*2)*4; cx.strokeStyle=`rgba(236,208,150,${(.35-.08*k)*portal})`;
-          cx.beginPath(); cx.arc(px,py,rr,t*(.3+.15*k),t*(.3+.15*k)+4.4); cx.stroke(); }
+          cx.beginPath(); cx.arc(px,py,Math.max(0,rr),t*(.3+.15*k),t*(.3+.15*k)+4.4); cx.stroke(); }
         for (let i=0;i<9;i++){ const a=t*.6+i*.698, rr=R*.7; cx.fillStyle=`rgba(255,230,180,${.6*portal})`;
           cx.beginPath(); cx.arc(px+Math.cos(a)*rr, py+Math.sin(a)*rr*.92, 1.6, 0, 6.283); cx.fill(); }
       }
