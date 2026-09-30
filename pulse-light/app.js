@@ -11,7 +11,7 @@
   function textIn(aa) { if (aa > 9800) { still(label); still(full); still(phrase); return; } label.style.opacity = ease((aa - 3400) / 2400); full.style.opacity = .55 * ease((aa - 5200) / 2400); phrase.style.opacity = .6 * ease((aa - 6800) / 2600); }
   function select(p, rx, ry, replay) {
     var fresh = p !== current || replay; current = p; pulseAt = performance.now(); label.textContent = p.name;
-    full.textContent = p.arrival ? (p.fullName || '') : ''; phrase.textContent = p.line || cfg.phrase;
+    full.textContent = p.arrival ? (p.fullName || '') : ''; var mem = [p.line || cfg.phrase].concat(p.memories || []); p._m = fresh ? 0 : ((p._m || 0) + 1) % mem.length; phrase.textContent = mem[p._m];
     if (p.arrival && fresh) { arrivalAt = pulseAt; arrivalRing = false; textIn(0); }
     else if (!p.arrival) { arrivalAt = 0; still(label); still(full); still(phrase); }
     if (rx != null) ripples.push({x:rx, y:ry, at:pulseAt});
