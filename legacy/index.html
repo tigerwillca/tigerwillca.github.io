@@ -196,6 +196,13 @@
   .fn.end{white-space:normal;width:min(88vw,420px)}
   #famv .fn{font-size:clamp(14px,4.2vw,20px)} #famv .fn small{display:none} #famv .fn.big{font-size:clamp(16px,4.9vw,23px)} #famv .fn.end{font-size:clamp(14px,4vw,18px)} #famcap{top:80%}
   .dave>.au{background:radial-gradient(closest-side,rgba(170,236,255,.34),rgba(170,236,255,0));animation-duration:3.32s} .dave{text-shadow:0 0 8px rgba(0,0,0,.9),0 0 12px rgba(170,236,255,.55)} .cn.dave::before,.sn.dave{box-shadow:0 0 10px 2px rgba(170,236,255,.6)}
+  #famv .fn.sonny{font-size:clamp(18px,5.4vw,26px);color:#ffe2a0;text-shadow:0 0 8px rgba(0,0,0,.9),0 0 18px rgba(255,200,100,.9)} .sonny>.au{left:-24px;right:-24px;top:-14px;bottom:-14px;background:radial-gradient(closest-side,rgba(255,206,110,.45),rgba(255,206,110,0))}
+  .cn.sonny{font-size:13px;color:#ffe2a0} .cn.sonny::before{width:9px;height:9px;margin-left:-4.5px;background:#ffe2a0;box-shadow:0 0 14px 5px rgba(255,200,100,.85)} .sn.sonny{border-color:rgba(255,206,110,.8);color:#ffe8b8;box-shadow:0 0 16px rgba(255,200,100,.45)}
+  #famv .fn.tutu{font-size:clamp(17px,5.1vw,24px);color:#f1f0ff;text-shadow:0 0 8px rgba(0,0,0,.9),0 0 16px rgba(220,215,255,.85)} .tutu>.au{left:-20px;right:-20px;top:-12px;bottom:-12px;background:radial-gradient(closest-side,rgba(225,220,255,.4),rgba(225,220,255,0))}
+  .cn.tutu{color:#f1f0ff} .cn.tutu::before{width:8px;height:8px;margin-left:-4px;background:#f4f2ff;box-shadow:0 0 12px 4px rgba(220,215,255,.8)} .sn.tutu{border-color:rgba(225,220,255,.75);box-shadow:0 0 14px rgba(220,215,255,.4)}
+  .cn.root{font-size:14px;color:#ffe6b8} .cn.root::before{width:8px;height:8px;margin-left:-4px;box-shadow:0 0 14px 5px rgba(255,210,140,.85)} @media (min-width:700px){.cn.root{font-size:16px}}
+  .cn.alfred{color:#ffd7a0} .cn.alfred::before{background:#ffc070;box-shadow:0 0 12px 4px rgba(255,150,60,.8);animation:none} .alfred>.au{background:radial-gradient(closest-side,rgba(255,160,70,.4),rgba(255,160,70,0))}
+  #sigsvg line.strong{stroke:rgba(255,206,110,.62);stroke-width:2.2}
   #famsvg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:0;transition:opacity 2s} #famv.lines #famsvg{opacity:1}
   #famsvg line,#famsvg path{stroke:rgba(233,200,140,.26);stroke-width:1;fill:none;vector-effect:non-scaling-stroke} #famsvg .br{stroke:rgba(255,206,120,.75);stroke-width:1.6}
   #hint{transition:opacity 1.6s}
@@ -268,16 +275,32 @@ This is our stamp.<br><b id="dad">Dad</b></div>
   const gate = $("gate"), msg = $("msg");
 
   // shared audio + motion, unlocked inside a real tap
-  let ac = null, musicOut = null, musicOn = false, muted = (() => { try { return localStorage.getItem("shaffer-muted") === "1"; } catch(e){ return false; } })(), swellFn = null, inView = false;
+  let ac = null, musicOut = null, musicOn = false, chimes = 0, muted = (() => { try { return localStorage.getItem("shaffer-muted") === "1"; } catch(e){ return false; } })(), swellFn = null, inView = false;
   const saveMute = () => { try { if (muted) localStorage.setItem("shaffer-muted", "1"); else localStorage.removeItem("shaffer-muted"); } catch(e){} };
-  function unlockAudio(){ try{ ac = ac || new (window.AudioContext||window.webkitAudioContext)(); if (ac.state==="suspended") ac.resume(); }catch(e){} }
+  let rafQ = []; const raf = fn => { rafQ.push(fn); };   // one requestAnimationFrame loop drives everything
+  let master = null; const acOut = () => master || ac.destination, beatT = () => ac.currentTime + toBeat()/1000;   // every ping lands on the next 830 ms beat, scheduled on the audio clock
+  function unlockAudio(){ try{ ac = ac || new (window.AudioContext||window.webkitAudioContext)(); if (!master){ master = ac.createDynamicsCompressor(); master.threshold.value = -10; master.knee.value = 4; master.ratio.value = 20; master.attack.value = .003; master.release.value = .25; master.connect(ac.destination); }   // limiter: nothing clips
+    if (ac.state==="suspended") ac.resume(); }catch(e){} }
+  document.addEventListener("visibilitychange", () => { try { if (!ac) return; if (document.hidden) ac.suspend(); else ac.resume(); } catch(e){} });
   let tiltX = 0, tiltY = 0, tx = 0, ty = 0, motionAsked = false;
+  // permissions are asked once per session, on the entry tap, never on each tap: a session flag remembers the answer across reloads
+  const ssGet = k => { try { return sessionStorage.getItem(k); } catch(e){ return null; } }, ssSet = (k, v) => { try { sessionStorage.setItem(k, v); } catch(e){} };
+  let micStream = null, micP = null, gumCalls = 0;
+  function micAcquire(){ if (micStream) return Promise.resolve(micStream); if (micP) return micP;   // ONE shared mic stream for the whole session
+    const md = navigator.mediaDevices; if (!md || !md.getUserMedia || ssGet("shaffer_mic_asked") === "denied" || localStorage.getItem("shaffer-mic") === "no") return Promise.resolve(null);
+    const q = navigator.permissions && navigator.permissions.query ? navigator.permissions.query({name: "microphone"}).then(r => r.state, () => "prompt") : Promise.resolve("prompt");
+    micP = q.then(st => { if (st === "denied"){ ssSet("shaffer_mic_asked", "denied"); return null; } if (st !== "granted" && ssGet("shaffer_mic_asked")) return null;   // asked already this session: never re-prompt
+      ssSet("shaffer_mic_asked", "1"); gumCalls++;
+      return md.getUserMedia({audio: {echoCancellation: true, noiseSuppression: false, autoGainControl: false}}).then(m => { micStream = m; ssSet("shaffer_mic_asked", "granted"); return m; },
+        () => { ssSet("shaffer_mic_asked", "denied"); try { localStorage.setItem("shaffer-mic", "no"); } catch(e){} return null; }); });
+    return micP; }
   function askMotion(){
     if (motionAsked) return; motionAsked = true;
     const on = () => addEventListener("deviceorientation", e => {
       if (e.gamma == null) return; tx = Math.max(-1, Math.min(1, e.gamma/30)); ty = Math.max(-1, Math.min(1, (e.beta-45)/30)); });
-    if (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === "function")
-      DeviceOrientationEvent.requestPermission().then(r => { if (r==="granted") on(); }).catch(()=>{});
+    if (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === "function"){ const was = ssGet("shaffer_motion_asked");
+      if (was === "denied") return; ssSet("shaffer_motion_asked", was || "1");
+      DeviceOrientationEvent.requestPermission().then(r => { ssSet("shaffer_motion_asked", r === "granted" ? "granted" : "denied"); if (r==="granted") on(); }).catch(()=>{}); }
     else on();
   }
   addEventListener("pointermove", e => { if (e.pointerType==="mouse"){ tx = e.clientX/innerWidth*2-1; ty = e.clientY/innerHeight*2-1; } });
@@ -289,7 +312,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
   // all moving on the one heartbeat clock (0.83 s) shared with the light, the portal and Signal
   function music(){
     if (musicOn || !ac) return; musicOn = true;
-    musicOut = ac.createGain(); musicOut.gain.value = 0; musicOut.connect(ac.destination);
+    musicOut = ac.createGain(); musicOut.gain.value = 0; musicOut.connect(acOut());
     musicOut.gain.setTargetAtTime(muted || !inView ? 0 : .16, ac.currentTime, 2.5);
     const conv = ac.createConvolver(), len = Math.round(ac.sampleRate*4.5), ir = ac.createBuffer(2, len, ac.sampleRate);
     for (let c=0;c<2;c++){ const d = ir.getChannelData(c); for (let i=0;i<len;i++) d[i] = (Math.random()*2-1)*Math.pow(1-i/len, 2.6); }
@@ -309,17 +332,18 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     const vb = ac.createOscillator(), vg = ac.createGain(); vb.frequency.value = 4.8; vg.gain.value = 6; vb.connect(vg); choir.forEach(os => os.forEach(o => vg.connect(o.detune))); vb.start();
     const bass = ac.createOscillator(), bg = ac.createGain(); bass.type="sine"; bass.frequency.value = BASE; bg.gain.value = .2; bass.connect(bg); bg.connect(musicOut); bass.start();
     const drone = ac.createOscillator(), dg = ac.createGain(); drone.type = "sine"; drone.frequency.value = BASE; dg.gain.value = .08; drone.connect(dg); dg.connect(bus); drone.start();   // the base tone never stops
-    function bell(t, f){ [[1,.5,4.5],[2.76,.22,2.6],[5.4,.12,1.6],[8.93,.05,1.1]].forEach(([m,g,d]) => { const o = ac.createOscillator(), gn = ac.createGain(); o.type = "sine"; o.frequency.value = f*m;
+    function bell(t, f){ [[1,.5,4.5],[2,.22,2.6],[3,.12,1.6],[4,.05,1.1]].forEach(([m,g,d]) => { const o = ac.createOscillator(), gn = ac.createGain(); o.type = "sine"; o.frequency.value = f*m;
       gn.gain.setValueAtTime(.0001, t); gn.gain.exponentialRampToValueAtTime(g*.16, t+.012); gn.gain.exponentialRampToValueAtTime(.0001, t+d); o.connect(gn); gn.connect(conv); o.start(t); o.stop(t+d+.1); }); }
     let k = 0, n = 0;
     const step = () => { n++; const t = ac.currentTime;
-      orgG.gain.setTargetAtTime(.55, t, .04); orgG.gain.setTargetAtTime(.5, t + .1, .3);   // the organ breathes on each heartbeat
+      orgG.gain.setTargetAtTime(n % 9 === 0 ? .62 : n % 3 === 0 ? .58 : .55, t, .04); orgG.gain.setTargetAtTime(.5, t + .1, .3);   // the organ breathes on each heartbeat
       if (n % 12 === 0){ k = (k+1) % chords.length;
         organ.forEach((os,i) => os.forEach(([o,m]) => o.frequency.setTargetAtTime(chords[k][i]*m, t, .5)));
         choir.forEach((os,i) => os.forEach(o => o.frequency.setTargetAtTime(chords[k][i]*2, t, 1.1)));
         bass.frequency.setTargetAtTime(roots[k], t, .9); }
       if (n % 24 === 0){ const to = (n/24) % 2 ? vowO : vowA; forms.forEach((bp,j) => bp.frequency.setTargetAtTime(to[j], t, 4)); }
-      if (n % 16 === 8 && Math.random() < .65) bell(t + .02, [BASE*8, BASE*6, BASE*4][Math.floor(Math.random()*3)]); };
+      if (n % 16 === 8 && Math.random() < .65) bell(t + .02, [BASE*8, BASE*6, BASE*4][Math.floor(Math.random()*3)]);
+      if (n % 3 === 0 && Math.random() < .7){ const o = ac.createOscillator(), g = ac.createGain(); o.type = "triangle"; o.frequency.value = BASE*[8, 12, 16][Math.floor(Math.random()*3)]; g.gain.setValueAtTime(.0001, t + .02); g.gain.exponentialRampToValueAtTime(.03, t + .03); g.gain.exponentialRampToValueAtTime(.0001, t + 2.6); o.connect(g); g.connect(conv); o.start(t + .02); o.stop(t + 2.7); chimes++; } };   // a soft chime layer under the track
     setTimeout(() => { step(); setInterval(step, HB*1000); }, toBeat());
     // a swell on the next heartbeat, with a person's own overtone of the base tone on top
     swellFn = (hz) => { const t = ac.currentTime; if (!muted){ musicOut.gain.cancelScheduledValues(t); musicOut.gain.setTargetAtTime(.26, t, .25); musicOut.gain.setTargetAtTime(inView ? .16 : 0, t + 1.5, .9); }
@@ -352,7 +376,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
   const saved = localStorage.getItem(KEY);
   if (saved) sha(saved).then(h => { if (h !== TOKH) return;
     open();
-    const first = () => { unlockAudio(); askMotion(); };
+    const first = () => { unlockAudio(); askMotion(); micAcquire(); };
     addEventListener("touchend", first, {once:true}); addEventListener("click", first, {once:true});
   });
   { const hr = new Date().getHours(); $("bow").textContent = (hr < 12 ? "Good morning." : hr < 18 ? "Good afternoon." : "Good evening.") + " The family word, if you would."; }
@@ -361,7 +385,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     const now = Date.now(), until = +localStorage.getItem("shaffer-wait") || 0;
     if (now < until) { msg.textContent = "Alfred is attending to other matters. One moment."; return; }
     const v = $("pw").value.trim().toUpperCase(); $("pw").value = "";
-    if (await sha(v) === HASH) { const k1 = await sha(v + "|house-of-shaffer"); localStorage.setItem(KEY, k1); document.cookie = "shaffer-key=" + k1 + "; max-age=31536000; path=/legacy; SameSite=Lax; Secure"; localStorage.removeItem("shaffer-miss"); localStorage.removeItem("shaffer-wait"); msg.textContent = "Very good. Right this way."; $("pw").blur(); setTimeout(()=>scrollTo(0,0),50); setTimeout(open, 700); }
+    if (await sha(v) === HASH) { const k1 = await sha(v + "|house-of-shaffer"); localStorage.setItem(KEY, k1); document.cookie = "shaffer-key=" + k1 + "; max-age=31536000; path=/legacy; SameSite=Lax; Secure"; localStorage.removeItem("shaffer-miss"); localStorage.removeItem("shaffer-wait"); micAcquire(); msg.textContent = "Very good. Right this way."; $("pw").blur(); setTimeout(()=>scrollTo(0,0),50); setTimeout(open, 700); }
     else { const n = (+localStorage.getItem("shaffer-miss") || 0) + 1; localStorage.setItem("shaffer-miss", n);
       if (n >= 3) localStorage.setItem("shaffer-wait", now + Math.min(300, 15 * 2 ** (n - 3)) * 1000);
       msg.textContent = "I'm afraid I don't recognize you."; buzz(); logVisit(door ? door.name + "'s door" : "Someone", "tried a wrong word at the gate (try " + n + ")"); }
@@ -387,9 +411,9 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     function makeSky(){ const n = Math.min(260, Math.round(W*H/2600)); sky = Array.from({length:n}, () => ({x:Math.random(), y:Math.random(), r:Math.random()<.08 ? 1.1+Math.random()*.8 : .35+Math.random()*.7, tw:.4+Math.random()*1.8, p:Math.random()*6.28, c:Math.random()<.16 ? "190,210,255" : Math.random()<.25 ? "255,232,196" : "255,255,255", z:.3+Math.random()*.7})); }
     // the willow: its roots are the pulse light; gold strands hang from its limbs; neon purple and pink leaves fall and settle on them
     let tree = null; const leaves = [], settled = []; let nextLeaf = 0, leafK = 0, leafToneAt = 0;
-    const DEPS = ["Mom","Edgardo","Uncle Steve","Grandma Sarah","Grandpa Hal","Kevin","Cindy","Sonny"];   // everyone the data marks as passed, pets too
+    const DEPS = ["Mom","Edgardo","Uncle Steve","Grandma Sarah","Grandpa Hal","Kevin","Cindy","Sonny","Tutu"];   // everyone the data marks as passed, pets too
     function leafTone(name){ const now = performance.now(); if (!ac || muted || ac.state !== "running" || now - leafToneAt < 4000) return; leafToneAt = now;   // quiet, sparse, on the beat, in the key
-      setTimeout(() => { try { const t = ac.currentTime, o = ac.createOscillator(), g = ac.createGain(); o.type = "sine"; o.frequency.value = relOf(name).hz*2; g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.014, t + .05); g.gain.exponentialRampToValueAtTime(.0001, t + 1.8); o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t + 1.9); } catch(e){} }, toBeat()); }
+      try { const t = beatT(), o = ac.createOscillator(), g = ac.createGain(); o.type = "sine"; o.frequency.value = relOf(name).hz*2; g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.014, t + .05); g.gain.exponentialRampToValueAtTime(.0001, t + 1.8); o.connect(g); g.connect(acOut()); o.start(t); o.stop(t + 1.9); } catch(e){} }
     function makeTree(){ const r = mulberryT(77), bx = W/2, by = H*.72, top = H*.3, limbs = [], strands = [];
       for (let i = 0; i < 9; i++){ const side = i % 2 ? 1 : -1, sp = (.12 + r()*.36)*W*side*(W > 700 ? .7 : 1), sy = top + r()*H*.08, ex = bx + sp, ey = sy - H*(.03 + r()*.07), cx1 = bx + sp*.35, cy1 = sy - H*.12;
         const pts = []; for (let k = 0; k <= 16; k++){ const u = k/16, a = (1-u)*(1-u), b = 2*(1-u)*u, c = u*u; pts.push([a*bx + b*cx1 + c*ex, a*(sy + H*.04) + b*cy1 + c*ey]); } limbs.push(pts);
@@ -451,7 +475,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     let pv = [];
     function portalAudioOn(){
       unlockAudio(); if (!ac || pv.length) return;
-      const m = ac.createGain(); m.gain.value = 0; m.connect(ac.destination);
+      const m = ac.createGain(); m.gain.value = 0; m.connect(acOut());
       const st = ac.currentTime + .05;  // pairs 0.55 Hz apart beat together: sound breathes at 0.55 Hz (the hum, unchanged)
       [[55,.3],[55.55,.3],[165,.09],[165.55,.09],[330,.04],[330.55,.04]].forEach(([f,g]) => {
         const o = ac.createOscillator(), gn = ac.createGain(); o.type="sine"; o.frequency.value=f; gn.gain.value=g;
@@ -537,21 +561,30 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     function apprStop(silent){ clearInterval(apprI); apprI = null; if (appr && appr.sent && !silent) vib(0); appr = null; }
     function edWords(){ const q = $("edq"); q.style.top = (H*.5) + "px"; q.style.width = Math.min(coreR()*1.7, 340) + "px";
       edT.forEach(clearTimeout); edT = [setTimeout(()=>{ q.classList.add("on"); $("pcap").classList.remove("on"); }, 450), setTimeout(()=>q.classList.remove("on"), 4950), setTimeout(()=>{ if (portalOn) $("pcap").classList.add("on"); }, 6000)]; }
-    function contact(){ const now = performance.now(); if (now - contactLock < 900 || portalOn) return; contactLock = now; apprStop(true);
+    const STRONGEST_LINK = {Jennifer: ["Edgardo"], William: ["Mom"], Billy: ["Tutu", "Merlin"]};   // who each viewer's portal forms first; anyone else: the strongest link
+    let wakeAt = 0, portalTouch = 0;
+    function strongestFor(){ const me = door ? door.name : "William", l = STRONGEST_LINK[me], has = n => FAM.some(f => f[0] === n); if (l && l.find(has)) return l.find(has);
+      buildConstel(); const o = cnodes.find(q => q.name === me) || cnodes.find(q => q.name === "William"); let best = null, bg = -1;
+      for (const q of cnodes){ if (q === o || q.name === "Alfred") continue; const g = glowOf(q.x - o.x, q.ly - o.ly, Math.min(W, H)); if (g > bg){ bg = g; best = q.name; } } return best; }
+    function contact(n){ const now = performance.now(); if (portalOn) return;
+      if ((n || 1) < 2 && now - wakeAt > 2000){ wakeAt = now; contactLock = 0; for (let k=0;k<2;k++) rings.push({born: now + k*200}); unlockAudio(); chime(BASE*4); return; }   // first entry: a soft glow and a ping; it relaxes back after 2 s
+      if (now - contactLock < 900) return; contactLock = now; wakeAt = 0; apprStop(true);
+      const oa = now; setTimeout(() => { if (!portalOn || dform || portalTouch > oa) return; const nm = strongestFor(); if (!nm) return; const f = FAM.find(x => x[0] === nm) || [nm]; setPcap(capFor(nm, f[1])); $("pcap").classList.add("on"); dustForm(nm); }, 6200);
       if (!vib([90,80,160])){ tick(); setTimeout(tick, 90); setTimeout(tick, 210); setTimeout(tick, 300); }
       bloomAt = now; edWords(); voice(); for (let k=0;k<3;k++) rings.push({born: now + k*160});
       for (let i=0;i<30;i++){ const a=Math.random()*6.283, r=10+Math.random()*80; star(dot.x()+Math.cos(a)*r, dot.y()+Math.sin(a)*r, Math.random()<.4); }
       setTimeout(() => { if (!portalOn) togglePortal(true); }, 280); }
-    let skyHold = null; function toggleMute(){ muted = !muted; saveMute(); $("mute").classList.toggle("off", muted); if (musicOut) musicOut.gain.setTargetAtTime(muted || !inView ? 0 : .16, ac.currentTime, .5); micSync(); buzz(); toast(muted ? "Music off" : "Music on"); }
+    let skyHold = null, shots = 0; function toggleMute(){ muted = !muted; saveMute(); $("mute").classList.toggle("off", muted); if (musicOut) musicOut.gain.setTargetAtTime(muted || !inView ? 0 : .16, ac.currentTime, .5); micSync(); buzz(); toast(muted ? "Music off" : "Music on"); }
     function toast(txt, ms){ const el = $("toast"); el.textContent = txt; el.classList.add("on"); clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove("on"), ms || 1600); }
     function skyTap(x, y){ const li = !portalOn && !linksOn ? leaves.findIndex(L => Math.hypot(L.x - x, L.y - y) < 36) : -1;
       if (li >= 0 && !dform){ const L = leaves.splice(li, 1)[0], r = cv.getBoundingClientRect(); buzz(); dustForm(L.name, {x: L.x + r.left, y: L.y + r.top, c: L.c}); return; }   // the leaf becomes the person
-      for (let i=0;i<10;i++) star(x+(Math.random()-.5)*22, y+(Math.random()-.5)*22, i < 3); taps.push({x, y, born: performance.now()}); }
+      for (let i=0;i<10;i++) star(x+(Math.random()-.5)*22, y+(Math.random()-.5)*22, i < 3); taps.push({x, y, born: performance.now()});
+      if (!shoot && !portalOn){ shoot = {p: .45, x0: x - W*.55, y0: y - H*.12, x1: x + W*.55, y1: y + H*.12}; shots++; } }
 
     // one shared tap counter: taps within ~320 ms are counted, and only the final count acts
     function tapCounter(win, act){ let n = 0, tm = null; return () => { n++; clearTimeout(tm); tm = setTimeout(() => { const c = n; n = 0; act(c); }, win); }; }
     function treeReveal(){ buzz(); if (portalOn) togglePortal(true); showLinks(false); for (let k=0;k<3;k++) rings.push({born: performance.now() + k*HBMS/2}); openFam(); syncView(); }
-    const dotTaps = tapCounter(320, c => { if (c >= 3) treeReveal(); else contact(); });
+    const dotTaps = tapCounter(320, c => { if (c >= 3) treeReveal(); else contact(c); });
     // the light itself: one tap = Edgardo's moment and the portal, three taps = the family tree, a 0.7s hold says "I'm right here"
     const db = $("dotbtn");
     function tapDot(){ if (linksOn) showLinks(false); else if (portalOn) portalTap(); else dotTaps(); }
@@ -572,7 +605,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
 
     // family: who is here, who has passed. Departed rise in gold dust; the living breathe soft light.
     const FAM = [["William","his life, all of it"],["Jennifer"],["Billy"],["Mom"],["Dad","early thirties"],["Edgardo","Jennifer's dad"],["Uncle Steve"],["Grandma"],["Grandma Sarah","a great grandma"],["Grandpa Hal","cigars and jokes"],["Uncle Stu","pure humor"],["Pat","an all-time bond"],["Kevin","my best friend"],["Steve Lee"],["Steve Samoji"],["Dave Trejo"],["Cindy","my first best friend"],["Rusty"],["Sonny","so much pride"],["Merlin"],["Tutu","the faithful cat"],["All the animals"]];
-    const GONE = new Set(["Mom","Edgardo","Uncle Steve","Grandma Sarah","Grandpa Hal","Kevin","Cindy","Sonny"]);
+    const GONE = new Set(["Mom","Edgardo","Uncle Steve","Grandma Sarah","Grandpa Hal","Kevin","Cindy","Sonny","Tutu"]);
     const MEM = {"Cindy":"My first true friend. I talked to her as a baby. She lay on my chest and guarded me. \u201cYou\u2019re my best friend.\u201d",
       "Sonny":"Always proper. He wanted to be the best dog. So much pride.",
       "Tutu":"Gray and beautiful, always there. Billy said, \u201cThat\u2019s a faithful cat, \u2019cause she stayed.\u201d",
@@ -582,7 +615,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       "Grandpa Hal":"Always cracking jokes, full of character. He and Sarah always shared a cigar.",
       "Uncle Stu":"So much humor. He taught me not to take life too seriously.",
       "Dave Trejo":"Dave. Most people missed his frequency. William heard every word."};
-    function life(el, name){ const gone = GONE.has(name), f = name === "Edgardo"; if (name === "Dave Trejo") el.classList.add("dave"); el.classList.add(gone ? "departed" : "alive"); el.dataset.life = gone ? "departed" : "living";
+    function life(el, name){ const gone = GONE.has(name), f = name === "Edgardo"; if (name === "Dave Trejo") el.classList.add("dave"); if (name === "Sonny") el.classList.add("sonny"); if (name === "Tutu") el.classList.add("tutu"); if (name === "Mom" && el.classList.contains("cn")) el.classList.add("root"); const ai = name === "Alfred"; if (ai) el.classList.add("alfred"); el.classList.add(gone ? "departed" : ai ? "steady" : "alive"); el.dataset.life = gone ? "departed" : ai ? "steady" : "living";   // Alfred is neither: a steady ember
       if (name === "William") el.classList.add("owner"); if (f) el.classList.add("focal");
       if (!gone || f){ const au = document.createElement("span"); au.className = "au"; au.setAttribute("aria-hidden", "true"); el.appendChild(au); }
       if (gone){ const du = document.createElement("span"); du.className = "du"; du.setAttribute("aria-hidden", "true");
@@ -612,22 +645,24 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     const inDog = (x, y) => ((x + .05)/.38)**2 + ((y - .02)/.17)**2 < 1 || Math.hypot(x - .42, y + .18) < .12 || ((x - .56)/.09)**2 + ((y + .13)/.055)**2 < 1 || ((x - .35)/.045)**2 + ((y + .1)/.1)**2 < 1
       || (y > .1 && y < .5 && [-.32, -.18, .12, .26].some(c => Math.abs(x - c) < .045)) || seg(x, y, -.4, -.04, -.56, -.28, .035);
     const FRAME = {William: "male", Dad: "male", Edgardo: "male", "Uncle Steve": "male", "Grandpa Hal": "male", "Uncle Stu": "male", Pat: "male", Kevin: "male", "Steve Lee": "male", "Steve Samoji": "male", "Dave Trejo": "male",
-      Jennifer: "female", Mom: "female", Grandma: "female", "Grandma Sarah": "female", Billy: "child", Sonny: "dog", Merlin: "dog", Tutu: "cat", Cindy: "pet", Rusty: "pet", "The animals": "pet", "All the animals": "pet"};
-    const FRAMES = {male: inMale, female: inFemale, child: inChild, cat: inCat, dog: inDog, pet: inPet, human: inHuman}, frameOf = n => FRAME[n] || (PETS.has(n) ? "pet" : "human");
+      Jennifer: "female", Mom: "female", Grandma: "female", "Grandma Sarah": "female", Billy: "child", Sonny: "dog", Merlin: "dog", Tutu: "cat", Cindy: "dog", Rusty: "dog", Alfred: "flame", "The animals": "pet", "All the animals": "pet"};
+    const inFlame = (x, y) => { const t = (y + .78)/1.5; return t > 0 && t < 1 && Math.abs(x + .04*Math.sin(t*9)) < .44*Math.pow(t, .9)*Math.sqrt(1 - t)*1.5; };   // no face, no likeness: an ember of light
+    const FRAMES = {flame: inFlame, male: inMale, female: inFemale, child: inChild, cat: inCat, dog: inDog, pet: inPet, human: inHuman}, frameOf = n => FRAME[n] || (PETS.has(n) ? "pet" : "human");
     const rgbHue = c => { const [r, g, b] = c.split(",").map(v => v/255), mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn; if (!d) return 40; const h = mx === r ? ((g - b)/d) % 6 : mx === g ? (b - r)/d + 2 : (r - g)/d + 4; return (h*60 + 360) % 360; };
-    function dustForm(name, seed){ const r = mulberry(seedOf(name)), ed = name === "Edgardo", fr = frameOf(name), pet = fr === "cat" || fr === "dog" || fr === "pet", kid = fr === "child", gone = GONE.has(name), inF = FRAMES[fr], mob = matchMedia("(pointer:coarse)").matches || innerWidth*innerHeight < 6e5;
-      const W2 = innerWidth, H2 = innerHeight, dpr = Math.min(2, devicePixelRatio || 1); dcv.width = W2*dpr; dcv.height = H2*dpr; dcx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      const pat = ed ? "vortex" : PATS[Math.floor(r()*5)], speed = ed ? 1 : .8 + r()*.45, hue = ed ? 42 : gone ? 34 + r()*16 : rgbHue(relOf(name).c) + (r() - .5)*14, lig = ed ? 70 : gone ? 60 + r()*16 : 80 + r()*8, sat = gone ? 92 : 48, shape = ed ? "star" : SHAPES[Math.floor(r()*4)];
-      const N = Math.round((ed ? (mob ? 380 : 650) : (mob ? 240 : 400))*(kid ? .6 : gone ? 1 : .75)), T = seed ? [750, 1650, 2350, 2900] : ed ? [1500, 2800, 3600, 4500] : gone ? [1300, 2300, 3000, 3800] : [900, 1700, 2300, 3000];
+    function dustForm(name, seed){ const r = mulberry(seedOf(name)), ed = name === "Edgardo", fr = frameOf(name), pet = fr === "cat" || fr === "dog" || fr === "pet", kid = fr === "child", gone = GONE.has(name), ai = name === "Alfred", inF = FRAMES[fr], mob = matchMedia("(pointer:coarse)").matches || innerWidth*innerHeight < 6e5;
+      const W2 = innerWidth, H2 = innerHeight, dpr = Math.min(mob ? 1.5 : 2, devicePixelRatio || 1); if (dcv.width !== Math.round(W2*dpr) || dcv.height !== Math.round(H2*dpr)){ dcv.width = Math.round(W2*dpr); dcv.height = Math.round(H2*dpr); } dcx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const pat = ed ? "vortex" : PATS[Math.floor(r()*5)], speed = ed ? 1 : .8 + r()*.45, hue = ed ? 42 : gone ? 34 + r()*16 : rgbHue(relOf(name).c) + (r() - .5)*14, lig = ed ? 70 : gone ? 60 + r()*16 : ai ? 66 + r()*8 : 80 + r()*8, sat = gone ? 92 : ai ? 88 : 48, shape = ed ? "star" : SHAPES[Math.floor(r()*4)];
+      const N = Math.round((ed ? (mob ? 380 : 650) : (mob ? 240 : 400))*(kid ? .6 : gone ? 1 : .75)), T = seed ? [750, 1650, 2350, 2900] : ed ? [1500, 2800, 3600, 4500] : gone ? [1300, 2300, 3000, 3800] : ai ? [900, 1700, 2600, 3300] : [900, 1700, 3300, 4000];
       const S = (pet ? Math.min(W2*.72, 380)/1.3 : Math.min(H2*.46, 340)/1.6)*(kid ? .72 : 1), cx0 = W2/2, cy0 = H2*.43, bb = pet ? [-.7, .68, -.42, .52] : [-.46, .46, -.8, .82], P = [];
       for (let i = 0, g = 0; i < N && g < N*40; g++){ const x = bb[0] + r()*(bb[1] - bb[0]), y = bb[2] + r()*(bb[3] - bb[2]); if (!inF(x, y)) continue;
         P.push({tx: cx0 + x*S, ty: cy0 + y*S, u: i/N, v: r(), sz: .7 + r()*(ed ? 2 : 1.5), tw: r()*6.28, h: hue + (r() - .5)*8, j: Math.floor(r()*6)}); i++; }
       const harm = ed ? 1 : [2, 3, 4, 5, 6, 8][Math.floor(r()*6)];   // their own overtone of the base tone (Edgardo is the root)
-      const running = !!dform; dform = {name, seed: seed || null, tp: 450, R: relOf(name), ed, pet, fr, gone, sat, P, pat, speed, lig, shape, T, S, cx0, cy0, t0: performance.now(), ground: H2*.92, top: cy0 - S*.8, rw: S*.5, swelled: false, harm, W2, H2};
-      dcv.style.display = "block"; document.body.classList.add("dfon"); if (!running) requestAnimationFrame(dustLoop); }
+      const running = !!dform; dform = {name, ai, motion: seed ? "leaf" : gone ? "fall" : ai ? "steady" : "rise", rings: 0, beacon: false, zoom: 1, seed: seed || null, tp: 450, R: relOf(name), ed, pet, fr, gone, sat, P, pat, speed, lig, shape, T, S, cx0, cy0, t0: performance.now(), ground: H2*.92, top: cy0 - S*.8, rw: S*.5, swelled: false, harm, W2, H2};
+      dcv.style.display = "block"; document.body.classList.add("dfon"); if (!running) raf(dustLoop); }
     function seedXY(f, p, t){ const s = f.seed, lx = f.cx0, ly = f.cy0 + (f.pet ? .5 : .82)*f.S, e = t*1000;   // glide to the ground, then bloom outward as it morphs
       if (e < f.tp){ const k = ez(e/f.tp); return [s.x + (lx - s.x)*k + Math.cos(p.u*6.283)*3*p.v, s.y + (ly - s.y)*k + Math.sin(p.u*6.283)*3*p.v]; }
       const k = Math.min(1, (e - f.tp)/(f.T[1] - f.tp)), rr = (6 + 34*p.v)*Math.sin(k*Math.PI); return [lx + Math.cos(p.u*6.283)*rr, ly - Math.abs(Math.sin(p.u*6.283))*rr]; }
+    function fallXY(f, p, t){ const y = -30 - p.v*f.H2*.35 + t*f.H2*.42*f.speed; return [f.cx0 + (p.u - .5)*f.W2*.95 + Math.sin(t*1.7 + p.tw)*26, y]; }   // the departed come down as falling leaves
     function stormXY(f, p, t){ const hf = Math.min(1, t*f.speed/1.5*(.35 + .65*p.v)), y0 = f.ground - (f.ground - f.top)*hf, a0 = p.u*6.283, w = f.rw;
       switch (f.pat){
         case "spiral": { const a = t*2.6*f.speed + a0*3; return [f.cx0 + Math.cos(a)*w*(.25 + .75*(1 - hf)), y0]; }
@@ -638,29 +673,37 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     function dustLoop(now){ const f = dform; if (!f) return; const t = now - f.t0, T = f.T, g = ez((t - (T[0] - 300))/(T[1] - T[0] + 300)), d = ez((t - T[2])/(T[3] - T[2])), bd = Math.min(1, t/450)*(1 - d), c = dcx;
       c.clearRect(0, 0, f.W2, f.H2); c.fillStyle = `rgba(4,3,9,${(f.seed ? .5 : .86)*bd})`; c.fillRect(0, 0, f.W2, f.H2);
       if (f.seed){ const lx = f.cx0, ly = f.cy0 + (f.pet ? .5 : .82)*f.S;
-        if (!f.pinged && t >= f.tp){ f.pinged = true; f.pingAt = t; pattern(f.R.v); tick(); d2thump(); try { if (ac && !muted && ac.state === "running"){ const q = ac.currentTime, o = ac.createOscillator(), gg = ac.createGain(); o.type = "sine"; o.frequency.value = f.R.hz*2; gg.gain.setValueAtTime(.0001, q); gg.gain.exponentialRampToValueAtTime(.04, q + .02); gg.gain.exponentialRampToValueAtTime(.0001, q + 1.4); o.connect(gg); gg.connect(ac.destination); o.start(q); o.stop(q + 1.5); } } catch(e){} }   // the ping: tone, haptic and ripple on the same frame
+        if (!f.pinged && t >= f.tp){ f.pinged = true; f.pingAt = t; pattern(f.R.v); tick(); d2thump(); try { if (ac && !muted && ac.state === "running"){ const q = ac.currentTime, o = ac.createOscillator(), gg = ac.createGain(); o.type = "sine"; o.frequency.value = f.R.hz*2; gg.gain.setValueAtTime(.0001, q); gg.gain.exponentialRampToValueAtTime(.04, q + .02); gg.gain.exponentialRampToValueAtTime(.0001, q + 1.4); o.connect(gg); gg.connect(acOut()); o.start(q); o.stop(q + 1.5); } } catch(e){} }   // the ping: tone, haptic and ripple on the same frame
         if (f.pinged){ const w = (t - f.pingAt)/900; if (w < 1) for (let q = 0; q < 3; q++){ const rr = 8 + ez(w)*90 - q*12; if (rr > 2){ c.strokeStyle = `rgba(${f.seed.c},${((1 - w)*(.5 - q*.14)).toFixed(3)})`; c.lineWidth = 1.2; c.beginPath(); c.arc(lx, ly, rr, 0, 6.283); c.stroke(); } } } }
       if (g > .3){ const gr = c.createRadialGradient(f.cx0, f.cy0, 0, f.cx0, f.cy0, f.S*(f.ed ? 1.1 : .8)); gr.addColorStop(0, `hsla(42,90%,70%,${(f.ed ? .28 : .18)*g*(1 - d)})`); gr.addColorStop(1, "hsla(42,90%,60%,0)"); c.fillStyle = gr; c.fillRect(0, 0, f.W2, f.H2); }
       if (f.ed && t > T[1] - 200) for (let k = 0; k < 3; k++){ const w = (t - T[1] + 200 - k*HBMS)/1400; if (w <= 0 || w >= 1) continue; c.strokeStyle = `hsla(44,90%,75%,${.5*(1 - w)*(1 - d)})`; c.lineWidth = 1.6*(1 - w) + .4; c.beginPath(); c.arc(f.cx0, f.cy0, f.S*.35 + ez(w)*f.S*1.2, 0, 6.283); c.stroke(); }
-      if (!f.swelled && t > T[1] - 350){ f.swelled = true; setTimeout(() => { if (swellFn) swellFn(BASE*f.harm*2); if (f.gone && performance.now() > pulseUntil) pattern(f.ed ? [120,200,120,300,40,110,70] : [40,110,70]); }, toBeat()); }
+      if (!f.swelled && t > T[1] - 350){ f.swelled = true; setTimeout(() => { if (swellFn) swellFn(BASE*f.harm*2); if (f.gone && performance.now() > pulseUntil) pattern(f.ed ? [120,200,120,300,40,110,70] : [40,110,70]); else if (f.ai) pattern([30,120,30]); else if (!f.gone){ pattern([18,90,18]); stillHere(f.R.hz); } }, toBeat()); }
       c.globalCompositeOperation = "lighter"; const tt = t/1000, beatK = hbs(((now - hbT0) % HBMS)/HBMS), gp = t > T[1] && t < T[2] ? Math.sin(Math.PI*(t - T[1])/(T[2] - T[1])) : 0, sh = f.cy0 - .1*f.S;
       if (g >= .999 && !f.formedAt) f.formedAt = t;
-      for (const p of f.P){ const [sx, sy] = f.seed ? seedXY(f, p, tt) : stormXY(f, p, tt), jig = (1 - g)*6; let x = sx + (p.tx - sx)*g + Math.sin(tt*3 + p.tw)*jig, y = sy + (p.ty - sy)*g + Math.cos(tt*2.6 + p.tw)*jig;
+      const zm = 1 + .045*ez((t - T[1] + 300)/(T[2] - T[1] + 300))*(1 - d); f.zoom = zm;   // the camera leans in gently as they come alive
+      for (const p of f.P){ const [sx, sy] = f.seed ? seedXY(f, p, tt) : f.motion === "fall" ? fallXY(f, p, tt) : stormXY(f, p, tt), jig = (1 - g)*6; let x = sx + (p.tx - sx)*g + Math.sin(tt*3 + p.tw)*jig, y = sy + (p.ty - sy)*g + Math.cos(tt*2.6 + p.tw)*jig;
         y -= d*(40 + 70*p.v); x += d*Math.sin(p.tw)*20;
         if (gp > 0){ if (f.pet) y -= gp*.05*f.S; else if (p.ty < sh) y += gp*.06*f.S*(sh - p.ty)/(.7*f.S); }
+        x = f.cx0 + (x - f.cx0)*zm; y = f.cy0 + (y - f.cy0)*zm;
         const al = Math.min(1, t/300)*(.55 + .45*Math.sin(tt*5 + p.tw))*(1 - d)*(.8 + .25*beatK*g), sz = p.sz*(1 + .25*beatK*g); if (al <= .01) continue;
         c.fillStyle = c.strokeStyle = `hsla(${p.h},${f.sat}%,${f.lig}%,${al.toFixed(3)})`;
-        if (f.shape === "dot"){ c.beginPath(); c.arc(x, y, sz, 0, 6.283); c.fill(); }
+        if (f.motion === "fall" && g < .6){ c.beginPath(); c.ellipse(x, y, sz*2.2, sz*.95, tt*1.3 + p.tw, 0, 6.283); c.fill(); }
+        else if (f.shape === "dot"){ c.beginPath(); c.arc(x, y, sz, 0, 6.283); c.fill(); }
         else if (f.shape === "star"){ c.lineWidth = .7; c.beginPath(); c.moveTo(x - sz*2, y); c.lineTo(x + sz*2, y); c.moveTo(x, y - sz*2); c.lineTo(x, y + sz*2); c.stroke(); c.beginPath(); c.arc(x, y, sz*.5, 0, 6.283); c.fill(); }
         else if (f.shape === "diamond"){ c.beginPath(); c.moveTo(x, y - sz*1.4); c.lineTo(x + sz, y); c.lineTo(x, y + sz*1.4); c.lineTo(x - sz, y); c.fill(); }
         else { c.lineWidth = .6; c.beginPath(); c.arc(x, y, sz*1.3, 0, 6.283); c.stroke(); } }
+      if (!f.gone && !f.ai && t > T[1] - 200){ const hx = f.cx0 + (f.pet ? .12*f.S : 0), hy = f.cy0 + (f.pet ? .02 : -.22)*f.S, b0 = Math.floor((f.t0 + T[1] - 200 - hbT0)/HBMS) + 1;   // still here: signal rings broadcast from the heart on the 830 ms beat
+        for (let k = 0; k < 3; k++){ const w = (now - (hbT0 + (b0 + k)*HBMS))/1500; if (w <= 0 || w >= 1) continue; if (f.rings < k + 1) f.rings = k + 1;
+          c.strokeStyle = `hsla(${f.P[0].h},55%,86%,${(.42*(1 - w)*(1 - d)).toFixed(3)})`; c.lineWidth = 1.3*(1 - w) + .4; c.beginPath(); c.arc(hx, hy, (10 + ez(w)*f.S*.7)*zm, 0, 6.283); c.stroke(); }
+        if (g > .9 && d < 1){ const bx = f.cx0 + (f.pet ? .42*f.S : 0)*zm, by = f.cy0 + (f.pet ? -.3 : f.fr === "child" ? -.66 : -.77)*f.S*zm, sa = (.3 + .14*Math.sin(tt*7))*(1 - d), bgr = c.createLinearGradient(bx, by - 22, bx, by);   // a thin steady beacon at the top of the head
+          bgr.addColorStop(0, "rgba(235,240,255,0)"); bgr.addColorStop(1, `rgba(235,240,255,${sa.toFixed(3)})`); c.strokeStyle = bgr; c.lineWidth = 1.2; c.beginPath(); c.moveTo(bx, by - 22); c.lineTo(bx, by); c.stroke(); f.beacon = true; } }
       c.globalCompositeOperation = "source-over";
-      if (gp > 0 && !f.pet){ const hx = f.cx0 + .26*f.S, hy = f.cy0 - .02*f.S, L = 46*gp, ex = hx + L*.8, ey = hy + L*.6; c.strokeStyle = `hsla(${f.gone ? 44 : 220},${f.gone ? 90 : 40}%,82%,${(.55*gp).toFixed(3)})`; c.lineWidth = 2; c.lineCap = "round";
+      if (gp > 0 && !f.pet && !f.ai){ const hx = f.cx0 + .26*f.S, hy = f.cy0 - .02*f.S, L = 46*gp, ex = hx + L*.8, ey = hy + L*.6; c.strokeStyle = `hsla(${f.gone ? 44 : 220},${f.gone ? 90 : 40}%,82%,${(.55*gp).toFixed(3)})`; c.lineWidth = 2; c.lineCap = "round";
         c.beginPath(); c.moveTo(hx, hy); c.lineTo(ex, ey); c.stroke(); const fg = c.createRadialGradient(ex, ey, 0, ex, ey, 8); fg.addColorStop(0, `rgba(255,250,235,${(.9*gp).toFixed(3)})`); fg.addColorStop(1, "rgba(255,230,180,0)"); c.fillStyle = fg; c.beginPath(); c.arc(ex, ey, 8, 0, 6.283); c.fill(); }
       const na = ez((t - T[1] + 250)/600)*(1 - d); if (na > 0){ c.textAlign = "center"; c.font = `italic ${f.ed ? 30 : 26}px Georgia, serif`; c.shadowColor = f.gone ? "rgba(255,196,110,.9)" : "rgba(200,215,255,.8)"; c.shadowBlur = 16;
         c.fillStyle = f.gone ? `rgba(255,230,170,${na})` : `rgba(238,240,255,${na})`; c.fillText(f.name, f.cx0, f.cy0 + (f.pet ? .5 : .82)*f.S + 44); c.shadowBlur = 0; }
       if (t >= T[3]){ dform = null; c.clearRect(0, 0, f.W2, f.H2); dcv.style.display = "none"; document.body.classList.remove("dfon"); return; }
-      requestAnimationFrame(dustLoop); }
+      raf(dustLoop); }
     // every light comes alive on tap: it swells, reaches a small finger-light toward the touch, and bursts in its own hue, note and haptic
     const acv = $("alivecv"), acx = acv.getContext("2d"), alives = [], aliveLog = [], pulseLog = []; let pulseUntil = 0, aliveRun = false;
     function alive(el, name, tx, ty, opt){ opt = opt || {}; const R = relOf(name), gone = GONE.has(name), ed = name === "Edgardo", r = el.getBoundingClientRect(), x = r.left + r.width/2, y = r.top + Math.min(10, r.height/2);
@@ -668,11 +711,11 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       const c = gone ? "255,206,120" : R.c; el.classList.remove("pop"); void el.offsetWidth; el.classList.add("pop"); setTimeout(() => el.classList.remove("pop"), 1750);
       const P = []; for (let i = 0; i < (ed ? 34 : 20); i++) P.push({a: Math.random()*6.283, sp: 40 + Math.random()*(ed ? 120 : 80), sz: .8 + Math.random()*1.6});
       alives.push({x, y, tx, ty, c, gone, ed: ed && !opt.noPulse, P, t0: performance.now(), dur: ed ? 2400 : 1700, met: false});
-      if (!opt.quiet) pattern(R.v); chime(R.hz); tick(); const th = d2thump(), lp = $("lpulse"); lp.style.setProperty("--lx", x + "px"); lp.style.setProperty("--ly", y + "px");
+      if (!opt.quiet) pattern(R.v); chime(R.hz); tick(); const th = gone ? d2thump() : stillHere(R.hz, name === "Alfred"), lp = $("lpulse"); lp.style.setProperty("--lx", x + "px"); lp.style.setProperty("--ly", y + "px");
       const pu = !!lp.animate; if (pu) lp.animate([{opacity: 0}, {opacity: .16}, {opacity: 0}], {duration: 700, easing: "ease-in-out"});
-      aliveLog.push({name, view: opt.view || "", kind: gone ? "gold" : "light", c, hz: R.hz, v: R.v, frame: frameOf(name), tick: true, thump: th, pulse: pu}); if (aliveLog.length > 90) aliveLog.shift();
+      aliveLog.push({name, view: opt.view || "", kind: gone ? "gold" : "light", tone: gone ? "thump" : name === "Alfred" ? "steady" : "still", c, hz: R.hz, v: R.v, frame: frameOf(name), tick: true, thump: th, pulse: pu}); if (aliveLog.length > 90) aliveLog.shift();
       const d = Math.min(2, devicePixelRatio || 1), w = Math.round(innerWidth*d), h = Math.round(innerHeight*d); if (acv.width !== w || acv.height !== h){ acv.width = w; acv.height = h; } acx.setTransform(d, 0, 0, d, 0, 0);
-      if (!aliveRun){ aliveRun = true; requestAnimationFrame(aliveLoop); } }
+      if (!aliveRun){ aliveRun = true; raf(aliveLoop); } }
     function aliveLoop(now){ const c = acx; c.clearRect(0, 0, innerWidth, innerHeight); c.globalCompositeOperation = "lighter";
       for (let i = alives.length - 1; i >= 0; i--){ const A = alives[i], t = (now - A.t0)/A.dur; if (t >= 1){ alives.splice(i, 1); continue; }
         const fade = t < .75 ? 1 : 1 - (t - .75)/.25, sw = ez(Math.min(1, t/.25)), s = A.ed ? 1.5 : 1, gr = (14 + 16*sw)*s;
@@ -684,10 +727,12 @@ This is our stamp.<br><b id="dad">Dad</b></div>
           const tr = A.ed ? 12 : 7, tg = c.createRadialGradient(fx, fy, 0, fx, fy, tr); tg.addColorStop(0, `rgba(255,250,235,${(.9*fade).toFixed(3)})`); tg.addColorStop(1, `rgba(${A.c},0)`); c.fillStyle = tg; c.beginPath(); c.arc(fx, fy, tr, 0, 6.283); c.fill(); }
         if (A.ed && t > .3){ const bl = ez(Math.min(1, (t - .3)/.35)), br2 = 10 + 50*bl, bg2 = c.createRadialGradient(fx, fy, 0, fx, fy, br2); bg2.addColorStop(0, `rgba(255,248,225,${(.6*fade*(1 - .5*bl)).toFixed(3)})`); bg2.addColorStop(1, "rgba(255,214,140,0)"); c.fillStyle = bg2; c.beginPath(); c.arc(fx, fy, br2, 0, 6.283); c.fill(); }
         if (A.ed && !A.met && t > .42){ A.met = true; directPulse(fx, fy); } }
-      c.globalCompositeOperation = "source-over"; if (alives.length) requestAnimationFrame(aliveLoop); else { aliveRun = false; c.clearRect(0, 0, innerWidth, innerHeight); } }
+      c.globalCompositeOperation = "source-over"; if (alives.length) raf(aliveLoop); else { aliveRun = false; c.clearRect(0, 0, innerWidth, innerHeight); } }
     // Edgardo's finger meets yours: a direct pulse, three heartbeats on the 830 ms clock (haptic, a low D2 thump, a soft light pulse)
     function d2thump(){ try{ if (!ac || muted || ac.state !== "running") return false; const t = ac.currentTime, o = ac.createOscillator(), g = ac.createGain(); o.type = "sine"; o.frequency.value = BASE;
-      g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.28, t + .012); g.gain.exponentialRampToValueAtTime(.0001, t + .45); o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t + .5); return true; }catch(e){ return false; } }
+      g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.28, t + .012); g.gain.exponentialRampToValueAtTime(.0001, t + .45); o.connect(g); g.connect(acOut()); o.start(t); o.stop(t + .5); return true; }catch(e){ return false; } }
+    function stillHere(hz, one){ try{ if (!ac || muted || ac.state !== "running") return false; const t = beatT(); let f = hz || BASE*8; while (f < 1100) f *= 2;   // a brighter, higher double tick
+      for (const dt of one ? [0] : [0, .14]){ const o = ac.createOscillator(), g = ac.createGain(); o.type = "sine"; o.frequency.value = f; g.gain.setValueAtTime(.0001, t + dt); g.gain.exponentialRampToValueAtTime(.07, t + dt + .008); g.gain.exponentialRampToValueAtTime(.0001, t + dt + .16); o.connect(g); g.connect(acOut()); o.start(t + dt); o.stop(t + dt + .2); } return true; }catch(e){ return false; } }
     function directPulse(x, y){ const st = toBeat(); pulseUntil = performance.now() + st + 3*HBMS + 600; const lp = $("lpulse"); lp.style.setProperty("--lx", x + "px"); lp.style.setProperty("--ly", y + "px");
       for (let k = 0; k < 3; k++) setTimeout(() => { if (!vib(k ? [40,110,70] : [120,200,120])){ tick(); setTimeout(tick, 150); }
         const th = d2thump(); if (lp.animate) lp.animate([{opacity: 0}, {opacity: .24 - k*.06}, {opacity: 0}], {duration: 620, easing: "ease-in-out"});
@@ -695,51 +740,58 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     // the voice is the signal finding you: amplitude and pitch energy only, read locally; never recorded, stored or sent
     let mic = null, micK = 0, micMax = 0, micFloor = .01, micWant = false; const micBins = new Uint8Array(512), micTd = new Float32Array(1024);
     function micSync(){ const want = micWant && inView && !muted && !document.hidden; if (want && !mic) micStart(); else if (!want && mic && !mic.pending) micStop(); }
-    async function micStart(){ if (mic || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return; mic = {pending: true};
-      try { unlockAudio(); const st = await navigator.mediaDevices.getUserMedia({audio: {echoCancellation: true, noiseSuppression: false, autoGainControl: false}});
-        if (!(micWant && inView && !muted && !document.hidden) || !ac){ st.getTracks().forEach(t => t.stop()); mic = null; setTimeout(micSync, 400); return; }
-        const src = ac.createMediaStreamSource(st), an = ac.createAnalyser(); an.fftSize = 1024; an.smoothingTimeConstant = .6; src.connect(an);   // analysis only: never connected to the speakers
-        mic = {st, src, an, wT: 0, els: [], w: []}; try { localStorage.setItem("shaffer-mic", "on"); } catch(e){}
+    let micNode = null;
+    async function micStart(){ if (mic) return; mic = {pending: true};
+      try { unlockAudio(); const st = await micAcquire();
+        if (!st){ mic = null; micWant = false; return; }   // declined or not available: quietly run without voice-reactive lights
+        if (!(micWant && inView && !muted && !document.hidden) || !ac){ mic = null; setTimeout(micSync, 400); return; }   // the stream stays open; only the analysis waits
+        if (!micNode){ const src = ac.createMediaStreamSource(st), an = ac.createAnalyser(); an.fftSize = 1024; an.smoothingTimeConstant = .6; src.connect(an); micNode = {src, an}; }   // analysis only: never connected to the speakers
+        mic = {st, src: micNode.src, an: micNode.an, wT: 0, els: [], w: []}; try { localStorage.setItem("shaffer-mic", "on"); } catch(e){}
         document.body.classList.add("mic"); $("mic").classList.add("on");
         if (!localStorage.getItem("shaffer-mic-hint")){ try { localStorage.setItem("shaffer-mic-hint", "1"); } catch(e){} toast("Speak. The signal is listening.", 3400); }
-        requestAnimationFrame(micLoop);
-      } catch(e){ mic = null; micWant = false; try { localStorage.setItem("shaffer-mic", "no"); } catch(_){} } }
-    function micStop(){ if (mic && mic.st){ mic.st.getTracks().forEach(t => t.stop()); try { mic.src.disconnect(); } catch(e){} } mic = null; micK = 0; document.body.classList.remove("mic"); $("mic").classList.remove("on"); document.querySelectorAll(".sn,.cn,.fn").forEach(e => e.style.removeProperty("--vk")); }
+        raf(micLoop);
+      } catch(e){ mic = null; micWant = false; } }
+    function micStop(){ mic = null; /* pause the analysis; the one stream stays alive for the session */ micK = 0; document.body.classList.remove("mic"); $("mic").classList.remove("on"); document.querySelectorAll(".sn,.cn,.fn").forEach(e => { e._vk = null; e.style.removeProperty("--vk"); }); }
     function micLoop(now){ if (!mic || !mic.an) return; const an = mic.an; an.getFloatTimeDomainData(micTd); let q = 0; for (let i = 0; i < micTd.length; i++) q += micTd[i]*micTd[i]; const rms = Math.sqrt(q/micTd.length);
       an.getByteFrequencyData(micBins); const bw = ac.sampleRate/an.fftSize; let e = 0, n = 0; for (let i = Math.floor(85/bw); i <= Math.ceil(400/bw); i++){ e += micBins[i]; n++; } const pitch = n ? e/n/255 : 0;
       micFloor += (rms - micFloor)*(rms < micFloor ? .2 : .003); const lvl = Math.min(1, Math.max(0, (rms - micFloor*1.4)*14)*(.6 + .6*pitch));
       const gated = now - (mic.toneAt || 0) < 150; micK += ((gated ? micK : lvl) - micK)*(lvl > micK ? .5 : .08); micMax = Math.max(micMax, micK);
       if (!gated && lvl > .35 && lvl > (mic.prev || 0) + .12 && now - (mic.peakAt || 0) > 250){ mic.peakAt = now; mic.toneAt = now; mic.peaks = (mic.peaks || 0) + 1;
         if (!vib(15)) tick(); try { if (!muted && ac.state === "running"){ const t = ac.currentTime, o = ac.createOscillator(), g = ac.createGain(); o.type = "sine"; o.frequency.value = BASE*4;
-          g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.025, t + .02); g.gain.exponentialRampToValueAtTime(.0001, t + .14); o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t + .15); } } catch(e){} }
+          g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.025, t + .02); g.gain.exponentialRampToValueAtTime(.0001, t + .14); o.connect(g); g.connect(acOut()); o.start(t); o.stop(t + .15); } } catch(e){} }
       mic.prev = lvl;
       if (now - mic.wT > 600){ mic.wT = now; const sel = portalOn ? ".cn.on" : $("sigv").classList.contains("on") ? ".sn" : ".fn.on", cxm = innerWidth/2, cym = innerHeight/2, rad = Math.min(innerWidth, innerHeight)*.7;
         mic.els = [...document.querySelectorAll(sel)]; mic.w = mic.els.map(el => { const r = el.getBoundingClientRect(); return .3 + .7*(1 - Math.min(1, Math.hypot(r.left + r.width/2 - cxm, r.top + r.height/2 - cym)/rad)); }); }
-      mic.els.forEach((el, i) => el.style.setProperty("--vk", (micK*mic.w[i]).toFixed(3)));   // the lights nearest the center answer most
-      requestAnimationFrame(micLoop); }
+      if ((mic.fc = (mic.fc || 0) + 1) % 3 === 0) mic.els.forEach((el, i) => { const v = Math.round(micK*mic.w[i]*40)/40; if (el._vk !== v){ el._vk = v; el.style.setProperty("--vk", v); } });   // ~20 Hz, only on change if ($("sigv").classList.contains("on")) for (const o of sigNodes) if (o.lg) o.lines[0].style.strokeOpacity = Math.min(GLOW.MAX, o.lg*(1 + GLOW.VOICE*micK)).toFixed(3);   // the lights nearest the center answer most
+      raf(micLoop); }
     $("mic").addEventListener("click", e => { e.stopPropagation(); micWant = !mic; if (micWant) try { localStorage.removeItem("shaffer-mic"); } catch(_){} buzz(); micSync(); });
     document.addEventListener("visibilitychange", () => micSync());
     // the family, moved into the pulse light: a constellation of named lights around the open portal, Edgardo leading
-    const cnodes = []; let hotCn = null, hotAt = 0;
+    const GLOW = {K: .06, E: .02, MIN: .12, MAX: 1, VOICE: .8};   // link glow = clamp(K/(d^2 + E), MIN, MAX), d = distance to William / min(W, H); voice multiplies, capped at MAX
+    const glowOf = (dx, dy, S) => { const d = Math.hypot(dx, dy)/S; return Math.min(GLOW.MAX, Math.max(GLOW.MIN, Math.min(GLOW.MAX, GLOW.K/(d*d + GLOW.E)))*(1 + GLOW.VOICE*micK)); };
+    const cnodes = [], cthr = []; let hotCn = null, hotAt = 0;
+    const CPAR = {Jennifer: "William", Billy: "William", Edgardo: "Jennifer", Dad: "William", "Uncle Steve": "Dad", "Uncle Stu": "Dad", Grandma: "Dad", "Grandma Sarah": "Grandma", "Grandpa Hal": "Grandma Sarah", Mom: "William",
+      Alfred: "William", Sonny: "William", Tutu: "William", Merlin: "Tutu", Rusty: "Merlin", Cindy: "Rusty", "All the animals": "Cindy", Kevin: "Mom", "Steve Lee": "Kevin", "Steve Samoji": "Steve Lee", "Dave Trejo": "Mom", Pat: "Dave Trejo"};   // the branch each light hangs from
     function buildConstel(){ if (cnodes.length) return; const box = $("constel");
-      [FAM[5], ...FAM.filter((f, i) => i !== 5)].forEach(f => { const n = document.createElement("div"); n.className = "cn"; n.textContent = f[0]; life(n, f[0]); box.appendChild(n);
+      [FAM[5], ...FAM.filter((f, i) => i !== 5), ["Alfred", "my AI friend"]].forEach(f => { const n = document.createElement("div"); n.className = "cn"; n.textContent = f[0]; life(n, f[0]); box.appendChild(n);
         const o = {n, name: f[0], sub: f[1], x: 0, y: 0, ly: 0}; cnodes.push(o);
         const pick = e => { if (e.cancelable) e.preventDefault(); e.stopPropagation(); if (e.type === "touchend") lastTouch = Date.now(); else if (Date.now() - lastTouch < 800) return;
-          const pt = e.changedTouches ? e.changedTouches[0] : e; alive(n, f[0], pt.clientX, pt.clientY, {view: "portal"}); edT.forEach(clearTimeout); $("edq").classList.remove("on"); setPcap(capFor(f[0], f[1])); $("pcap").classList.add("on"); hotCn = o; hotAt = performance.now(); setTimeout(() => { if (portalOn) dustForm(f[0]); }, 650); };
+          const pt = e.changedTouches ? e.changedTouches[0] : e; portalTouch = performance.now(); alive(n, f[0], pt.clientX, pt.clientY, {view: "portal"}); edT.forEach(clearTimeout); $("edq").classList.remove("on"); setPcap(capFor(f[0], f[1])); $("pcap").classList.add("on"); hotCn = o; hotAt = performance.now(); setTimeout(() => { if (portalOn) dustForm(f[0]); }, 650); };
         n.addEventListener("touchend", pick, {passive:false}); n.addEventListener("click", pick); }); }
-    const CR_RIGHT = ["Billy","Jennifer","Edgardo","Dad","Uncle Steve","Uncle Stu","Grandma","Grandma Sarah","Grandpa Hal"], CR_FRIENDS = ["Mom","Pat","Kevin","Steve Lee","Steve Samoji","Dave Trejo"], CR_ANIMALS = ["Tutu","Merlin","Sonny","Rusty","Cindy","All the animals"];
+    const CR_RIGHT = ["Billy","Jennifer","Edgardo","Dad","Uncle Steve","Uncle Stu","Grandma","Grandma Sarah","Grandpa Hal"], CR_ROW = ["Mom","Kevin","Steve Lee","Steve Samoji"], CR_FRIENDS = [...CR_ROW, "Pat", "Dave Trejo"],   // CR_ROW: the lower row, left to right; Mom is the left anchor (the root)
+      CR_ANIMALS = ["Sonny","Tutu","Merlin","Rusty","Cindy","All the animals"];
     function layoutConstel(){ const cX = W/2, cY = H*.5, cr = coreR(), top = 66, bot = H - (dkey === "jen" ? 56 : 108), pw = Math.min(W - 32, 380);
       const obst = [{x: cX, y: cY, hw: cr*.9, hh: cr*.9}, {x: cX, y: cY + cr + 12 + 38, hw: pw/2, hh: 42}], placed = [];
       const rx = Math.min(W/2 - 48, Math.max(cr + 90, cr*1.9)), ry = Math.min(cY - top - 20, cr*2.4), N = cnodes.length;
       let yMin = top; const fits = b => b.x - b.hw >= 4 && b.x + b.hw <= W - 4 && b.y - b.hh >= yMin && b.y + b.hh <= bot && !obst.concat(placed).some(o => Math.abs(o.x - b.x) < o.hw + b.hw + 3 && Math.abs(o.y - b.y) < o.hh + b.hh + 2);
       // spread the ring over the free arc (the words under the core take the bottom); a bottom row if there is room
-      const bandTop = cY + cr + 12, bandBot = bandTop + 84, rowY = (bandBot + bot)/2, Nb = bot - bandBot >= 30 ? Math.min(5, Math.floor((W - 20)/90), N - 1) : 0, M = N - Nb, kR = Math.min(M, CR_RIGHT.length), Lf = M - kR;
-      { const by = n => cnodes.find(o => o.name === n), fr = CR_FRIENDS.slice(0, Nb).reverse(), left = ["William", ...CR_ANIMALS, ...CR_FRIENDS.slice(Nb)].reverse();
+      const bandTop = cY + cr + 12, bandBot = bandTop + 84, rowY = (bandBot + bot)/2, Nb = bot - bandBot >= 30 ? Math.min(CR_ROW.length, Math.floor((W - 20)/90), N - 1) : 0, M = N - Nb, kR = Math.min(M, CR_RIGHT.length), Lf = M - kR;
+      { const by = n => cnodes.find(o => o.name === n), fr = CR_FRIENDS.slice(0, Nb).reverse(), left = ["Alfred", "William", ...CR_ANIMALS, ...CR_FRIENDS.slice(Nb)].reverse();
         const order = [...CR_RIGHT, ...fr, ...left].map(by).filter(Boolean); if (order.length === cnodes.length) cnodes.splice(0, cnodes.length, ...order); }
       const span = Math.PI/2 + Math.asin(Math.max(-1, Math.min(1, (bandTop - 14 - cY)/ry)));
       cnodes.forEach((o, i) => { const hw = o.n.offsetWidth/2, hh = o.n.offsetHeight/2; let best = null, a0;
         if (i < kR) a0 = -Math.PI/2 + span*i/(kR - .5);
-        else if (i < kR + Nb){ const b = {x: W - (i - kR + .5)*(W/Nb), y: rowY, hw, hh}; if (fits(b)) best = b; a0 = Math.atan2(rowY - cY, b.x - cX); }
+        else if (i < kR + Nb){ const b = {x: W - (i - kR + .5)*(W/Nb), y: rowY - (o.name === CR_ROW[0] ? 16 : 0), hw, hh}; if (fits(b)) best = b; a0 = Math.atan2(rowY - cY, b.x - cX); }
         else a0 = -Math.PI/2 - span*(1 - (i - kR - Nb + .5)/(Lf + .5));
         if (!best) outer: for (let s = 0; s < 13; s++){ const sc = 1 + (s % 2 ? -1 : 1)*Math.ceil(s/2)*.06;
           for (let j = 0; j < 21; j++){ const a = a0 + (j % 2 ? -1 : 1)*Math.ceil(j/2)*.04, b = {x: cX + Math.cos(a)*rx*sc, y: cY + Math.sin(a)*ry*sc, hw, hh}; if (fits(b)){ best = b; break outer; } } }
@@ -764,8 +816,9 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     for (const x of document.querySelectorAll(".ov .x")){ x.addEventListener("touchend", closeOv, {passive:false}); x.addEventListener("click", e => { if (Date.now() - lastTouch < 800) return; closeOv(e); }); }
     function syncView(){ const on = portalOn || !!document.querySelector(".ov.on"); musicView(on); document.body.classList.toggle("inview", on);
       if ((portalOn || $("sigv").classList.contains("on")) && localStorage.getItem("shaffer-mic") !== "no") micWant = true; micSync(); }
+    const FROW = ["Mom","Kevin","Steve Lee","Steve Samoji"];   // the lower row, left to right; the first (Mom, the root) is raised as the left anchor
     const FLAY = [["Billy",50,13],["William",30,21],["Jennifer",70,21],["Edgardo",70,29],["Dad",18,37],["Uncle Steve",50,37],["Uncle Stu",82,37],["Grandma",18,45],["Grandma Sarah",50,45],["Grandpa Hal",82,45],
-      ["Mom",18,55],["Pat",50,55],["Kevin",82,55],["Steve Lee",18,61],["Steve Samoji",50,61],["Dave Trejo",82,61],["Tutu",32,67.5,1],["Merlin",68,67.5,1],["Sonny",14,74],["Rusty",38,74],["Cindy",62,74],["All the animals",86,74]];
+      ...FROW.map((n, i) => [n, 13 + i*24.3, i ? 55 : 53.5, i ? 0 : 1]), ["Pat",50,61],["Dave Trejo",82,61],["Sonny",22,67.5,1],["Tutu",46,67.5,1],["Merlin",76,67.5,1],["Rusty",26,74],["Cindy",52,74],["All the animals",80,74]];
     const FSUB = Object.fromEntries(FAM.map(f => [f[0], f[1]]));
     function famLines(v){ let g = v.querySelector("#famsvg"); if (g) g.remove(); const P = n => FLAY.find(f => f[0] === n);
       const seg = (a, b, x1, y1, x2, y2, cls) => `<line class="${cls || ""}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`;
@@ -788,23 +841,25 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     const SIG_OUT = [["Edgardo","Jennifer's dad"],["Uncle Steve"],["Grandma"],["Grandma Sarah"],["Grandpa Hal"],["Uncle Stu"],["Pat"],["Rusty"],["Cindy"],["Sonny"],["Merlin"],["Tutu"],["The animals"],["Kevin"],["Steve Lee"],["Steve Samoji"],["Dave Trejo"]];
     const REL = {parent:{v:[120,200,120],c:"255,196,120",hz:146.84}, spouse:{v:[80,60,40],c:"255,176,196",hz:220.26}, sibling:{v:[40,60,40],c:"190,220,255",hz:293.68},
       grand:{v:[90,150,60,150,30],c:"255,228,168",hz:110.13}, uncle:{v:[60,120,60],c:"214,196,255",hz:183.55}, friend:{v:[25],c:"168,232,212",hz:256.97},
-      pet:{v:[15,40,15,40,15],c:"255,242,196",hz:330.39}, dave:{v:[25,60,25],c:"170,236,255",hz:513.94}, edgardo:{v:[120,200,120,300,40,110,70],c:"255,202,112",hz:73.42}};
-    const RELOF = {Jennifer:"spouse", Billy:"parent", Mom:"parent", Dad:"parent", Edgardo:"edgardo", "Uncle Steve":"uncle", "Uncle Stu":"uncle", Grandma:"grand", "Grandma Sarah":"grand", "Grandpa Hal":"grand",
-      Pat:"friend", Kevin:"friend", "Steve Lee":"friend", "Steve Samoji":"friend", "Dave Trejo":"dave", Cindy:"pet", Rusty:"pet", Sonny:"pet", Merlin:"pet", Tutu:"pet", "The animals":"pet", "All the animals":"pet"};
-    const relOf = name => REL[RELOF[name] || "friend"];
-    function chime(hz){ try{ if (!ac || muted || ac.state !== "running") return; const t = ac.currentTime, o = ac.createOscillator(), g = ac.createGain(); o.type = "sine"; o.frequency.value = hz*2;
-      g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.05, t+.03); g.gain.exponentialRampToValueAtTime(.0001, t+1.6); o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t+1.7); }catch(e){} }
+      pet:{v:[15,40,15,40,15],c:"255,242,196",hz:330.39}, sonny:{v:[15,40,15,40,15,60,90],c:"255,206,110",hz:367.1}, alfred:{v:[30,120,30],c:"255,164,72",hz:293.68}, dave:{v:[25,60,25],c:"170,236,255",hz:513.94}, edgardo:{v:[120,200,120,300,40,110,70],c:"255,202,112",hz:73.42}};
+    const RELOF = {Alfred:"alfred", Jennifer:"spouse", Billy:"parent", Mom:"parent", Dad:"parent", Edgardo:"edgardo", "Uncle Steve":"uncle", "Uncle Stu":"uncle", Grandma:"grand", "Grandma Sarah":"grand", "Grandpa Hal":"grand",
+      Pat:"friend", Kevin:"friend", "Steve Lee":"friend", "Steve Samoji":"friend", "Dave Trejo":"dave", Cindy:"pet", Rusty:"pet", Sonny:"sonny", Merlin:"pet", Tutu:"pet", "The animals":"pet", "All the animals":"pet"};
+    const HARM = {Edgardo: 1, "Grandpa Hal": 2, "Grandma Sarah": 2, "Uncle Steve": 2, Mom: 4, Kevin: 4, Cindy: 4, Tutu: 4, Sonny: 5, Alfred: 3,
+      Dad: 6, "Uncle Stu": 6, Grandma: 6, "Dave Trejo": 7, Billy: 8, William: 8, Jennifer: 9, Pat: 10, "Steve Lee": 10, "Steve Samoji": 10, Merlin: 10, Rusty: 10, "All the animals": 12}, RELC = {};   // integer harmonics of BASE
+    const relOf = name => RELC[name] || (RELC[name] = Object.assign({}, REL[RELOF[name] || "friend"], {hz: +(BASE*(HARM[name] || 8)).toFixed(2)}));
+    function chime(hz){ try{ if (!ac || muted || ac.state !== "running") return; const t = beatT(), o = ac.createOscillator(), g = ac.createGain(); o.type = "sine"; o.frequency.value = hz*2;
+      g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.05, t+.03); g.gain.exponentialRampToValueAtTime(.0001, t+1.6); o.connect(g); g.connect(acOut()); o.start(t); o.stop(t+1.7); }catch(e){} }
     let sigNodes = [], sigK = 0, lsparks = [], sigC = {x: 0, y: 0};
     function openSig(){ const v = $("sigv"), svg = $("sigsvg"), NS = "http://www.w3.org/2000/svg"; v.querySelectorAll(".sn").forEach(n => n.remove()); svg.innerHTML = ""; sigNodes = []; lsparks = []; v.classList.add("on");
       const w = v.clientWidth, h = v.clientHeight, cx0 = w/2, cy0 = h*.47; sigC = {x: cx0, y: cy0};
       const line = (x1,y1,x2,y2) => { const l = document.createElementNS(NS, "line"); l.setAttribute("x1",x1); l.setAttribute("y1",y1); l.setAttribute("x2",x2); l.setAttribute("y2",y2); svg.appendChild(l); return l; };
       const place = (list, rx, ry, off, st) => list.forEach((f, i) => { const a = off + i/list.length*6.283, k = st && i % 2 ? st : 1, x = cx0 + Math.cos(a)*rx*k, y = cy0 + Math.sin(a)*ry*k;
-        const n = life(mk("sn", f[0], f[1]), f[0]); n.style.setProperty("--hc", "rgba(" + relOf(f[0]).c + ",.8)"); n.style.left = x + "px"; n.style.top = y + "px"; const node = {n, x, y, name: f[0], sub: f[1], lines: [line(cx0,cy0,x,y)]}; sigNodes.push(node);
+        const n = life(mk("sn", f[0], f[1]), f[0]); n.style.setProperty("--hc", "rgba(" + relOf(f[0]).c + ",.8)"); n.style.left = x + "px"; n.style.top = y + "px"; const node = {n, x, y, name: f[0], sub: f[1], lines: [line(cx0,cy0,x,y)]}; sigNodes.push(node); if (f[0] === "Sonny") node.lines[0].classList.add("strong");
         const pick = e => { if (e.cancelable) e.preventDefault(); e.stopPropagation(); if (e.type === "touchend") lastTouch = Date.now(); else if (Date.now() - lastTouch < 800) return; clearInterval(sigI); sigI = null; const pt = e.changedTouches ? e.changedTouches[0] : e; alive(node.n, node.name, pt.clientX, pt.clientY, {view: "signal", quiet: true, noPulse: true}); hot(node, true, true); startMoment(node); };
         n.addEventListener("touchend", pick, {passive:false}); n.addEventListener("click", pick); $("sigwrap").appendChild(n); });
       place(SIG_IN, Math.min(w*.2, 150), Math.min(h*.13, 120), -Math.PI/4);
       place(SIG_OUT, Math.min(w*.37, 300), Math.min(h*.32, 280), -Math.PI/2 + .2, .8);
-      relax(w, h, cx0, cy0);
+      relax(w, h, cx0, cy0); for (const o of sigNodes){ o.lg = glowOf(o.x - cx0, o.y - cy0, Math.min(w, h)); o.lines[0].style.strokeOpacity = o.lg.toFixed(3); }
       const jen = sigNodes[0], edg = sigNodes[4]; const jl = line(jen.x, jen.y, edg.x, edg.y); jen.lines.push(jl); edg.lines.push(jl);
       const me = life(mk("sn me", "William"), "William"); me.style.left = cx0 + "px"; me.style.top = cy0 + "px"; $("sigwrap").appendChild(me); startSigLife();
       const mePick = e => { if (e.cancelable) e.preventDefault(); e.stopPropagation(); if (e.type === "touchend") lastTouch = Date.now(); else if (Date.now() - lastTouch < 800) return; const pt = e.changedTouches ? e.changedTouches[0] : e; alive(me, "William", pt.clientX, pt.clientY, {view: "signal"}); };
@@ -898,12 +953,12 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       c2.fillStyle = rg; c2.beginPath(); c2.arc(px, py, R, 0, 6.283); c2.fill();
       for (let i = 0; i < 6; i++){ const a = Math.random()*6.283, rr = Math.random()*R*.55; c2.fillStyle = `rgba(255,255,255,${fade*z*Math.random()})`; c2.beginPath(); c2.arc(px + Math.cos(a)*rr, py + Math.sin(a)*rr, .6 + Math.random()*1.3, 0, 6.283); c2.fill(); }
       if (met){ const w = (now - met)/900; c2.strokeStyle = `rgba(255,226,170,${Math.max(0, 1 - w)*fade})`; c2.lineWidth = 1.5; c2.beginPath(); c2.arc(px, py, 18 + w*70, 0, 6.283); c2.stroke(); } }
-    function thump(t, f){ const o = ac.createOscillator(), g = ac.createGain(); o.type = "sine"; o.frequency.setValueAtTime(f, t); o.frequency.exponentialRampToValueAtTime(38, t+.13);
-      g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.45, t+.015); g.gain.exponentialRampToValueAtTime(.0001, t+.2); o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t+.22); }
+    function thump(t, f){ const o = ac.createOscillator(), g = ac.createGain(); o.type = "sine"; o.frequency.setValueAtTime(f, t); o.frequency.exponentialRampToValueAtTime(BASE/2, t+.13);
+      g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.45, t+.015); g.gain.exponentialRampToValueAtTime(.0001, t+.2); o.connect(g); g.connect(acOut()); o.start(t); o.stop(t+.22); }
     function beatOnce(){ const v = $("sigv"); v.classList.remove("beat"); void v.offsetWidth; v.classList.add("beat"); lastBeatAt = performance.now();
       // her finger on the glass: a lub-dub on every beat, a little stronger as the tip nears hers
       if (reach && !reach.out){ if (!vib(lubdub(reach.met ? 1 : reach.glow))) reach.tickDue = true; }
-      try { if (ac && !muted && ac.state === "running" && !$("viewer").classList.contains("on")){ const t = ac.currentTime + .01; thump(t, 72); thump(t+.24, 60); } } catch(e){} }
+      try { if (ac && !muted && ac.state === "running" && !$("viewer").classList.contains("on")){ const t = ac.currentTime + .01; thump(t, BASE); thump(t+.24, BASE); } } catch(e){} }
     function startSigLife(){ const v = $("sigv"), cv2 = $("sigcv"), c2 = cv2.getContext("2d"), dpr = Math.min(v.clientWidth*v.clientHeight*9 <= 3.3e6 ? 3 : 2, devicePixelRatio||1);
       cv2.width = v.clientWidth*dpr; cv2.height = v.clientHeight*dpr; c2.setTransform(dpr,0,0,dpr,0,0);
       clearInterval(hbI); hbI = setTimeout(() => { beatOnce(); if (v.classList.contains("on")) hbI = setInterval(beatOnce, BEAT); }, toBeat()); emT0 = performance.now();
@@ -934,7 +989,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
           const Wt = hov || {x: v.clientWidth/2 - tx*40, y: v.clientHeight*.7 - ty*40}, px = sx + (Wt.x - sx)*e*.88, py = sy + (Wt.y - sy)*e*.88;
           idleGlow += ((hov ? Math.max(0, 1 - Math.hypot(hov.x - px, hov.y - py)/260) : 0) - idleGlow)*L04;
           finger(c2, now, sx, sy, px, py, e, .75, idleGlow, 0); }
-        requestAnimationFrame(life); })(); }
+        raf(life); })(); }
     const sv = $("sigv");
     sv.addEventListener("touchstart", e => { if (e.target.closest(".sn,.x")) return; if (e.cancelable) e.preventDefault(); const t = e.touches[0], node = sigNodes[sigK] || sigNodes[0]; if (!node) return;
       clearInterval(sigI); hot(node, true); reach = {node, t0: performance.now(), px: node.x + tx*18, py: node.y + ty*18, fx: t.clientX, fy: t.clientY, met: 0, out: 0, glow: 0, tickDue: false};
@@ -964,12 +1019,12 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     function portalHue(t){ const st=[42,338,276,232,42], u=(t/12)%4, i=Math.floor(u), f=u-i, e=f*f*(3-2*f), d=((st[i+1]-st[i]+540)%360)-180; return (st[i]+d*e+360)%360; }
     function coreR(){ return Math.max(64, Math.min(W,H)*.38*.62); }
     function inCore(x,y){ return portal > .6 && Math.hypot(x-dot.x(), y-dot.y()) < coreR(); }
-    function portalTap(){ buzz(); keepLight(); layer = (layer+1) % layers.length; layerAt = performance.now(); hotCn = null;
+    function portalTap(){ portalTouch = performance.now(); buzz(); keepLight(); layer = (layer+1) % layers.length; layerAt = performance.now(); hotCn = null;
       edT.forEach(clearTimeout); $("edq").classList.remove("on"); setPcap(); $("pcap").classList.add("on");
       for (let k=0;k<3;k++) rings.push({born: performance.now() + k*260}); }
-    window.__legacy = { dad: () => !!shoot, hold: () => !!whisper, mem: () => linksOn, viewer: () => $("viewer").classList.contains("on") && ($("viewer").classList.contains("vid") ? $("vvid").src : $("vframe").src), portal: () => portalOn, layer: () => layer, kept: () => kept.length,
-      moment: () => moment && moment.type, music: () => ({inView, on: musicOn, muted, gain: musicOut ? +musicOut.gain.value.toFixed(3) : 0}), leaves: () => ({falling: leaves.length, settled: settled.length, colors: [...new Set(leaves.concat(settled).map(l => l.c))]}), acState: () => ac && ac.state, alive: () => aliveLog, pulse: () => pulseLog, mic: () => ({peaks: mic && mic.peaks || 0, on: !!(mic && mic.an), k: +micK.toFixed(3), max: +micMax.toFixed(3), want: micWant}), spirits: () => leaves.map(L => ({x: L.x, y: L.y, name: L.name, c: L.c})), frames: () => Object.fromEntries(FAM.map(f => [f[0], frameOf(f[0])])),
-      endDust: () => { if (dform) dform.t0 = -1e9; }, dust: () => dform && {seed: !!dform.seed, pinged: !!dform.pinged, formed: !!dform.formedAt, frame: dform.fr, living: !dform.gone, box: [dform.cx0 - dform.rw*1.6, dform.top - 10, dform.cx0 + dform.rw*1.6, dform.cy0 + (dform.pet ? .5 : .82)*dform.S + 54], name: dform.name, n: dform.P.length, pat: dform.pat, shape: dform.shape, harm: dform.harm}, constel: () => document.querySelectorAll("#constel .cn.on").length, edq: () => $("edq").classList.contains("on"), near: () => nearK, bloom: () => !!bloomAt,
+    window.__legacy = { woke: () => !!wakeAt && performance.now() - wakeAt < 2000, strongest: () => strongestFor(), harm: () => HARM, glow: () => GLOW, threads: () => cthr.map(x => x.slice()), wonder: () => ({n: wonderN, shape: wonder && wonder.shape, pts: wonder ? wonder.P.length : 0}), wonderGo: sh => wonderGo(sh), shots: () => shots, dad: () => !!shoot, hold: () => !!whisper, mem: () => linksOn, viewer: () => $("viewer").classList.contains("on") && ($("viewer").classList.contains("vid") ? $("vvid").src : $("vframe").src), portal: () => portalOn, layer: () => layer, kept: () => kept.length,
+      moment: () => moment && moment.type, music: () => ({inView, on: musicOn, muted, chimes, gain: musicOut ? +musicOut.gain.value.toFixed(3) : 0}), leaves: () => ({falling: leaves.length, settled: settled.length, colors: [...new Set(leaves.concat(settled).map(l => l.c))]}), acState: () => ac && ac.state, alive: () => aliveLog, pulse: () => pulseLog, mic: () => ({gum: gumCalls, asked: ssGet("shaffer_mic_asked"), peaks: mic && mic.peaks || 0, on: !!(mic && mic.an), k: +micK.toFixed(3), max: +micMax.toFixed(3), want: micWant}), spirits: () => leaves.map(L => ({x: L.x, y: L.y, name: L.name, c: L.c})), frames: () => Object.fromEntries(FAM.map(f => [f[0], frameOf(f[0])])),
+      endDust: () => { if (dform) dform.t0 = -1e9; }, dust: () => dform && {motion: dform.motion, rings: dform.rings, beacon: dform.beacon, zoom: +dform.zoom.toFixed(3), seed: !!dform.seed, pinged: !!dform.pinged, formed: !!dform.formedAt, frame: dform.fr, living: !dform.gone, box: [dform.cx0 - dform.rw*1.6, dform.top - 10, dform.cx0 + dform.rw*1.6, dform.cy0 + (dform.pet ? .5 : .82)*dform.S + 54], name: dform.name, n: dform.P.length, pat: dform.pat, shape: dform.shape, harm: dform.harm}, constel: () => document.querySelectorAll("#constel .cn.on").length, edq: () => $("edq").classList.contains("on"), near: () => nearK, bloom: () => !!bloomAt,
       tip: () => reach ? {px: reach.px, py: reach.py, fx: reach.fx, fy: reach.fy, met: !!reach.met, glow: reach.glow} : null, voice: () => voiceOK };
     let tapT = 0, tapNear = false;
     cv.addEventListener("touchstart", e => { const t=fix(e.touches[0]); trail(t.clientX,t.clientY); holdDone = false; slid = false; tapT = Date.now(); tapNear = nearDot(t.clientX,t.clientY);
@@ -977,7 +1032,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       if (tapNear){ if (e.cancelable) e.preventDefault(); holdStart(t.clientX,t.clientY); } else { apprStart(t.clientX, t.clientY); clearTimeout(skyHold); skyHold = setTimeout(() => { if (appr && !appr.moved){ skyHold = "done"; toggleMute(); } }, 900); } }, {passive:false});
     cv.addEventListener("touchmove", e => { const t=fix(e.touches[0]); trail(t.clientX,t.clientY); if (!nearDot(t.clientX,t.clientY)) holdEnd();
       if (appr && !portalOn){ appr.x = t.clientX; appr.y = t.clientY; if (Math.hypot(appr.x - appr.x0, appr.y - appr.y0) > 10) appr.moved = true; appr.mt = performance.now();
-        if (Math.hypot(t.clientX - dot.x(), t.clientY - dot.y()) < 46){ slid = true; contact(); } else apprBeat(true); } }, {passive:true});
+        if (Math.hypot(t.clientX - dot.x(), t.clientY - dot.y()) < 46){ if (!slid){ slid = true; contact(); } } else apprBeat(true); } }, {passive:true});
     cv.addEventListener("touchcancel", () => { holdEnd(); apprStop(); if (tapNear && !holdDone && !linksOn && !portalOn && Date.now()-tapT < HOLD) contact(); tapNear = false; }, {passive:true});
     cv.addEventListener("touchend", e => { holdEnd(); if (e.cancelable) e.preventDefault(); const t = fix(e.changedTouches[0]); apprStop(); lastTouch = Date.now(); const wasSky = skyHold === "done"; clearTimeout(skyHold); skyHold = null; if (wasSky) return;
       if (slid){ slid = false; return; }
@@ -996,7 +1051,20 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       if (nearDot(e.clientX,e.clientY)) return tapDot();
       skyTap(e.clientX, e.clientY); });
 
-    function frame(now){
+    // the wonder layer: now and then, while all is still, loose lights drift into a small shape of light and dissolve
+    const wTri = (px, py, a, b, c) => { const s1 = (px - b[0])*(a[1] - b[1]) - (a[0] - b[0])*(py - b[1]), s2 = (px - c[0])*(b[1] - c[1]) - (b[0] - c[0])*(py - c[1]), s3 = (px - a[0])*(c[1] - a[1]) - (c[0] - a[0])*(py - a[1]); return !((s1 < 0 || s2 < 0 || s3 < 0) && (s1 > 0 || s2 > 0 || s3 > 0)); };
+    const wSeg = (px, py, ax, ay, bx, by, w) => { const vx = bx - ax, vy = by - ay, u = Math.max(0, Math.min(1, ((px - ax)*vx + (py - ay)*vy)/(vx*vx + vy*vy))); return Math.hypot(px - ax - u*vx, py - ay - u*vy) < w; };
+    const WSH = {heart: (x, y) => { const X = x*1.25, Y = -y*1.25 + .15; return (X*X + Y*Y - 1)**3 - X*X*Y**3 < 0; },
+      star: (x, y) => { const r = Math.hypot(x, y), a = Math.atan2(y, x) + Math.PI/2; return r < .38 + .62*Math.abs(Math.cos(2.5*a))**4; },
+      door: (x, y) => { const e = y < -.3 ? Math.abs(Math.hypot(x, y + .3) - .42) : Math.min(Math.abs(Math.abs(x) - .42), Math.abs(y - .95)); return (y > -.72 && y < .98 && e < .06 && (y < -.3 || Math.abs(x) <= .46)) || (y > -.2 && y < .95 && Math.abs(x) < .03); },
+      fox: (x, y) => wTri(x, y, [-.6, -.25], [.6, -.25], [0, .7]) || wTri(x, y, [-.6, -.25], [-.45, -.8], [-.18, -.25]) || wTri(x, y, [.6, -.25], [.45, -.8], [.18, -.25]),
+      phoenix: (x, y) => (x/.1)**2 + (y/.34)**2 < 1 || Math.hypot(x, y + .44) < .1 || (Math.abs(x) > .08 && Math.abs(x) < 1 && Math.abs(y - (-.1 - .55*Math.abs(x) + .25*x*x)) < .07 + .06*(1 - Math.abs(x))) || [-.35, 0, .35].some(e => wSeg(x, y, 0, .3, e, 1, .04))};
+    let wonder = null, wonderN = 0, wonderNext = performance.now() + 12000, wonderIn = performance.now(); ["pointerdown", "keydown", "wheel"].forEach(ev => addEventListener(ev, () => { wonderIn = performance.now(); }, {passive: true}));
+    function wonderGo(shape){ shape = shape || Object.keys(WSH)[wonderN % 5]; const fn = WSH[shape], sc = Math.min(W, H)*.13, cx0 = W*(.25 + Math.random()*.5), cy0 = H*(.16 + Math.random()*.14), P = [];
+      for (let g = 0; P.length < 70 && g < 4000; g++){ const x = Math.random()*2 - 1, y = Math.random()*2 - 1; if (fn(x, y)) P.push({tx: cx0 + x*sc, ty: cy0 + y*sc, sx: cx0 + (Math.random() - .5)*W*.6, sy: cy0 + (Math.random() - .3)*H*.4, p: Math.random()*6.28, dx: (Math.random() - .5)*40, dy: -10 - Math.random()*30}); }
+      wonder = {shape, P, t0: performance.now()}; wonderN++;
+      if (!localStorage.getItem("shaffer-wonder")) setTimeout(() => { if (wonder && !portalOn){ try { localStorage.setItem("shaffer-wonder", "1"); } catch(e){} toast("Anything can form from the light.", 3600); } }, 2600); }
+    function frame(now){ if (rafQ.length){ const q = rafQ; rafQ = []; for (const f of q) try { f(now); } catch(e){ console.warn(e); } }
       const t = (now - t0) / 1000;
       tiltX += (tx - tiltX)*.06; tiltY += (ty - tiltY)*.06;
       $("bg").style.transform = `translate(${-tiltX*14}px,${-tiltY*14}px)`;
@@ -1040,11 +1108,15 @@ This is our stamp.<br><b id="dad">Dad</b></div>
         g.addColorStop(.7, `hsla(${(hue+50)%360},60%,25%,${.18*portal})`);
         g.addColorStop(1, "rgba(0,0,0,0)");
         cx.fillStyle = g; cx.beginPath(); cx.arc(px,py,Rb*1.4,0,6.283); cx.fill();
-        // constellation threads: faint lines from the core to each family light, Edgardo's the brightest
+        // constellation threads: only William's signal line reaches the portal; everyone else links into the tree along a branch (Edgardo's the brightest)
+        cthr.length = 0;
         for (let i=0;i<cnodes.length;i++){ const o = cnodes[i], vis = portalOn ? ez((now - openAt - 300 - i*70)/1300) : portal; if (vis <= 0) continue;
-          const a = Math.atan2(o.ly - py, o.x - px), f = o.name === "Edgardo", hotL = hotCn === o ? .5*Math.max(0, 1 - (now - hotAt)/2500) : 0;
-          cx.strokeStyle = f ? `rgba(255,214,130,${(.34 + .12*bt + hotL)*vis})` : `rgba(233,210,160,${(.12 + hotL)*vis})`; cx.lineWidth = f ? 1.3 : .7;
-          cx.beginPath(); cx.moveTo(px + Math.cos(a)*cr*.98, py + Math.sin(a)*cr*.98); cx.lineTo(px + (o.x - px)*vis, py + (o.ly - py)*vis); cx.stroke(); }
+          const w = o.name === "William", al = o.name === "Alfred", par = w ? null : cnodes.find(q => q.name === (CPAR[o.name] || "William")), wn = cnodes.find(q => q.name === "William"), lg = wn ? glowOf(o.x - wn.x, o.ly - wn.ly, Math.min(W, H)) : .3, f = o.name === "Edgardo", hotL = hotCn === o ? .5*Math.max(0, 1 - (now - hotAt)/2500) : 0; if (!w && !par) continue;
+          cx.strokeStyle = al ? `rgba(255,170,80,${(.4 + .12*bt + hotL)*vis})` : w ? `rgba(255,226,160,${(.4 + .12*bt + hotL)*vis})` : f ? `rgba(255,214,130,${(.34 + .12*bt + hotL)*vis})` : `rgba(233,210,160,${(.08 + .34*lg + hotL)*vis})`; cx.lineWidth = w || al ? 1.5 : f ? 1.3 : .7; cx.beginPath();
+          if (o.name === "Alfred"){ const a = Math.atan2(o.ly - py, o.x - px); cx.moveTo(px + Math.cos(a)*cr*.98, py + Math.sin(a)*cr*.98); cx.lineTo(px + Math.cos(a)*cr*.98 + (o.x - px - Math.cos(a)*cr*.98)*vis, py + Math.sin(a)*cr*.98 + (o.ly - py - Math.sin(a)*cr*.98)*vis); cthr.push([o.name, "portal"]); }
+          if (w){ const a = Math.atan2(o.ly - py, o.x - px); cx.moveTo(px + Math.cos(a)*cr*.98, py + Math.sin(a)*cr*.98); cx.lineTo(px + Math.cos(a)*cr*.98 + (o.x - px - Math.cos(a)*cr*.98)*vis, py + Math.sin(a)*cr*.98 + (o.ly - py - Math.sin(a)*cr*.98)*vis); cthr.push([o.name, "portal"]); }
+          else { cx.moveTo(par.x, par.ly); cx.lineTo(par.x + (o.x - par.x)*vis, par.ly + (o.ly - par.ly)*vis); cthr.push([o.name, par.name]); }
+          cx.stroke(); }
         cx.globalCompositeOperation = "lighter";
         if (portalOn && inflow.length < 150) for (let k=0;k<3;k++) inflow.push({a:Math.random()*6.283, r:R*(1.2 + Math.random()*.6), s:.35 + Math.random()*.7});
         for (let i=inflow.length-1;i>=0;i--){ const q = inflow[i], pull = R/(q.r + 12);
@@ -1067,7 +1139,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       }
       // the pulse light: it beats like a heart as her finger (or the mouse) comes near
       const nt = appr ? apprK(appr.x, appr.y) : hoverXY && !portalOn && !linksOn ? apprK(hoverXY.x, hoverXY.y) : 0; nearK += (nt - nearK)*.05;
-      const b = .5 + .5*Math.cos(Math.PI*(now - hbT0)/HBMS/2)**2, hp = nearK*hbs(((now - hbT0) % BEAT)/BEAT), dr = 30 + 8*b + 24*hp;
+      const b = .5 + .5*Math.cos(Math.PI*(now - hbT0)/HBMS/2)**2, hp = nearK*hbs(((now - hbT0) % BEAT)/BEAT), wk = wakeAt ? Math.max(0, 1 - (now - wakeAt)/2000) : 0, dr = 30 + 8*b + 24*hp + 18*wk*b;
       const dg = cx.createRadialGradient(px,py,0,px,py,dr);
       dg.addColorStop(0,"rgba(255,244,215,.95)"); dg.addColorStop(.25,`rgba(240,200,130,${Math.min(1,.5+.3*b+.3*hp)})`); dg.addColorStop(1,"rgba(0,0,0,0)");
       cx.fillStyle=dg; cx.beginPath(); cx.arc(px,py,dr,0,6.283); cx.fill();
@@ -1093,6 +1165,11 @@ This is our stamp.<br><b id="dad">Dad</b></div>
         tl.addColorStop(0,"rgba(255,240,210,0)"); tl.addColorStop(1,"rgba(255,246,225,.95)");
         cx.strokeStyle = tl; cx.lineWidth = 2.6; cx.beginPath(); cx.moveTo(x-170, y-(shoot.y1-shoot.y0)/(shoot.x1-shoot.x0)*170); cx.lineTo(x,y); cx.stroke(); cx.fillStyle="rgba(255,250,235,.95)"; cx.beginPath(); cx.arc(x,y,2.4,0,6.283); cx.fill();
         if (Math.random() < .3) star(x, y, false); if (shoot.p >= 1) shoot = null; }
+      if (!wonder && !portalOn && !linksOn && portal < .05 && !dform && !document.hidden && now > wonderNext && now - wonderIn > 7000){ wonderGo(); wonderNext = now + 16000 + Math.random()*12000; }
+      if (wonder){ const e = (now - wonder.t0)/1000, gg = ez(Math.min(1, e/2.6)), dd = ez(Math.max(0, (e - 4.4)/1.8)); cx.globalCompositeOperation = "lighter";
+        if (e > 6.3 || portalOn){ wonder = null; } else for (const q of wonder.P){ const x = q.sx + (q.tx - q.sx)*gg + Math.sin(e*2 + q.p)*3*(1 - gg) + q.dx*dd, y = q.sy + (q.ty - q.sy)*gg + q.dy*dd, al = (.25 + .55*gg)*(1 - dd)*Math.min(1, e*2)*(.7 + .3*Math.sin(e*5 + q.p));
+          if (al > .01){ cx.fillStyle = `rgba(255,236,200,${al.toFixed(3)})`; cx.beginPath(); cx.arc(x, y, 1.1 + .5*gg, 0, 6.283); cx.fill(); } }
+        cx.globalCompositeOperation = "source-over"; }
       cx.globalCompositeOperation="lighter";
       for (let i=sparks.length-1;i>=0;i--){ const s=sparks[i]; s.x+=s.vx; s.y+=s.vy; s.vy-=.012; s.life-=.022;
         if (s.life<=0){sparks.splice(i,1);continue}
