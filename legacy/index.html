@@ -98,7 +98,7 @@ We stay together. Always aligned.<br>
 Use it in the world.<br>Pass it to your kids, and theirs.<br>
 This is our stamp.<br><b id="dad">Dad</b></div>
 <button id="mute" aria-label="Music">&#9835;</button>
-<div id="hapt" aria-hidden="true"><input type="checkbox" switch id="hsw"><label for="hsw" id="hlab"></label></div>
+<div id="hapt" aria-hidden="true"><input type="checkbox" switch id="hsw" tabindex="-1"><label for="hsw" id="hlab"></label></div>
 <div id="links">
   <a role="button" data-src="https://drive.google.com/file/d/1uDI2LU9Svt99lbSFy9CQR88ECCXKJ789/preview"><b><i>&#10022;</i>Playing football</b><span>Our afternoons by the house.</span></a>
   <a id="rey" role="button" data-src="/legacy/reynard.mp4"><b><i>&#10022;</i>Creating Reynard</b><span>The film we made together.</span></a>
@@ -144,7 +144,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
   addEventListener("pointermove", e => { if (e.pointerType==="mouse"){ tx = e.clientX/innerWidth*2-1; ty = e.clientY/innerHeight*2-1; } });
 
   // haptic tick: Android vibrate, iPhone (iOS 18+) switch-toggle haptic
-  function buzz(){ try{ if (navigator.vibrate) navigator.vibrate(10); else $("hlab").click(); }catch(e){} }
+  function buzz(){ try{ if (navigator.vibrate) navigator.vibrate(10); else { $("hlab").click(); if (document.activeElement && document.activeElement.id==="hsw") document.activeElement.blur(); } }catch(e){} }
 
   // quiet atmospheric pad in A minor, rooted on A (55 Hz family)
   function music(){
@@ -252,7 +252,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     function nearDot(x,y){ return Math.hypot(x-dot.x(), y-dot.y()) < 110; }
     const HOLD = 700; let linksOn = false;
     function showLinks(on){ linksOn = on; if (!on) $("legacy").classList.remove("show"); $("links").classList.toggle("on", on); $("note").classList.toggle("dim", on || portalOn); }
-    function holdStart(x,y){ holdAt = nearDot(x,y) ? performance.now() : 0; if (holdAt) buzz(); }
+    function holdStart(x,y){ holdAt = nearDot(x,y) ? performance.now() : 0; }
     function holdEnd(){ holdAt = 0; }
     function dustTo(x0,y0,x1,y1,n){ for (let i=0;i<n;i++){ const f=Math.random(); star(x0+(x1-x0)*f+(Math.random()-.5)*26, y0+(y1-y0)*f+(Math.random()-.5)*26, false); } }
     function openMemories(){ buzz(); showLinks(true); dustTo(dot.x(), dot.y(), dot.x(), dot.y()-180, 22); }
@@ -310,10 +310,11 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       for (let k=0;k<3;k++) rings.push({born: performance.now() + k*260}); }
     window.__legacy = { dad: () => !!shoot, hold: () => !!whisper, mem: () => linksOn, viewer: () => $("viewer").classList.contains("on") && ($("viewer").classList.contains("vid") ? $("vvid").src : $("vframe").src), portal: () => portalOn, layer: () => layer, kept: () => kept.length };
     let lastTap = 0;
-    cv.addEventListener("touchstart", e => { const t=e.touches[0]; trail(t.clientX,t.clientY); holdDone = false;
+    let tapT = 0, tapNear = false;
+    cv.addEventListener("touchstart", e => { const t=e.touches[0]; trail(t.clientX,t.clientY); holdDone = false; tapT = Date.now(); tapNear = nearDot(t.clientX,t.clientY);
       if (nearDot(t.clientX,t.clientY)){ e.preventDefault(); holdStart(t.clientX,t.clientY); } }, {passive:false});
     cv.addEventListener("touchmove", e => { const t=e.touches[0]; trail(t.clientX,t.clientY); if (!nearDot(t.clientX,t.clientY)) holdEnd(); }, {passive:true});
-    cv.addEventListener("touchcancel", holdEnd, {passive:true});
+    cv.addEventListener("touchcancel", () => { holdEnd(); if (tapNear && !holdDone && !linksOn && !portalOn && Date.now()-tapT < HOLD) openMemories(); tapNear = false; }, {passive:true});
     cv.addEventListener("touchend", e => { holdEnd(); e.preventDefault(); const now=Date.now(), t=e.changedTouches[0];
       if (holdDone){ holdDone = false; lastTap = 0; return; }
       if (linksOn){ showLinks(false); lastTap = 0; return; }
