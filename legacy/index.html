@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Schaefer Legacy">
+<meta name="theme-color" content="#07060a">
+<title>Schaefer Legacy</title>
+<style>
+  html,body{margin:0;height:100%;background:#07060a;color:#efe6d2;overflow:hidden;
+    font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+  #bg{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;
+    background:radial-gradient(120% 80% at 50% 45%,#1a1320 0%,#0b0910 55%,#050407 100%)}
+  #bg span{font-size:min(26vw,190px);letter-spacing:.14em;font-weight:400;color:transparent;
+    -webkit-text-stroke:1px rgba(233,200,140,.10);text-transform:uppercase;transform:rotate(-90deg);white-space:nowrap}
+  @media (orientation:landscape){#bg span{transform:none}}
+  canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
+  #title{position:fixed;left:0;right:0;top:calc(env(safe-area-inset-top) + 7vh);text-align:center;pointer-events:none}
+  #title h1{margin:0;font-weight:400;font-size:clamp(26px,8vw,44px);letter-spacing:.08em}
+  #title p{margin:.5em 0 0;font-size:clamp(12px,3.4vw,15px);letter-spacing:.24em;text-transform:uppercase;color:rgba(239,230,210,.55)}
+  #hint{position:fixed;left:0;right:0;bottom:calc(env(safe-area-inset-bottom) + 5vh);text-align:center;
+    font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:rgba(239,230,210,.45);transition:opacity 1.2s;pointer-events:none}
+  #gate{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;
+    background:radial-gradient(120% 80% at 50% 45%,#1a1320 0%,#07060a 70%);z-index:5;transition:opacity .9s}
+  #gate h1{margin:0;font-weight:400;font-size:clamp(28px,9vw,46px);letter-spacing:.08em}
+  #gate p{margin:0;font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:rgba(239,230,210,.5)}
+  #gate form{display:flex;gap:10px;margin-top:8px}
+  #gate input{width:190px;padding:12px 14px;border-radius:12px;border:1px solid rgba(233,200,140,.35);background:rgba(255,255,255,.04);
+    color:#efe6d2;font:16px Georgia,serif;letter-spacing:.12em;text-align:center;outline:none}
+  #gate button{padding:12px 16px;border-radius:12px;border:1px solid rgba(233,200,140,.5);background:rgba(233,200,140,.12);color:#efe6d2;font:15px Georgia,serif}
+  #msg{min-height:1.2em;font-size:14px;color:rgba(239,230,210,.6)}
+  .gone{opacity:0;pointer-events:none}
+</style>
+</head>
+<body>
+<div id="bg"><span>Legacy</span></div>
+<canvas id="c"></canvas>
+<div id="title"><h1>Schaefer Legacy</h1><p>Carried forward</p></div>
+<div id="hint">Double-tap to open the portal</div>
+
+<div id="gate">
+  <h1>Schaefer Legacy</h1>
+  <p>Family only</p>
+  <form id="f" autocomplete="off">
+    <input id="pw" type="password" placeholder="Family word" autocapitalize="characters" spellcheck="false">
+    <button type="submit">Enter</button>
+  </form>
+  <div id="msg"></div>
+</div>
+
+<script>
+(() => {
+  const HASH = "e396c33d99318aa669ce64d95283ab9720cfc2d9ee765b9e8860bf06085480e3";
+  const KEY = "schaefer-legacy-open";
+  const gate = document.getElementById("gate"), msg = document.getElementById("msg");
+  async function sha(s){const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")}
+  function open(){gate.classList.add("gone");setTimeout(()=>gate.remove(),1000);start()}
+  if (localStorage.getItem(KEY)===HASH) open();
+  document.getElementById("f").addEventListener("submit", async e => {
+    e.preventDefault();
+    const v = document.getElementById("pw").value.trim().toUpperCase();
+    if (await sha(v) === HASH) { localStorage.setItem(KEY, HASH); open(); }
+    else { msg.textContent = "Not quite. Try again."; }
+  });
+
+  let started = false;
+  function start(){
+    if (started) return; started = true;
+    const cv = document.getElementById("c"), cx = cv.getContext("2d");
+    let W, H, DPR;
+    function size(){DPR=Math.min(2,window.devicePixelRatio||1);W=innerWidth;H=innerHeight;cv.width=W*DPR;cv.height=H*DPR;cx.setTransform(DPR,0,0,DPR,0,0)}
+    size(); addEventListener("resize", size);
+
+    // dust
+    const dust = Array.from({length: 90}, () => ({x:Math.random(),y:Math.random(),r:Math.random()*1.4+.3,s:Math.random()*.00012+.00003,p:Math.random()*6.28}));
+    // flame trail, 3-6-9
+    const sparks = []; const seq = [3,6,9]; let si = 0, lastSpawn = 0;
+    function trail(x,y){
+      const now = performance.now(); if (now - lastSpawn < 45) return; lastSpawn = now;
+      const n = seq[si++ % 3];
+      for (let i=0;i<n;i++){const a=(i/n)*6.283+Math.random()*.4, v=.25+Math.random()*.6;
+        sparks.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-.6,life:1,h:28+Math.random()*22})}
+    }
+    // 55 Hz dot + portal
+    const dot = {x:()=>W/2, y:()=>H*.62};
+    let portal = 0, portalOn = false, t0 = performance.now();
+
+    // audio
+    let ac, master, voices = [];
+    function audioOn(){
+      ac = ac || new (window.AudioContext||window.webkitAudioContext)();
+      if (ac.state === "suspended") ac.resume();
+      if (voices.length) return;
+      master = ac.createGain(); master.gain.value = 0; master.connect(ac.destination);
+      [[55,.5],[165,.16],[330,.07],[495,.04]].forEach(([f,g]) => {
+        const o = ac.createOscillator(), gn = ac.createGain(); o.type="sine"; o.frequency.value=f; gn.gain.value=g;
+        o.connect(gn); gn.connect(master); o.start(); voices.push(o);
+      });
+      master.gain.setTargetAtTime(.35, ac.currentTime, 1.2);
+    }
+    function audioOff(){ if (!master) return; master.gain.setTargetAtTime(0, ac.currentTime, .6);
+      const vs = voices; voices = []; setTimeout(()=>vs.forEach(o=>{try{o.stop()}catch(e){}}), 3000); }
+
+    function togglePortal(){ portalOn = !portalOn; portalOn ? audioOn() : audioOff();
+      document.getElementById("hint").style.opacity = 0; }
+
+    // input: double-tap (touch) / dblclick (mouse), trail on move
+    let lastTap = 0;
+    cv.addEventListener("touchstart", e => { const t=e.touches[0]; trail(t.clientX,t.clientY); }, {passive:true});
+    cv.addEventListener("touchmove", e => { const t=e.touches[0]; trail(t.clientX,t.clientY); }, {passive:true});
+    cv.addEventListener("touchend", e => { const now=Date.now(); if (now-lastTap < 320){ togglePortal(); lastTap=0; } else lastTap=now; e.preventDefault(); }, {passive:false});
+    cv.addEventListener("mousemove", e => trail(e.clientX, e.clientY));
+    cv.addEventListener("dblclick", togglePortal);
+
+    function frame(now){
+      const t = (now - t0) / 1000;
+      cx.clearRect(0,0,W,H);
+      // dust
+      for (const d of dust){ d.y -= d.s*16; d.x += Math.sin(t*.3+d.p)*.00008*16; if (d.y < -.02){d.y=1.02;d.x=Math.random()}
+        const a = .25+.35*Math.sin(t*.8+d.p)**2; cx.fillStyle=`rgba(236,208,150,${a})`; cx.beginPath(); cx.arc(d.x*W,d.y*H,d.r,0,6.283); cx.fill(); }
+      // portal
+      portal += ((portalOn?1:0) - portal) * .045;
+      const px = dot.x(), py = dot.y();
+      if (portal > .01){
+        const R = Math.min(W,H) * .36 * portal;
+        const g = cx.createRadialGradient(px,py,0,px,py,R);
+        g.addColorStop(0,`rgba(255,236,190,${.55*portal})`); g.addColorStop(.35,`rgba(190,120,255,${.28*portal})`);
+        g.addColorStop(.75,`rgba(60,40,120,${.22*portal})`); g.addColorStop(1,"rgba(0,0,0,0)");
+        cx.fillStyle=g; cx.beginPath(); cx.arc(px,py,R,0,6.283); cx.fill();
+        cx.lineWidth=1.2;
+        for (let k=0;k<3;k++){ const rr = R*(.45+.18*k) + Math.sin(t*1.1+k*2)*4; cx.strokeStyle=`rgba(236,208,150,${(.35-.08*k)*portal})`;
+          cx.beginPath(); cx.arc(px,py,rr,t*(.3+.15*k),t*(.3+.15*k)+4.4); cx.stroke(); }
+        for (let i=0;i<9;i++){ const a=t*.6+i*.698, rr=R*.7; cx.fillStyle=`rgba(255,230,180,${.6*portal})`;
+          cx.beginPath(); cx.arc(px+Math.cos(a)*rr, py+Math.sin(a)*rr*.92, 1.6, 0, 6.283); cx.fill(); }
+      }
+      // 55 Hz dot (slow breath)
+      const b = .5 + .5*Math.sin(t*2*Math.PI*.55);
+      const dg = cx.createRadialGradient(px,py,0,px,py,22+8*b);
+      dg.addColorStop(0,"rgba(255,244,215,.95)"); dg.addColorStop(.25,`rgba(240,200,130,${.5+.3*b})`); dg.addColorStop(1,"rgba(0,0,0,0)");
+      cx.fillStyle=dg; cx.beginPath(); cx.arc(px,py,30+8*b,0,6.283); cx.fill();
+      // sparks
+      cx.globalCompositeOperation="lighter";
+      for (let i=sparks.length-1;i>=0;i--){ const s=sparks[i]; s.x+=s.vx; s.y+=s.vy; s.vy-=.012; s.life-=.022;
+        if (s.life<=0){sparks.splice(i,1);continue}
+        cx.fillStyle=`hsla(${s.h},100%,${55+30*s.life}%,${s.life*.8})`; cx.beginPath(); cx.arc(s.x,s.y,2.4*s.life+.4,0,6.283); cx.fill(); }
+      cx.globalCompositeOperation="source-over";
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+})();
+</script>
+</body>
+</html>
