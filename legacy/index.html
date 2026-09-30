@@ -75,6 +75,7 @@
   #sigv.beat .sn.me{animation:hb .83s ease-out} #sigv.beat #sigsvg line:not(.hot){animation:hbl .83s ease-out}
   @keyframes hb{0%{transform:translate(-50%,-50%) scale(1)}12%{transform:translate(-50%,-50%) scale(1.13);box-shadow:0 0 40px rgba(255,214,140,.95)}24%{transform:translate(-50%,-50%) scale(1.02)}38%{transform:translate(-50%,-50%) scale(1.08);box-shadow:0 0 30px rgba(255,214,140,.7)}100%{transform:translate(-50%,-50%) scale(1)}}
   @keyframes hbl{12%{stroke:rgba(255,226,170,.5)}38%{stroke:rgba(255,226,170,.35)}}
+  #famcap{position:absolute;left:0;right:0;top:83%;text-align:center;font:italic 15px/1.35 Georgia,serif;color:#f3e7cc;padding:0 26px;min-height:40px;text-shadow:0 0 10px rgba(255,210,140,.5)}
   #sigcap{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom) + 5vh);text-align:center;font:italic 15px Georgia,serif;color:#f3e7cc;min-height:20px;padding:0 20px}
 
   #links{position:fixed;left:50%;bottom:calc(28% + 62px);max-height:calc(72% - 62px - env(safe-area-inset-top) - 44px);overflow-y:auto;transform:translateX(-50%);width:min(84vw,340px);display:flex;flex-direction:column;gap:7px;
@@ -133,7 +134,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
 </div>
 <div id="bridge"><a href="/phoenix/">Follow the signal &middot; Reynard Soft7</a></div>
 <div id="viewer"><button id="vclose" aria-label="Close">&times;</button><div id="vtitle"></div><div id="vload">Loading&hellip;</div><video id="vvid" playsinline controls preload="none"></video><div id="vwrap"><iframe id="vframe" allow="autoplay; fullscreen" allowfullscreen></iframe><div id="vshield"></div></div></div>
-<div id="famv" class="ov"><button class="x" aria-label="Close">&times;</button><h3>Family</h3></div>
+<div id="famv" class="ov"><button class="x" aria-label="Close">&times;</button><h3>Family</h3><div id="famcap"></div></div>
 <div id="sigv" class="ov"><button class="x" aria-label="Close">&times;</button><h3>Signal &#9889;</h3><div id="sigwrap"><svg id="sigsvg"></svg></div><canvas id="sigcv"></canvas><div id="sighint">Hold the screen. Someone is reaching for you.</div><div id="sigcap"></div></div>
 <button id="dotbtn" aria-label="Open memories"></button>
 <div id="welcome"></div>
@@ -335,41 +336,60 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     db.addEventListener("mouseup", () => { holdAt = 0; });
     db.addEventListener("click", e => { e.preventDefault(); if (Date.now() - lastTouch < 800) return; if (holdDone){ holdDone = false; return; } tapDot(); });
     // family, in sparkles
-    const FAM = [["William","his life, all of it"],["Jennifer"],["Billy"],["Mom"],["Dad","early thirties"],["Edgardo","Jennifer's dad"],["Uncle Steve"],["Grandma"],["Grandma Sarah"],["Rusty"],["Cindy"],["Merlin"],["All the animals"],["Steve Lee"],["Steve Samoji"]];
+    const FAM = [["William","his life, all of it"],["Jennifer"],["Billy"],["Mom"],["Dad","early thirties"],["Edgardo","Jennifer's dad"],["Uncle Steve"],["Grandma"],["Grandma Sarah","a great grandma"],["Uncle Hal","cigars and jokes"],["Uncle Stu","pure humor"],["Pat","an all-time bond"],["Kevin","my best friend"],["Steve Lee"],["Steve Samoji"],["Cindy","my first best friend"],["Rusty"],["Sonny","so much pride"],["Merlin"],["Tutu","the faithful cat"],["All the animals"]];
+    const MEM = {"Cindy":"My first true friend. I talked to her as a baby. She lay on my chest and guarded me. \u201cYou\u2019re my best friend.\u201d",
+      "Sonny":"Always proper. He wanted to be the best dog. So much pride.",
+      "Tutu":"Gray and beautiful, always there. Billy said, \u201cThat\u2019s a faithful cat, \u2019cause she stayed.\u201d",
+      "Kevin":"A loyal friend. He was my best friend, and I was his. Our secret handshake: pretend to smoke, flick it down, kick it out.",
+      "Pat":"Critical, assertive, and good-hearted. I looked up to him. An all-time bond.",
+      "Grandma Sarah":"A good friend and a great grandma.",
+      "Uncle Hal":"Always cracking jokes, full of character. He and Sarah always shared a cigar.",
+      "Uncle Stu":"So much humor. He taught me not to take life too seriously."};
     let ovT = [], sigI = null;
     function mk(cls, name, sub){ const d = document.createElement("div"); d.className = cls; d.textContent = name; if (sub){ const s = document.createElement("small"); s.textContent = sub; d.appendChild(s); } return d; }
     function closeOv(e){ if (e){ e.preventDefault(); e.stopPropagation(); lastTouch = Date.now(); } for (const t of ovT) clearTimeout(t); ovT = []; clearInterval(sigI); sigI = null; clearInterval(hbI); hbI = null; reach = null;
       for (const o of document.querySelectorAll(".ov")) o.classList.remove("on"); }
     for (const x of document.querySelectorAll(".ov .x")){ x.addEventListener("touchend", closeOv, {passive:false}); x.addEventListener("click", e => { if (Date.now() - lastTouch < 800) return; closeOv(e); }); }
-    function openFam(){ const v = $("famv"); v.querySelectorAll(".fn").forEach(n => n.remove()); v.classList.add("on");
+    function openFam(){ const v = $("famv"); v.querySelectorAll(".fn").forEach(n => n.remove()); $("famcap").textContent = ""; v.classList.add("on");
       const me = mk("fn", FAM[0][0], FAM[0][1]); me.style.left = "50%"; me.style.top = "48%"; v.appendChild(me);
       ovT.push(setTimeout(() => { me.classList.add("on"); sparkle(me, 26, 90); }, 300));
       ovT.push(setTimeout(() => { me.style.top = "15%"; }, 2600));
       FAM.slice(1).forEach((f, i) => { const n = mk("fn", f[0], f[1]), row = Math.floor(i/2);
-        n.style.left = (i % 2 ? 72 : 28) + (Math.random()*6-3) + "%"; n.style.top = (25 + row*8.3 + (i % 2 ? 3 : 0)) + "%"; v.appendChild(n);
-        ovT.push(setTimeout(() => { n.classList.add("on"); sparkle(n, 14, 50); }, 3600 + i*1100)); });
-      const end = mk("fn end", "One family. One light."); end.style.left = "50%"; end.style.top = "90%"; v.appendChild(end);
-      ovT.push(setTimeout(() => { end.classList.add("on"); sparkle(end, 30, 110); buzz(); }, 3600 + (FAM.length-1)*1100 + 600)); }
+        n.style.left = (i % 2 ? 72 : 28) + (Math.random()*6-3) + "%"; n.style.top = (22 + row*6 + (i % 2 ? 2.4 : 0)) + "%"; v.appendChild(n);
+        const say = () => { $("famcap").textContent = MEM[f[0]] || ""; }; n.addEventListener("click", () => { say(); sparkle(n, 14, 50); });
+        ovT.push(setTimeout(() => { n.classList.add("on"); sparkle(n, 14, 50); if (MEM[f[0]]) say(); }, 3600 + i*1100)); });
+      const end = mk("fn end", "One family. One light."); end.style.left = "50%"; end.style.top = "93%"; v.appendChild(end);
+      ovT.push(setTimeout(() => { $("famcap").textContent = ""; end.classList.add("on"); sparkle(end, 30, 110); buzz(); }, 3600 + (FAM.length-1)*1100 + 600)); }
     // signal: every connection linked to William; a highlighted name buzzes the phone
     const SIG_IN = [["Jennifer"],["Billy"],["Mom"],["Dad","early thirties"]];
-    const SIG_OUT = [["Edgardo","Jennifer's dad"],["Uncle Steve"],["Grandma"],["Grandma Sarah"],["Rusty"],["Cindy"],["Merlin"],["The animals"],["Steve Lee"],["Steve Samoji"]];
+    const SIG_OUT = [["Edgardo","Jennifer's dad"],["Uncle Steve"],["Grandma"],["Grandma Sarah"],["Uncle Hal"],["Uncle Stu"],["Pat"],["Rusty"],["Cindy"],["Sonny"],["Merlin"],["Tutu"],["The animals"],["Kevin"],["Steve Lee"],["Steve Samoji"]];
     let sigNodes = [], sigK = 0;
     function openSig(){ const v = $("sigv"), svg = $("sigsvg"), NS = "http://www.w3.org/2000/svg"; v.querySelectorAll(".sn").forEach(n => n.remove()); svg.innerHTML = ""; sigNodes = []; v.classList.add("on");
-      const w = v.clientWidth, h = v.clientHeight, cx0 = w/2, cy0 = h*.5;
+      const w = v.clientWidth, h = v.clientHeight, cx0 = w/2, cy0 = h*.47;
       const line = (x1,y1,x2,y2) => { const l = document.createElementNS(NS, "line"); l.setAttribute("x1",x1); l.setAttribute("y1",y1); l.setAttribute("x2",x2); l.setAttribute("y2",y2); svg.appendChild(l); return l; };
-      const place = (list, rx, ry, off) => list.forEach((f, i) => { const a = off + i/list.length*6.283, x = cx0 + Math.cos(a)*rx, y = cy0 + Math.sin(a)*ry;
+      const place = (list, rx, ry, off, st) => list.forEach((f, i) => { const a = off + i/list.length*6.283, k = st && i % 2 ? st : 1, x = cx0 + Math.cos(a)*rx*k, y = cy0 + Math.sin(a)*ry*k;
         const n = mk("sn", f[0], f[1]); n.style.left = x + "px"; n.style.top = y + "px"; const node = {n, x, y, name: f[0], sub: f[1], lines: [line(cx0,cy0,x,y)]}; sigNodes.push(node);
         const pick = e => { e.preventDefault(); e.stopPropagation(); if (e.type === "touchend") lastTouch = Date.now(); else if (Date.now() - lastTouch < 800) return; clearInterval(sigI); hot(node, true); sigI = setInterval(nextSig, 3200); };
         n.addEventListener("touchend", pick, {passive:false}); n.addEventListener("click", pick); $("sigwrap").appendChild(n); });
       place(SIG_IN, Math.min(w*.2, 150), Math.min(h*.13, 120), -Math.PI/4);
-      place(SIG_OUT, Math.min(w*.34, 300), Math.min(h*.33, 280), -Math.PI/2 + .31);
+      place(SIG_OUT, Math.min(w*.37, 300), Math.min(h*.32, 280), -Math.PI/2 + .2, .8);
+      relax(w, h, cx0, cy0);
       const jen = sigNodes[0], edg = sigNodes[4]; const jl = line(jen.x, jen.y, edg.x, edg.y); jen.lines.push(jl); edg.lines.push(jl);
       const me = mk("sn me", "William"); me.style.left = cx0 + "px"; me.style.top = cy0 + "px"; $("sigwrap").appendChild(me); startSigLife();
       sigK = 0; ovT.push(setTimeout(() => { hot(sigNodes[0], false); sigI = setInterval(nextSig, 3200); }, 700)); }
+    function relax(w, h, cx0, cy0){ const N = sigNodes.map(o => ({o, hw: o.n.offsetWidth/2 + 5, hh: o.n.offsetHeight/2 + 5})), me = {x: cx0, y: cy0, hw: 75, hh: 32};
+      for (let it = 0; it < 80; it++){ let moved = false;
+        for (let i = 0; i < N.length; i++){ const A = N[i];
+          for (let j = -1; j < N.length; j++){ if (j === i) continue; const B = j < 0 ? me : N[j].o, bw = j < 0 ? me.hw : N[j].hw, bh = j < 0 ? me.hh : N[j].hh;
+            const dx = A.o.x - B.x, dy = A.o.y - B.y, ox = A.hw + bw - Math.abs(dx), oy = A.hh + bh - Math.abs(dy);
+            if (ox > 0 && oy > 0){ moved = true; const f = j < 0 ? 1 : .5; if (ox < oy) A.o.x += Math.sign(dx || 1) * ox * f; else A.o.y += Math.sign(dy || 1) * oy * f; } }
+          A.o.x = Math.max(A.hw, Math.min(w - A.hw, A.o.x)); A.o.y = Math.max(h*.1 + A.hh, Math.min(h*.8 - A.hh, A.o.y)); }
+        if (!moved) break; }
+      for (const o of sigNodes){ o.n.style.left = o.x + "px"; o.n.style.top = o.y + "px"; o.lines[0].setAttribute("x2", o.x); o.lines[0].setAttribute("y2", o.y); } }
     function nextSig(){ sigK = (sigK + 1) % sigNodes.length; hot(sigNodes[sigK], false); }
     function hot(node, tapped){ sigK = sigNodes.indexOf(node); document.querySelectorAll(".sn.hot,#sigsvg line.hot").forEach(el => el.classList.remove("hot"));
       node.n.classList.add("hot"); node.lines.forEach(l => l.classList.add("hot")); buzz(); sparkle(node.n, tapped ? 16 : 8, 40);
-      $("sigcap").textContent = node.name + (node.sub ? ", " + node.sub : "") + ". Always linked to you."; }
+      $("sighint").style.opacity = MEM[node.name] ? 0 : ""; $("sigcap").textContent = MEM[node.name] ? node.name + ". " + MEM[node.name] : node.name + (node.sub ? ", " + node.sub : "") + ". Always linked to you."; }
 
     // Signal comes alive: a heartbeat, the scene tilts with the phone, and a finger of light reaches for hers
     let hbI = null, reach = null;
