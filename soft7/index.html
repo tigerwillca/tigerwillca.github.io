@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="theme-color" content="#07050f"/>
+<title>Soft7</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100vh;background:#07050f;color:#F6DFA0;font-family:system-ui,sans-serif}
+.bg,.poster{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+.poster{background:#07050f url("/assets/soft7-bg-poster.jpg") 50% 40%/cover no-repeat}
+.veil{position:fixed;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(7,5,15,.78),rgba(7,5,15,.42) 40%,rgba(7,5,15,.82))}
+#trail,#dot{position:fixed;left:0;top:0;z-index:4;pointer-events:none}
+#dot{width:14px;height:14px;border-radius:50%;opacity:0;background:radial-gradient(circle,#fff 0%,#E6B85C 35%,rgba(255,122,42,0) 72%);box-shadow:0 0 12px rgba(255,122,42,.85)}
+main{position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:4.5rem 1.25rem 3rem}
+h1{margin:0;font-weight:500;font-size:clamp(2rem,7vw,3.6rem);letter-spacing:-.03em;text-shadow:0 2px 18px rgba(7,5,15,.9)}
+.line{margin:.8rem 0 0;font-size:clamp(1.15rem,3.5vw,1.7rem);color:#d9c8ff;text-shadow:0 2px 14px rgba(7,5,15,.95)}
+.cap{margin:1.1rem 0 .2rem;font:.8rem ui-monospace,Menlo,monospace;letter-spacing:.08em;color:#F6DFA0;text-shadow:0 1px 8px rgba(7,5,15,.9)}
+.globe{width:min(52vw,200px);aspect-ratio:1;margin:.4rem auto 0;border-radius:50%;display:grid;place-items:center;position:relative;text-decoration:none;color:#F6DFA0;background:radial-gradient(circle at 32% 28%,rgba(246,223,160,.7),transparent 26%),radial-gradient(circle at 50% 55%,#24143f 0%,#07050f 72%);box-shadow:0 0 36px rgba(155,109,255,.4),inset 0 0 24px rgba(255,122,42,.28);overflow:hidden;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.globe i{position:absolute;inset:7%;border-radius:50%;background:repeating-linear-gradient(90deg,transparent 0 14px,rgba(230,184,92,.45) 14px 15px),repeating-linear-gradient(0deg,transparent 0 14px,rgba(204,255,0,.22) 14px 15px);-webkit-mask:radial-gradient(circle,#000 62%,transparent 72%);mask:radial-gradient(circle,#000 62%,transparent 72%)}
+.globe b{position:relative;z-index:1;font:.78rem ui-monospace,Menlo,monospace;font-weight:600;letter-spacing:.22em;text-transform:uppercase}
+.globe:hover,.globe:focus-visible,.globe:active{box-shadow:0 0 28px rgba(255,122,42,.75),0 0 64px rgba(155,109,255,.55);outline:none}
+.globe.zoom{transform:scale(1.18);transition:transform .45s ease}
+.hots{display:flex;justify-content:center;gap:.7rem;margin:1.15rem 0 0;padding:0;flex-wrap:wrap}
+.hots a{min-width:2.75rem;min-height:2.75rem;padding:.7rem .85rem;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;color:#140c08;background:radial-gradient(circle at 35% 30%,#fff,#E6B85C 42%,#ff7a2a);box-shadow:0 0 16px rgba(255,122,42,.85);font:.74rem ui-monospace,Menlo,monospace;font-weight:700;letter-spacing:.04em;touch-action:manipulation}
+.hots a:hover,.hots a:focus-visible,.hots a:active{box-shadow:0 0 22px rgba(204,255,0,.7),0 0 28px rgba(255,122,42,.9);outline:none}
+.lights{margin:1.4rem 0 0;max-width:22rem;font-size:.95rem;color:#d9c8ff;text-shadow:0 1px 8px rgba(7,5,15,.9)}
+.tune{position:fixed;top:1rem;right:1rem;z-index:6;border:1px solid rgba(230,184,92,.5);background:rgba(7,5,15,.72);color:#F6DFA0;border-radius:999px;padding:.55rem .8rem;font:.72rem ui-monospace,Menlo,monospace;letter-spacing:.06em;cursor:pointer;touch-action:manipulation}
+a.tune{text-decoration:none;display:inline-block}
+.tune:hover,.tune:focus-visible,.tune:active{box-shadow:0 0 16px rgba(204,255,0,.4);outline:none}
+.hz{margin:.9rem auto 0;display:inline-flex;align-items:center;gap:.55rem;background:none;border:0;color:#E6B85C;font:.74rem ui-monospace,Menlo,monospace;letter-spacing:.14em;cursor:pointer;opacity:.88;text-shadow:0 1px 8px rgba(7,5,15,.9);touch-action:manipulation}
+.hz i{width:8px;height:8px;border-radius:50%;background:#ff7a2a;box-shadow:0 0 10px #ff7a2a;animation:hzp 1.09s ease-in-out infinite}
+.hz.on{color:#F6DFA0}.hz.on i{box-shadow:0 0 14px #ffb070,0 0 30px rgba(204,255,0,.45)}
+.hz:focus-visible{outline:1px solid rgba(230,184,92,.6);outline-offset:4px;border-radius:6px}
+@keyframes hzp{0%,100%{transform:scale(.7);opacity:.5}50%{transform:scale(1.25);opacity:1}}
+@media (prefers-reduced-motion:reduce){.hz i{animation:none}}
+@media (prefers-reduced-motion:no-preference){.globe i{animation:spin 22s linear infinite}}
+@media (prefers-reduced-motion:reduce){.bg,#trail,#dot{display:none}}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+<style>
+.site-tabs{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;flex-wrap:nowrap;justify-content:center;align-items:center;width:100%;min-height:44px;margin:0;padding:0 6px;box-sizing:border-box;background:rgba(11,9,8,.92);border-bottom:1px solid rgba(255,176,112,.28);font-family:Georgia,serif;font-size:15px;line-height:1;white-space:nowrap;-webkit-text-size-adjust:none;text-size-adjust:none}
+.site-tabs a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 7px;color:#f4e9dc;text-decoration:none;text-shadow:0 1px 3px rgba(7,5,15,.85);touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.site-tabs a[aria-current="page"]{color:#ff8a3d;text-shadow:0 0 12px rgba(255,176,112,.65);box-shadow:inset 0 -2px 0 #ff8a3d}
+.site-tabs span{color:#ffb070;opacity:.75;pointer-events:none}
+.site-tabs a:focus-visible{outline:1px solid rgba(255,176,112,.8);outline-offset:2px;border-radius:6px}
+body:has(.site-tabs) a.tune{top:calc(44px + .5rem)}
+</style>
+</head>
+<body>
+<nav class="site-tabs" aria-label="Site">
+<a href="/">Family</a><span aria-hidden="true">·</span><a href="/watch/">Watch</a><span aria-hidden="true">·</span><a href="/pulse-light/">Pulse</a><span aria-hidden="true">·</span><a href="/soft7/" aria-current="page">Soft7</a>
+</nav>
+<div class="poster" aria-hidden="true"></div>
+<video class="bg" id="bg" autoplay muted loop playsinline webkit-playsinline preload="metadata" poster="/assets/soft7-bg-poster.jpg" aria-hidden="true">
+<source src="/assets/soft7-bg-loop-v4b.mp4" type="video/mp4"/>
+</video>
+<div class="veil" aria-hidden="true"></div>
+<canvas id="trail" aria-hidden="true"></canvas>
+<div id="dot" aria-hidden="true"></div>
+<a class="tune" href="/door/">Tune in. Three. Six. Nine.</a>
+<main>
+<h1>Soft7 is the first door.</h1>
+<p class="line">Seven cards. One phoenix rising.</p>
+<p class="cap">Touch the signal. Enter.</p>
+<a class="globe" id="globe" href="/phoenix/"><i aria-hidden="true"></i><b>Enter</b></a>
+<nav class="hots" aria-label="Signals">
+<a href="/phoenix/">Enter</a>
+<a href="https://opensea.io/collection/reynard-soft7" target="_blank" rel="noopener noreferrer">OpenSea</a>
+<a href="https://x.com/tigerwillca" target="_blank" rel="noopener noreferrer">X</a>
+</nav>
+<p class="lights">Seven lights. Seven nods. Find them in the signal.</p>
+<button class="hz" id="hz" type="button" aria-pressed="false" title="Tap to hear the ember tone"><i aria-hidden="true"></i>55 Hz · the thread to signal</button>
+</main>
+<script>
+(function(){
+  var v=document.getElementById('bg');
+  if(v){ v.muted=true; v.defaultMuted=true; v.playsInline=true; v.setAttribute('muted',''); v.setAttribute('playsinline',''); }
+  var globe=document.getElementById('globe');
+  if(globe){
+    globe.addEventListener('click',function(ev){
+      if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      ev.preventDefault();
+      globe.classList.add('zoom');
+      setTimeout(function(){ location.href='/phoenix/'; }, 480);
+    });
+  }
+  if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var c=document.getElementById('trail'), dot=document.getElementById('dot');
+  if(!c||!c.getContext) return;
+  var x=c.getContext('2d'), dpr=Math.min(devicePixelRatio||1,2), parts=[], cap=120, idle=true, bursts=[3,6,9], bi=0, last=0, px=-1, py=-1, spr={};
+  [['#ff7a2a','255,196,120','255,122,42'],['#E6B85C','246,223,160','230,184,92']].forEach(function(q){
+    var s=document.createElement('canvas'); s.width=s.height=64; var g=s.getContext('2d'), gr=g.createRadialGradient(32,32,0,32,32,32);
+    gr.addColorStop(0,'rgba(255,250,235,1)'); gr.addColorStop(.18,'rgba('+q[1]+',.95)'); gr.addColorStop(.42,'rgba('+q[2]+',.55)'); gr.addColorStop(1,'rgba('+q[2]+',0)');
+    g.fillStyle=gr; g.fillRect(0,0,64,64); spr[q[0]]=s;
+  });
+  function size(){ c.width=innerWidth*dpr; c.height=innerHeight*dpr; c.style.width=innerWidth+'px'; c.style.height=innerHeight+'px'; x.setTransform(dpr,0,0,dpr,0,0); }
+  function emit(cx,cy,n){
+    for(var i=0;i<n;i++){
+      if(parts.length>=cap) parts.shift();
+      var a=Math.random()*6.283, sp=.3+Math.random()*1.4;
+      parts.push({x:cx+(Math.random()-.5)*8,y:cy+(Math.random()-.5)*8,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-.22,life:1,ph:Math.random()*6.283,r:1.5+Math.random()*2.5,hue:Math.random()<.5?'#ff7a2a':'#E6B85C'});
+    }
+    if(idle){ idle=false; requestAnimationFrame(frame); }
+  }
+  function place(cx,cy){
+    dot.style.opacity='1';
+    dot.style.transform='translate3d('+(cx-7)+'px,'+(cy-7)+'px,0)';
+    var now=performance.now(), dist=px<0?99:Math.hypot(cx-px,cy-py);
+    if(now-last<40&&dist<6) return;
+    emit(cx,cy,bursts[bi++%3]); last=now; px=cx; py=cy; // 3 -> 6 -> 9 -> 3 ...
+  }
+  function frame(ts){
+    x.clearRect(0,0,innerWidth,innerHeight);
+    x.globalCompositeOperation='lighter';
+    for(var i=parts.length-1;i>=0;i--){
+      var p=parts[i]; p.x+=p.vx; p.y+=p.vy; p.vx*=.985; p.vy-=.012; p.life-=.018;
+      if(p.life<=0){ parts.splice(i,1); continue; }
+      var d=p.r*6*(.55+.45*p.life); x.globalAlpha=Math.min(1,p.life*1.15)*(.72+.28*Math.sin((ts||0)*.018+p.ph));
+      x.drawImage(spr[p.hue],p.x-d/2,p.y-d/2,d,d);
+    }
+    x.globalAlpha=1; x.globalCompositeOperation='source-over';
+    if(parts.length) requestAnimationFrame(frame); else idle=true;
+  }
+  addEventListener('pointermove',function(e){ if(e.pointerType==='touch') return; place(e.clientX,e.clientY); },{passive:true});
+  addEventListener('touchstart',function(e){ var t=e.changedTouches&&e.changedTouches[0]; if(t) place(t.clientX,t.clientY); },{passive:true});
+  addEventListener('touchmove',function(e){ var t=e.touches&&e.touches[0]; if(t) place(t.clientX,t.clientY); },{passive:true});
+  addEventListener('resize',size); size();
+})();
+</script>
+<script>
+(function(){var b=document.getElementById('hz');if(!b)return;var ac,g,on=false;
+b.addEventListener('click',function(){try{
+ if(!ac){ac=new (window.AudioContext||window.webkitAudioContext)();g=ac.createGain();g.gain.value=0;g.connect(ac.destination);
+  [[55,.5],[110,.3],[165,.14]].forEach(function(p){var o=ac.createOscillator(),v=ac.createGain();o.type='sine';o.frequency.value=p[0];v.gain.value=p[1];o.connect(v);v.connect(g);o.start();});}
+ if(ac.state==='suspended')ac.resume();on=!on;var t=ac.currentTime;g.gain.cancelScheduledValues(t);g.gain.setValueAtTime(g.gain.value,t);g.gain.linearRampToValueAtTime(on?.06:0,t+(on?1.5:.8));
+ b.classList.toggle('on',on);b.setAttribute('aria-pressed',on?'true':'false');}catch(e){}});})();
+</script>
+</body>
+</html>
