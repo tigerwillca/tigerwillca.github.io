@@ -214,6 +214,10 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     setTimeout(()=>{ $("welcome").textContent = door.hi; $("welcome").classList.add("on"); $("hint").textContent = door.hint; if(door.alf) $("alfred").textContent = door.alf; $("hint").style.opacity = .8;
       setTimeout(()=>$("welcome").classList.remove("on"), 6000); }, 1400); }
   logVisit(door ? door.name + "'s door" : "Someone");
+  // ONE TIME ONLY: the family word is asked for once per device. After the first correct entry,
+  // a key is kept on this device (local storage, with a one-year cookie as backup) and the gate never shows again here.
+  const ck = (document.cookie.match(/(?:^|; )shaffer-key=([^;]+)/) || [])[1];
+  if (!localStorage.getItem(KEY) && ck) localStorage.setItem(KEY, decodeURIComponent(ck));
   const saved = localStorage.getItem(KEY);
   if (saved) sha(saved).then(h => { if (h !== TOKH) return;
     open();
@@ -226,7 +230,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     const now = Date.now(), until = +localStorage.getItem("shaffer-wait") || 0;
     if (now < until) { msg.textContent = "Alfred is attending to other matters. One moment."; return; }
     const v = $("pw").value.trim().toUpperCase(); $("pw").value = "";
-    if (await sha(v) === HASH) { localStorage.setItem(KEY, await sha(v + "|house-of-shaffer")); localStorage.removeItem("shaffer-miss"); localStorage.removeItem("shaffer-wait"); msg.textContent = "Very good. Right this way."; $("pw").blur(); setTimeout(()=>scrollTo(0,0),50); music(); setTimeout(open, 700); }
+    if (await sha(v) === HASH) { const k1 = await sha(v + "|house-of-shaffer"); localStorage.setItem(KEY, k1); document.cookie = "shaffer-key=" + k1 + "; max-age=31536000; path=/legacy; SameSite=Lax; Secure"; localStorage.removeItem("shaffer-miss"); localStorage.removeItem("shaffer-wait"); msg.textContent = "Very good. Right this way."; $("pw").blur(); setTimeout(()=>scrollTo(0,0),50); music(); setTimeout(open, 700); }
     else { const n = (+localStorage.getItem("shaffer-miss") || 0) + 1; localStorage.setItem("shaffer-miss", n);
       if (n >= 3) localStorage.setItem("shaffer-wait", now + Math.min(300, 15 * 2 ** (n - 3)) * 1000);
       msg.textContent = "I'm afraid I don't recognize you."; buzz(); logVisit(door ? door.name + "'s door" : "Someone", "tried a wrong word at the gate (try " + n + ")"); }
