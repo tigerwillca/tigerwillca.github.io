@@ -49,7 +49,7 @@
   #links a{display:block;padding:12px 16px;border:1px solid rgba(233,200,140,.28);border-radius:14px;background:rgba(12,9,16,.74);
     -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);color:#efe6d2;text-decoration:none}
   #links a b{display:block;font-weight:400;font-size:15px;letter-spacing:.06em} #links a b i{font-style:normal;color:rgba(233,200,140,.85);margin-right:8px}
-  #links a span{display:block;font-size:12px;font-style:italic;color:rgba(239,230,210,.55);margin-top:3px}
+  #links a#rey{border-color:rgba(233,200,140,.5);background:rgba(20,14,22,.8)} #links a span{display:block;font-size:12px;font-style:italic;color:rgba(239,230,210,.55);margin-top:3px}
   #bridge{position:fixed;left:0;right:0;bottom:calc(env(safe-area-inset-bottom) + 5vh + 30px);text-align:center;opacity:0;pointer-events:none;transition:opacity 1.4s;z-index:4}
   #bridge.on{opacity:1;pointer-events:auto}
   #bridge a{display:inline-block;padding:11px 18px;border:1px solid rgba(233,200,140,.32);border-radius:22px;background:rgba(10,8,14,.62);
@@ -73,12 +73,12 @@ This is our stamp.<br><b id="dad">Dad</b></div>
 <button id="mute" aria-label="Music">&#9835;</button>
 <div id="hapt" aria-hidden="true"><input type="checkbox" switch id="hsw"><label for="hsw" id="hlab"></label></div>
 <div id="links">
-  <a href="https://drive.google.com/file/d/1uDI2LU9Svt99lbSFy9CQR88ECCXKJ789/view" target="_blank" rel="noopener"><b><i>&#10022;</i>Our afternoons</b><span>Football by the house. The family film.</span></a>
-  <a href="https://drive.google.com/file/d/1mc762FC5ycocZG71M3XHlTsvLEIQGAmL/view" target="_blank" rel="noopener"><b><i>&#10022;</i>The Reynard film</b><span>The same fire, burning brighter.</span></a>
-  <a href="https://drive.google.com/file/d/1rFs_5NZRrPQy_MuNHaQqA49WwsxXIF67/view" target="_blank" rel="noopener"><b><i>&#10022;</i>The secrets</b><span>Hidden things wait for the ones who look.</span></a>
+  <a href="https://drive.google.com/file/d/1uDI2LU9Svt99lbSFy9CQR88ECCXKJ789/view" target="_blank" rel="noopener"><b><i>&#10022;</i>Playing football</b><span>Our afternoons by the house.</span></a>
+  <a id="rey" href="https://drive.google.com/file/d/1mc762FC5ycocZG71M3XHlTsvLEIQGAmL/view" target="_blank" rel="noopener"><b><i>&#10022;</i>Creating Reynard</b><span>The film we made together.</span></a>
+  <a href="https://drive.google.com/file/d/1rFs_5NZRrPQy_MuNHaQqA49WwsxXIF67/view" target="_blank" rel="noopener"><b><i>&#10022;</i>The Easter eggs, in order</b><span>Every secret, one by one.</span></a>
 </div>
 <div id="bridge"><a href="/phoenix/" target="_blank" rel="noopener">Follow the signal &middot; Reynard Soft7</a></div>
-<div id="hint">Double-tap to open the portal</div>
+<div id="hint">Tap the light &middot; double-tap the sky</div>
 
 <div id="gate">
   <h1>House of Shaffer</h1>
@@ -201,15 +201,24 @@ This is our stamp.<br><b id="dad">Dad</b></div>
 
     let whisper = null, shoot = null, holdAt = 0, holdDone = false;
     function nearDot(x,y){ return Math.hypot(x-dot.x(), y-dot.y()) < 80; }
-    const HOLD = 1100; let linksOn = false;
+    const HOLD = 700; let linksOn = false;
     function showLinks(on){ linksOn = on; $("links").classList.toggle("on", on); $("note").classList.toggle("dim", on || portalOn); }
     function holdStart(x,y){ holdAt = nearDot(x,y) ? performance.now() : 0; if (holdAt) buzz(); }
     function holdEnd(){ holdAt = 0; }
+    function dustTo(x0,y0,x1,y1,n){ for (let i=0;i<n;i++){ const f=Math.random(); star(x0+(x1-x0)*f+(Math.random()-.5)*26, y0+(y1-y0)*f+(Math.random()-.5)*26, false); } }
+    function openMemories(){ buzz(); showLinks(true); dustTo(dot.x(), dot.y(), dot.x(), dot.y()-180, 22); }
+    // Reynard: single tap plays the film; double-tap opens the hidden legacy layer
+    let reyT = null;
+    function reyTap(e){ e.preventDefault(); e.stopPropagation(); const url = e.currentTarget.href;
+      if (reyT){ clearTimeout(reyT); reyT = null; showLinks(false); if (!portalOn) togglePortal(); layer = -1; portalTap();
+        dustTo(dot.x(), dot.y()-180, dot.x(), dot.y(), 26); return; }
+      reyT = setTimeout(()=>{ reyT = null; location.href = url; }, 340); }
     let lastDad = 0;
     function dadTap(e){ e.preventDefault(); e.stopPropagation(); const n = Date.now(); if (n - lastDad < 500) return; lastDad = n; buzz();
       shoot = {p:0, x0:-40, y0:H*(.06+Math.random()*.08), x1:W+40, y1:H*(.30+Math.random()*.1)}; }
     $("dad").addEventListener("touchend", dadTap, {passive:false});
     $("dad").addEventListener("click", dadTap);
+    $("rey").addEventListener("touchend", reyTap, {passive:false}); $("rey").addEventListener("click", reyTap);
     // kept lights: each answer from the portal leaves a light that stays in this sky
     const LK = "shaffer-kept-lights"; let kept = [];
     try { kept = JSON.parse(localStorage.getItem(LK) || "[]"); } catch(e){}
@@ -225,7 +234,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     function inCore(x,y){ return portal > .6 && Math.hypot(x-dot.x(), y-dot.y()) < coreR(); }
     function portalTap(){ buzz(); keepLight(); layer = (layer+1) % layers.length; layerAt = performance.now();
       for (let k=0;k<3;k++) rings.push({born: performance.now() + k*260}); }
-    window.__legacy = { dad: () => !!shoot, hold: () => !!whisper, layer: () => layer, kept: () => kept.length };
+    window.__legacy = { dad: () => !!shoot, hold: () => !!whisper, mem: () => linksOn, portal: () => portalOn, layer: () => layer, kept: () => kept.length };
     let lastTap = 0;
     cv.addEventListener("touchstart", e => { const t=e.touches[0]; trail(t.clientX,t.clientY); holdDone = false;
       if (nearDot(t.clientX,t.clientY)){ e.preventDefault(); holdStart(t.clientX,t.clientY); } }, {passive:false});
@@ -235,14 +244,16 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       if (holdDone){ holdDone = false; lastTap = 0; return; }
       if (linksOn){ showLinks(false); lastTap = 0; return; }
       if (inCore(t.clientX,t.clientY)){ portalTap(); lastTap = 0; return; }
+      if (!portalOn && nearDot(t.clientX,t.clientY)){ openMemories(); lastTap = 0; return; }
       if (now-lastTap < 320){ togglePortal(); lastTap=0; }
       else { lastTap=now; buzz(); for (let i=0;i<5;i++) star(t.clientX+(Math.random()-.5)*14, t.clientY+(Math.random()-.5)*14, false); }
     }, {passive:false});
     cv.addEventListener("mousemove", e => trail(e.clientX, e.clientY));
     cv.addEventListener("mousedown", e => { holdDone = false; holdStart(e.clientX, e.clientY); }); cv.addEventListener("mouseup", holdEnd);
     cv.addEventListener("click", e => { if (holdDone){ holdDone = false; return; } if (linksOn) return showLinks(false); if (inCore(e.clientX,e.clientY)) return portalTap();
+      if (!portalOn && nearDot(e.clientX,e.clientY)) return openMemories();
       for (let i=0;i<5;i++) star(e.clientX, e.clientY, false); });
-    cv.addEventListener("dblclick", e => { if (!inCore(e.clientX,e.clientY)) togglePortal(); });
+    cv.addEventListener("dblclick", e => { if (!inCore(e.clientX,e.clientY) && !nearDot(e.clientX,e.clientY)) togglePortal(); });
 
     function frame(now){
       const t = (now - t0) / 1000;
@@ -307,7 +318,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       const dg = cx.createRadialGradient(px,py,0,px,py,22+8*b);
       dg.addColorStop(0,"rgba(255,244,215,.95)"); dg.addColorStop(.25,`rgba(240,200,130,${.5+.3*b})`); dg.addColorStop(1,"rgba(0,0,0,0)");
       cx.fillStyle=dg; cx.beginPath(); cx.arc(px,py,30+8*b,0,6.283); cx.fill();
-      if (holdAt && now - holdAt >= HOLD){ whisper = now; holdAt = 0; holdDone = true; buzz(); showLinks(true);
+      if (holdAt && now - holdAt >= HOLD){ whisper = now; holdAt = 0; holdDone = true; buzz(); dustTo(px, py-8, px, py-126, 24);
         for (let i=0;i<14;i++) star(px+(Math.random()-.5)*30, py-120+(Math.random()-.5)*30, Math.random() < .4); }
       if (holdAt){ const hp = Math.min(1,(now-holdAt)/HOLD), e = hp*hp*(3-2*hp), L = 14 + e*112;
         const fg = cx.createLinearGradient(px,py,px,py-L); fg.addColorStop(0,`rgba(255,226,170,${.15+.45*e})`); fg.addColorStop(1,`rgba(255,250,236,${.3+.7*e})`);
