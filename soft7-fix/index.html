@@ -1,0 +1,19 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
+<title>Soft7 metadata fix</title>
+<style>body{background:#0b0b10;color:#eee;font:18px system-ui;text-align:center;padding:40px 20px}button{font-size:22px;padding:18px 34px;border-radius:14px;border:0;background:#e0a526;color:#111;font-weight:700}#s{margin-top:24px;white-space:pre-wrap;word-break:break-all}</style></head>
+<body><h2>Reynard Soft7: metadata fix</h2><p>Sets the corrected card metadata. Owner wallet 0xe53b…677a only.</p>
+<button id="b">Connect and sign</button><div id="s"></div>
+<script>
+const C="0x73D7b2611509C14078e16f572bE5aC7D91879DC2",OWNER="0xe53bdb2118585d5b2cd06a117d3a036afa70677a",CHAIN="0x1237",DATA="0x55f804b30000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000006c68747470733a2f2f63646e2e6a7364656c6976722e6e65742f67682f746967657277696c6c63612f7265796e6172642d736f6674372d7365706f6c696140626333363932353138343836373238346334623832626234376465643236623830326161653162362f6d6574612f0000000000000000000000000000000000000000";
+const s=t=>document.getElementById("s").textContent=t;
+document.getElementById("b").onclick=async()=>{try{
+ if(!window.ethereum){s("Open this page inside the Robinhood Wallet or MetaMask app browser.");return;}
+ const [a]=await ethereum.request({method:"eth_requestAccounts"});
+ if(a.toLowerCase()!==OWNER){s("Connected "+a+"\nPlease switch to the 0xe53b…677a wallet and tap again.");return;}
+ try{await ethereum.request({method:"wallet_switchEthereumChain",params:[{chainId:CHAIN}]});}
+ catch(e){await ethereum.request({method:"wallet_addEthereumChain",params:[{chainId:CHAIN,chainName:"Robinhood Chain",nativeCurrency:{name:"Ether",symbol:"ETH",decimals:18},rpcUrls:["https://rpc.mainnet.chain.robinhood.com"],blockExplorerUrls:["https://robinhoodchain.blockscout.com"]}]});}
+ s("Confirm in your wallet…");
+ const h=await ethereum.request({method:"eth_sendTransaction",params:[{from:a,to:C,data:DATA,value:"0x0"}]});
+ s("Signed. Transaction:\n"+h+"\nTell Alfred: signed.");
+}catch(e){s("Stopped: "+(e.message||e));}};
+</script></body></html>
