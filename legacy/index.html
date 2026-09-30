@@ -224,7 +224,9 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     let reyT = null;
     function reyTap(e){ e.preventDefault(); e.stopPropagation(); const url = e.currentTarget.href;
       if (reyT){ clearTimeout(reyT); reyT = null; showLinks(false); if (!portalOn) togglePortal(); layer = -1; portalTap();
-        dustTo(dot.x(), dot.y()-180, dot.x(), dot.y(), 26); return; }
+        dustTo(dot.x(), dot.y()-180, dot.x(), dot.y(), 26);
+        for (let i=0;i<36;i++){ const a=Math.random()*6.283, r=20+Math.random()*120; star(dot.x()+Math.cos(a)*r, dot.y()+Math.sin(a)*r, Math.random()<.5); }
+        for (let k=0;k<5;k++) rings.push({born: performance.now() + k*180}); buzz(); return; }
       reyT = setTimeout(()=>{ reyT = null; location.href = url; }, 340); }
     let lastDad = 0;
     function dadTap(e){ e.preventDefault(); e.stopPropagation(); const n = Date.now(); if (n - lastDad < 500) return; lastDad = n; buzz();
