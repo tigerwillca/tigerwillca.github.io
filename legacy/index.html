@@ -245,19 +245,24 @@ This is our stamp.<br><b id="dad">Dad</b></div>
         s.style.left = (r.left + Math.random()*r.width) + "px"; s.style.top = (r.top + Math.random()*r.height) + "px"; s.style.fontSize = (8 + Math.random()*(spread>60?16:9)) + "px";
         const a = Math.random()*6.283, d = 10 + Math.random()*spread; s.style.setProperty("--dx", Math.cos(a)*d+"px"); s.style.setProperty("--dy", Math.sin(a)*d+"px");
         s.style.animationDelay = (Math.random()*.25)+"s"; document.body.appendChild(s); setTimeout(()=>s.remove(), 1500); } }
-    function found(el, url){ buzz(); sparkle(el, 12, 40); setTimeout(()=>play(url), 420); }
+    function startVid(url){ const v = $("vvid"); $("viewer").classList.add("vid"); v.src = url; v.muted = false; v.currentTime = 0; const pr = v.play(); if (pr) pr.catch(()=>{}); }
+    function showViewer(){ $("viewer").classList.add("on"); showLinks(false); }
+    function found(el, url){ buzz(); sparkle(el, 12, 40); if (/\.mp4$/.test(url)){ startVid(url); setTimeout(showViewer, 380); } else { $("viewer").classList.remove("vid"); $("vframe").src = url.replace(/\/view.*$/, "/preview"); setTimeout(showViewer, 250); } }
     function closeViewer(e){ if (e){ e.preventDefault(); e.stopPropagation(); } $("viewer").classList.remove("on"); $("vvid").pause(); setTimeout(()=>{ $("vframe").src = "about:blank"; }, 500); }
     $("vclose").addEventListener("click", closeViewer);
-    let reyT = null;
-    function reyTap(e){ e.preventDefault(); e.stopPropagation(); const url = e.currentTarget.dataset.src;
-      if (reyT){ clearTimeout(reyT); reyT = null; buzz(); sparkle(e.currentTarget, 34, 120);
-        $("welcome").textContent = "You found something."; $("welcome").classList.add("on","found"); setTimeout(()=>$("welcome").classList.remove("on"), 2600); setTimeout(()=>$("welcome").classList.remove("found"), 4300);
-        setTimeout(()=>{ showLinks(false); if (!portalOn) togglePortal(); layer = -1; portalTap();
-          dustTo(dot.x(), dot.y()-180, dot.x(), dot.y(), 26);
-          for (let i=0;i<36;i++){ const a=Math.random()*6.283, r=20+Math.random()*120; star(dot.x()+Math.cos(a)*r, dot.y()+Math.sin(a)*r, Math.random()<.5); }
-          for (let k=0;k<5;k++) rings.push({born: performance.now() + k*180}); buzz(); }, 900); return; }
-      const el = e.currentTarget; reyT = setTimeout(()=>{ reyT = null; found(el, url); }, 300); }
-    function memTap(e){ e.preventDefault(); e.stopPropagation(); found(e.currentTarget, e.currentTarget.dataset.src); }
+    let reyT = null, lastTouch = 0;
+    function reveal(el){ const v = $("vvid"); v.pause(); v.removeAttribute("src"); v.load(); $("viewer").classList.remove("on"); buzz(); sparkle(el, 34, 120);
+      $("welcome").textContent = "You found something."; $("welcome").classList.add("on","found"); setTimeout(()=>$("welcome").classList.remove("on"), 2600); setTimeout(()=>$("welcome").classList.remove("found"), 4300);
+      setTimeout(()=>{ showLinks(false); if (!portalOn) togglePortal(); layer = -1; portalTap();
+        dustTo(dot.x(), dot.y()-180, dot.x(), dot.y(), 26);
+        for (let i=0;i<36;i++){ const a=Math.random()*6.283, r=20+Math.random()*120; star(dot.x()+Math.cos(a)*r, dot.y()+Math.sin(a)*r, Math.random()<.5); }
+        for (let k=0;k<5;k++) rings.push({born: performance.now() + k*180}); buzz(); }, 900); }
+    function reyTap(e){ e.preventDefault(); e.stopPropagation(); const n = Date.now();
+      if (e.type === "touchend") lastTouch = n; else if (n - lastTouch < 800) return;
+      const el = e.currentTarget, url = el.dataset.src;
+      if (reyT && el._last && n - el._last < 480){ clearTimeout(reyT); reyT = null; el._last = 0; reveal(el); return; }
+      el._last = n; buzz(); sparkle(el, 12, 40); startVid(url); reyT = setTimeout(()=>{ reyT = null; showViewer(); }, 480); }
+    function memTap(e){ e.preventDefault(); e.stopPropagation(); const n = Date.now(); if (e.type === "touchend") lastTouch = n; else if (n - lastTouch < 800) return; found(e.currentTarget, e.currentTarget.dataset.src); }
     let lastDad = 0;
     function dadTap(e){ e.preventDefault(); e.stopPropagation(); const n = Date.now(); if (n - lastDad < 500) return; lastDad = n; buzz();
       shoot = {p:0, x0:-40, y0:H*(.06+Math.random()*.08), x1:W+40, y1:H*(.30+Math.random()*.1)}; }
