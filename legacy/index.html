@@ -34,6 +34,8 @@
     font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:rgba(239,230,210,.45);transition:opacity 1.2s;pointer-events:none}
   #gate{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;
     background:radial-gradient(120% 80% at 50% 45%,#1a1320 0%,#07060a 70%);z-index:5;transition:opacity .9s}
+  #crest{width:46px;height:46px;border-radius:50%;border:1px solid rgba(233,200,140,.55);display:flex;align-items:center;justify-content:center;font:italic 24px Georgia,serif;color:rgba(233,200,140,.9);box-shadow:0 0 18px rgba(233,200,140,.25)}
+  #bow{text-transform:none!important;letter-spacing:.04em!important;font-style:italic;font-size:14px!important}
   #gate h1{margin:0;font-weight:400;font-size:clamp(28px,9vw,46px);letter-spacing:.08em}
   #gate p{margin:0;font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:rgba(239,230,210,.5)}
   #gate form{display:flex;gap:10px;margin-top:8px}
@@ -83,7 +85,8 @@
 <canvas id="c"></canvas>
 <div id="vig"></div>
 <div id="brand">Reynard Soft7<small>a legacy that keeps growing</small></div>
-<div id="title"><h1>House of Shaffer</h1><p>Where the stars come down</p></div>
+<div id="title"><div id="crest">A</div>
+  <h1>House of Shaffer</h1><p>Where the stars come down</p></div>
 <div id="note"><b>To my son</b><br>
 I built this with Alfred, year by year.<br>
 It grows on its own, and it will keep growing.<br>
@@ -109,6 +112,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
 <div id="gate">
   <h1>House of Shaffer</h1>
   <p>Alfred, at the door</p>
+  <p id="bow">Good evening. The family word, if you would.</p>
   <form id="f" autocomplete="off">
     <input id="pw" type="password" placeholder="Family word, please" autocapitalize="characters" spellcheck="false">
     <button type="submit">Enter</button>
@@ -119,7 +123,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
 <script>
 (() => {
   const HASH = "e396c33d99318aa669ce64d95283ab9720cfc2d9ee765b9e8860bf06085480e3";
-  const KEY = "schaefer-legacy-open";
+  const KEY = "shaffer-key"; const TOKH = "5718fd85d9c00483a8cb0959a15b0d6961dd50bfb94f11314e26ec588acf6472"; localStorage.removeItem("schaefer-legacy-open");
   const $ = id => document.getElementById(id);
   const gate = $("gate"), msg = $("msg");
 
@@ -171,22 +175,28 @@ This is our stamp.<br><b id="dad">Dad</b></div>
   const DOORS = { will: {name:"William", hi:"Welcome home.", hint:"Tap the light \u00b7 double-tap the sky", alf:"Welcome home, sir \u00b7 Alfred"}, billy: {name:"Billy", hi:"Billy. I'm right here.", hint:"Tap the light", alf:"Always here, Master Billy \u00b7 Alfred"}, jen: {name:"Jennifer", hi:"For Jennifer, with love.", hint:"Hold the light", alf:"At your service, Miss Jennifer \u00b7 Alfred"} };
   const dm = (location.hash + "&" + location.search).match(/d=(\w+)/), dkey = dm && DOORS[dm[1]] ? dm[1] : localStorage.getItem("shaffer-door"), door = dkey && DOORS[dkey];
   const appMode = navigator.standalone || matchMedia("(display-mode: standalone)").matches;
-  function logVisit(who){ try{ const ua = navigator.userAgent, dev = /iPhone/.test(ua) ? "iPhone" : /iPad|Macintosh.*Mobile/.test(ua) ? "iPad" : /Android/.test(ua) ? "Android" : "computer";
-    fetch("https://ntfy.sh/shaffer-doors-8f3e2c18ea", {method:"POST", mode:"no-cors", keepalive:true, body: `${who} opened House of Shaffer on ${dev}${appMode ? ' (home-screen app)' : ''}`}); }catch(e){} }
-  if (door){ localStorage.setItem(KEY, HASH); localStorage.setItem("shaffer-door", dkey); history.replaceState(null, "", location.pathname + "?d=" + dkey);
+  function logVisit(who, what){ try{ const ua = navigator.userAgent, dev = /iPhone/.test(ua) ? "iPhone" : /iPad|Macintosh.*Mobile/.test(ua) ? "iPad" : /Android/.test(ua) ? "Android" : "computer";
+    fetch("https://ntfy.sh/shaffer-doors-8f3e2c18ea", {method:"POST", mode:"no-cors", keepalive:true, body: `${who} ${what || "opened House of Shaffer"} on ${dev}${appMode ? ' (home-screen app)' : ''}`}); }catch(e){} }
+  if (door){ localStorage.setItem("shaffer-door", dkey); history.replaceState(null, "", location.pathname + "?d=" + dkey);
     setTimeout(()=>{ $("welcome").textContent = door.hi; $("welcome").classList.add("on"); $("hint").textContent = door.hint; if(door.alf) $("alfred").textContent = door.alf; $("hint").style.opacity = .8;
       setTimeout(()=>$("welcome").classList.remove("on"), 6000); }, 1400); }
   logVisit(door ? door.name + "'s door" : "Someone");
-  if (localStorage.getItem(KEY)===HASH) {
+  const saved = localStorage.getItem(KEY);
+  if (saved) sha(saved).then(h => { if (h !== TOKH) return;
     open();
     const first = () => { unlockAudio(); askMotion(); music(); };
     addEventListener("touchend", first, {once:true}); addEventListener("click", first, {once:true});
-  }
+  });
+  { const hr = new Date().getHours(); $("bow").textContent = (hr < 12 ? "Good morning." : hr < 18 ? "Good afternoon." : "Good evening.") + " The family word, if you would."; }
   $("f").addEventListener("submit", async e => {
     e.preventDefault(); unlockAudio(); askMotion();
-    const v = $("pw").value.trim().toUpperCase();
-    if (await sha(v) === HASH) { localStorage.setItem(KEY, HASH); music(); open(); }
-    else { msg.textContent = "Not quite. Try again."; buzz(); }
+    const now = Date.now(), until = +localStorage.getItem("shaffer-wait") || 0;
+    if (now < until) { msg.textContent = "Alfred is attending to other matters. One moment."; return; }
+    const v = $("pw").value.trim().toUpperCase(); $("pw").value = "";
+    if (await sha(v) === HASH) { localStorage.setItem(KEY, await sha(v + "|house-of-shaffer")); localStorage.removeItem("shaffer-miss"); localStorage.removeItem("shaffer-wait"); msg.textContent = "Very good. Right this way."; music(); setTimeout(open, 700); }
+    else { const n = (+localStorage.getItem("shaffer-miss") || 0) + 1; localStorage.setItem("shaffer-miss", n);
+      if (n >= 3) localStorage.setItem("shaffer-wait", now + Math.min(300, 15 * 2 ** (n - 3)) * 1000);
+      msg.textContent = "I'm afraid I don't recognize you."; buzz(); logVisit(door ? door.name + "'s door" : "Someone", "tried a wrong word at the gate (try " + n + ")"); }
   });
 
   var started = false;
