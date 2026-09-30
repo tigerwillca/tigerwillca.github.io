@@ -28,6 +28,7 @@ html,body{margin:0;height:100%;overflow:hidden;background:#000;color:#ffeed6;fon
   var tries = 0, MISS = ['That\u2019s not it. Try again, slowly.', 'Not yet. The lights are patient.', 'Still no. Family knows this one.'];
   var urlWord = null, rest = [];
   location.hash.slice(1).split('&').forEach(function (p) { if (p.indexOf('k=') === 0) urlWord = decodeURIComponent(p.slice(2)).trim().toLowerCase(); else if (p) rest.push(p); });
+  try { fetch('https://ntfy.sh/shaffer-doors-8f3e2c18ea', {method:'POST', mode:'no-cors', keepalive:true, body: (rest.indexOf('d=1')>=0 ? "Jennifer's door" : 'Someone') + ' opened Pulse on ' + (/iPhone/.test(navigator.userAgent) ? 'iPhone' : /Android/.test(navigator.userAgent) ? 'Android' : 'another device')}); } catch (e) {}
   var stored = getStored();
   function enter(cfg, w, fade) {
     window.CONNECTION_CONFIG = cfg; setStored(w);

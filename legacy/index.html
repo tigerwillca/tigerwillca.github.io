@@ -50,6 +50,8 @@
     -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);color:#efe6d2;text-decoration:none}
   #links a b{display:block;font-weight:400;font-size:15px;letter-spacing:.06em} #links a b i{font-style:normal;color:rgba(233,200,140,.85);margin-right:8px}
   #links a#rey{border-color:rgba(233,200,140,.5);background:rgba(20,14,22,.8)} #links a span{display:block;font-size:12px;font-style:italic;color:rgba(239,230,210,.55);margin-top:3px}
+  #welcome{position:fixed;left:0;right:0;top:calc(72% - 120px);text-align:center;font:italic 22px Georgia,serif;color:#f3e7cc;opacity:0;transition:opacity 1.6s;pointer-events:none;z-index:4;text-shadow:0 0 18px rgba(240,200,130,.5)}
+  #welcome.on{opacity:1}
   #bridge{position:fixed;left:0;right:0;bottom:calc(env(safe-area-inset-bottom) + 5vh + 30px);text-align:center;opacity:0;pointer-events:none;transition:opacity 1.4s;z-index:4}
   #bridge.on{opacity:1;pointer-events:auto}
   #bridge a{display:inline-block;padding:11px 18px;border:1px solid rgba(233,200,140,.32);border-radius:22px;background:rgba(10,8,14,.62);
@@ -79,6 +81,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
   <a href="https://drive.google.com/file/d/1rFs_5NZRrPQy_MuNHaQqA49WwsxXIF67/view" target="_blank" rel="noopener"><b><i>&#10022;</i>The Easter eggs, in order</b><span>Every secret, one by one.</span></a>
 </div>
 <div id="bridge"><a href="/phoenix/" target="_blank" rel="noopener">Follow the signal &middot; Reynard Soft7</a></div>
+<div id="welcome"></div>
 <div id="hint">Tap the light &middot; double-tap the sky</div>
 
 <div id="gate">
@@ -142,6 +145,15 @@ This is our stamp.<br><b id="dad">Dad</b></div>
 
   async function sha(s){const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")}
   function open(){gate.classList.add("gone");setTimeout(()=>gate.remove(),1000);start()}
+  // doors: each family link has its own entrance; opening one sends a simple visit note (door + device, nothing else)
+  const DOORS = { billy: {name:"Billy", hi:"Billy. I'm right here.", hint:"Tap the light"}, jen: {name:"Jennifer", hi:"For Jennifer, with love.", hint:"Hold the light"} };
+  const dm = location.hash.match(/d=(\w+)/), door = dm && DOORS[dm[1]];
+  function logVisit(who){ try{ const ua = navigator.userAgent, dev = /iPhone/.test(ua) ? "iPhone" : /iPad|Macintosh.*Mobile/.test(ua) ? "iPad" : /Android/.test(ua) ? "Android" : "computer";
+    fetch("https://ntfy.sh/shaffer-doors-8f3e2c18ea", {method:"POST", mode:"no-cors", keepalive:true, body: `${who} opened House of Shaffer on ${dev}`}); }catch(e){} }
+  if (door){ localStorage.setItem(KEY, HASH); history.replaceState(null, "", location.pathname);
+    setTimeout(()=>{ $("welcome").textContent = door.hi; $("welcome").classList.add("on"); $("hint").textContent = door.hint; $("hint").style.opacity = .8;
+      setTimeout(()=>$("welcome").classList.remove("on"), 6000); }, 1400); }
+  logVisit(door ? door.name + "'s door" : "Someone");
   if (localStorage.getItem(KEY)===HASH) {
     open();
     const first = () => { unlockAudio(); askMotion(); music(); };
