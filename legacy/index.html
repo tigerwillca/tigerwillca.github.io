@@ -8,6 +8,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="House of Shaffer">
 <meta name="theme-color" content="#07060a">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="/legacy/manifest.webmanifest">
 <title>House of Shaffer</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <style>
@@ -390,5 +392,6 @@ This is our stamp.<br><b id="dad">Dad</b></div>
   }
 })();
 </script>
+<script>if("serviceWorker" in navigator) addEventListener("load",()=>navigator.serviceWorker.register("/legacy/sw.js",{scope:"/legacy/"}).catch(()=>{}));</script>
 </body>
 </html>

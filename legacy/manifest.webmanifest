@@ -1,0 +1,28 @@
+{
+ "name": "House of Shaffer",
+ "short_name": "Shaffer",
+ "start_url": "/legacy/",
+ "scope": "/legacy/",
+ "display": "standalone",
+ "orientation": "portrait",
+ "background_color": "#07060a",
+ "theme_color": "#07060a",
+ "icons": [
+  {
+   "src": "/legacy/icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png"
+  },
+  {
+   "src": "/legacy/icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png"
+  },
+  {
+   "src": "/legacy/icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ]
+}
