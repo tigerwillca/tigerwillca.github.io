@@ -195,7 +195,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     const now = Date.now(), until = +localStorage.getItem("shaffer-wait") || 0;
     if (now < until) { msg.textContent = "Alfred is attending to other matters. One moment."; return; }
     const v = $("pw").value.trim().toUpperCase(); $("pw").value = "";
-    if (await sha(v) === HASH) { localStorage.setItem(KEY, await sha(v + "|house-of-shaffer")); localStorage.removeItem("shaffer-miss"); localStorage.removeItem("shaffer-wait"); msg.textContent = "Very good. Right this way."; $("pw").blur(); music(); setTimeout(open, 700); }
+    if (await sha(v) === HASH) { localStorage.setItem(KEY, await sha(v + "|house-of-shaffer")); localStorage.removeItem("shaffer-miss"); localStorage.removeItem("shaffer-wait"); msg.textContent = "Very good. Right this way."; $("pw").blur(); setTimeout(()=>scrollTo(0,0),50); music(); setTimeout(open, 700); }
     else { const n = (+localStorage.getItem("shaffer-miss") || 0) + 1; localStorage.setItem("shaffer-miss", n);
       if (n >= 3) localStorage.setItem("shaffer-wait", now + Math.min(300, 15 * 2 ** (n - 3)) * 1000);
       msg.textContent = "I'm afraid I don't recognize you."; buzz(); logVisit(door ? door.name + "'s door" : "Someone", "tried a wrong word at the gate (try " + n + ")"); }
@@ -207,8 +207,10 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     setTimeout(()=>$("note").classList.add("on"),900);
     const cv = $("c"), cx = cv.getContext("2d");
     let W, H, DPR;
-    function size(){DPR=Math.min(2,window.devicePixelRatio||1);W=innerWidth;H=innerHeight;cv.width=W*DPR;cv.height=H*DPR;cx.setTransform(DPR,0,0,DPR,0,0)}
-    size(); addEventListener("resize", size);
+    function size(){DPR=Math.min(2,window.devicePixelRatio||1);const r=cv.getBoundingClientRect();W=Math.round(r.width)||innerWidth;H=Math.round(r.height)||innerHeight;cv.width=W*DPR;cv.height=H*DPR;cx.setTransform(DPR,0,0,DPR,0,0)}
+    size(); addEventListener("resize", size); addEventListener("orientationchange", ()=>setTimeout(size,300));
+    if (window.visualViewport) visualViewport.addEventListener("resize", ()=>{ if (!document.activeElement || document.activeElement.tagName!=="INPUT") scrollTo(0,0); size(); });
+    const fix = t => { const r = cv.getBoundingClientRect(); return {clientX: t.clientX - r.left, clientY: t.clientY - r.top}; };
 
     const dust = Array.from({length: 90}, () => ({x:Math.random(),y:Math.random(),r:Math.random()*1.4+.3,s:Math.random()*.00012+.00003,p:Math.random()*6.28}));
     const sparks = []; const seq = [3,6,9]; let si = 0, lastSpawn = 0;
@@ -311,11 +313,11 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     window.__legacy = { dad: () => !!shoot, hold: () => !!whisper, mem: () => linksOn, viewer: () => $("viewer").classList.contains("on") && ($("viewer").classList.contains("vid") ? $("vvid").src : $("vframe").src), portal: () => portalOn, layer: () => layer, kept: () => kept.length };
     let lastTap = 0;
     let tapT = 0, tapNear = false;
-    cv.addEventListener("touchstart", e => { const t=e.touches[0]; trail(t.clientX,t.clientY); holdDone = false; tapT = Date.now(); tapNear = nearDot(t.clientX,t.clientY);
+    cv.addEventListener("touchstart", e => { const t=fix(e.touches[0]); trail(t.clientX,t.clientY); holdDone = false; tapT = Date.now(); tapNear = nearDot(t.clientX,t.clientY);
       if (nearDot(t.clientX,t.clientY)){ e.preventDefault(); holdStart(t.clientX,t.clientY); } }, {passive:false});
-    cv.addEventListener("touchmove", e => { const t=e.touches[0]; trail(t.clientX,t.clientY); if (!nearDot(t.clientX,t.clientY)) holdEnd(); }, {passive:true});
+    cv.addEventListener("touchmove", e => { const t=fix(e.touches[0]); trail(t.clientX,t.clientY); if (!nearDot(t.clientX,t.clientY)) holdEnd(); }, {passive:true});
     cv.addEventListener("touchcancel", () => { holdEnd(); if (tapNear && !holdDone && !linksOn && !portalOn && Date.now()-tapT < HOLD) openMemories(); tapNear = false; }, {passive:true});
-    cv.addEventListener("touchend", e => { holdEnd(); e.preventDefault(); const now=Date.now(), t=e.changedTouches[0];
+    cv.addEventListener("touchend", e => { holdEnd(); e.preventDefault(); const now=Date.now(), t=fix(e.changedTouches[0]);
       if (holdDone){ holdDone = false; lastTap = 0; return; }
       if (linksOn){ showLinks(false); lastTap = 0; return; }
       if (inCore(t.clientX,t.clientY)){ portalTap(); lastTap = 0; return; }
@@ -323,9 +325,9 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       if (now-lastTap < 550){ togglePortal(); lastTap=0; }
       else { lastTap=now; buzz(); for (let i=0;i<5;i++) star(t.clientX+(Math.random()-.5)*14, t.clientY+(Math.random()-.5)*14, false); }
     }, {passive:false});
-    cv.addEventListener("mousemove", e => trail(e.clientX, e.clientY));
-    cv.addEventListener("mousedown", e => { holdDone = false; holdStart(e.clientX, e.clientY); }); cv.addEventListener("mouseup", holdEnd);
-    cv.addEventListener("click", e => { if (holdDone){ holdDone = false; return; } if (linksOn) return showLinks(false); if (inCore(e.clientX,e.clientY)) return portalTap();
+    cv.addEventListener("mousemove", e0 => { const e=fix(e0); trail(e.clientX, e.clientY); });
+    cv.addEventListener("mousedown", e0 => { const e=fix(e0); holdDone = false; holdStart(e.clientX, e.clientY); }); cv.addEventListener("mouseup", holdEnd);
+    cv.addEventListener("click", e0 => { const e=fix(e0); if (holdDone){ holdDone = false; return; } if (linksOn) return showLinks(false); if (inCore(e.clientX,e.clientY)) return portalTap();
       if (!portalOn && nearDot(e.clientX,e.clientY)) return openMemories();
       for (let i=0;i<5;i++) star(e.clientX, e.clientY, false); });
     cv.addEventListener("dblclick", e => { if (!inCore(e.clientX,e.clientY) && !nearDot(e.clientX,e.clientY)) togglePortal(); });
