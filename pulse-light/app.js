@@ -30,13 +30,23 @@
     ctx.strokeStyle='#F6DFA0'; ctx.shadowColor='#F6DFA0'; ctx.shadowBlur=10+18*swell; ctx.globalAlpha=.7+.25*breathe+.15*swell; ctx.beginPath(); ctx.arc(x,y,r*(1.7+swell*.35),0,Math.PI*2); ctx.stroke();
     ctx.fillStyle='#fff9da'; ctx.globalAlpha=.8+.2*breathe+.1*swell; ctx.beginPath(); ctx.arc(x,y,r*(.62+swell*.12),0,Math.PI*2); ctx.fill(); ctx.globalAlpha=1; ctx.shadowBlur=0;
   }
+  var embers = []; for (var e0=0;e0<46;e0++) embers.push({o:Math.random(), s:.35+Math.random()*.65, a:Math.random()*6.283, d:.6+Math.random()*.9});
+  function drawEmbers(x, y, r, now, w, h, grow) {
+    ctx.fillStyle=current.color; ctx.shadowColor=current.color; ctx.shadowBlur=10;
+    for (var n=0;n<embers.length;n++) { var e=embers[n], k=(now/9000*e.s + e.o) % 1, ex=x+Math.sin(e.a+now/2600*e.d)*r*(.5+k*.9), ey=y+r*1.1-k*(r*2.9+h*.12);
+      ctx.globalAlpha=Math.sin(Math.PI*k)*.55*grow; ctx.beginPath(); ctx.arc(ex,ey,.9+e.s*1.3,0,Math.PI*2); ctx.fill(); }
+    var hb=(now%1600)/1600, beat=hb<.12?Math.sin(hb/.12*Math.PI):hb>.2&&hb<.3?.6*Math.sin((hb-.2)/.1*Math.PI):0;
+    var hg=ctx.createRadialGradient(x,y-r*.1,0,x,y-r*.1,r*.7); hg.addColorStop(0,'rgba(255,236,200,'+(.22+.3*beat)*grow+')'); hg.addColorStop(1,'transparent'); ctx.globalAlpha=1; ctx.fillStyle=hg; ctx.fillRect(x-r,y-r,r*2,r*2);
+    ctx.globalAlpha=1; ctx.shadowBlur=0;
+  }
   function sourceAt(px, py, w, h) { var hit=Math.min(w,h)*.12; for(var i=0;i<sources.length;i++){var s=sources[i],dx=px-w*s.x,dy=py-h*s.y;if(dx*dx+dy*dy<hit*hit)return s;} return null; }
   function frame() {
     t += .016; var now = performance.now(), w = innerWidth, h = innerHeight, age = now - pulseAt, kick = age < 900 ? (1 - age / 900) * (0.5 + 0.5 * Math.sin(age / 145)) : 0;
     ctx.clearRect(0,0,w,h);
     for (var z=0;z<sources.length;z++) drawSource(sources[z],z,now,w,h);
     var aa = arrivalAt ? now - arrivalAt : 1e9, grow = arrivalAt ? ease((aa - 1400) / 4200) : 1;
-    var x=w/2, y=h*.47, r=Math.min(w,h)*(.18 + kick*.012)*(.55+.45*grow);
+    var x=w/2, y=h*.47, r=Math.min(w,h)*(.18 + kick*.012)*(.55+.45*grow)*(1+.018*Math.sin(now/1300));
+    if (current.embers) drawEmbers(x, y, r, now, w, h, grow);
     if (aa < 5200) { var bp = aa / 5200, ba = Math.sin(Math.PI * bp) * .5; for (var b=0;b<sources.length;b++) { var sx=w*sources[b].x, sy=h*sources[b].y, lg=ctx.createLinearGradient(sx,sy,x,y); lg.addColorStop(0,'rgba(255,249,218,'+ba+')'); lg.addColorStop(1,'rgba(255,249,218,0)'); ctx.strokeStyle=lg; ctx.lineWidth=2+3*ba; ctx.beginPath(); ctx.moveTo(sx,sy); ctx.lineTo(sx+(x-sx)*ease(bp*1.6),sy+(y-sy)*ease(bp*1.6)); ctx.stroke(); } ctx.lineWidth=1; }
     if (aa < 5600) { var R0=Math.max(w,h)*.62; ctx.fillStyle=current.color; ctx.shadowColor=current.color; ctx.shadowBlur=8; for (var m=0;m<36;m++) { var k=(aa - m*38)/4600; if (k<=0||k>=1) continue; var ang=m*2.399+.6, rad=R0+(r*.35-R0)*ease(k); ctx.globalAlpha=Math.sin(Math.PI*k)*.85; ctx.beginPath(); ctx.arc(x+Math.cos(ang+k*1.2)*rad, y+Math.sin(ang+k*1.2)*rad*1.3, 1.4+(m%3)*.5, 0, Math.PI*2); ctx.fill(); } ctx.shadowBlur=0; }
     if (arrivalAt) textIn(aa);
