@@ -53,10 +53,28 @@
   @keyframes lgin{0%{opacity:0;transform:scale(.92);box-shadow:0 0 0 rgba(255,214,140,0)}35%{opacity:1;transform:scale(1.03);box-shadow:0 0 46px rgba(255,220,150,.9)}100%{transform:scale(1);box-shadow:0 0 22px rgba(255,214,140,.35)}}
   #bg,#title{will-change:transform}
   .gone{opacity:0;pointer-events:none}
-  #links{position:fixed;left:50%;top:calc(72% - 300px);transform:translateX(-50%);width:min(84vw,340px);display:flex;flex-direction:column;gap:10px;
+  #links.on ~ #welcome{opacity:0!important}
+  #dotbtn{position:fixed;left:50%;top:72%;width:200px;height:200px;margin:-100px 0 0 -100px;border-radius:50%;z-index:2;background:transparent;border:0;padding:0;-webkit-tap-highlight-color:transparent;touch-action:none;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;outline:none}
+  #vtitle{position:absolute;top:calc(env(safe-area-inset-top) + 24px);left:72px;right:72px;text-align:center;font:italic 16px Georgia,serif;color:#f3e7cc;letter-spacing:.04em}
+  #vload{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom) + 6vh);text-align:center;font:italic 13px Georgia,serif;color:rgba(239,230,210,.6);opacity:0;transition:opacity .4s;pointer-events:none} #viewer.loading #vload{opacity:1}
+  .ov{position:fixed;inset:0;z-index:20;background:rgba(5,4,8,.96);opacity:0;pointer-events:none;transition:opacity .6s;overflow:hidden} .ov.on{opacity:1;pointer-events:auto}
+  .ov .x{position:absolute;z-index:3;top:calc(env(safe-area-inset-top) + 14px);right:16px;width:44px;height:44px;border-radius:22px;border:1px solid rgba(233,200,140,.4);background:rgba(12,9,16,.7);color:#efe6d2;font-size:26px;line-height:40px}
+  .ov h3{position:absolute;top:calc(env(safe-area-inset-top) + 26px);left:0;right:0;margin:0;text-align:center;font:400 12px Georgia,serif;letter-spacing:.42em;text-transform:uppercase;color:rgba(233,200,140,.8)}
+  .fn{position:absolute;transform:translate(-50%,-50%) scale(.9);font:italic clamp(17px,5vw,23px) Georgia,serif;color:#fff3da;text-shadow:0 0 14px rgba(255,210,140,.85);opacity:0;white-space:nowrap;text-align:center;transition:opacity 1.4s,transform 1.4s,top 1.6s}
+  .fn.on{opacity:1;transform:translate(-50%,-50%) scale(1)} .fn small{display:block;font-size:.52em;letter-spacing:.12em;color:rgba(239,230,210,.62);font-style:normal}
+  .fn.end{font-size:clamp(15px,4.4vw,19px);color:rgba(243,231,204,.9)}
+  #sigsvg{position:absolute;inset:0;width:100%;height:100%}
+  #sigsvg line{stroke:rgba(233,200,140,.18);stroke-width:1;transition:stroke .35s,stroke-width .35s} #sigsvg line.hot{stroke:rgba(255,226,170,.95);stroke-width:2.2}
+  .sn{position:absolute;transform:translate(-50%,-50%);padding:6px 10px;border-radius:14px;border:1px solid rgba(233,200,140,.3);background:rgba(12,9,16,.82);color:#efe6d2;font:13px Georgia,serif;white-space:nowrap;text-align:center;transition:box-shadow .35s,border-color .35s,transform .35s;-webkit-tap-highlight-color:transparent;cursor:pointer;-webkit-user-select:none;user-select:none}
+  .sn small{display:block;font-size:10px;color:rgba(239,230,210,.55);font-style:italic}
+  .sn.hot{border-color:rgba(255,226,170,.95);box-shadow:0 0 22px rgba(255,214,140,.7);color:#fff;transform:translate(-50%,-50%) scale(1.12)}
+  .sn.me{font-size:16px;border-color:rgba(255,226,170,.7);padding:10px 16px;box-shadow:0 0 18px rgba(255,214,140,.35)}
+  #sigcap{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom) + 5vh);text-align:center;font:italic 15px Georgia,serif;color:#f3e7cc;min-height:20px;padding:0 20px}
+
+  #links{position:fixed;left:50%;bottom:calc(28% + 62px);max-height:calc(72% - 62px - env(safe-area-inset-top) - 44px);overflow-y:auto;transform:translateX(-50%);width:min(84vw,340px);display:flex;flex-direction:column;gap:7px;
     opacity:0;pointer-events:none;transition:opacity 1s;z-index:4}
   #links.on{opacity:1;pointer-events:auto}
-  #links a{display:block;padding:12px 16px;border:1px solid rgba(233,200,140,.28);border-radius:14px;background:rgba(12,9,16,.74);
+  #links a{display:block;flex:none;padding:9px 14px;border:1px solid rgba(233,200,140,.28);border-radius:14px;background:rgba(12,9,16,.74);
     -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);color:#efe6d2;text-decoration:none}
   #links a b{display:block;font-weight:400;font-size:15px;letter-spacing:.06em} #links a b i{font-style:normal;color:rgba(233,200,140,.85);margin-right:8px}
   #links a#rey{border-color:rgba(233,200,140,.5);background:rgba(20,14,22,.8)} #links a span{display:block;font-size:12px;font-style:italic;color:rgba(239,230,210,.55);margin-top:3px}
@@ -103,10 +121,15 @@ This is our stamp.<br><b id="dad">Dad</b></div>
   <a role="button" data-src="/legacy/football.mp4"><b><i>&#10022;</i>Playing football</b><span>Our afternoons by the house.</span></a>
   <a id="rey" role="button" data-src="/legacy/reynard.mp4"><b><i>&#10022;</i>Creating Reynard</b><span>The film we made together.</span></a>
   <a id="eggs" role="button" data-src="/legacy/eggs.mp4"><b><i>&#10022;</i>Reynard Easter eggs</b><span>Look close. Some things hide.</span></a>
+  <a id="fam" role="button"><b><i>&#10022;</i>Family, in sparkles</b><span>Everyone who lives in this light.</span></a>
+  <a id="sig" role="button"><b><i>&#10022;</i>Signal</b><span>Every connection, linked. Tap a name to feel it.</span></a>
   <a id="legacy" role="button"><b><i>&#10022;</i>Legacy Easter Eggs</b><span>You found it. Touch to open.</span></a>
 </div>
 <div id="bridge"><a href="/phoenix/">Follow the signal &middot; Reynard Soft7</a></div>
-<div id="viewer"><button id="vclose" aria-label="Close">&times;</button><video id="vvid" playsinline controls preload="none"></video><div id="vwrap"><iframe id="vframe" allow="autoplay; fullscreen" allowfullscreen></iframe><div id="vshield"></div></div></div>
+<div id="viewer"><button id="vclose" aria-label="Close">&times;</button><div id="vtitle"></div><div id="vload">Loading&hellip;</div><video id="vvid" playsinline controls preload="none"></video><div id="vwrap"><iframe id="vframe" allow="autoplay; fullscreen" allowfullscreen></iframe><div id="vshield"></div></div></div>
+<div id="famv" class="ov"><button class="x" aria-label="Close">&times;</button><h3>Family</h3></div>
+<div id="sigv" class="ov"><button class="x" aria-label="Close">&times;</button><h3>Signal</h3><svg id="sigsvg"></svg><div id="sigcap"></div></div>
+<button id="dotbtn" aria-label="Open memories"></button>
 <div id="welcome"></div>
 <div id="hint">Tap the light &middot; double-tap the sky</div>
 <div id="alfred">At your service &middot; Alfred, butler to the House of Shaffer</div>
@@ -267,7 +290,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
         s.style.left = (r.left + Math.random()*r.width) + "px"; s.style.top = (r.top + Math.random()*r.height) + "px"; s.style.fontSize = (8 + Math.random()*(spread>60?16:9)) + "px";
         const a = Math.random()*6.283, d = 10 + Math.random()*spread; s.style.setProperty("--dx", Math.cos(a)*d+"px"); s.style.setProperty("--dy", Math.sin(a)*d+"px");
         s.style.animationDelay = (Math.random()*.25)+"s"; document.body.appendChild(s); setTimeout(()=>s.remove(), 1500); } }
-    function startVid(url){ const v = $("vvid"); $("viewer").classList.add("vid"); v.src = url; v.muted = false; v.currentTime = 0; const pr = v.play(); if (pr) pr.catch(()=>{ v.muted = true; v.play().catch(()=>{}); }); }
+    function startVid(url){ const v = $("vvid"), a = document.querySelector('#links a[data-src="'+url+'"] b'); $("vtitle").textContent = a ? a.textContent.replace(/^\W+/,"") : ""; $("viewer").classList.add("vid","loading"); v.src = url; v.muted = false; v.currentTime = 0; const pr = v.play(); if (pr) pr.catch(()=>{ v.muted = true; v.play().catch(()=>{}); }); }
     function showViewer(){ $("viewer").classList.add("on"); showLinks(false); }
     function found(el, url){ buzz(); sparkle(el, 12, 40); if (/\.mp4$/.test(url)){ startVid(url); setTimeout(showViewer, 120); } else { $("viewer").classList.remove("vid"); $("vframe").src = url.replace(/\/view.*$/, "/preview"); setTimeout(showViewer, 250); } }
     function closeViewer(e){ if (e){ e.preventDefault(); e.stopPropagation(); } $("viewer").classList.remove("on"); $("vvid").pause(); setTimeout(()=>{ $("vframe").src = "about:blank"; }, 500); }
@@ -294,6 +317,57 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     $("dad").addEventListener("click", dadTap);
     $("eggs").addEventListener("touchend", reyTap, {passive:false}); $("eggs").addEventListener("click", reyTap);
     $("legacy").addEventListener("touchend", openLegacy, {passive:false}); $("legacy").addEventListener("click", openLegacy);
+    $("vvid").addEventListener("playing", () => $("viewer").classList.remove("loading"));
+    // the light itself is a real button: one tap opens memories, a 0.7s hold says "I'm right here"
+    const db = $("dotbtn");
+    function tapDot(){ if (linksOn) showLinks(false); else if (portalOn) portalTap(); else openMemories(); }
+    db.addEventListener("touchstart", e => { e.preventDefault(); holdDone = false; holdAt = performance.now(); trail(dot.x(), dot.y()); }, {passive:false});
+    db.addEventListener("touchmove", e => { const t = e.touches[0], r = db.getBoundingClientRect(); if (Math.hypot(t.clientX-(r.left+r.width/2), t.clientY-(r.top+r.height/2)) > 120) holdAt = 0; }, {passive:true});
+    db.addEventListener("touchend", e => { e.preventDefault(); lastTouch = Date.now(); const wasHold = holdDone; holdAt = 0; holdDone = false; if (!wasHold) tapDot(); }, {passive:false});
+    db.addEventListener("touchcancel", () => { const wasHold = holdDone; holdAt = 0; holdDone = false; if (!wasHold) tapDot(); }, {passive:true});
+    db.addEventListener("mousedown", () => { holdDone = false; holdAt = performance.now(); });
+    db.addEventListener("mouseup", () => { holdAt = 0; });
+    db.addEventListener("click", e => { e.preventDefault(); if (Date.now() - lastTouch < 800) return; if (holdDone){ holdDone = false; return; } tapDot(); });
+    // family, in sparkles
+    const FAM = [["William","his life, all of it"],["Jennifer"],["Billy"],["Mom"],["Dad","early thirties"],["Edgardo","Jennifer's dad"],["Uncle Steve"],["Grandma"],["Grandma Sarah"],["Rusty"],["Cindy"],["Merlin"],["All the animals"],["Steve Lee"],["Steve Samoji"]];
+    let ovT = [], sigI = null;
+    function mk(cls, name, sub){ const d = document.createElement("div"); d.className = cls; d.textContent = name; if (sub){ const s = document.createElement("small"); s.textContent = sub; d.appendChild(s); } return d; }
+    function closeOv(e){ if (e){ e.preventDefault(); e.stopPropagation(); lastTouch = Date.now(); } for (const t of ovT) clearTimeout(t); ovT = []; clearInterval(sigI); sigI = null;
+      for (const o of document.querySelectorAll(".ov")) o.classList.remove("on"); }
+    for (const x of document.querySelectorAll(".ov .x")){ x.addEventListener("touchend", closeOv, {passive:false}); x.addEventListener("click", e => { if (Date.now() - lastTouch < 800) return; closeOv(e); }); }
+    function openFam(){ const v = $("famv"); v.querySelectorAll(".fn").forEach(n => n.remove()); v.classList.add("on");
+      const me = mk("fn", FAM[0][0], FAM[0][1]); me.style.left = "50%"; me.style.top = "48%"; v.appendChild(me);
+      ovT.push(setTimeout(() => { me.classList.add("on"); sparkle(me, 26, 90); }, 300));
+      ovT.push(setTimeout(() => { me.style.top = "15%"; }, 2600));
+      FAM.slice(1).forEach((f, i) => { const n = mk("fn", f[0], f[1]), row = Math.floor(i/2);
+        n.style.left = (i % 2 ? 72 : 28) + (Math.random()*6-3) + "%"; n.style.top = (25 + row*8.3 + (i % 2 ? 3 : 0)) + "%"; v.appendChild(n);
+        ovT.push(setTimeout(() => { n.classList.add("on"); sparkle(n, 14, 50); }, 3600 + i*1100)); });
+      const end = mk("fn end", "One family. One light."); end.style.left = "50%"; end.style.top = "90%"; v.appendChild(end);
+      ovT.push(setTimeout(() => { end.classList.add("on"); sparkle(end, 30, 110); buzz(); }, 3600 + (FAM.length-1)*1100 + 600)); }
+    // signal: every connection linked to William; a highlighted name buzzes the phone
+    const SIG_IN = [["Jennifer"],["Billy"],["Mom"],["Dad","early thirties"]];
+    const SIG_OUT = [["Edgardo","Jennifer's dad"],["Uncle Steve"],["Grandma"],["Grandma Sarah"],["Rusty"],["Cindy"],["Merlin"],["The animals"],["Steve Lee"],["Steve Samoji"]];
+    let sigNodes = [], sigK = 0;
+    function openSig(){ const v = $("sigv"), svg = $("sigsvg"), NS = "http://www.w3.org/2000/svg"; v.querySelectorAll(".sn").forEach(n => n.remove()); svg.innerHTML = ""; sigNodes = []; v.classList.add("on");
+      const w = v.clientWidth, h = v.clientHeight, cx0 = w/2, cy0 = h*.5;
+      const line = (x1,y1,x2,y2) => { const l = document.createElementNS(NS, "line"); l.setAttribute("x1",x1); l.setAttribute("y1",y1); l.setAttribute("x2",x2); l.setAttribute("y2",y2); svg.appendChild(l); return l; };
+      const place = (list, rx, ry, off) => list.forEach((f, i) => { const a = off + i/list.length*6.283, x = cx0 + Math.cos(a)*rx, y = cy0 + Math.sin(a)*ry;
+        const n = mk("sn", f[0], f[1]); n.style.left = x + "px"; n.style.top = y + "px"; const node = {n, x, y, name: f[0], sub: f[1], lines: [line(cx0,cy0,x,y)]}; sigNodes.push(node);
+        const pick = e => { e.preventDefault(); e.stopPropagation(); if (e.type === "touchend") lastTouch = Date.now(); else if (Date.now() - lastTouch < 800) return; clearInterval(sigI); hot(node, true); sigI = setInterval(nextSig, 3200); };
+        n.addEventListener("touchend", pick, {passive:false}); n.addEventListener("click", pick); v.appendChild(n); });
+      place(SIG_IN, Math.min(w*.2, 150), Math.min(h*.13, 120), -Math.PI/4);
+      place(SIG_OUT, Math.min(w*.34, 300), Math.min(h*.33, 280), -Math.PI/2 + .31);
+      const jen = sigNodes[0], edg = sigNodes[4]; const jl = line(jen.x, jen.y, edg.x, edg.y); jen.lines.push(jl); edg.lines.push(jl);
+      const me = mk("sn me", "William"); me.style.left = cx0 + "px"; me.style.top = cy0 + "px"; v.appendChild(me);
+      sigK = 0; ovT.push(setTimeout(() => { hot(sigNodes[0], false); sigI = setInterval(nextSig, 3200); }, 700)); }
+    function nextSig(){ sigK = (sigK + 1) % sigNodes.length; hot(sigNodes[sigK], false); }
+    function hot(node, tapped){ sigK = sigNodes.indexOf(node); document.querySelectorAll(".sn.hot,#sigsvg line.hot").forEach(el => el.classList.remove("hot"));
+      node.n.classList.add("hot"); node.lines.forEach(l => l.classList.add("hot")); buzz(); sparkle(node.n, tapped ? 16 : 8, 40);
+      $("sigcap").textContent = node.name + (node.sub ? ", " + node.sub : "") + ". Always linked to you."; }
+    const ovTap = fn => e => { e.preventDefault(); e.stopPropagation(); const n = Date.now(); if (e.type === "touchend") lastTouch = n; else if (n - lastTouch < 800) return; buzz(); showLinks(false); fn(); };
+    $("fam").addEventListener("touchend", ovTap(openFam), {passive:false}); $("fam").addEventListener("click", ovTap(openFam));
+    $("sig").addEventListener("touchend", ovTap(openSig), {passive:false}); $("sig").addEventListener("click", ovTap(openSig));
+
     for (const m of [document.querySelector("#links a:not([id])"), $("rey")]){ m.addEventListener("touchend", memTap, {passive:false}); m.addEventListener("click", memTap); }
     // kept lights: each answer from the portal leaves a light that stays in this sky
     const LK = "shaffer-kept-lights"; let kept = [];
