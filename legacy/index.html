@@ -41,6 +41,7 @@
   #mute{position:fixed;right:calc(env(safe-area-inset-right) + 16px);top:calc(env(safe-area-inset-top) + 14px);z-index:3;width:38px;height:38px;border-radius:50%;
     border:1px solid rgba(233,200,140,.3);background:rgba(255,255,255,.03);color:rgba(239,230,210,.6);font-size:16px;display:none}
   #mute.off{opacity:.35} #hapt{position:fixed;left:-99px;top:0;width:1px;height:1px;overflow:hidden;opacity:0}
+  #brand{position:fixed;left:0;right:0;top:calc(env(safe-area-inset-top) + 2.2vh);text-align:center;pointer-events:none;z-index:3;font-size:clamp(11px,3vw,13px);letter-spacing:.42em;text-transform:uppercase;color:rgba(233,200,140,.78);text-shadow:0 0 12px rgba(233,200,140,.35)}
   #bg,#title{will-change:transform}
   .gone{opacity:0;pointer-events:none}
   #links{position:fixed;left:50%;top:calc(72% - 300px);transform:translateX(-50%);width:min(84vw,340px);display:flex;flex-direction:column;gap:10px;
@@ -71,6 +72,7 @@
 <div id="bg"><span>Legacy</span></div>
 <canvas id="c"></canvas>
 <div id="vig"></div>
+<div id="brand">Reynard Soft7</div>
 <div id="title"><h1>House of Shaffer</h1><p>Where the stars come down</p></div>
 <div id="note"><b>To my son</b><br>
 I built this with Alfred, year by year.<br>
@@ -215,7 +217,8 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     }
     function portalAudioOff(){ if (!pv.length) return; const vs = pv; pv = []; vs.m.gain.setTargetAtTime(0, ac.currentTime, .6);
       setTimeout(()=>vs.forEach(o=>{try{o.stop()}catch(e){}}), 3000); }
-    function togglePortal(){ portalOn = !portalOn; portalOn ? portalAudioOn() : portalAudioOff(); buzz();
+    function openBuzz(){ try{ if (navigator.vibrate) navigator.vibrate([22,70,34,70,48]); else { $("hlab").click(); setTimeout(()=>$("hlab").click(),120); setTimeout(()=>$("hlab").click(),260); } }catch(e){} }
+    function togglePortal(){ portalOn = !portalOn; portalOn ? portalAudioOn() : portalAudioOff(); portalOn ? openBuzz() : buzz();
       $("hint").textContent = portalOn ? "Touch the light" : ""; $("hint").style.opacity = portalOn ? .8 : 0;
       if (!portalOn) layer = -1; else loadCards(); if (portalOn && linksOn) showLinks(false);
       $("bridge").classList.toggle("on", portalOn); $("note").classList.toggle("dim", portalOn || linksOn); }
