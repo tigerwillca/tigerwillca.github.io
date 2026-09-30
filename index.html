@@ -13,24 +13,34 @@ html,body{margin:0;min-height:100vh;background:#07050f;color:#F6DFA0;font-family
 .veil{position:fixed;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(7,5,15,.78),rgba(7,5,15,.42) 40%,rgba(7,5,15,.82))}
 #trail,#dot{position:fixed;left:0;top:0;z-index:4;pointer-events:none}
 #dot{width:14px;height:14px;border-radius:50%;opacity:0;background:radial-gradient(circle,#fff 0%,#E6B85C 35%,rgba(255,122,42,0) 72%);box-shadow:0 0 12px rgba(255,122,42,.85)}
-main{position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:4.5rem 1.25rem 3rem}
+main{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 1.25rem 5rem}
+.door{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4.5rem 0 2.5rem}
 h1{margin:0;font-weight:500;font-size:clamp(2rem,7vw,3.6rem);letter-spacing:-.03em;text-shadow:0 2px 18px rgba(7,5,15,.9)}
 .line{margin:.8rem 0 0;font-size:clamp(1.15rem,3.5vw,1.7rem);color:#d9c8ff;text-shadow:0 2px 14px rgba(7,5,15,.95)}
 .cap{margin:1.1rem 0 .2rem;font:.8rem ui-monospace,Menlo,monospace;letter-spacing:.08em;color:#F6DFA0;text-shadow:0 1px 8px rgba(7,5,15,.9)}
-.globe{width:min(52vw,200px);aspect-ratio:1;margin:.4rem auto 0;border-radius:50%;display:grid;place-items:center;position:relative;text-decoration:none;color:#F6DFA0;background:radial-gradient(circle at 32% 28%,rgba(246,223,160,.7),transparent 26%),radial-gradient(circle at 50% 55%,#24143f 0%,#07050f 72%);box-shadow:0 0 36px rgba(155,109,255,.4),inset 0 0 24px rgba(255,122,42,.28);overflow:hidden;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
-.globe i{position:absolute;inset:7%;border-radius:50%;background:repeating-linear-gradient(90deg,transparent 0 14px,rgba(230,184,92,.45) 14px 15px),repeating-linear-gradient(0deg,transparent 0 14px,rgba(204,255,0,.22) 14px 15px);-webkit-mask:radial-gradient(circle,#000 62%,transparent 72%);mask:radial-gradient(circle,#000 62%,transparent 72%)}
+.stage{position:relative;width:min(58vw,220px);margin:1.5rem auto 0}
+.globe{width:100%;aspect-ratio:1;margin:0;border-radius:50%;display:grid;place-items:center;position:relative;text-decoration:none;color:#F6DFA0;background:radial-gradient(circle at 32% 28%,rgba(246,223,160,.7),transparent 26%),radial-gradient(circle at 50% 55%,#24143f 0%,#07050f 72%);box-shadow:0 0 36px rgba(155,109,255,.4),inset 0 0 24px rgba(255,122,42,.28);overflow:hidden;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.globe i{position:absolute;inset:7%;border-radius:50%;background:repeating-linear-gradient(90deg,transparent 0 13px,rgba(230,184,92,.45) 13px 14px),repeating-linear-gradient(0deg,transparent 0 13px,rgba(204,255,0,.22) 13px 14px);background-size:42px 100%,100% 100%;-webkit-mask:radial-gradient(circle,#000 62%,transparent 72%);mask:radial-gradient(circle,#000 62%,transparent 72%)}
 .globe b{position:relative;z-index:1;font:.78rem ui-monospace,Menlo,monospace;font-weight:600;letter-spacing:.22em;text-transform:uppercase}
 .globe:hover,.globe:focus-visible,.globe:active{box-shadow:0 0 28px rgba(255,122,42,.75),0 0 64px rgba(155,109,255,.55);outline:none}
 .globe.zoom{transform:scale(1.18);transition:transform .45s ease}
-.hots{display:flex;justify-content:center;gap:.7rem;margin:1.15rem 0 0;padding:0;flex-wrap:wrap}
-.hots a{min-width:2.75rem;min-height:2.75rem;padding:.7rem .85rem;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;color:#140c08;background:radial-gradient(circle at 35% 30%,#fff,#E6B85C 42%,#ff7a2a);box-shadow:0 0 16px rgba(255,122,42,.85);font:.68rem ui-monospace,Menlo,monospace;font-weight:700;letter-spacing:.04em;touch-action:manipulation}
+.hots{position:absolute;inset:0;margin:0;padding:0;pointer-events:none}
+.hots a{position:absolute;z-index:2;pointer-events:auto;min-width:2.75rem;min-height:2.75rem;padding:.4rem .5rem;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;color:#140c08;background:radial-gradient(circle at 35% 30%,#fff,#E6B85C 42%,#ff7a2a);box-shadow:0 0 16px rgba(255,122,42,.85);font:.58rem ui-monospace,Menlo,monospace;font-weight:700;letter-spacing:.02em;line-height:1.1;text-align:center;touch-action:manipulation}
+.hots a:nth-child(1){left:2%;top:14%}
+.hots a:nth-child(2){right:0;top:44%}
+.hots a:nth-child(3){left:36%;bottom:4%}
 .hots a:hover,.hots a:focus-visible,.hots a:active{box-shadow:0 0 22px rgba(204,255,0,.7),0 0 28px rgba(255,122,42,.9);outline:none}
-.lights{margin:1.4rem 0 0;max-width:22rem;font-size:.95rem;color:#d9c8ff;text-shadow:0 1px 8px rgba(7,5,15,.9)}
+.lore{width:min(34rem,100%);margin:0 auto}
+.stanza{margin:0;padding:3.4rem 0}
+.stanza h2{margin:0 0 1.2rem;font:600 .68rem ui-monospace,Menlo,monospace;letter-spacing:.22em;text-transform:uppercase;color:#E6B85C;text-shadow:0 1px 8px rgba(7,5,15,.9)}
+.stanza p{margin:.5rem 0;font-size:clamp(1.02rem,2.8vw,1.22rem);line-height:1.5;color:#F6DFA0;text-shadow:0 2px 14px rgba(7,5,15,.9)}
+.stanza p.dim{color:#d9c8ff}
 .tune{position:fixed;top:1rem;right:1rem;z-index:6;border:1px solid rgba(230,184,92,.5);background:rgba(7,5,15,.72);color:#F6DFA0;border-radius:999px;padding:.55rem .8rem;font:.72rem ui-monospace,Menlo,monospace;letter-spacing:.06em;cursor:pointer;touch-action:manipulation}
-.tune:hover,.tune:focus-visible,.tune:active{box-shadow:0 0 16px rgba(204,255,0,.4);outline:none}
-@media (prefers-reduced-motion:no-preference){.globe i{animation:spin 22s linear infinite}}
+.tune:hover,.tune:focus-visible,.tune:active,.tune[aria-pressed="true"]{box-shadow:0 0 16px rgba(204,255,0,.45);outline:none}
+.tune[aria-pressed="true"]{color:#CCFF00;border-color:rgba(204,255,0,.7)}
+@media (prefers-reduced-motion:no-preference){.globe i{animation:drift 14s linear infinite}}
 @media (prefers-reduced-motion:reduce){.bg,#trail,#dot{display:none}}
-@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes drift{to{background-position:42px 0,0 0}}
 </style>
 </head>
 <body>
@@ -41,18 +51,59 @@ h1{margin:0;font-weight:500;font-size:clamp(2rem,7vw,3.6rem);letter-spacing:-.03
 <div class="veil" aria-hidden="true"></div>
 <canvas id="trail" aria-hidden="true"></canvas>
 <div id="dot" aria-hidden="true"></div>
-<button class="tune" type="button">Tune in. Three. Six. Nine.</button>
+<button class="tune" id="tune" type="button" aria-pressed="false">Tune in. Three. Six. Nine.</button>
 <main>
+<div class="door">
 <h1>Soft7 is the first door.</h1>
 <p class="line">Seven cards. One phoenix rising.</p>
 <p class="cap">Touch the signal. Enter.</p>
+<div class="stage">
 <a class="globe" id="globe" href="/phoenix/"><i aria-hidden="true"></i><b>Enter</b></a>
 <nav class="hots" aria-label="Signals">
 <a href="/phoenix/">Enter</a>
 <a href="https://opensea.io/collection/reynard-soft7" target="_blank" rel="noopener noreferrer">OpenSea</a>
 <a href="https://x.com/tigerwillca" target="_blank" rel="noopener noreferrer">X</a>
 </nav>
-<p class="lights">Seven lights. Seven nods. Find them in the signal.</p>
+</div>
+</div>
+<div class="lore">
+<section class="stanza" id="story">
+<h2>The Story</h2>
+<p>Seven cards were drawn from the fire.</p>
+<p class="dim">Tigers who hold the line. Foxes who read the dark.</p>
+<p>Each one marked in war paint. Each one a key.</p>
+</section>
+<section class="stanza" id="signal">
+<h2>The Signal</h2>
+<p>Three. Six. Nine.</p>
+<p class="dim">A frequency older than the chain it now runs on.</p>
+<p>Tune in, and the page answers.</p>
+</section>
+<section class="stanza" id="lights">
+<h2>The Seven Lights</h2>
+<p>Seven pioneers. Seven nods, never names.</p>
+<p class="dim">The arc. The orbit. The bent light. The spark. The chime.</p>
+<p class="dim">The starry swirl. The great wave.</p>
+<p>Find them in the signal.</p>
+</section>
+<section class="stanza" id="war-paint">
+<h2>War Paint</h2>
+<p>Every card carries the mark.</p>
+<p class="dim">The proofs come first. The paint tells who stayed.</p>
+</section>
+<section class="stanza" id="the-drip">
+<h2>The Drip</h2>
+<p>The phoenix does not rise all at once.</p>
+<p class="dim">The cards arrive in waves.</p>
+<p>Watch the page. The fire feeds itself.</p>
+</section>
+<section class="stanza" id="close">
+<h2>Close</h2>
+<p>This is not the end.</p>
+<p class="dim">Pulse is listening. Project X is waiting.</p>
+<p>The signal runs deeper than seven.</p>
+</section>
+</div>
 </main>
 <script>
 (function(){
@@ -60,11 +111,39 @@ h1{margin:0;font-weight:500;font-size:clamp(2rem,7vw,3.6rem);letter-spacing:-.03
   if(v){ v.muted=true; v.defaultMuted=true; v.playsInline=true; v.setAttribute('muted',''); v.setAttribute('playsinline',''); }
   var globe=document.getElementById('globe');
   if(globe){
+    addEventListener('pageshow',function(){ globe.classList.remove('zoom'); });
     globe.addEventListener('click',function(ev){
+      if(ev.button!==0||ev.metaKey||ev.ctrlKey||ev.shiftKey||ev.altKey) return;
       if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches) return;
       ev.preventDefault();
       globe.classList.add('zoom');
       setTimeout(function(){ location.href='/phoenix/'; }, 480);
+    });
+  }
+  var tune=document.getElementById('tune');
+  if(tune){
+    var AC=window.AudioContext||window.webkitAudioContext;
+    var actx, master, on=false;
+    tune.addEventListener('click',function(){
+      if(!AC) return;
+      if(!actx){
+        actx=new AC();
+        master=actx.createGain();
+        master.gain.value=0;
+        master.connect(actx.destination);
+        [1,3,6,9].forEach(function(m,i){
+          var o=actx.createOscillator(), g=actx.createGain();
+          o.type=i===0?'sine':'triangle';
+          o.frequency.value=123*m;
+          g.gain.value=i===0?0.5:0.12;
+          o.connect(g); g.connect(master); o.start();
+        });
+      }
+      if(actx.state==='suspended') actx.resume();
+      on=!on;
+      master.gain.setTargetAtTime(on?0.25:0, actx.currentTime, .03);
+      tune.setAttribute('aria-pressed', on?'true':'false');
+      try{ localStorage.setItem('soft7-signal', on?'live':'muted'); }catch(e){}
     });
   }
   if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches) return;

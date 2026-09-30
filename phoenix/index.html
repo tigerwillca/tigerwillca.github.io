@@ -116,7 +116,8 @@
   .proofs .card.sealed .seal { aspect-ratio:3/4; }
   .drip { margin-top:2.8rem; }
   .drip[hidden] { display:none !important; }
-  .drip h2 { margin:0; font-weight:500; font-size:.74rem; letter-spacing:.2em; text-transform:uppercase; color:var(--gold); text-shadow:0 1px 3px rgba(6,4,12,.9); }
+  .drip-intro { margin:0 auto .4rem; max-width:28rem; color:var(--gold-hi); font-size:1.05rem; line-height:1.5; text-shadow:0 1px 3px rgba(6,4,12,.9); }
+  .drip h2 { margin:1.15rem 0 0; font-weight:500; font-size:.74rem; letter-spacing:.2em; text-transform:uppercase; color:var(--gold); text-shadow:0 1px 3px rgba(6,4,12,.9); }
   .drip-grid { margin-top:1rem; display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:.85rem; }
   @media (max-width: 900px) { .drip-grid { grid-template-columns:repeat(3, minmax(0,1fr)); } }
   @media (max-width: 640px) { .drip-grid { grid-template-columns:repeat(2, minmax(0,1fr)); gap:.65rem; } }
@@ -224,6 +225,8 @@ var SOFT7_DRIP = [
   </div>
 
   <section class="drip" id="drip" hidden aria-label="Soft7 cards">
+    <p class="drip-intro">Reynard Soft7. Seven cards on Robinhood Chain.</p>
+    <p class="drip-intro">One every minute from 7:00. The proofs follow.</p>
     <h2>One each minute</h2>
     <div class="drip-grid" id="dripGrid"></div>
   </section>
@@ -605,7 +608,7 @@ var SOFT7_DRIP = [
     }
     var go = document.createElement('span');
     go.className = 'drip-os';
-    go.textContent = 'View on OpenSea';
+    go.textContent = token ? 'View on OpenSea' : 'View collection';
     meta.appendChild(go);
     a.appendChild(frame);
     a.appendChild(meta);
