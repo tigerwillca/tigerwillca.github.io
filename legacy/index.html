@@ -71,6 +71,7 @@
   .sn.me{font-size:16px;border-color:rgba(255,226,170,.7);padding:10px 16px;box-shadow:0 0 18px rgba(255,214,140,.35)}
 
   #sigwrap{position:absolute;inset:0;will-change:transform} #sigcv{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}
+  .door-jen #legacy,.door-jen #bridge{display:none!important}
   #sighint{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom) + 5vh + 30px);text-align:center;font:italic 12px Georgia,serif;letter-spacing:.06em;color:rgba(239,230,210,.5);pointer-events:none}
   #sigv.beat .sn.me{animation:hb .83s ease-out} #sigv.beat #sigsvg line:not(.hot){animation:hbl .83s ease-out}
   @keyframes hb{0%{transform:translate(-50%,-50%) scale(1)}12%{transform:translate(-50%,-50%) scale(1.13);box-shadow:0 0 40px rgba(255,214,140,.95)}24%{transform:translate(-50%,-50%) scale(1.02)}38%{transform:translate(-50%,-50%) scale(1.08);box-shadow:0 0 30px rgba(255,214,140,.7)}100%{transform:translate(-50%,-50%) scale(1)}}
@@ -209,7 +210,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
   const appMode = navigator.standalone || matchMedia("(display-mode: standalone)").matches;
   function logVisit(who, what){ try{ const ua = navigator.userAgent, dev = /iPhone/.test(ua) ? "iPhone" : /iPad|Macintosh.*Mobile/.test(ua) ? "iPad" : /Android/.test(ua) ? "Android" : "computer";
     fetch("https://ntfy.sh/shaffer-doors-8f3e2c18ea", {method:"POST", mode:"no-cors", keepalive:true, body: `${who} ${what || "opened House of Shaffer"} on ${dev}${appMode ? ' (home-screen app)' : ''}`}); }catch(e){} }
-  if (door){ localStorage.setItem("shaffer-door", dkey); history.replaceState(null, "", location.pathname + "?d=" + dkey);
+  if (door){ localStorage.setItem("shaffer-door", dkey); document.documentElement.classList.add("door-" + dkey); history.replaceState(null, "", location.pathname + "?d=" + dkey);
     setTimeout(()=>{ $("welcome").textContent = door.hi; $("welcome").classList.add("on"); $("hint").textContent = door.hint; if(door.alf) $("alfred").textContent = door.alf; $("hint").style.opacity = .8;
       setTimeout(()=>$("welcome").classList.remove("on"), 6000); }, 1400); }
   logVisit(door ? door.name + "'s door" : "Someone");
@@ -376,7 +377,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       relax(w, h, cx0, cy0);
       const jen = sigNodes[0], edg = sigNodes[4]; const jl = line(jen.x, jen.y, edg.x, edg.y); jen.lines.push(jl); edg.lines.push(jl);
       const me = mk("sn me", "William"); me.style.left = cx0 + "px"; me.style.top = cy0 + "px"; $("sigwrap").appendChild(me); startSigLife();
-      sigK = 0; ovT.push(setTimeout(() => { hot(sigNodes[0], false); sigI = setInterval(nextSig, 3200); }, 700)); }
+      sigK = dkey === "jen" ? 4 : 0; ovT.push(setTimeout(() => { hot(sigNodes[sigK], false); sigI = setInterval(nextSig, 3200); }, 700)); }
     function relax(w, h, cx0, cy0){ const N = sigNodes.map(o => ({o, hw: o.n.offsetWidth/2 + 5, hh: o.n.offsetHeight/2 + 5})), me = {x: cx0, y: cy0, hw: 75, hh: 32};
       for (let it = 0; it < 80; it++){ let moved = false;
         for (let i = 0; i < N.length; i++){ const A = N[i];
@@ -387,35 +388,46 @@ This is our stamp.<br><b id="dad">Dad</b></div>
         if (!moved) break; }
       for (const o of sigNodes){ o.n.style.left = o.x + "px"; o.n.style.top = o.y + "px"; o.lines[0].setAttribute("x2", o.x); o.lines[0].setAttribute("y2", o.y); } }
     function nextSig(){ sigK = (sigK + 1) % sigNodes.length; hot(sigNodes[sigK], false); }
-    function hot(node, tapped){ sigK = sigNodes.indexOf(node); document.querySelectorAll(".sn.hot,#sigsvg line.hot").forEach(el => el.classList.remove("hot"));
+    function hot(node, tapped){ sigK = sigNodes.indexOf(node); if (!reach) emT0 = performance.now(); document.querySelectorAll(".sn.hot,#sigsvg line.hot").forEach(el => el.classList.remove("hot"));
       node.n.classList.add("hot"); node.lines.forEach(l => l.classList.add("hot")); buzz(); sparkle(node.n, tapped ? 16 : 8, 40);
       $("sighint").style.opacity = MEM[node.name] ? 0 : ""; $("sigcap").textContent = MEM[node.name] ? node.name + ". " + MEM[node.name] : node.name + (node.sub ? ", " + node.sub : "") + ". Always linked to you."; }
 
     // Signal comes alive: a heartbeat, the scene tilts with the phone, and a finger of light reaches for hers
-    let hbI = null, reach = null;
+    let hbI = null, reach = null, emT0 = 0, hov = null; const BEAT = 830, MEET_MS = 1100, MEET_PX = 16, EMERGE_MS = 1600;
+    // the finger of light: it grows out of the screen (z 0 to 1), pulses with the heartbeat, faster as it nears her finger, with sparks inside the tip
+    function finger(c2, now, sx, sy, px, py, z, fade, dist, met){ const per = met ? BEAT : Math.max(260, Math.min(BEAT, 260 + dist*3.2)), hb = .5 + .5*Math.abs(Math.cos(Math.PI*now/per));
+      const g = c2.createLinearGradient(sx, sy, px, py); g.addColorStop(0, `rgba(255,226,170,${.04*fade})`); g.addColorStop(1, `rgba(255,248,230,${.8*fade*z})`);
+      c2.strokeStyle = g; c2.lineCap = "round"; c2.lineWidth = 1.5 + 4.5*z; c2.beginPath(); c2.moveTo(sx, sy);
+      const mx = (sx + px)/2 + Math.sin(now/400)*12, my = (sy + py)/2; c2.quadraticCurveTo(mx, my, px, py); c2.stroke();
+      for (let i = 0; i < 10; i++){ const f = Math.random(); c2.fillStyle = `rgba(255,236,200,${.5*fade*z*Math.random()})`; c2.beginPath(); c2.arc(sx + (px - sx)*f + (Math.random()-.5)*10, sy + (py - sy)*f + (Math.random()-.5)*10, Math.random()*1.8, 0, 6.283); c2.fill(); }
+      const ang = Math.atan2(py - my, px - mx), L = 10 + 22*z, bx = px - Math.cos(ang)*L, by = py - Math.sin(ang)*L;
+      c2.strokeStyle = `rgba(255,244,222,${.55*fade*z})`; c2.lineWidth = 6 + 12*z + 4*hb; c2.beginPath(); c2.moveTo(bx, by); c2.lineTo(px, py); c2.stroke();
+      const R = (met ? 30 : 8 + 12*z) + 9*hb, rg = c2.createRadialGradient(px, py, 0, px, py, R); rg.addColorStop(0, `rgba(255,252,240,${fade})`); rg.addColorStop(.45, `rgba(255,232,190,${.55*fade})`); rg.addColorStop(1, "rgba(255,210,140,0)");
+      c2.fillStyle = rg; c2.beginPath(); c2.arc(px, py, R, 0, 6.283); c2.fill();
+      for (let i = 0; i < 6; i++){ const a = Math.random()*6.283, rr = Math.random()*R*.55; c2.fillStyle = `rgba(255,255,255,${fade*z*Math.random()})`; c2.beginPath(); c2.arc(px + Math.cos(a)*rr, py + Math.sin(a)*rr, .6 + Math.random()*1.3, 0, 6.283); c2.fill(); }
+      if (met){ const w = (now - met)/900; c2.strokeStyle = `rgba(255,226,170,${Math.max(0, 1 - w)*fade})`; c2.lineWidth = 1.5; c2.beginPath(); c2.arc(px, py, 18 + w*70, 0, 6.283); c2.stroke(); } }
     function thump(t, f){ const o = ac.createOscillator(), g = ac.createGain(); o.type = "sine"; o.frequency.setValueAtTime(f, t); o.frequency.exponentialRampToValueAtTime(38, t+.13);
       g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.45, t+.015); g.gain.exponentialRampToValueAtTime(.0001, t+.2); o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t+.22); }
     function beatOnce(){ const v = $("sigv"); v.classList.remove("beat"); void v.offsetWidth; v.classList.add("beat");
       try { if (ac && !muted && ac.state === "running"){ const t = ac.currentTime + .01; thump(t, 72); thump(t+.24, 60); } } catch(e){} }
     function startSigLife(){ const v = $("sigv"), cv2 = $("sigcv"), c2 = cv2.getContext("2d"), dpr = Math.min(2, devicePixelRatio||1);
       cv2.width = v.clientWidth*dpr; cv2.height = v.clientHeight*dpr; c2.setTransform(dpr,0,0,dpr,0,0);
-      clearInterval(hbI); beatOnce(); hbI = setInterval(beatOnce, 830);
+      clearInterval(hbI); beatOnce(); hbI = setInterval(beatOnce, BEAT); emT0 = performance.now();
       (function life(){ if (!v.classList.contains("on")) return; const ox = tx*18, oy = ty*18; $("sigwrap").style.transform = `translate(${ox}px,${oy}px)`;
         c2.clearRect(0, 0, v.clientWidth, v.clientHeight);
-        if (reach){ const r = reach, now = performance.now(), sx = r.node.x + ox, sy = r.node.y + oy, k = Math.min(1, (now - r.t0)/1100);
-          if (!r.met){ r.px += (r.fx - r.px)*(.03 + .09*k); r.py += (r.fy - r.py)*(.03 + .09*k);
-            if (Math.hypot(r.fx - r.px, r.fy - r.py) < 16 && k >= 1){ r.met = now; try { navigator.vibrate && navigator.vibrate([18,60,28]); } catch(e){}
+        const now = performance.now(), node0 = sigNodes[sigK];
+        if (reach){ const r = reach, sx = r.node.x + ox, sy = r.node.y + oy, k = Math.min(1, (now - r.t0)/MEET_MS);
+          if (!r.met){ r.px += (r.fx - r.px)*(.035 + .1*k); r.py += (r.fy - r.py)*(.035 + .1*k);
+            const d = Math.hypot(r.fx - r.px, r.fy - r.py);
+            if (d < 90 && !r.near){ r.near = now; try { navigator.vibrate && navigator.vibrate(8); } catch(e){} }
+            if (d < MEET_PX && k >= 1){ r.met = now; try { navigator.vibrate && navigator.vibrate([18,60,28]); } catch(e){}
               sparkle({getBoundingClientRect: () => ({left: r.fx-24, top: r.fy-24, width: 48, height: 48})}, 22, 80); } }
-          else { r.px = r.fx; r.py = r.fy; }
-          const fade = r.out ? Math.max(0, 1 - (now - r.out)/1200) : 1; if (!fade){ reach = null; } else {
-            const hb = .5 + .5*Math.abs(Math.cos(Math.PI*now/830)), g = c2.createLinearGradient(sx, sy, r.px, r.py);
-            g.addColorStop(0, `rgba(255,226,170,${.05*fade})`); g.addColorStop(1, `rgba(255,248,230,${.85*fade})`);
-            c2.strokeStyle = g; c2.lineCap = "round"; c2.lineWidth = 2 + 4*k; c2.beginPath(); c2.moveTo(sx, sy);
-            c2.quadraticCurveTo((sx + r.px)/2 + Math.sin(now/400)*12, (sy + r.py)/2, r.px, r.py); c2.stroke();
-            for (let i = 0; i < 10; i++){ const f = Math.random(); c2.fillStyle = `rgba(255,236,200,${.5*fade*Math.random()})`; c2.beginPath(); c2.arc(sx + (r.px - sx)*f + (Math.random()-.5)*10, sy + (r.py - sy)*f + (Math.random()-.5)*10, Math.random()*1.8, 0, 6.283); c2.fill(); }
-            const rg = c2.createRadialGradient(r.px, r.py, 0, r.px, r.py, (r.met ? 34 : 16) + 8*hb); rg.addColorStop(0, `rgba(255,250,236,${fade})`); rg.addColorStop(1, "rgba(255,210,140,0)");
-            c2.fillStyle = rg; c2.beginPath(); c2.arc(r.px, r.py, 44, 0, 6.283); c2.fill();
-            if (r.met){ const w = (now - r.met)/900; c2.strokeStyle = `rgba(255,226,170,${Math.max(0, 1 - w)*fade})`; c2.lineWidth = 1.5; c2.beginPath(); c2.arc(r.fx, r.fy, 18 + w*70, 0, 6.283); c2.stroke(); } } }
+          else { r.px += (r.fx - r.px)*.42; r.py += (r.fy - r.py)*.42; }
+          const fade = r.out ? Math.max(0, 1 - (now - r.out)/1200) : 1; if (!fade){ reach = null; emT0 = now; }
+          else finger(c2, now, sx, sy, r.px, r.py, 1, fade, r.met ? 0 : Math.hypot(r.fx - r.px, r.fy - r.py), r.met); }
+        else if (node0){ const z = Math.min(1, (now - emT0)/EMERGE_MS), e = 1 - Math.pow(1 - z, 3), sx = node0.x + ox, sy = node0.y + oy;
+          const W = hov || {x: v.clientWidth/2 - tx*40, y: v.clientHeight*.7 - ty*40};
+          finger(c2, now, sx, sy, sx + (W.x - sx)*e*.88, sy + (W.y - sy)*e*.88, e, .75, 400, 0); }
         requestAnimationFrame(life); })(); }
     const sv = $("sigv");
     sv.addEventListener("touchstart", e => { if (e.target.closest(".sn,.x")) return; e.preventDefault(); const t = e.touches[0], node = sigNodes[sigK] || sigNodes[0]; if (!node) return;
@@ -426,6 +438,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
         $("sigcap").textContent = (r.node.name === "Edgardo" || r.node.name === "Jennifer") ? "The same touch. From her dad, to her, to Billy." : r.node.name + " reached back. Always linked to you."; }
       else $("sigcap").textContent = "Hold a little longer. " + r.node.name + " is almost there.";
       sigI = setInterval(nextSig, 3200); };
+    sv.addEventListener("mousemove", e => { hov = {x: e.clientX, y: e.clientY}; }); sv.addEventListener("mouseleave", () => { hov = null; });
     sv.addEventListener("touchend", letGo); sv.addEventListener("touchcancel", letGo);
     const ovTap = fn => e => { e.preventDefault(); e.stopPropagation(); const n = Date.now(); if (e.type === "touchend") lastTouch = n; else if (n - lastTouch < 800) return; buzz(); showLinks(false); fn(); };
     $("fam").addEventListener("touchend", ovTap(openFam), {passive:false}); $("fam").addEventListener("click", ovTap(openFam));
