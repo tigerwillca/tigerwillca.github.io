@@ -337,14 +337,14 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     db.addEventListener("mouseup", () => { holdAt = 0; });
     db.addEventListener("click", e => { e.preventDefault(); if (Date.now() - lastTouch < 800) return; if (holdDone){ holdDone = false; return; } tapDot(); });
     // family, in sparkles
-    const FAM = [["William","his life, all of it"],["Jennifer"],["Billy"],["Mom"],["Dad","early thirties"],["Edgardo","Jennifer's dad"],["Uncle Steve"],["Grandma"],["Grandma Sarah","a great grandma"],["Uncle Hal","cigars and jokes"],["Uncle Stu","pure humor"],["Pat","an all-time bond"],["Kevin","my best friend"],["Steve Lee"],["Steve Samoji"],["Cindy","my first best friend"],["Rusty"],["Sonny","so much pride"],["Merlin"],["Tutu","the faithful cat"],["All the animals"]];
+    const FAM = [["William","his life, all of it"],["Jennifer"],["Billy"],["Mom"],["Dad","early thirties"],["Edgardo","Jennifer's dad"],["Uncle Steve"],["Grandma"],["Grandma Sarah","a great grandma"],["Grandpa Hal","cigars and jokes"],["Uncle Stu","pure humor"],["Pat","an all-time bond"],["Kevin","my best friend"],["Steve Lee"],["Steve Samoji"],["Cindy","my first best friend"],["Rusty"],["Sonny","so much pride"],["Merlin"],["Tutu","the faithful cat"],["All the animals"]];
     const MEM = {"Cindy":"My first true friend. I talked to her as a baby. She lay on my chest and guarded me. \u201cYou\u2019re my best friend.\u201d",
       "Sonny":"Always proper. He wanted to be the best dog. So much pride.",
       "Tutu":"Gray and beautiful, always there. Billy said, \u201cThat\u2019s a faithful cat, \u2019cause she stayed.\u201d",
       "Kevin":"A loyal friend. He was my best friend, and I was his. Our secret handshake: pretend to smoke, flick it down, kick it out.",
       "Pat":"Critical, assertive, and good-hearted. I looked up to him. An all-time bond.",
       "Grandma Sarah":"A good friend and a great grandma.",
-      "Uncle Hal":"Always cracking jokes, full of character. He and Sarah always shared a cigar.",
+      "Grandpa Hal":"Always cracking jokes, full of character. He and Sarah always shared a cigar.",
       "Uncle Stu":"So much humor. He taught me not to take life too seriously."};
     let ovT = [], sigI = null;
     function mk(cls, name, sub){ const d = document.createElement("div"); d.className = cls; d.textContent = name; if (sub){ const s = document.createElement("small"); s.textContent = sub; d.appendChild(s); } return d; }
@@ -363,7 +363,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       ovT.push(setTimeout(() => { $("famcap").textContent = ""; end.classList.add("on"); sparkle(end, 30, 110); buzz(); }, 3600 + (FAM.length-1)*1100 + 600)); }
     // signal: every connection linked to William; a highlighted name buzzes the phone
     const SIG_IN = [["Jennifer"],["Billy"],["Mom"],["Dad","early thirties"]];
-    const SIG_OUT = [["Edgardo","Jennifer's dad"],["Uncle Steve"],["Grandma"],["Grandma Sarah"],["Uncle Hal"],["Uncle Stu"],["Pat"],["Rusty"],["Cindy"],["Sonny"],["Merlin"],["Tutu"],["The animals"],["Kevin"],["Steve Lee"],["Steve Samoji"]];
+    const SIG_OUT = [["Edgardo","Jennifer's dad"],["Uncle Steve"],["Grandma"],["Grandma Sarah"],["Grandpa Hal"],["Uncle Stu"],["Pat"],["Rusty"],["Cindy"],["Sonny"],["Merlin"],["Tutu"],["The animals"],["Kevin"],["Steve Lee"],["Steve Samoji"]];
     let sigNodes = [], sigK = 0;
     function openSig(){ const v = $("sigv"), svg = $("sigsvg"), NS = "http://www.w3.org/2000/svg"; v.querySelectorAll(".sn").forEach(n => n.remove()); svg.innerHTML = ""; sigNodes = []; v.classList.add("on");
       const w = v.clientWidth, h = v.clientHeight, cx0 = w/2, cy0 = h*.47;
