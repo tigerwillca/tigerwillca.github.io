@@ -134,7 +134,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     else { msg.textContent = "Not quite. Try again."; buzz(); }
   });
 
-  let started = false;
+  var started = false;
   function start(){
     if (started) return; started = true;
     setTimeout(()=>$("note").classList.add("on"),900);
