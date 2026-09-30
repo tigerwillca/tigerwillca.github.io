@@ -1,4 +1,5 @@
 /* Soft7 ember trail · 3 · 6 · 9. Shared by /x/ (and any page without its own #trail). */
+(function(){if(window.__hz55L)return;window.__hz55L=1;var s=document.createElement('script');s.src='/assets/hz55.js';s.async=true;(document.head||document.documentElement).appendChild(s);})();
 (function(){
   if (window.__soft7Ember) return; window.__soft7Ember = 1;
   var mm = window.matchMedia ? function(q){ return matchMedia(q).matches; } : function(){ return false; };
