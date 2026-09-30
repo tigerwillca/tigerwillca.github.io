@@ -162,6 +162,17 @@
     white-space: nowrap;
     overflow: hidden;
   }
+  .fp {
+    min-width: 0;
+    flex: 1;
+    color: var(--muted);
+    letter-spacing: .06em;
+    font: 500 .85rem/1 ui-monospace, Menlo, monospace;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    user-select: text;
+  }
   nav {
     display: flex;
     flex-wrap: wrap;
@@ -239,55 +250,55 @@
 </main>
 <script>
 (function () {
+  // Entries with text are open; entries without text stay sealed.
+  // A sealed entry may carry a fingerprint: only its short form is shown.
   var TRANSMISSIONS = [
-    { at: '2026-09-29T02:00:00.000Z', text: 'Soft7 is the first door.' },
-    { at: '2026-09-29T02:00:00.000Z', text: 'Pulse is listening.' },
-    { at: '2027-01-01T00:00:00.000Z', text: '' }
+    { text: 'Soft7 is the first door.' },
+    { text: 'Pulse is listening.' },
+    { text: '' },
+    { text: '', fingerprint: '851427ec6a231e996d0e473d18b7c86ee2147c2747f3198e8b1ecf90c2785782' }
   ];
   var GLYPH = ['\u25C7', '\u25C6', '\u2234', '\u2237', '\u25CB', '\u00B7', '\u2726', '\u25CC'];
   var log = document.getElementById('log');
-  var signature = '';
 
   function glyphRow(i) {
     var s = '', n = 11 + i * 7, k;
     for (k = 0; k < 14; k++) s += GLYPH[(n + k * 3) % GLYPH.length] + '\u2002';
     return s.trim();
   }
-  function isOpen(entry, now) {
-    var text = entry && entry.text ? String(entry.text).trim() : '';
-    if (!text) return false;
-    var t = Date.parse(entry.at);
-    if (isNaN(t)) return false;
-    return now >= t;
+  function isOpen(entry) {
+    return !!(entry && entry.text && String(entry.text).trim());
   }
-  function render(now) {
-    var sig = TRANSMISSIONS.map(function (entry) { return isOpen(entry, now) ? '1' : '0'; }).join('');
-    if (sig === signature && log.children.length) return;
-    signature = sig;
-    log.textContent = '';
-    TRANSMISSIONS.forEach(function (entry, i) {
-      var li = document.createElement('li');
-      if (isOpen(entry, now)) {
-        li.className = 'open';
-        li.textContent = String(entry.text).trim();
+  TRANSMISSIONS.forEach(function (entry, i) {
+    var li = document.createElement('li');
+    if (isOpen(entry)) {
+      li.className = 'open';
+      li.textContent = String(entry.text).trim();
+    } else {
+      li.className = 'sealed';
+      var gem = document.createElement('span');
+      gem.className = 'gem';
+      gem.setAttribute('aria-hidden', 'true');
+      li.appendChild(gem);
+      if (entry.fingerprint) {
+        var fp = String(entry.fingerprint);
+        li.setAttribute('data-sha256', fp);
+        li.setAttribute('aria-label', 'Sealed transmission, fingerprint ' + fp.slice(0, 12));
+        var mark = document.createElement('span');
+        mark.className = 'fp';
+        mark.textContent = 'sealed · ' + fp.slice(0, 12) + '…';
+        li.appendChild(mark);
       } else {
-        li.className = 'sealed';
         li.setAttribute('aria-label', 'Sealed transmission');
-        var gem = document.createElement('span');
-        gem.className = 'gem';
-        gem.setAttribute('aria-hidden', 'true');
         var glyphs = document.createElement('span');
         glyphs.className = 'glyphs';
         glyphs.setAttribute('aria-hidden', 'true');
         glyphs.textContent = glyphRow(i);
-        li.appendChild(gem);
         li.appendChild(glyphs);
       }
-      log.appendChild(li);
-    });
-  }
-  render(Date.now());
-  setInterval(function () { render(Date.now()); }, 20000);
+    }
+    log.appendChild(li);
+  });
 
   var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   var c = document.getElementById('sky');
