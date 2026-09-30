@@ -1,4 +1,4 @@
-const C="shaffer-v13";
+const C="shaffer-v14";
 const CORE=["/legacy/","/legacy/index.html","/legacy/apple-touch-icon.png","/legacy/icon-192.png","/legacy/icon-512.png","/legacy/manifest.webmanifest"];
 self.addEventListener("install",e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting()))});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
