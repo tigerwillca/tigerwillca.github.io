@@ -43,11 +43,13 @@
   #mute.off{opacity:.35} #hapt{position:fixed;left:-99px;top:0;width:1px;height:1px;overflow:hidden;opacity:0}
   #bg,#title{will-change:transform}
   .gone{opacity:0;pointer-events:none}
+  #vig{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 46%,rgba(0,0,0,0) 52%,rgba(0,0,0,.6) 100%)}
 </style>
 </head>
 <body>
 <div id="bg"><span>Legacy</span></div>
 <canvas id="c"></canvas>
+<div id="vig"></div>
 <div id="title"><h1>House of Shaffer</h1><p>Where the stars come down</p></div>
 <div id="note"><b>To my son</b><br>
 I built this with Alfred, year by year.<br>
@@ -167,40 +169,58 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     function portalAudioOn(){
       unlockAudio(); if (!ac || pv.length) return;
       const m = ac.createGain(); m.gain.value = 0; m.connect(ac.destination);
-      [[55,.5],[165,.16],[330,.07],[495,.04]].forEach(([f,g]) => {
+      const st = ac.currentTime + .05;  // pairs 0.55 Hz apart beat together: sound breathes at 0.55 Hz
+      [[55,.3],[55.55,.3],[165,.09],[165.55,.09],[330,.04],[330.55,.04]].forEach(([f,g]) => {
         const o = ac.createOscillator(), gn = ac.createGain(); o.type="sine"; o.frequency.value=f; gn.gain.value=g;
-        o.connect(gn); gn.connect(m); o.start(); pv.push(o); });
-      pv.m = m; m.gain.setTargetAtTime(.35, ac.currentTime, 1.2);
+        o.connect(gn); gn.connect(m); o.start(st); pv.push(o); });
+      pv.m = m; pv.t0 = st; m.gain.setTargetAtTime(.35, ac.currentTime, 1.2);
     }
     function portalAudioOff(){ if (!pv.length) return; const vs = pv; pv = []; vs.m.gain.setTargetAtTime(0, ac.currentTime, .6);
       setTimeout(()=>vs.forEach(o=>{try{o.stop()}catch(e){}}), 3000); }
     function togglePortal(){ portalOn = !portalOn; portalOn ? portalAudioOn() : portalAudioOff(); buzz();
-      $("hint").style.opacity = 0; $("note").classList.toggle("dim", portalOn); }
+      $("hint").textContent = portalOn ? "Touch the light" : ""; $("hint").style.opacity = portalOn ? .8 : 0;
+      if (!portalOn) layer = -1; $("note").classList.toggle("dim", portalOn); }
 
-    let whisper = null, shoot = null, holdT = null;
-    let holdAt = 0;
+    let whisper = null, shoot = null, holdAt = 0, holdDone = false;
     function nearDot(x,y){ return Math.hypot(x-dot.x(), y-dot.y()) < 80; }
-    function holdStart(x,y){ clearTimeout(holdT); holdAt = 0; if (nearDot(x,y)){ holdAt = performance.now();
-      holdT = setTimeout(() => { whisper = performance.now(); holdAt = 0; buzz(); }, 2000); } }
-    function holdEnd(){ clearTimeout(holdT); holdAt = 0; }
+    function holdStart(x,y){ holdAt = nearDot(x,y) ? performance.now() : 0; }
+    function holdEnd(){ holdAt = 0; }
     let lastDad = 0;
     function dadTap(e){ e.preventDefault(); e.stopPropagation(); const n = Date.now(); if (n - lastDad < 500) return; lastDad = n; buzz();
       shoot = {p:0, x0:-40, y0:H*(.06+Math.random()*.08), x1:W+40, y1:H*(.30+Math.random()*.1)}; }
     $("dad").addEventListener("touchend", dadTap, {passive:false});
     $("dad").addEventListener("click", dadTap);
-    window.__legacy = { dad: () => !!shoot, hold: () => !!whisper };
+    // kept lights: each answer from the portal leaves a light that stays in this sky
+    const LK = "shaffer-kept-lights"; let kept = [];
+    try { kept = JSON.parse(localStorage.getItem(LK) || "[]"); } catch(e){}
+    function keepLight(){ if (kept.length >= 77) return; kept.push([.06+Math.random()*.88, .05+Math.random()*.5, Math.random()*6.28]);
+      try { localStorage.setItem(LK, JSON.stringify(kept)); } catch(e){} }
+    const layers = ["You found me.", "Every time you come back, I'm here.", "Look up tonight. The steady one is me.", "We don't end. We just move the light."];
+    let layer = -1, layerAt = 0; const inflow = [], rings = []; let lastBeat = 0;
+    function beat(now){ if (ac && pv.length && pv.t0 != null) return Math.abs(Math.cos(Math.PI*.55*(ac.currentTime - pv.t0)));
+      return Math.abs(Math.cos(Math.PI*.55*now/1000)); }
+    function portalHue(t){ const st=[42,338,276,232,42], u=(t/12)%4, i=Math.floor(u), f=u-i, e=f*f*(3-2*f), d=((st[i+1]-st[i]+540)%360)-180; return (st[i]+d*e+360)%360; }
+    function coreR(){ return Math.max(64, Math.min(W,H)*.38*.62); }
+    function inCore(x,y){ return portal > .6 && Math.hypot(x-dot.x(), y-dot.y()) < coreR(); }
+    function portalTap(){ buzz(); keepLight(); layer = (layer+1) % layers.length; layerAt = performance.now();
+      for (let k=0;k<3;k++) rings.push({born: performance.now() + k*260}); }
+    window.__legacy = { dad: () => !!shoot, hold: () => !!whisper, layer: () => layer, kept: () => kept.length };
     let lastTap = 0;
-    cv.addEventListener("touchstart", e => { const t=e.touches[0]; trail(t.clientX,t.clientY); holdStart(t.clientX,t.clientY); }, {passive:true});
+    cv.addEventListener("touchstart", e => { const t=e.touches[0]; trail(t.clientX,t.clientY); holdDone = false;
+      if (nearDot(t.clientX,t.clientY)){ e.preventDefault(); holdStart(t.clientX,t.clientY); } }, {passive:false});
     cv.addEventListener("touchmove", e => { const t=e.touches[0]; trail(t.clientX,t.clientY); if (!nearDot(t.clientX,t.clientY)) holdEnd(); }, {passive:true});
     cv.addEventListener("touchcancel", holdEnd, {passive:true});
-    cv.addEventListener("touchend", e => { holdEnd(); const now=Date.now(), t=e.changedTouches[0];
+    cv.addEventListener("touchend", e => { holdEnd(); e.preventDefault(); const now=Date.now(), t=e.changedTouches[0];
+      if (holdDone){ holdDone = false; lastTap = 0; return; }
+      if (inCore(t.clientX,t.clientY)){ portalTap(); lastTap = 0; return; }
       if (now-lastTap < 320){ togglePortal(); lastTap=0; }
       else { lastTap=now; buzz(); for (let i=0;i<5;i++) star(t.clientX+(Math.random()-.5)*14, t.clientY+(Math.random()-.5)*14, false); }
-      e.preventDefault(); }, {passive:false});
+    }, {passive:false});
     cv.addEventListener("mousemove", e => trail(e.clientX, e.clientY));
-    cv.addEventListener("mousedown", e => holdStart(e.clientX, e.clientY)); cv.addEventListener("mouseup", holdEnd);
-    cv.addEventListener("click", e => { for (let i=0;i<5;i++) star(e.clientX, e.clientY, false); });
-    cv.addEventListener("dblclick", togglePortal);
+    cv.addEventListener("mousedown", e => { holdDone = false; holdStart(e.clientX, e.clientY); }); cv.addEventListener("mouseup", holdEnd);
+    cv.addEventListener("click", e => { if (holdDone){ holdDone = false; return; } if (inCore(e.clientX,e.clientY)) return portalTap();
+      for (let i=0;i<5;i++) star(e.clientX, e.clientY, false); });
+    cv.addEventListener("dblclick", e => { if (!inCore(e.clientX,e.clientY)) togglePortal(); });
 
     function frame(now){
       const t = (now - t0) / 1000;
@@ -223,22 +243,45 @@ This is our stamp.<br><b id="dad">Dad</b></div>
         if (s.life <= 0 || s.y > H+10){ stars.splice(i,1); continue; } drawStar(s, t, tiltX*9, tiltY*9); }
       portal += ((portalOn?1:0) - portal) * .045;
       const px = dot.x(), py = dot.y();
+      for (const k of kept){ const x = k[0]*W + tiltX*6, y = k[1]*H + tiltY*6, al = .55 + .25*Math.sin(t*.7 + k[2]);
+        const kg = cx.createRadialGradient(x,y,0,x,y,8); kg.addColorStop(0,`rgba(255,240,205,${al})`); kg.addColorStop(.25,`rgba(255,228,175,${al*.5})`); kg.addColorStop(1,"rgba(255,220,160,0)");
+        cx.fillStyle = kg; cx.beginPath(); cx.arc(x,y,8,0,6.283); cx.fill(); }
       if (portal > .01){
-        const R = Math.min(W,H) * .36 * portal;
-        const g = cx.createRadialGradient(px,py,0,px,py,R);
-        g.addColorStop(0,`rgba(255,236,190,${.55*portal})`); g.addColorStop(.35,`rgba(190,120,255,${.28*portal})`);
-        g.addColorStop(.75,`rgba(60,40,120,${.22*portal})`); g.addColorStop(1,"rgba(0,0,0,0)");
-        cx.fillStyle=g; cx.beginPath(); cx.arc(px,py,R,0,6.283); cx.fill();
-        cx.lineWidth=1.2;
-        for (let k=0;k<3;k++){ const rr = R*(.45+.18*k) + Math.sin(t*1.1+k*2)*4; cx.strokeStyle=`rgba(236,208,150,${(.35-.08*k)*portal})`;
-          cx.beginPath(); cx.arc(px,py,Math.max(0,rr),t*(.3+.15*k),t*(.3+.15*k)+4.4); cx.stroke(); }
-        for (let i=0;i<9;i++){ const a=t*.6+i*.698, rr=R*.7; cx.fillStyle=`rgba(255,230,180,${.6*portal})`;
-          cx.beginPath(); cx.arc(px+Math.cos(a)*rr, py+Math.sin(a)*rr*.92, 1.6, 0, 6.283); cx.fill(); }
+        const R = Math.min(W,H) * .38 * portal, bt = beat(now), hue = portalHue(t), Rb = R*(.93 + .07*bt);
+        cx.fillStyle = `hsla(${hue},55%,35%,${.08*portal*(.5 + .5*bt)})`; cx.fillRect(0,0,W,H);
+        const g = cx.createRadialGradient(px,py,0,px,py,Rb*1.4);
+        g.addColorStop(0, `hsla(${hue},35%,3%,${.96*portal})`);
+        g.addColorStop(.3, `hsla(${hue},50%,8%,${.92*portal})`);
+        g.addColorStop(.44, `hsla(${hue},85%,${50 + 18*bt}%,${(.5 + .4*bt)*portal})`);
+        g.addColorStop(.52, `hsla(${(hue+25)%360},80%,${62 + 14*bt}%,${(.35 + .3*bt)*portal})`);
+        g.addColorStop(.7, `hsla(${(hue+50)%360},60%,25%,${.18*portal})`);
+        g.addColorStop(1, "rgba(0,0,0,0)");
+        cx.fillStyle = g; cx.beginPath(); cx.arc(px,py,Rb*1.4,0,6.283); cx.fill();
+        cx.globalCompositeOperation = "lighter";
+        if (portalOn && inflow.length < 150) for (let k=0;k<3;k++) inflow.push({a:Math.random()*6.283, r:R*(1.2 + Math.random()*.6), s:.35 + Math.random()*.7});
+        for (let i=inflow.length-1;i>=0;i--){ const q = inflow[i], pull = R/(q.r + 12);
+          q.r -= q.s*(.5 + pull*1.1); q.a += .01*q.s*(1 + pull*2.2);
+          if (q.r < R*.1 || portal < .05){ inflow.splice(i,1); continue; }
+          const al = Math.min(1,(R*1.8 - q.r)/(R*.5)) * Math.min(1, q.r/(R*.35)) * portal;
+          cx.fillStyle = `hsla(${(hue + q.r/R*35)%360},90%,78%,${.5*al})`;
+          cx.beginPath(); cx.arc(px + Math.cos(q.a)*q.r, py + Math.sin(q.a)*q.r*.94, .9 + .5*q.s, 0, 6.283); cx.fill(); }
+        if (bt > .985 && now - lastBeat > 900){ lastBeat = now; rings.push({born: now}); }
+        for (let i=rings.length-1;i>=0;i--){ const e = (now - rings[i].born)/2800; if (e < 0) continue; if (e > 1){ rings.splice(i,1); continue; }
+          cx.strokeStyle = `hsla(${hue},75%,82%,${(1-e)*.42*portal})`; cx.lineWidth = .4 + 1.2*(1-e);
+          cx.beginPath(); cx.arc(px,py, R*.62 + e*R*1.2, 0, 6.283); cx.stroke(); }
+        cx.globalCompositeOperation = "source-over";
+        const tp = Math.max(0, Math.min(1, (portal - .6)/.4)); cx.textAlign = "center";
+        if (layer < 0){ cx.font = "italic 18px Georgia, serif"; cx.fillStyle = `rgba(255,244,222,${tp*(.4 + .45*bt)})`; cx.fillText("Find me here", px, py + 58); }
+        else { const la = Math.min(1, (now - layerAt)/1400);
+          cx.font = "italic 19px Georgia, serif"; cx.fillStyle = `rgba(255,244,222,${tp*la*(.78 + .2*bt)})`; cx.fillText(layers[layer], px, py + 58);
+          cx.font = "11px Georgia, serif"; cx.fillStyle = `rgba(233,200,140,${tp*la*.6})`;
+          cx.fillText(kept.length + (kept.length === 1 ? " light kept" : " lights kept"), px, py + 82); }
       }
       const b = .5 + .5*Math.sin(t*2*Math.PI*.55);
       const dg = cx.createRadialGradient(px,py,0,px,py,22+8*b);
       dg.addColorStop(0,"rgba(255,244,215,.95)"); dg.addColorStop(.25,`rgba(240,200,130,${.5+.3*b})`); dg.addColorStop(1,"rgba(0,0,0,0)");
       cx.fillStyle=dg; cx.beginPath(); cx.arc(px,py,30+8*b,0,6.283); cx.fill();
+      if (holdAt && now - holdAt >= 2000){ whisper = now; holdAt = 0; holdDone = true; buzz(); }
       if (holdAt){ const hp = Math.min(1,(now-holdAt)/2000); cx.strokeStyle=`rgba(255,236,190,${.25+.6*hp})`; cx.lineWidth=2;
         cx.beginPath(); cx.arc(px,py,40,-Math.PI/2,-Math.PI/2+hp*6.283); cx.stroke(); }
       if (whisper){ const w = (now - whisper)/1000, a = w < 1.5 ? w/1.5 : w < 4.5 ? 1 : Math.max(0, 1-(w-4.5)/1.5);
