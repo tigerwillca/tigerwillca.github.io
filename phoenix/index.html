@@ -127,6 +127,7 @@
   .drip-card img { display:block; width:100%; aspect-ratio:682/1024; object-fit:cover; object-position:center 18%; border-radius:13px; background:#07060f; }
   .drip-meta { padding:.55rem .15rem 0; text-align:center; }
   .drip-name { display:block; font:.68rem ui-monospace, Menlo, monospace; letter-spacing:.02em; color:var(--gold-hi); text-shadow:0 1px 3px rgba(6,4,12,.9); }
+  .drip-line { display:block; margin-top:.35rem; font:.74rem/1.4 system-ui,sans-serif; letter-spacing:0; text-transform:none; color:#d9c8ff; text-shadow:0 1px 3px rgba(6,4,12,.9); }
   .drip-preview { display:block; margin-top:.2rem; font:.62rem ui-monospace, Menlo, monospace; letter-spacing:.16em; text-transform:uppercase; color:#c9b6ff; }
   .drip-os { display:inline-block; margin-top:.45rem; padding:.32rem .65rem; border-radius:999px; background:#E6B85C; color:#140c08; font:.62rem ui-monospace, Menlo, monospace; font-weight:700; letter-spacing:.12em; text-transform:uppercase; }
   .drip-proof .drip-frame { background:linear-gradient(155deg,#d9c8ff 0%, #6b3fa0 42%, #E6B85C 78%, #ff7a2a 100%); box-shadow:0 0 0 1px rgba(155,109,255,.45), 0 0 22px rgba(107,63,160,.35), 0 0 28px rgba(230,184,92,.2); }
@@ -547,6 +548,20 @@ var SOFT7_DRIP = [
     if (q) { var t = Date.parse(q); if (!isNaN(t)) return t; }
     return Date.now();
   }
+  var LINES = [
+    'The first door. Where the fire learned its name.',
+    'The watcher at the threshold. It sees what the dark keeps.',
+    'The ember that refused to go out.',
+    'Keeper of the quiet signal.',
+    'Halfway through the gate. The heat is rising.',
+    'The one who listens between the notes.',
+    'The seventh light. The door closes. The phoenix rises.',
+    'War paint, the first mark.',
+    'The pattern deepens.',
+    'Fire drawn across the face.',
+    'The mark of those who stay.',
+    'The last proof before the rise.'
+  ];
   function mount(slot, i){
     var src = fullSrc(slot), sm = smSrc(slot);
     if (!src) return;
@@ -577,6 +592,10 @@ var SOFT7_DRIP = [
     h.className = 'drip-name';
     h.textContent = name;
     meta.appendChild(h);
+    var line = document.createElement('span');
+    line.className = 'drip-line';
+    line.textContent = LINES[i] || '';
+    meta.appendChild(line);
     if (!token) {
       var prev = document.createElement('span');
       prev.className = 'drip-preview';
