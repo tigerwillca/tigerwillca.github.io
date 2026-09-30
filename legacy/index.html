@@ -193,7 +193,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     const now = Date.now(), until = +localStorage.getItem("shaffer-wait") || 0;
     if (now < until) { msg.textContent = "Alfred is attending to other matters. One moment."; return; }
     const v = $("pw").value.trim().toUpperCase(); $("pw").value = "";
-    if (await sha(v) === HASH) { localStorage.setItem(KEY, await sha(v + "|house-of-shaffer")); localStorage.removeItem("shaffer-miss"); localStorage.removeItem("shaffer-wait"); msg.textContent = "Very good. Right this way."; music(); setTimeout(open, 700); }
+    if (await sha(v) === HASH) { localStorage.setItem(KEY, await sha(v + "|house-of-shaffer")); localStorage.removeItem("shaffer-miss"); localStorage.removeItem("shaffer-wait"); msg.textContent = "Very good. Right this way."; $("pw").blur(); music(); setTimeout(open, 700); }
     else { const n = (+localStorage.getItem("shaffer-miss") || 0) + 1; localStorage.setItem("shaffer-miss", n);
       if (n >= 3) localStorage.setItem("shaffer-wait", now + Math.min(300, 15 * 2 ** (n - 3)) * 1000);
       msg.textContent = "I'm afraid I don't recognize you."; buzz(); logVisit(door ? door.name + "'s door" : "Someone", "tried a wrong word at the gate (try " + n + ")"); }
@@ -247,7 +247,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       $("bridge").classList.toggle("on", portalOn); $("note").classList.toggle("dim", portalOn || linksOn); }
 
     let whisper = null, shoot = null, holdAt = 0, holdDone = false;
-    function nearDot(x,y){ return Math.hypot(x-dot.x(), y-dot.y()) < 80; }
+    function nearDot(x,y){ return Math.hypot(x-dot.x(), y-dot.y()) < 110; }
     const HOLD = 700; let linksOn = false;
     function showLinks(on){ linksOn = on; if (!on) $("legacy").classList.remove("show"); $("links").classList.toggle("on", on); $("note").classList.toggle("dim", on || portalOn); }
     function holdStart(x,y){ holdAt = nearDot(x,y) ? performance.now() : 0; if (holdAt) buzz(); }
