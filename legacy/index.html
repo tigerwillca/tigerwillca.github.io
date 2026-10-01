@@ -198,8 +198,8 @@
   .pop{animation:alv 1.7s cubic-bezier(.2,.8,.3,1)} @keyframes alv{0%{scale:1}22%{scale:1.3;filter:brightness(1.7)}100%{scale:1;filter:none}}
   body.mic .sn,body.mic .cn.on,body.mic .fn.on{scale:calc(1 + var(--vk,0)*.35);filter:brightness(calc(1 + var(--vk,0)*1.1))}
   #mic{position:fixed;z-index:26;left:12px;top:calc(env(safe-area-inset-top) + 66px);width:44px;height:44px;padding:0;border:0;background:transparent;display:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
-  #mic::before{content:"";position:absolute;left:17px;top:17px;width:10px;height:10px;border-radius:50%;border:1px solid rgba(233,200,140,.3)}
-  body.inview #mic{display:block} #mic.on::before{border-color:rgba(255,226,170,.8);box-shadow:0 0 10px rgba(255,214,140,.6);animation:hb .83s ease-out infinite}
+  #mic svg{position:absolute;left:12px;top:12px;width:20px;height:20px;stroke:rgba(233,200,140,.38);stroke-width:1.6;stroke-linecap:round;fill:none;transition:stroke .4s}
+  body.inview #mic{display:block} #mic.on svg{stroke:rgba(255,226,170,.95);filter:drop-shadow(0 0 5px rgba(255,214,140,.8));transform-origin:50% 50%;animation:mich .83s ease-out infinite} @keyframes mich{0%,100%{transform:scale(1)}12%{transform:scale(1.18)}30%{transform:scale(1.05)}}
   .fn.end{white-space:normal;width:min(88vw,420px)}
   #famv .fn{font-size:clamp(14px,4.2vw,20px)} #famv .fn small{display:none} #famv .fn.big{font-size:clamp(16px,4.9vw,23px)} #famv .fn.end{font-size:clamp(14px,4vw,18px)} #famcap{top:84%}
   .dave>.au{background:radial-gradient(closest-side,rgba(170,236,255,.34),rgba(170,236,255,0));animation-duration:3.32s} .dave{text-shadow:0 0 8px rgba(0,0,0,.9),0 0 12px rgba(170,236,255,.55)} .cn.dave::before,.sn.dave{box-shadow:0 0 10px 2px rgba(170,236,255,.6)}
@@ -220,7 +220,7 @@
 <link rel="alternate icon" href="/legacy/favicon.ico?v=31">
 </head>
 <body>
-<div id="bg"><span>Legacy</span></div>
+<div id="bg"></div>
 <canvas id="c"></canvas>
 <div id="vig"></div>
 <div id="brand">Reynard Soft7<small>a legacy that keeps growing</small></div>
@@ -260,7 +260,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
 <div id="welcome"></div>
 <div id="hint" style="opacity:0"></div>
 <div id="toast" role="status"></div>
-<canvas id="alivecv" aria-hidden="true"></canvas><div id="lpulse" aria-hidden="true"></div><button id="mic" aria-label="Let the signal listen to your voice"></button>
+<canvas id="alivecv" aria-hidden="true"></canvas><div id="lpulse" aria-hidden="true"></div><button id="mic" aria-label="Listen: let the lights answer your voice" aria-pressed="false"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 9v2M7.3 7v6M10.6 5v10M13.9 7.5v5M17 9v2"/></svg></button>
 <div id="alfred">At your service &middot; Alfred, butler to the House of Shaffer</div>
 
 <div id="gate">
@@ -295,14 +295,13 @@ This is our stamp.<br><b id="dad">Dad</b></div>
   // permissions are asked once per session, on the entry tap, never on each tap: a session flag remembers the answer across reloads
   const ssGet = k => { try { return sessionStorage.getItem(k); } catch(e){ return null; } }, ssSet = (k, v) => { try { sessionStorage.setItem(k, v); } catch(e){} };
   let micStream = null, micP = null, gumCalls = 0;
-  function micAcquire(){ if (micStream) return Promise.resolve(micStream); if (micP) return micP;   // ONE shared mic stream for the whole session
-    const md = navigator.mediaDevices; if (!md || !md.getUserMedia || ssGet("shaffer_mic_asked") === "denied" || localStorage.getItem("shaffer-mic") === "no") return Promise.resolve(null);
-    const q = navigator.permissions && navigator.permissions.query ? navigator.permissions.query({name: "microphone"}).then(r => r.state, () => "prompt") : Promise.resolve("prompt");
-    micP = q.then(st => { if (st === "denied"){ ssSet("shaffer_mic_asked", "denied"); return null; } if (st !== "granted" && ssGet("shaffer_mic_asked")) return null;   // asked already this session: never re-prompt
-      ssSet("shaffer_mic_asked", "1"); gumCalls++;
-      return md.getUserMedia({audio: {echoCancellation: true, noiseSuppression: false, autoGainControl: false}}).then(m => { micStream = m; ssSet("shaffer_mic_asked", "granted"); return m; },
-        () => { ssSet("shaffer_mic_asked", "denied"); try { localStorage.setItem("shaffer-mic", "no"); } catch(e){} return null; }); });
+  function micAcquire(tap){ if (micStream) return Promise.resolve(micStream); if (micP) return micP;   // ONE shared mic stream for the whole session
+    if (!tap) return Promise.resolve(null);   // never asked automatically: only a tap on the listen toggle opens the mic
+    const md = navigator.mediaDevices; if (!md || !md.getUserMedia) return Promise.resolve(null);
+    gumCalls++; micP = md.getUserMedia({audio: {echoCancellation: true, noiseSuppression: false, autoGainControl: false}}).then(m => { micStream = m; micP = null; ssSet("shaffer_mic_asked", "granted"); return m; },
+      () => { micP = null; ssSet("shaffer_mic_asked", "denied"); try { localStorage.setItem("shaffer-mic", "no"); } catch(e){} return null; });
     return micP; }
+  function micRelease(){ try { if (micStream) micStream.getTracks().forEach(t => t.stop()); } catch(e){} micStream = null; micP = null; }
   let spkPrimed = false; function primeSpeech(){ if (spkPrimed || !window.speechSynthesis) return; spkPrimed = true; try { const u = new SpeechSynthesisUtterance(" "); u.volume = 0; speechSynthesis.speak(u); } catch(e){} }   // iOS: speech unlocked by the entry tap
   function askMotion(){
     if (motionAsked) return; motionAsked = true;
@@ -386,7 +385,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
   const saved = localStorage.getItem(KEY);
   if (saved) sha(saved).then(h => { if (h !== TOKH) return;
     open();
-    const first = () => { unlockAudio(); askMotion(); micAcquire(); primeSpeech(); };
+    const first = () => { unlockAudio(); askMotion(); primeSpeech(); };
     addEventListener("touchend", first, {once:true}); addEventListener("click", first, {once:true});
   });
   { const hr = new Date().getHours(); $("bow").textContent = (hr < 12 ? "Good morning." : hr < 18 ? "Good afternoon." : "Good evening.") + " The family word, if you would."; }
@@ -395,7 +394,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     const now = Date.now(), until = +localStorage.getItem("shaffer-wait") || 0;
     if (now < until) { msg.textContent = "Alfred is attending to other matters. One moment."; return; }
     const v = $("pw").value.trim().toUpperCase(); $("pw").value = "";
-    if (await sha(v) === HASH) { const k1 = await sha(v + "|house-of-shaffer"); localStorage.setItem(KEY, k1); document.cookie = "shaffer-key=" + k1 + "; max-age=31536000; path=/legacy; SameSite=Lax; Secure"; localStorage.removeItem("shaffer-miss"); localStorage.removeItem("shaffer-wait"); micAcquire(); primeSpeech(); msg.textContent = "Very good. Right this way."; $("pw").blur(); setTimeout(()=>scrollTo(0,0),50); setTimeout(open, 700); }
+    if (await sha(v) === HASH) { const k1 = await sha(v + "|house-of-shaffer"); localStorage.setItem(KEY, k1); document.cookie = "shaffer-key=" + k1 + "; max-age=31536000; path=/legacy; SameSite=Lax; Secure"; localStorage.removeItem("shaffer-miss"); localStorage.removeItem("shaffer-wait"); primeSpeech(); msg.textContent = "Very good. Right this way."; $("pw").blur(); setTimeout(()=>scrollTo(0,0),50); setTimeout(open, 700); }
     else { const n = (+localStorage.getItem("shaffer-miss") || 0) + 1; localStorage.setItem("shaffer-miss", n);
       if (n >= 3) localStorage.setItem("shaffer-wait", now + Math.min(300, 15 * 2 ** (n - 3)) * 1000);
       msg.textContent = "I'm afraid I don't recognize you."; buzz(); logVisit(door ? door.name + "'s door" : "Someone", "tried a wrong word at the gate (try " + n + ")"); }
@@ -432,14 +431,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     function mulberryT(a){ return () => { a |= 0; a = a + 1831565813 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0)/4294967296; }; }
     function strandPt(s, u, t){ const sw = Math.sin(t*.5 + s.ph)*8*u*u; return [s.x + sw, s.y + s.len*u]; }
     function drawTree(t, now, fade){ if (!tree || fade <= .02) return; const T = tree, br = .75 + .25*hbs(((now - hbT0) % HBMS)/HBMS)*.4;
-      cx.lineCap = "round"; cx.strokeStyle = `rgba(233,196,120,${(.13*fade*br).toFixed(3)})`; cx.lineWidth = 2.2;
-      cx.beginPath(); cx.moveTo(T.bx, T.by); cx.quadraticCurveTo(T.bx - 10, (T.by + T.top)/2, T.bx, T.top + H*.04); cx.stroke();
-      { const gx = T.bx, gy = T.top + H*.04, ga = (.3 + .3*br)*fade, gg = cx.createRadialGradient(gx, gy, 0, gx, gy, 9); gg.addColorStop(0, `rgba(57,255,20,${ga.toFixed(3)})`); gg.addColorStop(1, "rgba(57,255,20,0)");
-        cx.fillStyle = gg; cx.beginPath(); cx.arc(gx, gy, 9, 0, 6.283); cx.fill(); cx.fillStyle = `rgba(200,255,180,${Math.min(1, ga*1.5).toFixed(3)})`; cx.beginPath(); cx.arc(gx, gy, 1.3, 0, 6.283); cx.fill(); }
-      cx.lineWidth = 1.1; for (const L of T.limbs){ cx.beginPath(); cx.moveTo(L[0][0], L[0][1]); for (const p of L) cx.lineTo(p[0], p[1]); cx.stroke(); }
-      cx.strokeStyle = `rgba(240,206,140,${(.1*fade*br).toFixed(3)})`; cx.lineWidth = .7;
-      T.strands.forEach((s, si) => { cx.strokeStyle = si % 7 === 3 ? `rgba(57,255,20,${(.16*fade*br).toFixed(3)})` : si % 2 ? `rgba(155,48,255,${(.22*fade*br).toFixed(3)})` : `rgba(75,59,255,${(.24*fade*br).toFixed(3)})`;
-        cx.beginPath(); cx.moveTo(s.x, s.y); for (let k = 1; k <= 6; k++){ const [x, y] = strandPt(s, k/6, t); cx.lineTo(x, y); } cx.stroke(); });
+      // the willow outline (trunk, limbs, strands) is no longer drawn on the front: only the note and the light in the middle; the departed leaves still drift down
       // leaves: a few fall at a time, slowly, drifting, and gather along the strands
       if (now > nextLeaf && leaves.length < 12){ nextLeaf = now + 1100 + Math.random()*1400; const s = T.strands[Math.floor(Math.random()*T.strands.length)], u = .2 + Math.random()*.8;
         const nm = DEPS[leafK++ % DEPS.length]; leaves.push({x: s.x + (Math.random() - .5)*120, y: -10, s, u, name: nm, c: relOf(nm).c, rot: Math.random()*6.28, vr: (Math.random() - .5)*.02, ph: Math.random()*6.28, w: .9 + Math.random()*1.4}); }
@@ -449,7 +441,6 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       for (let i = leaves.length - 1; i >= 0; i--){ const L = leaves[i], [tx2, ty2] = strandPt(L.s, L.u, t); L.y += .35; L.x += (tx2 - L.x)*.012 + Math.sin(t*.9 + L.ph)*.35; L.rot += L.vr;
         if (L.y >= ty2){ leaves.splice(i, 1); settled.push({s: L.s, u: L.u, c: L.c, rot: L.rot, born: now}); if (settled.length > 60) settled.shift(); leafTone(L.name); continue; }
         leaf(L.x, L.y, L.rot, L.c, (.45 + .35*Math.pow(.5 + .5*Math.sin(t*L.w + L.ph), 2))*fade); }   // a slow flicker, each at its own rate
-      for (const S of settled){ const [x, y] = strandPt(S.s, S.u, t); leaf(x, y, S.rot + Math.sin(t*.5 + S.u*6)*.2, S.c, .5*fade*Math.min(1, (now - S.born)/800)); }
       cx.globalCompositeOperation = "source-over"; }
     function size(){const r=cv.getBoundingClientRect();W=Math.round(r.width)||innerWidth;H=Math.round(r.height)||innerHeight;DPR=Math.min(W*H*9<=3.3e6?3:2,window.devicePixelRatio||1);cv.width=W*DPR;cv.height=H*DPR;cx.setTransform(DPR,0,0,DPR,0,0); makeSky(); makeTree(); if (portalOn) relayout();}
     size(); addEventListener("resize", size); addEventListener("orientationchange", ()=>setTimeout(size,300));
@@ -797,20 +788,20 @@ This is our stamp.<br><b id="dad">Dad</b></div>
         const th = d2thump(); if (lp.animate) lp.animate([{opacity: 0}, {opacity: .24 - k*.06}, {opacity: 0}], {duration: 620, easing: "ease-in-out"});
         pulseLog.push({k, t: performance.now(), thump: th}); if (pulseLog.length > 12) pulseLog.shift(); }, st + k*HBMS); }
     // the voice is the signal finding you: amplitude and pitch energy only, read locally; never recorded, stored or sent
-    let mic = null, micK = 0, micMax = 0, micFloor = .01, micWant = false; const micBins = new Uint8Array(512), micTd = new Float32Array(1024);
+    let mic = null, micK = 0, micMax = 0, micFloor = .01, micWant = false, micTap = false; const micBins = new Uint8Array(512), micTd = new Float32Array(1024);
     function micSync(){ const want = micWant && inView && !muted && !document.hidden; if (want && !mic) micStart(); else if (!want && mic && !mic.pending) micStop(); }
     let micNode = null;
     async function micStart(){ if (mic) return; mic = {pending: true};
-      try { unlockAudio(); const st = await micAcquire();
+      try { unlockAudio(); const st = await micAcquire(micTap); micTap = false;
         if (!st){ mic = null; micWant = false; return; }   // declined or not available: quietly run without voice-reactive lights
         if (!(micWant && inView && !muted && !document.hidden) || !ac){ mic = null; setTimeout(micSync, 400); return; }   // the stream stays open; only the analysis waits
         if (!micNode){ const src = ac.createMediaStreamSource(st), an = ac.createAnalyser(); an.fftSize = 1024; an.smoothingTimeConstant = .6; src.connect(an); micNode = {src, an}; }   // analysis only: never connected to the speakers
-        mic = {st, src: micNode.src, an: micNode.an, wT: 0, els: [], w: []}; try { localStorage.setItem("shaffer-mic", "on"); } catch(e){}
-        document.body.classList.add("mic"); $("mic").classList.add("on");
+        mic = {st, src: micNode.src, an: micNode.an, wT: 0, els: [], w: []}; try { localStorage.setItem("shaffer-mic", "yes"); } catch(e){}
+        document.body.classList.add("mic"); $("mic").classList.add("on"); $("mic").setAttribute("aria-pressed", "true");
         if (!localStorage.getItem("shaffer-mic-hint")){ try { localStorage.setItem("shaffer-mic-hint", "1"); } catch(e){} toast("Speak. The signal is listening.", 3400); }
         raf(micLoop);
       } catch(e){ mic = null; micWant = false; } }
-    function micStop(){ mic = null; /* pause the analysis; the one stream stays alive for the session */ micK = 0; document.body.classList.remove("mic"); $("mic").classList.remove("on"); document.querySelectorAll(".sn,.cn,.fn").forEach(e => { e._vk = null; e.style.removeProperty("--vk"); }); }
+    function micStop(){ mic = null; /* pause the analysis; the one stream stays alive for the session */ micK = 0; document.body.classList.remove("mic"); $("mic").classList.remove("on"); $("mic").setAttribute("aria-pressed", "false"); document.querySelectorAll(".sn,.cn,.fn").forEach(e => { e._vk = null; e.style.removeProperty("--vk"); }); }
     function micLoop(now){ if (!mic || !mic.an) return; const an = mic.an; an.getFloatTimeDomainData(micTd); let q = 0; for (let i = 0; i < micTd.length; i++) q += micTd[i]*micTd[i]; const rms = Math.sqrt(q/micTd.length);
       an.getByteFrequencyData(micBins); const bw = ac.sampleRate/an.fftSize; let e = 0, n = 0; for (let i = Math.floor(85/bw); i <= Math.ceil(400/bw); i++){ e += micBins[i]; n++; } const pitch = n ? e/n/255 : 0;
       micFloor += (rms - micFloor)*(rms < micFloor ? .2 : .003); const lvl = Math.min(1, Math.max(0, (rms - micFloor*1.4)*14)*(.6 + .6*pitch));
@@ -823,7 +814,9 @@ This is our stamp.<br><b id="dad">Dad</b></div>
         mic.els = [...document.querySelectorAll(sel)]; mic.w = mic.els.map(el => { const r = el.getBoundingClientRect(); return .3 + .7*(1 - Math.min(1, Math.hypot(r.left + r.width/2 - cxm, r.top + r.height/2 - cym)/rad)); }); }
       if ((mic.fc = (mic.fc || 0) + 1) % 3 === 0) mic.els.forEach((el, i) => { const v = Math.round(micK*mic.w[i]*40)/40; if (el._vk !== v){ el._vk = v; el.style.setProperty("--vk", v); } });   // ~20 Hz, only on change if ($("sigv").classList.contains("on")) for (const o of sigNodes) if (o.lg) o.lines[0].style.strokeOpacity = Math.min(GLOW.MAX, o.lg*(1 + GLOW.VOICE*micK)).toFixed(3);   // the lights nearest the center answer most
       raf(micLoop); }
-    $("mic").addEventListener("click", e => { e.stopPropagation(); micWant = !mic; if (micWant) try { localStorage.removeItem("shaffer-mic"); } catch(_){} buzz(); micSync(); });
+    $("mic").addEventListener("click", e => { e.stopPropagation(); buzz();   // the listen toggle: opt-in, remembered; off stops the mic tracks
+      if (mic || micWant){ micWant = false; try { localStorage.setItem("shaffer-mic", "no"); } catch(_){} if (mic && !mic.pending) micStop(); if (micNode){ try { micNode.src.disconnect(); } catch(_){} micNode = null; } micRelease(); return; }
+      try { localStorage.setItem("shaffer-mic", "yes"); } catch(_){} micWant = true; micTap = true; micSync(); });
     document.addEventListener("visibilitychange", () => micSync());
     // the family, moved into the pulse light: a constellation of named lights around the open portal, Edgardo leading
     const GLOW = {K: .06, E: .02, MIN: .12, MAX: 1, VOICE: .8};   // link glow = clamp(K/(d^2 + E), MIN, MAX), d = distance to William / min(W, H); voice multiplies, capped at MAX
@@ -904,7 +897,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       for (const o of document.querySelectorAll(".ov")) o.classList.remove("on"); syncView(); }
     for (const x of document.querySelectorAll(".ov .x")){ x.addEventListener("touchend", closeOv, {passive:false}); x.addEventListener("click", e => { if (Date.now() - lastTouch < 800) return; closeOv(e); }); }
     function syncView(){ const on = portalOn || !!document.querySelector(".ov.on"); musicView(on); document.body.classList.toggle("inview", on);
-      if ((portalOn || $("sigv").classList.contains("on")) && localStorage.getItem("shaffer-mic") !== "no") micWant = true; micSync(); }
+      if ((portalOn || $("sigv").classList.contains("on")) && localStorage.getItem("shaffer-mic") === "yes" && micStream) micWant = true; micSync(); }   // listening resumes only on a stream already opened by a tap this session
     const FROW = ["Grandpa Hal","Uncle Steve","Pat","Kevin"];   // the roots: the bottom row, left to right (William's order)
     const FLAY = [["Billy",50,13],["William",30,21],["Jennifer",70,21],["Alfred",12,29],["Mom",41,29,1],["Edgardo",70,29],["Aunt Diane",15,37],["Dad",50,37],["Uncle Stu",85,37],
       ["Mark Temple",15,45],["Grandma",50,45],["Grandma Sarah",82,45],["Mary Shaffer",15,51.5],["Bill Shaffer",42,51.5],["Roy",63,51.5],["Pat Murray",84,51.5],["Steve Lee",18,57.5],["Steve Samoji",50,57.5],["Dave Trejo",82,57.5],
@@ -1156,7 +1149,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       edT.forEach(clearTimeout); $("edq").classList.remove("on"); setPcap(); $("pcap").classList.add("on");
       for (let k=0;k<3;k++) ringAt(performance.now() + k*260); }
         window.__legacy = { thread: () => ({on: $("thread").classList.contains("on"), name: thName, head: $("thn").textContent, lines: [...$("thl").children].map(p => p.textContent)}), thlog: () => thLog.slice(), threadOf: n => threadOf(n), core: () => ({x: W/2, y: H*.5, r: coreR(), pAng}), routes: () => croutes.map(r => ({a: r.a, b: r.b, s: r.s, braid: !!r.braid, pts: r.pts.slice()})), momThread: () => momThread && {pts: momThread.pts.slice()}, lights: () => cnodes.map(o => ({name: o.name, x: o.x, y: o.ly})), flames: () => sparks.length, align: () => ({n: alignLog.length, last: alignLog[alignLog.length - 1] || null, on: !!align}), pool: () => ({made: pNew, free: [...POOLS.values()].reduce((a, q) => a + q.length, 0)}), momSparks: () => momSparks, moments: () => pmLog.slice(), spoke: () => speakLog.slice(), src: () => src && {name: src.name, c: src.c, rungs: 22, ph: $("srcw").placeholder, val: $("srcw").value, on: $("srcw").classList.contains("on")}, arrows: () => carr.map(x => x.slice()), woke: () => !!wakeAt && performance.now() - wakeAt < 2000, strongest: () => strongestFor(), harm: () => HARM, glow: () => GLOW, threads: () => cthr.map(x => x.slice()), wonder: () => ({n: wonderN, shape: wonder && wonder.shape, pts: wonder ? wonder.P.length : 0}), wonderGo: sh => wonderGo(sh), shots: () => shots, dad: () => !!shoot, hold: () => !!whisper, mem: () => linksOn, viewer: () => $("viewer").classList.contains("on") && ($("viewer").classList.contains("vid") ? $("vvid").src : $("vframe").src), portal: () => portalOn, layer: () => layer, kept: () => kept.length,
-      moment: () => moment && moment.type, music: () => ({inView, on: musicOn, muted, chimes, gain: musicOut ? +musicOut.gain.value.toFixed(3) : 0}), leaves: () => ({falling: leaves.length, settled: settled.length, colors: [...new Set(leaves.concat(settled).map(l => l.c))]}), acState: () => ac && ac.state, alive: () => aliveLog, pulse: () => pulseLog, mic: () => ({gum: gumCalls, asked: ssGet("shaffer_mic_asked"), peaks: mic && mic.peaks || 0, on: !!(mic && mic.an), k: +micK.toFixed(3), max: +micMax.toFixed(3), want: micWant}), spirits: () => leaves.map(L => ({x: L.x, y: L.y, name: L.name, c: L.c})), frames: () => Object.fromEntries(FAM.map(f => [f[0], frameOf(f[0])])),
+      moment: () => moment && moment.type, music: () => ({inView, on: musicOn, muted, chimes, gain: musicOut ? +musicOut.gain.value.toFixed(3) : 0}), leaves: () => ({falling: leaves.length, settled: settled.length, colors: [...new Set(leaves.concat(settled).map(l => l.c))]}), acState: () => ac && ac.state, alive: () => aliveLog, pulse: () => pulseLog, mic: () => ({live: !!micStream && micStream.getTracks().some(t => t.readyState === "live"), gum: gumCalls, asked: ssGet("shaffer_mic_asked"), peaks: mic && mic.peaks || 0, on: !!(mic && mic.an), k: +micK.toFixed(3), max: +micMax.toFixed(3), want: micWant}), spirits: () => leaves.map(L => ({x: L.x, y: L.y, name: L.name, c: L.c})), frames: () => Object.fromEntries(FAM.map(f => [f[0], frameOf(f[0])])),
       endDust: () => { if (dform) dform.t0 = -1e9; }, dust: () => dform && {motion: dform.motion, rings: dform.rings, beacon: dform.beacon, zoom: +dform.zoom.toFixed(3), seed: !!dform.seed, pinged: !!dform.pinged, formed: !!dform.formedAt, frame: dform.fr, living: !dform.gone, box: [dform.cx0 - dform.rw*1.6, dform.top - 10, dform.cx0 + dform.rw*1.6, dform.cy0 + (dform.pet ? .5 : .82)*dform.S + 54], name: dform.name, n: dform.P.length, pat: dform.pat, shape: dform.shape, harm: dform.harm}, constel: () => document.querySelectorAll("#constel .cn.on").length, edq: () => $("edq").classList.contains("on"), near: () => nearK, bloom: () => !!bloomAt,
       tip: () => reach ? {px: reach.px, py: reach.py, fx: reach.fx, fy: reach.fy, met: !!reach.met, glow: reach.glow} : null, voice: () => voiceOK };
     let tapT = 0, tapNear = false;
