@@ -1,0 +1,64 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive"><meta name="referrer" content="no-referrer">
+<title>Soft7 card text fix</title>
+<style>
+body{margin:0;background:#0b0b10;color:#f3ead9;font:17px/1.5 system-ui,sans-serif;padding:20px;max-width:620px;margin:auto}
+h1{font-size:22px;margin:.2em 0}.box{background:#16151d;border-radius:12px;padding:14px;margin:14px 0}
+button{display:block;width:100%;padding:14px;margin-top:10px;border:0;border-radius:10px;background:#ffb464;color:#111;font-weight:700;font-size:17px}
+button:disabled{background:#3a3846;color:#888}.gate{font-weight:700;color:#ff8a7a}.gate.ok{color:#8be59b}
+.s{white-space:pre-wrap;word-break:break-all;font-size:14px;margin-top:8px}.old{color:#ff9d8f;text-decoration:line-through}.new{color:#8be59b}
+input.typed{width:100%;box-sizing:border-box;padding:12px;font-size:17px;border-radius:8px;border:1px solid #555;background:#0b0b10;color:#fff;margin-top:8px}
+small{color:#aaa}
+</style></head><body>
+<h1>Soft7 card text fix</h1>
+<p>One signature. It changes only the card description on all 7 cards. Art, traits and owners stay the same.</p>
+<div class="box"><small>Each card description will end:</small><br>
+<span class="old">…a 7.5% creator fee; 1.5% of the sale price is paid quarterly on-chain to holders of Soft7 tokens 1-7.</span><br>
+<span class="new">…Secondary sales pay a 7.5% creator fee.</span></div>
+<div class="box"><div class="gate" id="gate">LOCKED. No wallet connected.</div>
+<button id="bc">1. Connect wallet</button><div class="s" id="sc"></div></div>
+<div class="box"><b>2. Sign the fix</b> <small>Wallet 0xe53b…677a only. Gas is tiny.</small>
+<label style="display:block;margin-top:10px"><input type="checkbox" id="k" disabled> I checked the text above.</label>
+<input class="typed" id="w" placeholder="type FIX" autocomplete="off" disabled>
+<button id="y" disabled>Sign the fix</button><div class="s" id="s"></div></div>
+<div class="box"><button id="b4" style="background:#2b2a36;color:#f3ead9">Check card 1 now (no signature)</button><div class="s" id="s4"></div></div>
+<script>
+const OWNER="0xe53bdb2118585d5b2cd06a117d3a036afa70677a",CHAIN="0x1237",CHAIN_ID=4663;
+const CONTRACT="0x73D7b2611509C14078e16f572bE5aC7D91879DC2";
+const BASE="https://cdn.jsdelivr.net/gh/tigerwillca/reynard-soft7-sepolia@f50e3f61579c2dcb357ac4b4c977dfe270cd823a/meta/";
+const CALLDATA="0x55f804b30000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000006c68747470733a2f2f63646e2e6a7364656c6976722e6e65742f67682f746967657277696c6c63612f7265796e6172642d736f6674372d7365706f6c696140663530653366363135373963326463623335376163346234633937376466653237306364383233612f6d6574612f0000000000000000000000000000000000000000"; // setBaseURI(string), reviewed by Cursor
+function hx(n){return BigInt(n).toString(16).padStart(64,"0");}
+function encStr(s){const b=new TextEncoder().encode(s);let h="";for(const x of b)h+=x.toString(16).padStart(2,"0");return hx(b.length)+h.padEnd(Math.ceil(h.length/64)*64,"0");}
+function decStr(r){const b=r.slice(2);const off=parseInt(b.slice(0,64),16)*2;const len=parseInt(b.slice(off,off+64),16);const hex=b.slice(off+64,off+64+len*2);return new TextDecoder().decode(Uint8Array.from((hex.match(/../g)||[]).map(x=>parseInt(x,16))));}
+const SAFE=("0x55f804b3"+hx(32)+encStr(BASE))===CALLDATA;
+const $=i=>document.getElementById(i),short=a=>a?a.slice(0,6)+"…"+a.slice(-4):"none";
+let P=window.ethereum||null,gateOK=false,busy=false;
+window.addEventListener("eip6963:announceProvider",e=>{if(!P||/robinhood/i.test((e.detail.info||{}).name||""))P=e.detail.provider;});
+window.dispatchEvent(new Event("eip6963:requestProvider"));
+const getP=()=>new Promise(r=>{if(P||window.ethereum)return r(P||window.ethereum);let n=0;const t=setInterval(()=>{window.dispatchEvent(new Event("eip6963:requestProvider"));if(P||window.ethereum||++n>15){clearInterval(t);r(P||window.ethereum||null);}},200);});
+async function readGate(){if(!SAFE)return{ok:false,msg:"STOPPED. The fix data does not match. Ask for help."};const eth=await getP();if(!eth)return{ok:false,msg:"No wallet found. Open this page in your wallet app's browser."};
+ const accs=await eth.request({method:"eth_accounts"});const a=(accs&&accs[0]||"").toLowerCase();const c=String(await eth.request({method:"eth_chainId"})).toLowerCase();
+ if(!a)return{ok:false,msg:"LOCKED. No wallet connected. Tap \"Connect wallet\"."};
+ if(a!==OWNER)return{ok:false,msg:"LOCKED. Wrong wallet: "+short(a)+". Switch to 0xe53b…677a."};
+ if(c!==CHAIN)return{ok:false,msg:"LOCKED. Wrong network ("+parseInt(c,16)+"). Switch to Robinhood Chain (4663)."};
+ return{ok:true,a,msg:"READY. Wallet 0xe53b…677a on Robinhood Chain."};}
+function armed(){return gateOK&&!busy&&$("k").checked&&$("w").value.trim().toUpperCase()==="FIX";}
+function locks(){$("k").disabled=!gateOK||busy;$("w").disabled=!gateOK||busy;$("y").disabled=!armed();}
+async function refresh(){let g;try{g=await readGate();}catch(e){g={ok:false,msg:"LOCKED. "+(e.message||e)};}gateOK=g.ok;$("gate").textContent=g.msg;$("gate").className="gate"+(g.ok?" ok":"");locks();return g;}
+$("k").onchange=locks;$("w").oninput=locks;
+async function call(eth,data){return await eth.request({method:"eth_call",params:[{to:CONTRACT,data},"latest"]});}
+async function card1(eth){return decStr(await call(eth,"0xc87b56dd"+hx(1)));}
+$("bc").onclick=async()=>{const out=t=>$("sc").textContent=t;try{const eth=await getP();if(!eth)throw new Error("No wallet found. Open this page in your wallet app's browser.");
+ await eth.request({method:"eth_requestAccounts"});
+ try{await eth.request({method:"wallet_switchEthereumChain",params:[{chainId:CHAIN}]});}catch(e){try{await eth.request({method:"wallet_addEthereumChain",params:[{chainId:CHAIN,chainName:"Robinhood Chain",nativeCurrency:{name:"Ether",symbol:"ETH",decimals:18},rpcUrls:["https://rpc.mainnet.chain.robinhood.com"],blockExplorerUrls:["https://robinhoodchain.blockscout.com"]}]});}catch(_){}}
+ const g=await refresh();out(g.ok?"Connected.":"");if(!eth._s7fix){eth._s7fix=1;if(eth.on){eth.on("accountsChanged",refresh);eth.on("chainChanged",refresh);}}}catch(e){out("Stopped: "+(e.message||e));}};
+async function receipt(eth,h,out){for(let i=0;i<150;i++){const r=await eth.request({method:"eth_getTransactionReceipt",params:[h]});if(r){if(r.status!=="0x1")throw new Error("Transaction failed on chain: "+h);return r;}out("Waiting for the block… tx "+h);await new Promise(z=>setTimeout(z,2000));}throw new Error("Still pending. Tx "+h);}
+$("y").onclick=async()=>{const out=t=>$("s").textContent=t;try{const g=await refresh();if(!g.ok||!armed())throw new Error("Locked. Check the wallet, the network and the confirm box.");
+ const eth=await getP();const own="0x"+(await call(eth,"0x8da5cb5b")).slice(-40);if(own.toLowerCase()!==OWNER)throw new Error("The contract owner is not 0xe53b…677a.");
+ if((await card1(eth)).indexOf(BASE)===0){out("Already fixed. Nothing to sign.");return;}
+ busy=true;locks();let h;try{out("Confirm in your wallet…");h=await eth.request({method:"eth_sendTransaction",params:[{from:g.a,to:CONTRACT,data:CALLDATA,value:"0x0"}]});}finally{busy=false;$("k").checked=false;$("w").value="";locks();}
+ out("Signed. tx "+h);await receipt(eth,h,out);const u=await card1(eth);
+ out((u.indexOf(BASE)===0?"Done. The fix is on-chain.":"Mined, but card 1 still shows the old link.")+"\nTx: https://robinhoodchain.blockscout.com/tx/"+h+"\nCard 1: "+u);}catch(e){out("Stopped: "+(e.message||e));}};
+$("b4").onclick=async()=>{const out=t=>$("s4").textContent=t;try{const eth=await getP();if(!eth)throw new Error("Open inside the wallet browser");const u=await card1(eth);out((u.indexOf(BASE)===0?"FIXED ✓":"Not fixed yet")+"\n"+u);}catch(e){out("Stopped: "+(e.message||e));}};
+refresh();
+</script></body></html>
