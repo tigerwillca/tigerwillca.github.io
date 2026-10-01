@@ -23,7 +23,7 @@
 <meta property="og:url" content="https://tigerwillca.github.io/staying/">
 <meta name="twitter:card" content="summary_large_image">
 <!-- Private daily practice. Everything is saved only in this phone's localStorage. No analytics, no network calls.
-     Test: ?t=HH:MM sets the clock (period, light, 11:11). #today #flow #thanks #family #healing open a tab. ?pause opens Pause, ?flow opens Flow. -->
+     Test: ?t=HH:MM sets the clock (period, light, 11:11). #today #flow #thanks #family #healing open a tab. ?pause opens Pause, ?flow opens Flow, ?steve opens A light for Steve. -->
 <style>
 :root{--bg1:#f8e6d2;--bg2:#f3d2bd;--ink:#3b2a24;--soft:rgba(59,42,36,.68);--card:rgba(255,250,244,.62);--line:rgba(120,72,50,.18);
   --glow:#f2a65a;--glow2:#ffd79a;--btn:#b8643a;--btnInk:#fffaf2;--sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px)}
@@ -178,6 +178,20 @@ body.night .carry{background:rgba(255,200,140,.08)}
 .prac.lit i{border-color:transparent;background:radial-gradient(circle,#fffbe8,var(--glow2) 50%,var(--glow));box-shadow:0 0 14px 4px rgba(255,196,110,.55)}
 body.night .cuebox{background:radial-gradient(circle at 50% 40%,rgba(255,220,170,.22),rgba(255,200,140,.08) 70%,rgba(255,200,140,0))}
 body.night .ahead button{color:#ffd59a}
+/* ---- A light for Steve ---- */
+#steveCard{scroll-margin-top:calc(var(--sat) + 104px);transition:box-shadow 1s,border-color 1s}
+#steveCard.lit{border-color:var(--glow);box-shadow:0 0 0 3px rgba(242,166,90,.14),0 8px 30px rgba(120,60,30,.08)}
+#steveCard.flash{box-shadow:0 0 0 4px rgba(242,166,90,.45),0 0 34px 8px rgba(255,200,120,.45)}
+.sv-head{display:flex;align-items:center;gap:14px;margin:0 0 10px}
+.sv-head h2{margin:0}
+.sv-orb{flex:none;width:44px;height:44px;border-radius:50%;border:2px solid var(--line);background:rgba(255,255,255,.4);transition:all 1s}
+#steveCard.lit .sv-orb{border-color:transparent;background:radial-gradient(circle at 45% 40%,#fffbe8,var(--glow2) 50%,var(--glow));box-shadow:0 0 22px 7px rgba(255,196,110,.55)}
+.sv-part{padding:14px 0;border-top:1px solid var(--line)}
+.sv-part:first-of-type{border-top:0;padding-top:4px}
+.sv-btns{display:flex;gap:10px}
+.sv-btns .btn,.sv-btns a.link{flex:1;margin-top:10px}
+.btn.on{background:#e9f1dc;color:#3d5a24;box-shadow:none;border:1.5px solid #9bb57a}
+body.night .btn.on{background:rgba(155,181,122,.25);color:#e6f2d4}
 details.fast{font-size:16px;color:var(--soft);margin-top:18px;text-align:left;background:rgba(255,255,255,.25);border-radius:16px;padding:10px 14px}
 details.fast summary{font-weight:600;cursor:pointer}details.fast p{margin:8px 0 0}
 body.night details.fast{background:rgba(255,255,255,.06)}
@@ -260,6 +274,10 @@ body.night details.fast{background:rgba(255,255,255,.06)}
       <div class="card">
         <h2>What do I carry forward?</h2>
         <textarea id="carry" placeholder="A word, a person, a hope for tomorrow."></textarea>
+        <div class="pray" style="margin-top:10px;border-top:1px solid var(--line);border-bottom:0">
+          <div class="t">Did I send light to Steve today?</div>
+          <button class="amen" id="svEve" type="button">Yes</button>
+        </div>
         <button class="btn" id="saveEve" type="button">Save tonight</button>
         <p class="small" id="eveSaved" hidden></p>
       </div>
@@ -311,6 +329,28 @@ body.night details.fast{background:rgba(255,255,255,.06)}
       <p class="small" style="text-align:center;margin-top:14px">Tap a light. Hold them in prayer for a breath.</p>
       <a class="link" href="https://tigerwillca.github.io/legacy/">Visit the tree</a>
       <a class="link" href="https://tigerwillca.github.io/moments/mom/">Be with Mom</a>
+    </div>
+    <div class="card" id="steveCard">
+      <div class="sv-head"><span class="sv-orb" aria-hidden="true"></span><h2>A light for Steve</h2></div>
+      <div class="sv-part">
+        <p class="small">Today's intention</p>
+        <div class="quote">Steve, may you be held in peace today.
+May your heart heal, your body rest, and your gifts shine.
+You are protected and you are not alone.</div>
+        <button class="btn" id="svHold" type="button">Hold it today</button>
+      </div>
+      <div class="sv-part">
+        <p>Check in on Steve today.<br>A short text is enough.</p>
+        <button class="btn ghost" id="svDone" type="button">Done today</button>
+      </div>
+      <div class="sv-part">
+        <p class="small">A kind text to send</p>
+        <div class="quote" id="svText"></div>
+        <div class="sv-btns">
+          <button class="btn ghost" id="svCopy" type="button">Copy</button>
+          <a class="link" id="svSms" href="#" hidden>Text it</a>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -489,6 +529,7 @@ function renderToday(){
   // evening
   if(document.activeElement!==$('well'))$('well').value=D.well||'';
   if(document.activeElement!==$('carry'))$('carry').value=D.carry||'';
+  renderSteve();
   $('eveSaved').hidden=!D.eveAt;if(D.eveAt)$('eveSaved').textContent='Saved at '+fmtTime(D.eveAt)+'. Rest well.';
 }
 $('amen').addEventListener('click',()=>{const v=$('prayer').value.trim();if(!v){$('prayer').focus();return}
@@ -530,6 +571,28 @@ function flowCue(){let i;do{i=Math.floor(Math.random()*FLOW.length)}while(FLOW.l
     box.classList.remove('fade');$('cueBtn').textContent='Another cue'},180)}
 $('cueBtn').addEventListener('click',flowCue);
 $('toFlow').addEventListener('click',()=>{show('flow');flowCue()});
+
+/* ---------- a light for Steve ---------- */
+const SV_TEXT="Hey Steve, thinking of you today. Thanks for everything you've taught me. You've got real gifts, brother. I'm here if you want to talk or just hang. \u{1F64F}";
+$('svText').textContent=SV_TEXT;
+if(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)||matchMedia('(pointer:coarse)').matches){
+  $('svSms').href='sms:?&body='+encodeURIComponent(SV_TEXT);$('svSms').hidden=false}
+function SV(){const D=day();return D.steve||(D.steve={})}
+function renderSteve(){const v=(S.days[today()]||{}).steve||{};
+  $('steveCard').classList.toggle('lit',!!v.held);
+  $('svHold').classList.toggle('on',!!v.held);$('svHold').textContent=v.held?'Held today \u2713':'Hold it today';
+  $('svDone').classList.toggle('on',!!v.done);$('svDone').textContent=v.done?'Done today \u2713':'Done today';
+  $('svEve').classList.toggle('done',!!v.held);$('svEve').textContent=v.held?'Yes \u2713':'Yes'}
+function svToggle(k){const v=SV();v[k]=!v[k];if(!v[k])delete v[k];save();renderSteve()}
+$('svHold').addEventListener('click',()=>svToggle('held'));
+$('svEve').addEventListener('click',()=>svToggle('held'));
+$('svDone').addEventListener('click',()=>svToggle('done'));
+$('svCopy').addEventListener('click',async()=>{let ok=false;
+  try{await navigator.clipboard.writeText(SV_TEXT);ok=true}catch(e){
+    const t=document.createElement('textarea');t.value=SV_TEXT;t.setAttribute('readonly','');t.style.cssText='position:fixed;opacity:0';document.body.appendChild(t);t.select();
+    try{ok=document.execCommand('copy')}catch(e2){}t.remove()}
+  const b=$('svCopy');b.textContent=ok?'Copied':'Press and hold the text to copy';setTimeout(()=>b.textContent='Copy',2200)});
+function goSteve(){show('family');const c=$('steveCard');c.scrollIntoView({block:'start'});c.classList.add('flash');setTimeout(()=>c.classList.remove('flash'),1800)}
 
 /* ---------- gratitude ---------- */
 function renderThanks(){
@@ -596,6 +659,7 @@ $('export').addEventListener('click',async()=>{
     if(D.still&&D.still.length)L.push('Still with You: '+D.still.map(fmtTime).join(', '));
     if(D.well)L.push('What went well: '+D.well);
     if(D.carry)L.push('Carry forward: '+D.carry);
+    if(D.steve&&(D.steve.held||D.steve.done))L.push('Light for Steve: '+[D.steve.held&&'held it',D.steve.done&&'checked in'].filter(Boolean).join(', '));
     if(D.flow){const fl=FLOW.filter(a=>D.flow[a[0]]).map(a=>a[1]);if(fl.length)L.push('Flow: '+fl.join(', '))}
     (D.thanks||[]).forEach(x=>L.push('Thankful: '+x.text));
     const h=D.heal;if(h){const p=AREAS.filter(a=>h.pray[a[0]]).map(a=>a[1]);if(p.length)L.push('Healing prayers: '+p.join(', '));
@@ -658,6 +722,7 @@ addEventListener('hashchange',()=>show(location.hash.slice(1)));
 if('scrollRestoration' in history)history.scrollRestoration='manual';
 addEventListener('load',()=>setTimeout(()=>scrollTo(0,0),0));  // tabs use #hash; don't jump under the Pause bar
 if(Q.has('pause'))openPause();
+if(Q.has('steve')){goSteve();addEventListener('load',()=>setTimeout(goSteve,80))}
 if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
 })();
 </script>
