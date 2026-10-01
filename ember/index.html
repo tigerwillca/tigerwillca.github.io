@@ -152,7 +152,7 @@ function frame(t){
   const hx = W/2 + noise(secs*0.05, 3.1)*W*0.22, hy = H*0.56 + noise(7.7, secs*0.045)*H*0.12;
   let tx = hx, ty = hy;
   if(S.touch){ const dx=S.touch.x-S.x, dy=S.touch.y-S.y, d=Math.hypot(dx,dy);
-    const pull = d < 70 ? -0.15 : 0.42*bond; // leans in, but backs off if you poke right at it
+    const pull = d < 70 ? -0.15 : 0.55 + 0.35*bond; // leans in, but backs off if you poke right at it
     tx = S.x + dx*pull; ty = S.y + dy*pull;
     if(performance.now()-S.holdStart > 650 && d < 220){ S.beating = true; }
   }
