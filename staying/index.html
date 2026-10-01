@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Staying">
+<meta name="theme-color" content="#f6e3cf">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<title>Staying In It</title>
+<meta name="description" content="A small, warm daily practice. Stay with God through the day.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Staying In It">
+<meta property="og:description" content="A small, warm daily practice. Stay with God through the day.">
+<meta property="og:image" content="https://tigerwillca.github.io/staying/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://tigerwillca.github.io/staying/">
+<meta name="twitter:card" content="summary_large_image">
+<!-- Private daily practice. Everything is saved only in this phone's localStorage. No analytics, no network calls.
+     Test: ?t=HH:MM sets the clock (period, light, 11:11). #today #thanks #family #healing open a tab. -->
+<style>
+:root{--bg1:#f8e6d2;--bg2:#f3d2bd;--ink:#3b2a24;--soft:rgba(59,42,36,.68);--card:rgba(255,250,244,.62);--line:rgba(120,72,50,.18);
+  --glow:#f2a65a;--glow2:#ffd79a;--btn:#b8643a;--btnInk:#fffaf2;--sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{background:var(--bg2)}
+body{min-height:100dvh;color:var(--ink);background:linear-gradient(180deg,var(--bg1) 0%,var(--bg2) 100%) fixed;
+  font:400 21px/1.55 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Verdana,sans-serif;letter-spacing:.012em;word-spacing:.06em;
+  transition:background 2s,color 2s;-webkit-text-size-adjust:100%}
+main{max-width:520px;margin:0 auto;padding:calc(var(--sat) + 18px) 20px calc(var(--sab) + 108px)}
+h1{font-size:15px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--soft);margin:4px 2px 2px}
+.when{font-size:17px;color:var(--soft);margin:0 2px 16px}
+h2{font-size:29px;line-height:1.25;font-weight:650;margin:6px 0 14px}
+h3{font-size:22px;font-weight:650;margin:0 0 8px}
+p{margin:0 0 12px}
+.small{font-size:17px;color:var(--soft)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:20px 20px 18px;margin:0 0 16px;
+  box-shadow:0 8px 30px rgba(120,60,30,.08);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.quote{font-size:22px;line-height:1.5;white-space:pre-wrap;border-left:4px solid var(--glow);padding:2px 0 2px 14px;margin:8px 0 12px}
+textarea,input[type=text]{width:100%;font:inherit;font-size:21px;line-height:1.5;color:var(--ink);background:rgba(255,255,255,.7);border:1.5px solid var(--line);
+  border-radius:16px;padding:14px 16px;outline:none;resize:vertical}
+textarea{min-height:130px}
+textarea:focus,input[type=text]:focus{border-color:var(--glow);box-shadow:0 0 0 4px rgba(242,166,90,.18)}
+::placeholder{color:var(--soft);opacity:.75}
+button{font:inherit;color:inherit;cursor:pointer}
+.btn{display:block;width:100%;min-height:58px;margin-top:12px;border:0;border-radius:999px;background:var(--btn);color:var(--btnInk);font-size:22px;font-weight:650;letter-spacing:.03em;
+  box-shadow:0 6px 18px rgba(184,100,58,.28)}
+.btn:active{transform:scale(.985)}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line);box-shadow:none;font-weight:500;font-size:19px;min-height:52px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.chips{display:flex;gap:8px;margin:0 0 16px}
+.chip{flex:1;min-height:46px;border-radius:999px;border:1.5px solid var(--line);background:transparent;font-size:17px;font-weight:550}
+.chip.on{background:var(--card);border-color:var(--glow);box-shadow:0 0 0 3px rgba(242,166,90,.15)}
+.lights{display:flex;flex-wrap:wrap;gap:14px 12px;margin:14px 0 6px;min-height:20px}
+.dot{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:14px;color:var(--soft)}
+.dot i{width:20px;height:20px;border-radius:50%;background:radial-gradient(circle,#fff6dc 0%,var(--glow2) 45%,var(--glow) 100%);box-shadow:0 0 14px 4px rgba(255,190,100,.55)}
+.tip{font-size:18px;line-height:1.5;background:rgba(255,255,255,.35);border-radius:16px;padding:14px 16px;margin-top:14px}
+.tip b{font-weight:650}
+.carry{border:1.5px dashed var(--glow);background:rgba(255,236,200,.35)}
+nav{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:center;padding:8px 10px calc(var(--sab) + 8px);
+  background:rgba(255,248,240,.82);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-top:1px solid var(--line);z-index:5}
+nav button{flex:1;max-width:130px;border:0;background:transparent;padding:8px 2px 4px;font-size:15px;font-weight:600;color:rgba(59,42,36,.6);display:flex;flex-direction:column;align-items:center;gap:3px}
+nav button span{font-size:24px;line-height:1}
+nav button.on{color:#7a3d1d}
+nav button.on span{filter:drop-shadow(0 0 6px rgba(242,166,90,.9))}
+section{display:none}section.on{display:block;animation:in .5s ease}
+@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.count{font-size:44px;font-weight:700;line-height:1;color:#a4532c}
+.list{list-style:none}
+.list li{padding:10px 0;border-bottom:1px solid var(--line);font-size:20px}
+.list .d{font-size:15px;font-weight:650;letter-spacing:.06em;color:var(--soft);padding:16px 0 2px;border:0}
+.family{display:flex;justify-content:space-around;align-items:flex-start;margin:18px 0 8px;text-align:center}
+.person{width:31%;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:10px}
+.orb{width:74px;height:74px;border-radius:50%;transition:transform .8s,box-shadow .8s}
+.orb.billy{background:radial-gradient(circle at 45% 40%,#fff7df,#ffd27a 55%,#f0a04b);box-shadow:0 0 26px 8px rgba(255,190,90,.5)}
+.orb.jen{background:radial-gradient(circle at 45% 40%,#fff1f0,#ffb9b4 55%,#ea8a8f);box-shadow:0 0 26px 8px rgba(255,160,160,.45)}
+.orb.mom{background:radial-gradient(circle at 45% 40%,#ffffff 0%,#fff4d8 35%,#ffd98f 75%,#f2b860 100%);box-shadow:0 0 0 3px rgba(255,255,255,.7),0 0 30px 12px rgba(255,236,190,.95),0 0 70px 28px rgba(255,200,110,.45);animation:heaven 6s ease-in-out infinite}
+@keyframes heaven{50%{box-shadow:0 0 0 5px rgba(255,255,255,.85),0 0 44px 20px rgba(255,244,210,1),0 0 100px 42px rgba(255,205,120,.55)}}
+.person.lift .orb{transform:scale(1.12)}
+.person b{font-size:21px}.person small{font-size:16px;color:var(--soft);line-height:1.3}
+a.link{display:flex;align-items:center;justify-content:center;min-height:56px;margin-top:12px;border-radius:999px;border:1.5px solid var(--line);color:var(--ink);text-decoration:none;font-size:20px;font-weight:600;background:rgba(255,255,255,.35)}
+.focus{display:flex;justify-content:space-between;margin:6px 0 18px}
+.fl{width:24%;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:15px;font-weight:600;color:var(--soft);text-align:center;line-height:1.2}
+.fl i{width:40px;height:40px;border-radius:50%;border:2px solid var(--line);background:rgba(255,255,255,.4);transition:all 1s}
+.fl.lit i{border-color:transparent;background:radial-gradient(circle,#fffbe8,var(--glow2) 50%,var(--glow));box-shadow:0 0 18px 6px rgba(255,196,110,.55)}
+.breath{display:flex;flex-direction:column;align-items:center;text-align:center}
+.circle{width:170px;height:170px;border-radius:50%;margin:10px 0 12px;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:600;color:#7a3d1d;
+  background:radial-gradient(circle,rgba(255,250,236,.95),rgba(255,214,150,.7) 60%,rgba(242,166,90,.25));box-shadow:0 0 40px 10px rgba(255,200,120,.35);transform:scale(.72);transition:transform 5s ease-in-out}
+.circle.in{transform:scale(1)}
+.pray{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--line)}
+.pray:last-child{border:0}
+.pray .t{flex:1}.pray .t b{display:block;font-size:17px;letter-spacing:.06em;color:var(--soft);text-transform:uppercase}
+.amen{flex:none;min-width:86px;min-height:48px;border-radius:999px;border:1.5px solid var(--glow);background:transparent;font-size:17px;font-weight:650;color:#8a4421}
+.amen.done{background:var(--glow);color:#fff;border-color:var(--glow)}
+.care{display:flex;flex-wrap:wrap;gap:10px}
+.care button{min-height:52px;padding:0 18px;border-radius:999px;border:1.5px solid var(--line);background:rgba(255,255,255,.4);font-size:18px;font-weight:550}
+.care button.on{background:#e9f1dc;border-color:#9bb57a;color:#3d5a24}
+.care button.on::before{content:"\2713  "}
+footer{text-align:center;font-size:16px;color:var(--soft);margin:26px 0 0}
+footer .btn{max-width:260px;margin:10px auto 0}
+.note{font-size:15px;color:var(--soft);text-align:center;margin-top:16px}
+#eleven{position:fixed;inset:0;z-index:20;display:none;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:30px;
+  background:radial-gradient(circle at 50% 45%,#fffaf0 0%,#ffe4b4 35%,#f3b27e 70%,#a8665a 100%);color:#5a2e18}
+#eleven.on{display:flex;animation:fadein 1.6s ease}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+#eleven .g{width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,#fff,#fff3d0 50%,rgba(255,220,150,0) 72%);animation:heaven 6s ease-in-out infinite;margin-bottom:26px}
+#eleven h2{font-size:34px;line-height:1.35}
+#eleven p{font-size:18px;opacity:.7;margin-top:20px}
+body.night{--ink:#f6e8da;--soft:rgba(246,232,218,.7);--card:rgba(60,40,52,.55);--line:rgba(255,220,190,.2)}
+body.night textarea,body.night input[type=text]{background:rgba(255,255,255,.08)}
+body.night nav{background:rgba(40,28,38,.85)}
+body.night nav button{color:rgba(246,232,218,.6)}body.night nav button.on{color:#ffd59a}
+body.night .count,body.night .amen,body.night .circle{color:#ffd59a}
+body.night .tip{background:rgba(255,255,255,.06)}
+body.night a.link{background:rgba(255,255,255,.06)}
+body.night .care button{background:rgba(255,255,255,.06)}
+body.night .care button.on{background:rgba(155,181,122,.25);color:#e6f2d4}
+body.night .carry{background:rgba(255,200,140,.08)}
+</style>
+</head>
+<body>
+<main>
+  <h1>Staying In It</h1>
+  <div class="when" id="when"></div>
+
+  <!-- TODAY: morning / midday / evening -->
+  <section id="today">
+    <div class="chips" role="tablist">
+      <button class="chip" data-p="morning" type="button">Morning</button>
+      <button class="chip" data-p="midday" type="button">Midday</button>
+      <button class="chip" data-p="evening" type="button">Evening</button>
+    </div>
+
+    <div id="p-morning">
+      <div class="card carry" id="carryBox" hidden>
+        <h3>Yesterday you chose to carry:</h3>
+        <div class="quote" id="carryText"></div>
+      </div>
+      <div class="card" id="prayEdit">
+        <p class="small">Morning prayer</p>
+        <h2 id="prompt"></h2>
+        <textarea id="prayer" placeholder="Type, or tap the mic on your keyboard and speak."></textarea>
+        <button class="btn" id="amen" type="button">Amen</button>
+      </div>
+      <div class="card" id="prayDone" hidden>
+        <p class="small" id="prayedAt"></p>
+        <div class="quote" id="prayedText"></div>
+        <p>Amen. Go gently.</p>
+        <button class="btn ghost" id="prayAgain" type="button">Change my prayer</button>
+      </div>
+    </div>
+
+    <div id="p-midday" hidden>
+      <div class="card">
+        <h2>This morning you prayed:</h2>
+        <div class="quote" id="midPrayer"></div>
+        <p class="small" id="midNone" hidden>No morning prayer yet. That's okay. You can pray right now.</p>
+      </div>
+      <div class="card">
+        <h3>A moment with Him</h3>
+        <p>Stop for one breath. Then tap.</p>
+        <button class="btn" id="still" type="button">Still with You</button>
+        <div class="lights" id="lights"></div>
+        <p class="small" id="lightsNote"></p>
+        <div class="tip"><b>Want a reminder?</b><br>
+          Open the <b>Clock</b> app. Add an alarm at noon. Name it "Still with You."<br>
+          Or use <b>Shortcuts</b>: Automation, then Time of Day. Choose "Open URL" and paste this page's address.</div>
+      </div>
+    </div>
+
+    <div id="p-evening" hidden>
+      <div class="card">
+        <h2>What went well today?</h2>
+        <textarea id="well" placeholder="Even one small thing."></textarea>
+      </div>
+      <div class="card">
+        <h2>What do I carry forward?</h2>
+        <textarea id="carry" placeholder="A word, a person, a hope for tomorrow."></textarea>
+        <button class="btn" id="saveEve" type="button">Save tonight</button>
+        <p class="small" id="eveSaved" hidden></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- GRATITUDE -->
+  <section id="thanks">
+    <div class="card">
+      <h2>Thank You, God, for…</h2>
+      <p class="small">Up to three today.</p>
+      <div id="thanksAdd">
+        <input type="text" id="thanksIn" placeholder="One good thing" maxlength="200" enterkeyhint="done">
+        <button class="btn" id="thanksBtn" type="button">Add thanks</button>
+      </div>
+      <p id="thanksFull" hidden>Three today. Beautiful.</p>
+      <ul class="list" id="thanksToday"></ul>
+    </div>
+    <div class="card">
+      <div class="count" id="thanksCount">0</div>
+      <p class="small">thanks so far</p>
+      <ul class="list" id="thanksAll"></ul>
+    </div>
+  </section>
+
+  <!-- FAMILY -->
+  <section id="family">
+    <div class="card">
+      <h2>Carry them with you</h2>
+      <div class="family">
+        <button class="person" type="button"><span class="orb billy"></span><b>Billy</b><small>Your son</small></button>
+        <button class="person" type="button"><span class="orb jen"></span><b>Jennifer</b><small>Your wife</small></button>
+        <button class="person" type="button"><span class="orb mom"></span><b>Mom</b><small>Always with you</small></button>
+      </div>
+      <p class="small" style="text-align:center;margin-top:14px">Tap a light. Hold them in prayer for a breath.</p>
+      <a class="link" href="https://tigerwillca.github.io/legacy/">Visit the tree</a>
+      <a class="link" href="https://tigerwillca.github.io/moments/mom/">Be with Mom</a>
+    </div>
+  </section>
+
+  <!-- HEALING -->
+  <section id="healing">
+    <div class="card">
+      <h2>Healing</h2>
+      <p class="small">A daily prayer for your body.</p>
+      <div class="focus" id="focus"></div>
+    </div>
+    <div class="card breath">
+      <h3>Be still for 30 seconds</h3>
+      <p style="text-align:center">Breathe into your body. Notice it without judging.</p>
+      <div class="circle" id="circle">Ready</div>
+      <button class="btn" id="breathBtn" type="button">Begin</button>
+      <p class="small" id="breathDone" hidden>Done for today. Well done.</p>
+    </div>
+    <div class="card" id="prayers"></div>
+    <div class="card">
+      <h3>Today I'm thankful my body…</h3>
+      <input type="text" id="bodyThanks" placeholder="…carried me through today." maxlength="200" enterkeyhint="done">
+      <button class="btn ghost" id="bodyThanksBtn" type="button">Save</button>
+    </div>
+    <div class="card">
+      <h3>Caring for it today</h3>
+      <div class="care" id="care"></div>
+    </div>
+    <p class="note">A practice, not medical advice. Trust your body's signals.</p>
+  </section>
+
+  <footer>
+    <div>Your words stay on this phone.</div>
+    <button class="btn ghost" id="export" type="button">Export .txt</button>
+  </footer>
+</main>
+
+<nav>
+  <button data-tab="today" type="button"><span>&#9728;</span>Today</button>
+  <button data-tab="thanks" type="button"><span>&#10047;</span>Thanks</button>
+  <button data-tab="family" type="button"><span>&#9825;</span>Family</button>
+  <button data-tab="healing" type="button"><span>&#10022;</span>Healing</button>
+</nav>
+
+<div id="eleven" role="dialog" aria-label="11:11">
+  <div class="g"></div>
+  <h2>Pause.<br>Breathe.<br>He's here.</h2>
+  <p>tap to continue</p>
+</div>
+
+<script>
+(()=>{
+'use strict';
+const $=id=>document.getElementById(id);
+const Q=new URLSearchParams(location.search);
+const TO=(Q.get('t')||'').match(/^(\d{1,2}):(\d{2})$/);
+
+/* ---------- clock (with ?t=HH:MM test override) ---------- */
+function now(){const d=new Date();if(TO)d.setHours(+TO[1],+TO[2],0,0);return d}
+const pad=n=>String(n).padStart(2,'0');
+function keyOf(d){const x=new Date(d.getTime()-3*3600e3);return x.getFullYear()+'-'+pad(x.getMonth()+1)+'-'+pad(x.getDate())}  // day turns over at 3 AM
+function prevKey(k){const [y,m,d]=k.split('-').map(Number);const x=new Date(y,m-1,d-1);return x.getFullYear()+'-'+pad(x.getMonth()+1)+'-'+pad(x.getDate())}
+const fmtTime=ts=>new Date(ts).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'});
+function fmtDay(k){const [y,m,d]=k.split('-').map(Number);return new Date(y,m-1,d).toLocaleDateString([], {weekday:'long',month:'long',day:'numeric'})}
+function period(d){const h=d.getHours();return h>=3&&h<12?'morning':h>=12&&h<17?'midday':'evening'}
+
+/* ---------- storage: this phone only ---------- */
+const KEY='staying.v1';
+let S;try{S=JSON.parse(localStorage.getItem(KEY))||{}}catch(e){S={}}
+S.days=S.days||{};
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+const today=()=>keyOf(now());
+function day(k){k=k||today();return S.days[k]||(S.days[k]={})}
+
+/* ---------- light that shifts from dawn to dusk ---------- */
+const STOPS=[ // hour, top, bottom, night?
+  [0,'#2c2236','#1c1622',1],[4.5,'#3a2a40','#5b3f4f',1],[6,'#f4c7b5','#e9a99a',0],[8,'#fbe7d4','#f5cdb2',0],
+  [12,'#fdf2df','#f7dcb8',0],[16,'#fbe2c2','#f2c193',0],[18.5,'#f3bf9a','#d98b7a',0],[19.6,'#b77a86','#6f4b66',1],[21,'#3d2c45','#251c2c',1],[24,'#2c2236','#1c1622',1]];
+const hex=h=>[1,3,5].map(i=>parseInt(h.substr(i,2),16));
+const mix=(a,b,t)=>'rgb('+hex(a).map((v,i)=>Math.round(v+(hex(b)[i]-v)*t)).join(',')+')';
+function paint(){
+  const d=now(),h=d.getHours()+d.getMinutes()/60;let i=0;while(i<STOPS.length-2&&STOPS[i+1][0]<=h)i++;
+  const a=STOPS[i],b=STOPS[i+1],t=(h-a[0])/(b[0]-a[0]);
+  const top=mix(a[1],b[1],t),bot=mix(a[2],b[2],t),r=document.documentElement.style;
+  r.setProperty('--bg1',top);r.setProperty('--bg2',bot);
+  document.body.classList.toggle('night',(t<.5?a[3]:b[3])===1);
+  document.querySelector('meta[name=theme-color]').setAttribute('content',top);
+  $('when').textContent=d.toLocaleDateString([], {weekday:'long',month:'long',day:'numeric'})+' · '+fmtTime(d);
+}
+
+/* ---------- tabs ---------- */
+const TABS=['today','thanks','family','healing'];
+function show(tab){if(!TABS.includes(tab))tab='today';
+  TABS.forEach(t=>$(t).classList.toggle('on',t===tab));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.tab===tab));
+  if(location.hash.slice(1)!==tab)history.replaceState(null,'',location.pathname+location.search+'#'+tab);
+  scrollTo(0,0)}
+document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>show(b.dataset.tab)));
+
+let P=period(now());
+function showPeriod(p){P=p;['morning','midday','evening'].forEach(x=>$('p-'+x).hidden=x!==p);
+  document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c.dataset.p===p));renderToday()}
+document.querySelectorAll('.chip').forEach(c=>c.addEventListener('click',()=>showPeriod(c.dataset.p)));
+
+/* ---------- morning ---------- */
+const PROMPTS=['God, walk with me today. Help me…','God, I give You this day. Help me…','God, thank You for this morning. Help me…',
+  'God, stay close to me today. Help me…','God, guide my steps today. Help me…','God, give me a calm heart today. Help me…','God, I want to love well today. Help me…'];
+let editing=false;
+function renderToday(){
+  const k=today(),D=S.days[k]||{},Y=S.days[prevKey(k)]||{};
+  const [y,m,dd]=k.split('-').map(Number);const n=Math.floor(Date.UTC(y,m-1,dd)/864e5);
+  $('prompt').textContent=PROMPTS[n%PROMPTS.length];
+  $('carryBox').hidden=!Y.carry;$('carryText').textContent=Y.carry||'';
+  const has=!!(D.prayer&&!editing);
+  $('prayEdit').hidden=has;$('prayDone').hidden=!has;
+  if(has){$('prayedText').textContent=D.prayer;$('prayedAt').textContent='You prayed at '+fmtTime(D.prayerAt)+'.'}
+  // midday
+  $('midPrayer').hidden=!D.prayer;$('midPrayer').textContent=D.prayer||'';$('midNone').hidden=!!D.prayer;
+  const L=$('lights');L.innerHTML='';(D.still||[]).forEach(ts=>{const s=document.createElement('span');s.className='dot';s.innerHTML='<i></i>';s.append(fmtTime(ts));L.appendChild(s)});
+  const c=(D.still||[]).length;$('lightsNote').textContent=c?(c===1?'One light today.':c+' lights today.'):'Your lights will show here.';
+  // evening
+  if(document.activeElement!==$('well'))$('well').value=D.well||'';
+  if(document.activeElement!==$('carry'))$('carry').value=D.carry||'';
+  $('eveSaved').hidden=!D.eveAt;if(D.eveAt)$('eveSaved').textContent='Saved at '+fmtTime(D.eveAt)+'. Rest well.';
+}
+$('amen').addEventListener('click',()=>{const v=$('prayer').value.trim();if(!v){$('prayer').focus();return}
+  const D=day();D.prayer=v;D.prayerAt=now().getTime();editing=false;save();renderToday()});
+$('prayAgain').addEventListener('click',()=>{editing=true;$('prayer').value=day().prayer||'';renderToday();$('prayer').focus()});
+$('still').addEventListener('click',()=>{const D=day();(D.still=D.still||[]).push(now().getTime());save();renderToday()});
+$('saveEve').addEventListener('click',()=>{const D=day();D.well=$('well').value.trim();D.carry=$('carry').value.trim();D.eveAt=now().getTime();save();renderToday()});
+
+/* ---------- gratitude ---------- */
+function renderThanks(){
+  const D=S.days[today()]||{},t=D.thanks||[];
+  $('thanksToday').innerHTML='';t.forEach(x=>{const li=document.createElement('li');li.textContent=x.text;$('thanksToday').appendChild(li)});
+  $('thanksAdd').hidden=t.length>=3;$('thanksFull').hidden=t.length<3;
+  let total=0;const all=$('thanksAll');all.innerHTML='';
+  Object.keys(S.days).sort().reverse().forEach(k=>{const a=S.days[k].thanks||[];if(!a.length)return;total+=a.length;
+    const h=document.createElement('li');h.className='d';h.textContent=fmtDay(k);all.appendChild(h);
+    a.forEach(x=>{const li=document.createElement('li');li.textContent=x.text;all.appendChild(li)})});
+  $('thanksCount').textContent=total;
+}
+function addThanks(){const v=$('thanksIn').value.trim();if(!v)return;const D=day();D.thanks=D.thanks||[];if(D.thanks.length>=3)return;
+  D.thanks.push({text:v,at:now().getTime()});$('thanksIn').value='';save();renderThanks()}
+$('thanksBtn').addEventListener('click',addThanks);
+$('thanksIn').addEventListener('keydown',e=>{if(e.key==='Enter')addThanks()});
+
+/* ---------- family ---------- */
+document.querySelectorAll('.person').forEach(p=>p.addEventListener('click',()=>{p.classList.add('lift');setTimeout(()=>p.classList.remove('lift'),2400)}));
+
+/* ---------- healing (a spiritual practice, not medical) ---------- */
+const AREAS=[
+  ['tooth','Tooth','God, I thank You for my teeth. I ask for strength and healing.'],
+  ['belly','Belly','God, thank You for my belly. Help me care for it gently.'],
+  ['hair','Hair','God, thank You for my hair and scalp.'],
+  ['body','Whole body','Thank You for this body. Thank You for every cell working to heal. Help me care for it.']];
+const CARE=[['walk','Walk (with Merlin)'],['water','Water'],['teeth','Gentle tooth care'],['rest','Rest'],['ate','Ate kindly']];
+function H(){const D=day();return D.heal||(D.heal={pray:{},care:{}})}
+function renderHeal(){
+  const h=(S.days[today()]||{}).heal||{pray:{},care:{}};
+  $('focus').innerHTML='';$('prayers').innerHTML='<h3>A prayer for each</h3>';$('care').innerHTML='';
+  AREAS.forEach(([id,name,text])=>{
+    const f=document.createElement('div');f.className='fl'+(h.pray[id]?' lit':'');f.innerHTML='<i></i>';f.append(name);$('focus').appendChild(f);
+    const r=document.createElement('div');r.className='pray';const t=document.createElement('div');t.className='t';
+    const b=document.createElement('b');b.textContent=name;t.append(b,text);
+    const a=document.createElement('button');a.type='button';a.className='amen'+(h.pray[id]?' done':'');a.textContent=h.pray[id]?'Amen \u2713':'Amen';
+    a.addEventListener('click',()=>{const x=H();x.pray[id]=!x.pray[id];save();renderHeal()});
+    r.append(t,a);$('prayers').appendChild(r)});
+  CARE.forEach(([id,name])=>{const b=document.createElement('button');b.type='button';b.textContent=name;b.className=h.care[id]?'on':'';
+    b.addEventListener('click',()=>{const x=H();x.care[id]=!x.care[id];save();renderHeal()});$('care').appendChild(b)});
+  if(document.activeElement!==$('bodyThanks'))$('bodyThanks').value=h.thankful||'';
+  $('breathDone').hidden=!h.still;
+}
+$('bodyThanksBtn').addEventListener('click',()=>{H().thankful=$('bodyThanks').value.trim();save();const b=$('bodyThanksBtn');b.textContent='Saved';setTimeout(()=>b.textContent='Save',1800)});
+let breathTimer=null;
+$('breathBtn').addEventListener('click',()=>{
+  if(breathTimer)return;const c=$('circle'),btn=$('breathBtn');let s=30;btn.disabled=true;btn.style.opacity=.5;
+  const step=()=>{const inhale=Math.floor((30-s)/5)%2===0;c.classList.toggle('in',inhale);c.textContent=(inhale?'Breathe in':'Breathe out')};
+  step();breathTimer=setInterval(()=>{s--;btn.textContent=s+' seconds';if(s%5===0)step();
+    if(s<=0){clearInterval(breathTimer);breathTimer=null;c.classList.remove('in');c.textContent='Still';btn.disabled=false;btn.style.opacity=1;btn.textContent='Again';H().still=true;save();renderHeal()}},1000);
+  btn.textContent='30 seconds'});
+
+/* ---------- 11:11 touch ---------- */
+let seen1111='';
+function check1111(){const d=now();if(d.getHours()%12===11&&d.getMinutes()===11){const id=keyOf(d)+d.getHours();if(seen1111!==id){seen1111=id;$('eleven').classList.add('on')}}}
+$('eleven').addEventListener('click',()=>$('eleven').classList.remove('on'));
+
+/* ---------- export (.txt) ---------- */
+$('export').addEventListener('click',async()=>{
+  const out=['Staying In It: my words',''];
+  Object.keys(S.days).sort().forEach(k=>{const D=S.days[k],L=[];
+    if(D.prayer)L.push('Morning prayer ('+fmtTime(D.prayerAt)+'): '+D.prayer);
+    if(D.still&&D.still.length)L.push('Still with You: '+D.still.map(fmtTime).join(', '));
+    if(D.well)L.push('What went well: '+D.well);
+    if(D.carry)L.push('Carry forward: '+D.carry);
+    (D.thanks||[]).forEach(x=>L.push('Thankful: '+x.text));
+    const h=D.heal;if(h){const p=AREAS.filter(a=>h.pray[a[0]]).map(a=>a[1]);if(p.length)L.push('Healing prayers: '+p.join(', '));
+      if(h.still)L.push('Was still for 30 seconds');if(h.thankful)L.push("Today I'm thankful my body "+h.thankful);
+      const c=CARE.filter(a=>h.care[a[0]]).map(a=>a[1]);if(c.length)L.push('Caring: '+c.join(', '))}
+    if(L.length){out.push('== '+fmtDay(k)+' ==',...L,'')}});
+  const txt=out.join('\n'),name='staying-'+today()+'.txt';
+  try{const f=new File([txt],name,{type:'text/plain'});if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:'Staying In It'});return}}catch(e){if(e&&e.name==='AbortError')return}
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type:'text/plain'}));a.download=name;document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000)});
+
+/* ---------- start ---------- */
+function renderAll(){paint();renderToday();renderThanks();renderHeal();check1111()}
+showPeriod(P);show(location.hash.slice(1));renderAll();
+let lastP=P;setInterval(()=>{const p=period(now());if(p!==lastP){lastP=p;showPeriod(p)}paint();check1111()},20000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)renderAll()});
+addEventListener('hashchange',()=>show(location.hash.slice(1)));
+if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
+})();
+</script>
+</body>
+</html>
