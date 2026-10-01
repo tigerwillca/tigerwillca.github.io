@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#07060a">
+<meta name="apple-mobile-web-app-title" content="Mom">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png">
+<title>Mom</title>
+<!--
+  PRIVATE · family Legacy · The Mom Sequence
+  Offline single file. No network, no CDNs. Nothing is recorded, saved or sent.
+  This page never speaks for Mom and never claims to reach anyone. Her words only
+  appear if Will writes them himself in CONFIG.MOM_MESSAGE.
+  Test params: ?fast (20x time) or ?fast=N, ?preview = ?fast, ?t=SECONDS (jump after begin), ?1111 (force the 11:11 glow)
+-->
+<script>
+/* =====================================================================
+   CONFIG: Will's words and real-photo slots. Edit here only.
+   ===================================================================== */
+const CONFIG = {
+  // Will's apology, shown first, in his words, then it rises toward her light.
+  APOLOGY: "Mom, I'm sorry I knocked out last time and didn't have the right energy. I'm here now.",
+  APOLOGY_SIGN: '— Will',
+
+  // TODO: William started to say "I want her to tell me…" — fill in later, in his words only.
+  // Leave '' until he writes it. Nothing is ever invented here.
+  MOM_MESSAGE: '',
+  MOM_MESSAGE_LABEL: 'what Will wanted her to tell him',
+
+  // Optional REAL photos, one per age (see media/README.txt). Missing = light only.
+  PHOTOS: {
+    16: 'media/mom-16.jpg',
+    21: 'media/mom-21.jpg',
+    30: 'media/mom-30.jpg',
+    40: 'media/mom-40.jpg',
+    50: 'media/mom-50.jpg',
+    60: 'media/mom-60.jpg'
+  },
+
+  AMBIENT_TONE: true,        // soft low drone (D2, 73.42 Hz), made live by the phone, very quiet
+  HOLD_SECONDS: 25,          // each age rests this long...
+  CROSSFADE_SECONDS: 75      // ...then slowly becomes the next (about 9 minutes in all)
+};
+</script>
+<style>
+:root{--sab:env(safe-area-inset-bottom,0px);--ink:#f3e7cc;--ink2:rgba(239,230,210,.6);--ink3:rgba(239,230,210,.4);--gold:#ffd68c;--pink:#ffc2cf}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:#07060a;overflow:hidden;overscroll-behavior:none}
+body{height:100dvh;color:var(--ink);font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  background:radial-gradient(120% 80% at 50% 38%,#1f1520 0%,#0e0a10 52%,#060508 100%);
+  -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:none}
+canvas{position:fixed;inset:0;width:100vw;height:100dvh;display:block}
+.cap{position:fixed;left:0;right:0;top:calc(env(safe-area-inset-top) + 5.5vh);text-align:center;pointer-events:none;opacity:0;padding:0 28px}
+.cap b{display:block;font-weight:400;font-size:clamp(17px,5vw,24px);letter-spacing:.06em;color:var(--ink);text-shadow:0 0 18px rgba(255,190,200,.35)}
+.cap i{display:block;margin-top:6px;font-size:12px;letter-spacing:.22em;color:var(--ink3);font-style:normal}
+#apology{position:fixed;left:50%;top:58%;width:min(84vw,460px);transform:translate(-50%,-50%);text-align:center;pointer-events:none;opacity:0;
+  font-size:clamp(18px,5.2vw,25px);line-height:1.5;letter-spacing:.02em;color:#fbf0dc;text-shadow:0 0 20px rgba(255,206,130,.4)}
+#apology small{display:block;margin-top:14px;font-size:14px;letter-spacing:.16em;color:var(--gold);opacity:.8}
+#mommsg{position:fixed;left:50%;top:61%;width:min(82vw,440px);transform:translate(-50%,-50%);text-align:center;pointer-events:none;opacity:0;
+  font-size:clamp(17px,4.8vw,23px);line-height:1.5;color:#fdeef0;text-shadow:0 0 20px rgba(255,180,200,.45);font-style:italic}
+#mommsg small{display:block;margin-top:12px;font-size:12px;letter-spacing:.16em;color:var(--ink3);font-style:normal}
+#hint{position:fixed;left:0;right:0;bottom:calc(env(safe-area-inset-bottom) + 168px);text-align:center;font-size:13px;letter-spacing:.1em;color:var(--ink2);opacity:0;pointer-events:none;padding:0 24px}
+#bar{position:fixed;left:0;right:0;bottom:calc(env(safe-area-inset-bottom) + 10px);display:flex;flex-direction:column;align-items:center;gap:5px;opacity:0;transition:opacity 3s;pointer-events:none}
+#bar.on{opacity:1}
+#bar .row{display:flex;gap:10px}
+button.pill{font:inherit;font-size:12px;letter-spacing:.14em;color:var(--ink2);background:rgba(255,255,255,.035);border:1px solid rgba(233,200,140,.22);
+  border-radius:999px;padding:8px 15px;pointer-events:auto}
+button.pill.lit{color:var(--gold);border-color:rgba(255,214,140,.5)}
+#privacy{font-size:10.5px;letter-spacing:.06em;color:var(--ink3)}
+#gate{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;
+  padding:env(safe-area-inset-top) 24px env(safe-area-inset-bottom);background:rgba(7,6,10,.5);transition:opacity 2s;cursor:pointer}
+#gate.gone{opacity:0;pointer-events:none}
+#gate .t1{font-size:30px;letter-spacing:.1em}
+#gate .t2{font-size:13px;letter-spacing:.28em;color:var(--ink3)}
+#gate .t3{margin-top:18px;font-size:12px;letter-spacing:.12em;color:var(--ink3);font-style:italic}
+#gate .tap{margin-top:22px;font-size:13px;letter-spacing:.42em;color:var(--pink);opacity:.85;animation:breathe 3.6s ease-in-out infinite}
+@keyframes breathe{50%{opacity:.35}}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="caps"></div>
+<div id="apology"></div>
+<div id="mommsg"></div>
+<div id="hint">hold the screen, or turn on the mic, to send her your light</div>
+<div id="bar">
+  <div class="row"><button class="pill" id="mic" type="button">mic</button><button class="pill" id="tone" type="button">tone on</button></div>
+  <div id="privacy">Your voice stays on this phone. Nothing is recorded.</div>
+</div>
+<div id="gate" role="button" aria-label="begin">
+  <div class="t1">Mom</div>
+  <div class="t2">Anita</div>
+  <div class="t3">about nine minutes · sound on, softly</div>
+  <div class="tap">begin</div>
+</div>
+<script>
+(()=>{
+'use strict';
+const Q=new URLSearchParams(location.search);
+const fp=Q.has('fast')?Q.get('fast'):(Q.has('preview')?Q.get('preview'):null);
+const SPEED=fp===null?1:(parseFloat(fp)||20);
+const T_JUMP=parseFloat(Q.get('t'))||0, FORCE1111=Q.has('1111');
+
+const $=id=>document.getElementById(id);
+const cv=$('c'),cx=cv.getContext('2d');
+const clamp=(v,a=0,b=1)=>v<a?a:v>b?b:v, lerp=(a,b,t)=>a+(b-a)*t;
+const smooth=t=>{t=clamp(t);return t*t*(3-2*t)}, easeOut=t=>1-Math.pow(1-clamp(t),3), easeIO=t=>{t=clamp(t);return t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2};
+const TAU=Math.PI*2;
+let W=0,H=0,DPR=1,SAB=0;
+
+/* ---------- the six forms of her light (all exist at once; weights crossfade) ---------- */
+const PHASES=[
+ {age:16,cap:'Mom at sixteen',sub:'',            core:[255,226,236],halo:[255,170,205],rad:.80,glow:.85,hz:.9, sparkle:1, baby:0,ring:0,  tree:0,  fall:0  },
+ {age:21,cap:'Mom at twenty-one',sub:'the year you were born',core:[255,212,214],halo:[246,160,176],rad:.88,glow:.9,hz:.42,sparkle:.2,baby:1,ring:0,tree:0,fall:0},
+ {age:30,cap:'Mom in her thirties',sub:'',       core:[255,222,182],halo:[255,168,118],rad:1.04,glow:1.18,hz:.32,sparkle:0,baby:0,ring:0,  tree:0,  fall:0  },
+ {age:40,cap:'Mom in her forties',sub:'',        core:[255,228,200],halo:[248,172,150],rad:1.04,glow:1.08,hz:.25,sparkle:0,baby:0,ring:1,  tree:0,  fall:.04},
+ {age:50,cap:'Mom in her fifties',sub:'her cherry blossoms',core:[255,220,150],halo:[236,158,78],rad:1.12,glow:1.22,hz:.2,sparkle:0,baby:0,ring:.45,tree:1,fall:.3},
+ {age:60,cap:'Mom at sixty',sub:'Anita', core:[255,242,226],halo:[246,186,172],rad:1.16,glow:1.3, hz:.14,sparkle:0,baby:0,ring:.25,tree:1,  fall:1  }
+];
+const APOLOGY_END=26, AGES0=APOLOGY_END, STEP=CONFIG.HOLD_SECONDS+CONFIG.CROSSFADE_SECONDS;
+const FINAL_AT=AGES0+STEP*(PHASES.length-1);
+
+// captions
+const capsEl=$('caps');
+PHASES.forEach(p=>{const d=document.createElement('div');d.className='cap';d.innerHTML='<b></b>'+(p.sub?'<i></i>':'');
+  d.querySelector('b').textContent=p.cap;if(p.sub)d.querySelector('i').textContent=p.sub;capsEl.appendChild(d);p.el=d});
+$('apology').textContent=CONFIG.APOLOGY;{const s=document.createElement('small');s.textContent=CONFIG.APOLOGY_SIGN;$('apology').appendChild(s)}
+const MSG=(CONFIG.MOM_MESSAGE||'').trim();
+if(MSG){$('mommsg').textContent='\u201C'+MSG+'\u201D';const s=document.createElement('small');s.textContent='— '+CONFIG.MOM_MESSAGE_LABEL;$('mommsg').appendChild(s)}
+
+// real photos (optional)
+PHASES.forEach(p=>{const src=CONFIG.PHOTOS&&CONFIG.PHOTOS[p.age];if(!src)return;const im=new Image();im.onload=()=>p.photo=im;im.src=src});
+
+/* ---------- seeded random + offscreen tree (a painted cherry tree) ---------- */
+function rng(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+let treeB=null,treeF=null;
+function blossomShape(g,x,y,s,rot,fill){g.save();g.translate(x,y);g.rotate(rot);g.fillStyle=fill;
+  for(let i=0;i<5;i++){g.rotate(TAU/5);g.beginPath();g.ellipse(0,-s*.55,s*.36,s*.55,0,0,TAU);g.fill()}
+  g.fillStyle='rgba(255,226,160,.85)';g.beginPath();g.arc(0,0,s*.18,0,TAU);g.fill();g.restore()}
+function buildTree(){
+  const mk=()=>{const c=document.createElement('canvas');c.width=W*DPR|0;c.height=H*DPR|0;const g=c.getContext('2d');g.setTransform(DPR,0,0,DPR,0,0);return[c,g]};
+  const [cb,gb]=mk(),[cf,gf]=mk(),r=rng(623);
+  const base={x:W/2,y:H*.75},L0=H*.12,w0=Math.max(9,Math.min(W,H)*.034),spanX=Math.min(W*.5,H*.42),tips=[];
+  gb.lineCap='round';
+  function dabs(x,y,n,sz){for(let i=0;i<n;i++){const a=r()*TAU,d=r()*sz*2.8;const rr=sz*(.35+r()*.8);
+      gf.fillStyle=`rgba(255,${168+r()*50|0},${188+r()*34|0},${(.18+r()*.45).toFixed(2)})`;gf.beginPath();gf.arc(x+Math.cos(a)*d,y+Math.sin(a)*d,rr,0,TAU);gf.fill()}
+    if(r()<.12)blossomShape(gf,x+(r()-.5)*sz*3,y+(r()-.5)*sz*3,sz*1.7,r()*TAU,'rgba(255,208,220,.7)')}
+  function br(x,y,ang,len,wid,depth){
+    const ex=x+Math.cos(ang)*len,ey=y+Math.sin(ang)*len,bend=(r()-.5)*len*.34,mx=(x+ex)/2-Math.sin(ang)*bend,my=(y+ey)/2+Math.cos(ang)*bend;
+    gb.strokeStyle='rgba(60,33,38,.96)';gb.lineWidth=wid;gb.beginPath();gb.moveTo(x,y);gb.quadraticCurveTo(mx,my,ex,ey);gb.stroke();
+    gb.strokeStyle='rgba(255,200,178,.12)';gb.lineWidth=Math.max(.6,wid*.26);gb.beginPath();gb.moveTo(x-wid*.22,y);gb.quadraticCurveTo(mx-wid*.22,my,ex-wid*.22,ey);gb.stroke();
+    if(depth<=4){dabs(ex,ey,depth===0?9:depth<=2?6:3,2.3);if(depth<=1)tips.push([ex,ey])}
+    if(depth===0)return;
+    const n=depth>6?2:(r()<.3?3:2), spread=depth>=6?.62+r()*.2:.42+r()*.22;
+    for(let i=0;i<n;i++){
+      let a=ang+(i-(n-1)/2)*spread+(r()-.5)*.35;
+      const nx=ex+Math.cos(a)*len, dx=nx-base.x; if(Math.abs(dx)>spanX)a+=(dx>0?-1:1)*.4;   // keep the crown on screen
+      if(Math.sin(a)>.1)a-=.45;                                                                // never droop below
+      br(ex,ey,a,len*(.74+r()*.14),wid*.7,depth-1)}
+  }
+  br(base.x,base.y,-Math.PI/2,L0,w0,8);
+  // the foot of the tree: a soft ground glow and a few resting petals
+  {const g=gb.createRadialGradient(base.x,base.y+4,0,base.x,base.y+4,W*.32);g.addColorStop(0,'rgba(120,60,72,.35)');g.addColorStop(1,'rgba(120,60,72,0)');
+   gb.fillStyle=g;gb.save();gb.translate(0,base.y);gb.scale(1,.18);gb.translate(0,-base.y);gb.fillRect(base.x-W*.32,base.y-W*.32,W*.64,W*.64);gb.restore()}
+  for(let i=0;i<34;i++){const a=r()*TAU,d=Math.sqrt(r());dabs(base.x+Math.cos(a)*d*W*.26,base.y+4+Math.sin(a)*d*W*.045,1,1.5)}
+  // soft painted haze through the crown, like a hand-painted mural
+  for(let i=0;i<tips.length;i+=6){const [x,y]=tips[i],rr=18+r()*26,g=gf.createRadialGradient(x,y,0,x,y,rr);
+    g.addColorStop(0,'rgba(255,186,206,.07)');g.addColorStop(1,'rgba(255,186,206,0)');gf.fillStyle=g;gf.fillRect(x-rr,y-rr,2*rr,2*rr)}
+  treeB=cb;treeF=cf;
+}
+function resize(){SAB=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--sab'))||0;DPR=Math.min(2,devicePixelRatio||1);W=innerWidth;H=innerHeight;cv.width=W*DPR|0;cv.height=H*DPR|0;cx.setTransform(DPR,0,0,DPR,0,0);buildTree()}
+addEventListener('resize',resize);resize();
+
+/* ---------- particles ---------- */
+const petals=Array.from({length:48},(_,i)=>newPetal(true,i));
+function newPetal(init,i){return{x:W/2+(Math.random()-.5)*W*.95,y:init?Math.random()*H:H*(.06+Math.random()*.4),vy:9+Math.random()*16,vx:(Math.random()-.5)*6,
+  rot:Math.random()*TAU,spin:(Math.random()-.5)*1.4,s:3.5+Math.random()*4.5,ph:Math.random()*TAU,k:Math.random()}}
+const sparks=Array.from({length:20},()=>({a:Math.random()*TAU,d:.9+Math.random()*1.9,hz:1.4+Math.random()*2.6,ph:Math.random()*TAU,s:.6+Math.random()*1.2}));
+
+/* ---------- audio: soft drone + optional mic level (never recorded) ---------- */
+let AC=null,drone=null,toneOn=CONFIG.AMBIENT_TONE,micLevel=0,analyser=null,micStream=null,micBuf=null,micState='off';
+function startAudio(){
+  try{AC=new (window.AudioContext||window.webkitAudioContext)()}catch(e){return}
+  if(AC.state==='suspended')AC.resume();
+  const master=AC.createGain();master.gain.value=0;
+  const lp=AC.createBiquadFilter();lp.type='lowpass';lp.frequency.value=900;lp.Q.value=.3;
+  lp.connect(master);master.connect(AC.destination);
+  const f0=73.42;[[1,1],[2,.42],[3,.2],[4,.1],[5,.05]].forEach(([h,a],i)=>{
+    const o=AC.createOscillator(),g=AC.createGain();o.type='sine';o.frequency.value=f0*h;o.detune.value=(i%2?1:-1)*(2+i);g.gain.value=a*.2;
+    const l=AC.createOscillator(),lg=AC.createGain();l.frequency.value=.05+i*.017;lg.gain.value=a*.06;l.connect(lg);lg.connect(g.gain);
+    o.connect(g);g.connect(lp);o.start();l.start()});
+  drone=master;setTone(toneOn);
+}
+function setTone(on){toneOn=on;$('tone').textContent=on?'tone on':'tone off';$('tone').classList.toggle('lit',on);
+  if(drone&&AC){const n=AC.currentTime;drone.gain.cancelScheduledValues(n);drone.gain.setValueAtTime(drone.gain.value,n);drone.gain.linearRampToValueAtTime(on?.16:0,n+(on?7:1.5))}}
+$('tone').addEventListener('click',e=>{e.stopPropagation();setTone(!toneOn)});
+async function toggleMic(){
+  const b=$('mic');
+  if(micState==='on'){micStream.getTracks().forEach(t=>t.stop());micStream=null;analyser=null;micState='off';micLevel=0;b.textContent='mic';b.classList.remove('lit');return}
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){micDenied('mic isn\u2019t available here');return}
+  try{
+    micStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}});
+    if(!AC)startAudio();if(AC.state==='suspended')AC.resume();
+    const src=AC.createMediaStreamSource(micStream);analyser=AC.createAnalyser();analyser.fftSize=1024;micBuf=new Float32Array(analyser.fftSize);
+    src.connect(analyser);  // level only: not connected to speakers, not recorded, not sent
+    micState='on';b.textContent='mic on';b.classList.add('lit');
+  }catch(e){micDenied('mic is off')}
+}
+function micDenied(msg){micState='denied';const b=$('mic');b.textContent=msg+' · hold the screen instead';b.classList.remove('lit')}
+$('mic').addEventListener('click',e=>{e.stopPropagation();if(micState!=='denied')toggleMic()});
+function readMic(dt){
+  if(!analyser){micLevel=Math.max(0,micLevel-dt*1.5);return}
+  analyser.getFloatTimeDomainData(micBuf);let s=0;for(let i=0;i<micBuf.length;i++)s+=micBuf[i]*micBuf[i];
+  const lv=clamp((Math.sqrt(s/micBuf.length)-.008)/.06);
+  micLevel=lv>micLevel?lerp(micLevel,lv,.5):Math.max(lv,micLevel-dt*.9);
+}
+
+/* ---------- state + input ---------- */
+let started=false,t=0,lastReal=performance.now(),holding=false,reach=0,received=0,breathPh=0,touched=false,boostT=-99,was1111=false,realT=0;
+function begin(){
+  if(started)return;started=true;t=T_JUMP;$('gate').classList.add('gone');setTimeout(()=>$('bar').classList.add('on'),1200);
+  startAudio();
+  if(navigator.wakeLock)navigator.wakeLock.request('screen').catch(()=>{});
+  if(FORCE1111)boostT=0;
+}
+$('gate').addEventListener('click',begin);
+addEventListener('pointerdown',e=>{if(!started||e.target.closest('button'))return;holding=true;touched=true});
+['pointerup','pointercancel','blur'].forEach(n=>addEventListener(n,()=>holding=false));
+addEventListener('contextmenu',e=>e.preventDefault());
+
+/* ---------- drawing helpers ---------- */
+const rgba=(c,a)=>`rgba(${c[0]|0},${c[1]|0},${c[2]|0},${a.toFixed(3)})`;
+function orb(x,y,r,c,a){if(a<=0||r<=0)return;const g=cx.createRadialGradient(x,y,0,x,y,r);
+  g.addColorStop(0,rgba(c,a));g.addColorStop(.22,rgba(c,a*.5));g.addColorStop(.5,rgba(c,a*.14));g.addColorStop(1,rgba(c,0));cx.fillStyle=g;cx.fillRect(x-r,y-r,2*r,2*r)}
+function petal(x,y,s,rot,a,boost){cx.save();cx.translate(x,y);cx.rotate(rot);cx.globalAlpha=a;cx.fillStyle=boost>1.05?'rgba(255,214,226,1)':'rgba(255,190,206,1)';
+  cx.beginPath();cx.moveTo(0,-s);cx.quadraticCurveTo(s*.85,-s*.2,0,s);cx.quadraticCurveTo(-s*.85,-s*.2,0,-s);cx.fill();cx.restore()}
+function mixPhases(w){const o={core:[0,0,0],halo:[0,0,0]};['rad','glow','hz','sparkle','baby','ring','tree','fall'].forEach(k=>o[k]=0);
+  PHASES.forEach((p,i)=>{const k=w[i];if(!k)return;for(let j=0;j<3;j++){o.core[j]+=p.core[j]*k;o.halo[j]+=p.halo[j]*k}
+    ['rad','glow','hz','sparkle','baby','ring','tree','fall'].forEach(n=>o[n]+=p[n]*k)});return o}
+function weights(){const w=PHASES.map(()=>0),T=t-AGES0;if(T<0){w[0]=1;return w}
+  const i=Math.min(PHASES.length-1,Math.floor(T/STEP));if(i>=PHASES.length-1){w[PHASES.length-1]=1;return w}
+  const u=smooth((T-i*STEP-CONFIG.HOLD_SECONDS)/CONFIG.CROSSFADE_SECONDS);w[i]=1-u;w[i+1]=u;return w}
+
+/* ---------- main loop ---------- */
+function frame(now){
+  const rdt=Math.min(.1,(now-lastReal)/1000);lastReal=now;realT+=rdt;const dt=rdt*SPEED;
+  if(started)t+=dt;
+  readMic(rdt);
+  // 11:11 on the phone's clock (AM or PM): blossoms brighten briefly
+  if((realT%1)<rdt){const d=new Date(),is=d.getHours()%12===11&&d.getMinutes()===11;if(is&&!was1111)boostT=realT;was1111=is}
+  const bt=realT-boostT, boost=1+.9*(bt<0?0:bt<2.5?smooth(bt/2.5):bt<11?1:1-smooth((bt-11)/6));
+
+  const w=weights(),M=mixPhases(w);
+  const presence=started?lerp(.42,1,smooth((t-18)/10)):.3;
+  const R=Math.max(30,Math.min(66,Math.min(W,H)*.11));
+  const herX=W/2,herY=H*.36+Math.sin(t*.21)*3;
+  const willX=W/2,willY=H-SAB-118;
+  breathPh+=dt*M.hz;const breath=1+.05*Math.sin(breathPh*TAU);
+
+  cx.clearRect(0,0,W,H);
+
+  // her tree (painted, behind her)
+  const treeA=M.tree*presence;
+  if(treeA>.003){cx.globalAlpha=clamp(treeA*.9);cx.drawImage(treeB,0,0,W,H);
+    cx.globalAlpha=clamp(treeA*(.75+.08*Math.sin(t*.3)));cx.drawImage(treeF,0,0,W,H);
+    if(boost>1.01){cx.globalCompositeOperation='lighter';cx.globalAlpha=clamp(treeA*(boost-1)*.8);cx.drawImage(treeF,0,0,W,H);cx.globalCompositeOperation='source-over'}
+    cx.globalAlpha=1}
+
+  cx.save();cx.globalCompositeOperation='lighter';
+  // her light
+  const rc=R*M.rad*breath, recv=received;
+  orb(herX,herY,rc*6.2,M.halo,.20*M.glow*presence+.06*recv);
+  orb(herX,herY,rc*3.0,M.halo,.42*M.glow*presence+.12*recv);
+  orb(herX,herY,rc*1.6,M.core,.75*presence+.15*recv);
+  // sixteen: quick bright sparkle
+  if(M.sparkle>.01)sparks.forEach(s=>{const tw=Math.max(0,Math.sin(t*s.hz*TAU+s.ph));const x=herX+Math.cos(s.a+t*.15)*rc*s.d*1.4,y=herY+Math.sin(s.a+t*.15)*rc*s.d*1.4;
+    const a=M.sparkle*presence*presence*tw*tw;orb(x,y,6*s.s+4,[255,214,236],a*.9);cx.fillStyle=`rgba(255,248,252,${(a*.9).toFixed(3)})`;cx.fillRect(x-.6,y-5*s.s,1.2,10*s.s);cx.fillRect(x-5*s.s,y-.6,10*s.s,1.2)});
+  // twenty-one: a small second light cradled close (baby Will)
+  if(M.baby>.01){const ang=.7+Math.sin(t*.9)*.1,bx=herX+Math.cos(ang)*rc*1.05,by=herY+Math.sin(ang)*rc*1.05;
+    orb(bx,by,rc*1.7,[255,200,110],.4*M.baby*presence);orb(bx,by,rc*.85,[255,238,200],.95*M.baby*presence)}
+  cx.restore();
+
+  // core disc + optional real photo for the age
+  cx.save();const g=cx.createRadialGradient(herX,herY,0,herX,herY,rc);g.addColorStop(0,`rgba(255,252,246,${(.95*presence).toFixed(3)})`);
+  g.addColorStop(.6,rgba(M.core,.8*presence));g.addColorStop(1,rgba(M.core,0));cx.fillStyle=g;cx.beginPath();cx.arc(herX,herY,rc,0,TAU);cx.fill();cx.restore();
+  PHASES.forEach((p,i)=>{if(!p.photo||w[i]<.01||t<AGES0)return;const a=w[i]*.9*smooth((t-AGES0)/6),pr=rc*1.15;
+    cx.save();cx.globalAlpha=a;cx.beginPath();cx.arc(herX,herY,pr,0,TAU);cx.clip();
+    const iw=p.photo.naturalWidth,ih=p.photo.naturalHeight,sc=Math.max(2*pr/iw,2*pr/ih);cx.drawImage(p.photo,herX-iw*sc/2,herY-ih*sc/2,iw*sc,ih*sc);
+    const v=cx.createRadialGradient(herX,herY,pr*.5,herX,herY,pr);v.addColorStop(0,rgba(M.halo,0));v.addColorStop(.8,rgba(M.halo,.3));v.addColorStop(1,rgba(M.core,.95));
+    cx.fillStyle=v;cx.fillRect(herX-pr,herY-pr,2*pr,2*pr);cx.restore()});
+
+  // forties: blossoms around her
+  if(M.ring>.01){const n=7;for(let i=0;i<n;i++){const a=i/n*TAU+t*.035,d=rc*(2.5+.15*Math.sin(t*.4+i));
+    cx.globalAlpha=1;blossomShape(cx,herX+Math.cos(a)*d,herY+Math.sin(a)*d*.92,R*.2*(1+.06*Math.sin(t*.7+i)),a+t*.05,`rgba(255,196,212,${clamp(M.ring*presence*.8*boost).toFixed(3)})`)}}
+
+  // falling petals (sixty; a few in the fifties; and briefly at 11:11)
+  const fall=Math.max(M.fall*presence,(boost-1)*.45);
+  if(fall>.01){const n=Math.round(petals.length*clamp(fall));for(let i=0;i<petals.length;i++){const q=petals[i];
+      q.y+=q.vy*dt*.6;q.x+=(q.vx+Math.sin(t*.5+q.ph)*7)*dt*.6;q.rot+=q.spin*dt*.6;
+      if(q.y>H+10)Object.assign(q,newPetal(false));
+      if(i<n)petal(q.x,q.y,q.s,q.rot,(.5+.3*q.k)*clamp(petals.length*clamp(fall)-i),boost)}}
+
+  // Will's light + his thread
+  const inLv=Math.max(micLevel,holding?.7:0);
+  if(started&&t>APOLOGY_END-4){reach=clamp(reach+(inLv>.06?dt*(.22+inLv*.45):-dt*.18))}
+  if(reach>.985&&inLv>.06)received=Math.min(1,received+dt*.8);else received=Math.max(0,received-dt*.25);
+  cx.save();cx.globalCompositeOperation='lighter';
+  const wb=started?.7+inLv*.9:.3;
+  orb(willX,willY,R*2.6*(1+inLv*.4),[255,200,110],.35*wb);orb(willX,willY,R*.9*(1+inLv*.25),[255,236,196],.9*wb);
+  if(reach>.004){
+    const ex=herX,ey=herY+rc*.9,sway=Math.sin(t*.37)*W*.06,pts=[],N=48,cut=reach;
+    for(let i=0;i<=N;i++){const u=i/N*cut,a=1-u;const c1x=willX+sway,c1y=lerp(willY,ey,.33),c2x=ex-sway*.6,c2y=lerp(willY,ey,.7);
+      pts.push([a*a*a*willX+3*a*a*u*c1x+3*a*u*u*c2x+u*u*u*ex,a*a*a*willY+3*a*a*u*c1y+3*a*u*u*c2y+u*u*u*ey])}
+    const la=.22+.5*Math.max(inLv,received*.6);
+    cx.lineCap='round';cx.lineJoin='round';
+    [[5,la*.18],[1.3,la]].forEach(([lw,a])=>{cx.strokeStyle=`rgba(255,222,170,${a.toFixed(3)})`;cx.lineWidth=lw;cx.beginPath();pts.forEach((p,i)=>i?cx.lineTo(p[0],p[1]):cx.moveTo(p[0],p[1]));cx.stroke()});
+    const hd=pts[pts.length-1];orb(hd[0],hd[1],18,[255,226,176],.5*la+.2);
+    if(inLv>.06)for(let k=0;k<3;k++){const u=((t*.35+k/3)%1),p=pts[Math.min(N,Math.round(u*N))];orb(p[0],p[1],10,[255,240,210],.5*inLv)}
+  }
+  if(received>.01)orb(herX,herY,rc*2.2,[255,232,200],.25*received);
+  cx.restore();
+
+  // the place her words will go (never invented): a soft blossom drifting there until Will writes them
+  const msgT=t-(FINAL_AT+25),msgA=started?smooth(msgT/8):0;
+  if(!MSG&&msgA>0){const mx=W/2+Math.sin(t*.13)*W*.07,my=H*.61+Math.sin(t*.21)*8;cx.save();cx.globalCompositeOperation='lighter';orb(mx,my,R*.9,[255,190,210],.22*msgA*boost);cx.restore();
+    blossomShape(cx,mx,my,R*.24,t*.08,`rgba(255,204,220,${(.7*msgA*Math.min(1.25,boost)).toFixed(3)})`)}
+  $('mommsg').style.opacity=MSG?(.95*msgA).toFixed(3):0;
+
+  // Will's apology: fades in slowly, then rises toward her light
+  const ap=$('apology');
+  if(started&&t<APOLOGY_END){const fin=easeOut(t/5)*.98,rise=easeIO((t-15)/9);
+    const dy=(herY-H*.58)*rise;ap.style.opacity=(fin*(1-smooth((t-19)/5))).toFixed(3);ap.style.transform=`translate(-50%,calc(-50% + ${dy.toFixed(1)}px)) scale(${(1-.55*rise).toFixed(3)})`;
+    if(t>21)received=Math.max(received,smooth((t-21)/3)*.6)}
+  else ap.style.opacity=0;
+
+  // captions (about her, never words from her)
+  const capA=started?smooth((t-AGES0)/5):0;
+  PHASES.forEach((p,i)=>p.el.style.opacity=(smooth((w[i]-.55)/.35)*capA*.92).toFixed(3));  // captions never overlap
+  const hA=started&&!touched&&micState!=='on'?smooth((t-AGES0-3)/4)*(1-smooth((t-AGES0-18)/4)):0;$('hint').style.opacity=(hA*.8).toFixed(3);
+
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+window.__mom={get t(){return t},get w(){return weights().map(x=>+x.toFixed(2))},get reach(){return reach},get mic(){return micState},get audio(){return AC?AC.state:null}};
+})();
+</script>
+</body>
+</html>
