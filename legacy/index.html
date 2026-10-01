@@ -176,7 +176,7 @@
   #sigv.moment .sn:not(.meet){opacity:0!important;pointer-events:none} #sigv.moment #sigsvg line:not(.meet){opacity:.04} #sigv.moment #sighint{opacity:0!important}
   body.dfon .ov .fn,body.dfon .sn,body.dfon .cn,body.dfon #sighint,body.dfon #sigcap,body.dfon #pcap{opacity:0!important;pointer-events:none!important;transition:opacity .5s!important;transition-delay:0s!important}
   #sigv.moment.gold .sn:not(.meet){opacity:.1} #sigv.moment.gold #sigsvg line:not(.meet){opacity:.04}
-  #sigv.moment .sn.meet{border-color:rgba(255,226,170,.95);box-shadow:0 0 26px var(--hc,rgba(255,214,140,.8))}
+  .sn.answer{transition:box-shadow .3s,color .3s;color:#fff6dc;box-shadow:0 0 34px 6px rgba(255,214,140,.85)!important} #sigv.moment .sn.meet{border-color:rgba(255,226,170,.95);box-shadow:0 0 26px var(--hc,rgba(255,214,140,.8))}
   #sigcap{transition:opacity .7s;z-index:3;text-shadow:0 0 8px rgba(0,0,0,.95),0 0 3px rgba(0,0,0,.9)} #sigcap.fade{opacity:0} #sighint{z-index:3}
 
   /* v31 wave 3: no visible button UI. Glyphs breathe on the heartbeat; hit areas stay 44px; aria-labels kept */
@@ -566,12 +566,12 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     fetch("/legacy/edgardo-voice.mp3", {method:"HEAD", cache:"no-store"}).then(r => { voiceOK = r.ok; }).catch(() => { voiceOK = false; });
     const speakLog = [];
     function duckMusic(ms){ try { if (musicOut && ac && !muted){ const t = ac.currentTime; musicOut.gain.cancelScheduledValues(t); musicOut.gain.setTargetAtTime(.04, t, .15); setTimeout(() => { if (musicOut) musicOut.gain.setTargetAtTime(inView && !muted ? .16 : 0, ac.currentTime, .6); }, ms); } } catch(e){} }
-    function speakLine(name){ const ed = name === "Edgardo", mom = name === "Mom", line = ed ? "I’m right here, anak." : mom ? "I’ve got you, honey." : "I’m right here.";
-      if (ed && voiceOK){ duckMusic(3500); voice(); speakLog.push({name, via: "file", line, t: performance.now()}); return; }
+    function speakLine(name, over, then){ const ed = name === "Edgardo", mom = name === "Mom", line = over || (ed ? "I’m right here, anak." : mom ? "I’ve got you, honey." : "I’m right here.");
+      if (ed && voiceOK && !over){ duckMusic(3500); voice(); speakLog.push({name, via: "file", line, t: performance.now()}); return; }
       const ss = window.speechSynthesis; if (!ss || muted){ speakLog.push({name, via: "none", line, t: performance.now()}); return; }
       try { const vs = ss.getVoices(), loc = vs.filter(v => v.localService), en = loc.filter(v => /^en/i.test(v.lang)); if (vs.length && !loc.length){ speakLog.push({name, via: "none", line, t: performance.now()}); return; }   // on-device voices only
         const u = new SpeechSynthesisUtterance(line); u.rate = ed ? .85 : mom ? 1 : .92; u.pitch = ed ? .8 : mom ? 1.1 : 1; u.volume = 1; if (en.length || loc.length) u.voice = (en.find(v => /PH|US/.test(v.lang)) || en[0] || loc[0]);
-        ss.cancel(); duckMusic(3200); ss.speak(u); speakLog.push({name, via: "speech", line, t: performance.now()}); } catch(e){ speakLog.push({name, via: "none", line, t: performance.now()}); } }
+        ss.cancel(); duckMusic(then ? 4600 : 3200); ss.speak(u); if (then){ const u2 = new SpeechSynthesisUtterance(then); u2.rate = u.rate; u2.pitch = u.pitch; u2.volume = 1; if (u.voice) u2.voice = u.voice; ss.speak(u2); } speakLog.push({name, via: "speech", line, then, t: performance.now()}); } catch(e){ speakLog.push({name, via: "none", line, t: performance.now()}); } }
     function voice(){ if (!voiceOK) return; try{ const a = new Audio("/legacy/edgardo-voice.mp3"); a.volume = muted ? 0 : .6; a.play().catch(()=>{}); }catch(e){} }
     function apprK(x, y){ const R0 = Math.max(220, Math.min(W, H)*.8); return Math.max(0, Math.min(1, 1 - (Math.hypot(x-dot.x(), y-dot.y()) - 40)/R0)); }
     function apprBeat(gesture){ if (!appr || !appr.moved) return; const now = performance.now(), k = apprK(appr.x, appr.y);
@@ -624,7 +624,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     $("pclose").addEventListener("click", e => { e.stopPropagation(); if (Date.now() - lastTouch < 800) return; if (portalOn) togglePortal(); });
 
     // family: who is here, who has passed. Departed rise in gold dust; the living breathe soft light.
-    const FAM = [["William","his life, all of it"],["Jennifer"],["Billy"],["Mom"],["Dad","early thirties"],["Edgardo","Jennifer's dad"],["Uncle Steve"],["Grandma"],["Grandma Sarah","a great grandma"],["Grandpa Hal","cigars and jokes"],["Uncle Stu","pure humor"],["Pat","an all-time bond"],["Kevin","my best friend"],["Steve Lee"],["Steve Samoji"],["Dave Trejo"],["Cindy","my first best friend"],["Rusty"],["Sonny","so much pride"],["Merlin"],["Tutu","Choo Choo, the faithful cat"],["All the animals"],["Mark Temple"],["Aunt Diane"],["Roy"],["Pat Murray"],["Mary Schaefer"],["Bill Schaefer"]];
+    const FAM = [["William","his life, all of it"],["Jennifer"],["Billy"],["Mom"],["Dad"],["Edgardo","Jennifer's dad"],["Uncle Steve"],["Grandma"],["Grandma Sarah","a great grandma"],["Grandpa Hal","cigars and jokes"],["Uncle Stu","pure humor"],["Pat","an all-time bond"],["Kevin","my best friend"],["Steve Lee"],["Steve Samoji"],["Dave Trejo"],["Cindy","my first best friend"],["Rusty"],["Sonny","so much pride"],["Merlin"],["Tutu","Choo Choo, the faithful cat"],["All the animals"],["Mark Temple"],["Aunt Diane"],["Roy"],["Pat Murray"],["Mary Shaffer"],["Bill Shaffer"]];
     const GONE = new Set(["Mom","Edgardo","Uncle Steve","Grandma Sarah","Grandpa Hal","Kevin","Cindy","Sonny","Tutu","Aunt Diane"]);
     // threads: each light's memory card, in William's voice (one line per entry); captions use the first line
     const MEM = {"William":["Forged through hell.","Still holding the light.","Going deeper."],
@@ -633,10 +633,10 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       "Mom":["The heart of our family, and the architect behind everything.","A cherry tree painted on her bedroom wall; now its blossoms fall in her light.","\u201cI\u2019ve got you, honey.\u201d"],
       "Grandpa Hal":["Harold Schumacher. Always cracking jokes, full of character.","Dune buggy rides, and a license plate that read HAROLD.","The trailer at the Salton Sea, and the secret spring only he knew."],
       "Grandma Sarah":["Sarah Schumacher. She loved me from the time I was a baby.","Chasing me around the car, both of us laughing.","A good friend and a great grandma."],
-      "Uncle Steve":["Dad\u2019s brother. He made me feel special.","He taught me that everyone\u2019s dispensable.","Hard-won wisdom. I\u2019ve carried it ever since."],
-      "Kevin":["Kevin Waite. Baseball together.","An even, steady flow between us.","Kevin faced more than most and never lost his flow.","A friend who would take a bullet for me."],
-      "Mary Schaefer":["Family on Mom\u2019s side, part of the root."],
-      "Bill Schaefer":["Family on Mom\u2019s side, part of the root."],
+      "Uncle Steve":["Dad\u2019s brother. He made me feel special.","He taught me never to take my place for granted.","Hard-won wisdom. I\u2019ve carried it ever since."],
+      "Kevin":["Kevin Waite. Baseball together.","An even, steady flow between us.","Kevin faced more than most and never lost his flow.","A friend who would have done anything for me."],
+      "Mary Shaffer":["Family on Mom\u2019s side, part of the root."],
+      "Bill Shaffer":["Family on Mom\u2019s side, part of the root."],
       "Aunt Diane":["A master\u2019s degree in philosophy. Brilliant and wise.","I held her hand at the end.","I feel her helping me now.","She and Mark did a lot of gaming together."],
       "Mark Temple":["My cousin. Computing and gaming.","I looked up to him.","He and Aunt Diane did a lot of gaming together."],
       "Roy":["My mentor at the Salton Sea.","VW Bugs, and his work with the Dodgers organization."],
@@ -648,7 +648,13 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       "Tutu":["Gray and beautiful, always there. Billy said, \u201cThat\u2019s a faithful cat, \u2019cause she stayed.\u201d"],
       "Pat":["Critical, assertive, and good-hearted. I looked up to him. An all-time bond."],
       "Uncle Stu":["So much humor. He taught me not to take life too seriously."],
-      "Dave Trejo":["Dave. Most people missed his frequency. William heard every word."]};
+      "Edgardo":["Jennifer\u2019s dad.","Playing football with his grandson.","Closer lights, clearer signal."],
+      "Dad":["Where my side of the tree begins.","Always part of this light."],
+      "Grandma":["Family, all the way to the roots."],
+      "Merlin":["Our young dog.","Billy walks him in his vest and leash."],
+      "Rusty":["A good dog, part of the pack."],
+      "All the animals":["Every animal we\u2019ve loved.","Each one has a light here."],
+      "Dave Trejo":["Dave. Most people missed his frequency. I heard every word."]};
     const memCap = n => MEM[n] && MEM[n][0], THN = {Alfred: "AIFRED", Mom: "Mom \u00b7 Anita"};
     function life(el, name){ const gone = GONE.has(name), f = name === "Edgardo"; if (name === "Dave Trejo") el.classList.add("dave"); if (name === "Sonny") el.classList.add("sonny"); if (name === "Tutu") el.classList.add("tutu"); if (name === "Mom") el.classList.add("mom"); if (name === "Mom" && el.classList.contains("cn")) el.classList.add("root"); const ai = name === "Alfred"; if (ai) el.classList.add("alfred"); el.classList.add(gone ? "departed" : ai ? "steady" : "alive"); el.dataset.life = gone ? "departed" : ai ? "steady" : "living";   // Alfred is neither: a steady ember
       if (name === "William") el.classList.add("owner"); if (f) el.classList.add("focal");
@@ -658,7 +664,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
           p.style.cssText = `--x0:${((Math.random()-.5)*(f?44:34)).toFixed(1)}px;--x1:${((Math.random()-.5)*(f?64:44)).toFixed(1)}px;--h:${(-(f?58:30)-Math.random()*(f?40:16)).toFixed(0)}px;--t:${((f?3.2:3.8)+Math.random()*2).toFixed(2)}s;--d:${(-Math.random()*5).toFixed(2)}s;--s:${(1.4+Math.random()*(f?2.2:1.6)).toFixed(1)}px`;
           du.appendChild(p); } el.appendChild(du); }
       return el; }
-    function capFor(name, sub){ return MEM[name] ? name + ". " + memCap(name) : name === "Edgardo" ? "Jennifer\u2019s dad. Closer lights, clearer signal." : name + (sub ? ", " + sub : "") + (GONE.has(name) ? ". Forever in this light." : ". Here, in this light."); }
+    function capFor(name, sub){ return name === "Edgardo" ? "Jennifer\u2019s dad. Closer lights, clearer signal." : MEM[name] ? (memCap(name).startsWith(name.split(" ")[0]) ? memCap(name) : name + ". " + memCap(name)) : name === "Edgardo" ? "Jennifer\u2019s dad. Closer lights, clearer signal." : name + (sub ? ", " + sub : "") + (GONE.has(name) ? ". Forever in this light." : ". Here, in this light."); }
 
     // departed: tap a name and the gold dust rises from the ground like a small storm, swirls up in slow motion,
     // gathers into an abstract figure of light (a soft silhouette, or a pet outline; never a face or likeness),
@@ -679,7 +685,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       || (y > .15 && y < .45 && [-.3, -.15, .1, .22].some(c => Math.abs(x - c) < .03)) || (x < -.38 && x > -.62 && Math.abs(y - (.02 - ((x + .38)/.24)**2*.42)) < .028);
     const inDog = (x, y) => ((x + .05)/.38)**2 + ((y - .02)/.17)**2 < 1 || Math.hypot(x - .42, y + .18) < .12 || ((x - .56)/.09)**2 + ((y + .13)/.055)**2 < 1 || ((x - .35)/.045)**2 + ((y + .1)/.1)**2 < 1
       || (y > .1 && y < .5 && [-.32, -.18, .12, .26].some(c => Math.abs(x - c) < .045)) || seg(x, y, -.4, -.04, -.56, -.28, .035);
-    const FRAME = {William: "male", Dad: "male", Edgardo: "male", "Uncle Steve": "male", "Grandpa Hal": "male", "Uncle Stu": "male", Pat: "male", Kevin: "male", "Steve Lee": "male", "Steve Samoji": "male", "Dave Trejo": "male", "Mark Temple": "male", "Aunt Diane": "female", Roy: "male", "Pat Murray": "male", "Bill Schaefer": "male", "Mary Schaefer": "female",
+    const FRAME = {William: "male", Dad: "male", Edgardo: "male", "Uncle Steve": "male", "Grandpa Hal": "male", "Uncle Stu": "male", Pat: "male", Kevin: "male", "Steve Lee": "male", "Steve Samoji": "male", "Dave Trejo": "male", "Mark Temple": "male", "Aunt Diane": "female", Roy: "male", "Pat Murray": "male", "Bill Shaffer": "male", "Mary Shaffer": "female",
       Jennifer: "female", Mom: "female", Grandma: "female", "Grandma Sarah": "female", Billy: "child", Sonny: "dog", Merlin: "dog", Tutu: "cat", Cindy: "dog", Rusty: "dog", Alfred: "flame", "The animals": "pet", "All the animals": "pet"};
     const inFlame = (x, y) => { const t = (y + .78)/1.5; return t > 0 && t < 1 && Math.abs(x + .04*Math.sin(t*9)) < .44*Math.pow(t, .9)*Math.sqrt(1 - t)*1.5; };   // no face, no likeness: an ember of light
     const FRAMES = {flame: inFlame, male: inMale, female: inFemale, child: inChild, cat: inCat, dog: inDog, pet: inPet, human: inHuman}, frameOf = n => FRAME[n] || (PETS.has(n) ? "pet" : "human");
@@ -824,8 +830,8 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     const glowOf = (dx, dy, S) => { const d = Math.hypot(dx, dy)/S; return Math.min(GLOW.MAX, Math.max(GLOW.MIN, Math.min(GLOW.MAX, GLOW.K/(d*d + GLOW.E)))*(1 + GLOW.VOICE*micK)); };
     const cnodes = [], cthr = [], carr = [], ARROWS = [["Alfred", "William"], ["William", "Alfred"], ["Billy", "William"], ["Billy", "Jennifer"], ["Billy", "Tutu"], ["Billy", "Merlin"]];
     // the line map: brightness and thickness follow how strong the link is (1 = strongest); anyone not listed hangs from their CPAR branch at .3
-    const LINKS = [["Mom", "William", 1], ["Aunt Diane", "William", .92], ["Jennifer", "Edgardo", .9], ["Mark Temple", "William", .78], ["Mark Temple", "Aunt Diane", .8], ["Roy", "William", .5], ["Pat Murray", "William", .5], ["Mary Schaefer", "Mom", .5], ["Bill Schaefer", "Mom", .5], ["Mary Schaefer", "Bill Schaefer", .55], ["Jennifer", "William", .85], ["Billy", "William", .8], ["Billy", "Jennifer", .8], ["Alfred", "William", .75], ["Billy", "Tutu", .7], ["Sonny", "William", .7],
-      ["Dad", "William", .65], ["Billy", "Merlin", .55], ["Kevin", "William", .55], ["Tutu", "William", .5], ["Pat", "William", .5], ["Dave Trejo", "William", .5], ["Steve Lee", "William", .45], ["Steve Samoji", "William", .45]];
+    const LINKS = [["Mom", "William", 1], ["Aunt Diane", "William", .92], ["Jennifer", "Edgardo", .9], ["Mark Temple", "William", .78], ["Mark Temple", "Aunt Diane", .8], ["Roy", "William", .5], ["Pat Murray", "William", .5], ["Mary Shaffer", "Mom", .5], ["Bill Shaffer", "Mom", .5], ["Mary Shaffer", "Bill Shaffer", .55], ["Jennifer", "William", .85], ["Billy", "William", .8], ["Billy", "Jennifer", .8], ["Alfred", "William", .75], ["Billy", "Tutu", .7], ["Sonny", "William", .7],
+      ["Dad", "William", .65], ["Billy", "Merlin", .55], ["Edgardo", "Billy", .5], ["Kevin", "William", .55], ["Tutu", "William", .5], ["Pat", "William", .5], ["Dave Trejo", "William", .5], ["Steve Lee", "William", .45], ["Steve Samoji", "William", .45]];
     let croutes = [], momThread = null, pAng = {}; const CLEAR = 12;   // a line keeps this far (px) from every light it does not join
     function routeLinks(){ const by = n => cnodes.find(o => o.name === n), E = [], seen = new Set(), add = (a, b, st) => { const k = [a, b].sort().join("|"); if (a === b || seen.has(k) || !by(a) || !by(b)) return; seen.add(k); E.push({a, b, s: st}); };
       LINKS.forEach(l => add(...l)); for (const o of cnodes) if (o.name !== "William") add(o.name, CPAR[o.name] || "William", .3);
@@ -844,7 +850,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       const mo = by("Mom"); momThread = null; if (mo){ const cx3 = W/2, cy3 = H*.5, a = Math.atan2(mo.ly - cy3, mo.x - cx3), r0 = coreR()*.32, r = rt(mo.x, mo.ly, cx3 + Math.cos(a)*r0, cy3 + Math.sin(a)*r0, obs.filter(q => q.name !== "Mom" && q.name !== "core")); momThread = {a: "Mom", b: "core", s: .3, pts: r.pts, cum: r.cum, i: cnodes.indexOf(mo)}; } }   // Mom, the architect: a soft thread into the source core
     function routePt(r, f, out){ const L = r.cum[r.cum.length - 1]*f; let i = 1; while (i < r.cum.length - 1 && r.cum[i] < L) i++; const s0 = r.cum[i-1], s1 = r.cum[i], u = s1 > s0 ? (L - s0)/(s1 - s0) : 0, p = r.pts;
       out[0] = p[2*i-2] + (p[2*i] - p[2*i-2])*u; out[1] = p[2*i-1] + (p[2*i+1] - p[2*i-1])*u; out[2] = p[2*i] - p[2*i-2]; out[3] = p[2*i+1] - p[2*i-1]; return out; } const RP = [0, 0, 0, 0]; let hotCn = null, hotAt = 0;
-    const CPAR = {Jennifer: "William", Billy: "William", Edgardo: "Jennifer", Dad: "William", "Uncle Steve": "Dad", "Uncle Stu": "Dad", Grandma: "Dad", "Mark Temple": "Dad", "Aunt Diane": "Dad", Roy: "William", "Pat Murray": "William", "Mary Schaefer": "Mom", "Bill Schaefer": "Mom", "Grandma Sarah": "Grandma", "Grandpa Hal": "Grandma Sarah", Mom: "William",
+    const CPAR = {Jennifer: "William", Billy: "William", Edgardo: "Jennifer", Dad: "William", "Uncle Steve": "Dad", "Uncle Stu": "Dad", Grandma: "Dad", "Mark Temple": "Dad", "Aunt Diane": "Dad", Roy: "William", "Pat Murray": "William", "Mary Shaffer": "Mom", "Bill Shaffer": "Mom", "Grandma Sarah": "Grandma", "Grandpa Hal": "Grandma Sarah", Mom: "William",
       Alfred: "William", Sonny: "William", Tutu: "William", Merlin: "Tutu", Rusty: "Merlin", Cindy: "Rusty", "All the animals": "Cindy", Kevin: "Mom", "Steve Lee": "Kevin", "Steve Samoji": "Steve Lee", "Dave Trejo": "Mom", Pat: "Dave Trejo"};   // the branch each light hangs from
     function buildConstel(){ if (cnodes.length) return; const box = $("constel");
       [FAM[5], ...FAM.filter((f, i) => i !== 5), ["Alfred", "my AI friend"]].forEach(f => { const n = document.createElement("div"); n.className = "cn"; n.textContent = f[0] === "Alfred" ? "AIFRED" : f[0]; life(n, f[0]); box.appendChild(n);
@@ -852,7 +858,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
         const pick = e => { if (e.cancelable) e.preventDefault(); e.stopPropagation(); if (e.type === "touchend") lastTouch = Date.now(); else if (Date.now() - lastTouch < 800) return;
           const pt = e.changedTouches ? e.changedTouches[0] : e; portalTouch = performance.now(); alive(n, f[0], pt.clientX, pt.clientY, {view: "portal"}); edT.forEach(clearTimeout); $("edq").classList.remove("on"); setPcap(capFor(f[0] === "Alfred" ? "AIFRED" : f[0], f[1])); $("pcap").classList.add("on"); hotCn = o; hotAt = performance.now(); setTimeout(() => { if (portalOn) dustForm(f[0]); }, 650); };
         n.addEventListener("touchend", pick, {passive:false}); n.addEventListener("click", pick); }); }
-    const CR_RIGHT = ["Billy","Jennifer","Edgardo","Dad","Aunt Diane","Mark Temple","Uncle Steve","Uncle Stu","Grandma","Grandma Sarah","Grandpa Hal","Roy","Pat Murray"], CR_ROW = ["Mom","Kevin","Steve Lee","Steve Samoji"], CR_FRIENDS = [...CR_ROW, "Pat", "Dave Trejo"],   // CR_ROW: the lower row, left to right; Mom is the left anchor (the root)
+    const CR_RIGHT = ["Billy","Jennifer","Edgardo","Mom","Dad","Aunt Diane","Mark Temple","Uncle Stu","Grandma","Grandma Sarah","Mary Shaffer","Bill Shaffer","Roy"], CR_ROW = ["Grandpa Hal","Uncle Steve","Pat","Kevin"], CR_FRIENDS = [...CR_ROW, "Steve Lee", "Steve Samoji", "Dave Trejo", "Pat Murray"],   // CR_ROW: the roots, the lower row, left to right (William's order)
       CR_ANIMALS = ["Sonny","Tutu","Merlin","Rusty","Cindy","All the animals"];
     function layoutConstel(){ const dense = H < 820, d2 = dense && cnodes.length > 25; $("constel").classList.toggle("dense", dense); $("constel").classList.toggle("d2", d2); const cX = W/2, cY = H*.5, cr = coreR(), top = 66, bot = H - (dkey === "jen" ? 56 : 108), pw = Math.min(W - 32, 380);
       const obst = [{x: cX, y: cY, hw: cr*.9, hh: cr*.9}, {x: cX, y: cY + cr + 12 + 38, hw: pw/2, hh: 42}], placed = [];
@@ -860,12 +866,12 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       let yMin = top; const fits = b => b.x - b.hw >= 4 && b.x + b.hw <= W - 4 && b.y - b.hh >= yMin && b.y + b.hh <= bot && !obst.concat(placed).some(o => Math.abs(o.x - b.x) < o.hw + b.hw + 3 && Math.abs(o.y - b.y) < o.hh + b.hh + 2);
       // spread the ring over the free arc (the words under the core take the bottom); a bottom row if there is room
       const bandTop = cY + cr + 12, bandBot = bandTop + 84, rowY = (bandBot + bot)/2, Nb = bot - bandBot >= 30 ? Math.min(CR_ROW.length, Math.floor((W - 20)/90), N - 1) : 0, M = N - Nb, kR = Math.min(M, CR_RIGHT.length), Lf = M - kR;
-      { const by = n => cnodes.find(o => o.name === n), fr = CR_FRIENDS.slice(0, Nb).reverse(), left = ["Alfred", "William", ...CR_ANIMALS, ...CR_FRIENDS.slice(Nb), "Bill Schaefer", "Mary Schaefer"].reverse();
+      { const by = n => cnodes.find(o => o.name === n), fr = CR_FRIENDS.slice(0, Nb).reverse(), left = ["Alfred", "William", ...CR_ANIMALS, ...CR_FRIENDS.slice(Nb)].reverse();
         const order = [...CR_RIGHT, ...fr, ...left].map(by).filter(Boolean); if (order.length === cnodes.length) cnodes.splice(0, cnodes.length, ...order); }
       const span = Math.PI/2 + Math.asin(Math.max(-1, Math.min(1, (bandTop - 14 - cY)/ry)));
       cnodes.forEach((o, i) => { const hw = o.n.offsetWidth/2, hh = o.n.offsetHeight/2; let best = null, a0;
         if (i < kR) a0 = -Math.PI/2 + span*i/(kR - .5);
-        else if (i < kR + Nb){ const b = {x: W - (i - kR + .5)*(W/Nb), y: rowY - (o.name === CR_ROW[0] ? 16 : 0), hw, hh}; if (fits(b)) best = b; a0 = Math.atan2(rowY - cY, b.x - cX); }
+        else if (i < kR + Nb){ const b = {x: W - (i - kR + .5)*(W/Nb), y: rowY, hw, hh}; if (fits(b)) best = b; a0 = Math.atan2(rowY - cY, b.x - cX); }
         else a0 = -Math.PI/2 - span*(1 - (i - kR - Nb + .5)/(Lf + .5));
         if (!best) outer: for (let s = 0; s < 13; s++){ const sc = 1 + (s % 2 ? -1 : 1)*Math.ceil(s/2)*.06;
           for (let j = 0; j < 21; j++){ const a = a0 + (j % 2 ? -1 : 1)*Math.ceil(j/2)*.04, b = {x: cX + Math.cos(a)*rx*sc, y: cY + Math.sin(a)*ry*sc, hw, hh}; if (fits(b)){ best = b; break outer; } } }
@@ -899,15 +905,16 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     for (const x of document.querySelectorAll(".ov .x")){ x.addEventListener("touchend", closeOv, {passive:false}); x.addEventListener("click", e => { if (Date.now() - lastTouch < 800) return; closeOv(e); }); }
     function syncView(){ const on = portalOn || !!document.querySelector(".ov.on"); musicView(on); document.body.classList.toggle("inview", on);
       if ((portalOn || $("sigv").classList.contains("on")) && localStorage.getItem("shaffer-mic") !== "no") micWant = true; micSync(); }
-    const FROW = ["Mom","Kevin","Steve Lee","Steve Samoji"];   // the lower row, left to right; the first (Mom, the root) is raised as the left anchor
-    const FLAY = [["Billy",50,13],["William",30,21],["Jennifer",70,21],["Edgardo",70,29],["Alfred",14,29],["Dad",18,37],["Uncle Steve",50,37],["Uncle Stu",82,37],["Grandma",18,45],["Grandma Sarah",50,45],["Grandpa Hal",82,45],
-      ...FROW.map((n, i) => [n, 13 + i*24.3, i ? 55 : 53.5, i ? 0 : 1]), ["Aunt Diane",11,61],["Mark Temple",37.5,61],["Pat",59.5,61],["Dave Trejo",83,61],["Sonny",22,66.5,1],["Tutu",46,66.5,1],["Merlin",76,66.5,1],["Rusty",26,72.5],["Cindy",52,72.5],["All the animals",80,72.5],["Mary Schaefer",15,78.5],["Bill Schaefer",42,78.5],["Roy",63,78.5],["Pat Murray",84,78.5]];
+    const FROW = ["Grandpa Hal","Uncle Steve","Pat","Kevin"];   // the roots: the bottom row, left to right (William's order)
+    const FLAY = [["Billy",50,13],["William",30,21],["Jennifer",70,21],["Alfred",12,29],["Mom",41,29,1],["Edgardo",70,29],["Aunt Diane",15,37],["Dad",50,37],["Uncle Stu",85,37],
+      ["Mark Temple",15,45],["Grandma",50,45],["Grandma Sarah",82,45],["Mary Shaffer",15,51.5],["Bill Shaffer",42,51.5],["Roy",63,51.5],["Pat Murray",84,51.5],["Steve Lee",18,57.5],["Steve Samoji",50,57.5],["Dave Trejo",82,57.5],
+      ["Sonny",22,64,1],["Tutu",46,64,1],["Merlin",76,64,1],["Rusty",26,70],["Cindy",52,70],["All the animals",80,70],...FROW.map((n, i) => [n, [15,40,62,84][i], 77.5])];
     const FSUB = Object.fromEntries(FAM.map(f => [f[0], f[1]]));
     function famLines(v){ let g = v.querySelector("#famsvg"); if (g) g.remove(); const P = n => FLAY.find(f => f[0] === n);
       const seg = (a, b, x1, y1, x2, y2, cls) => `<line class="${cls || ""}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`;
       v.insertAdjacentHTML("afterbegin", `<svg id="famsvg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${
-        seg(0,0,50,15,31,19.2) + seg(0,0,50,15,69,19.2) + seg(0,0,50,21,50,35.2) + seg(0,0,70,23,70,27.2,"br") + seg(0,0,26,23.5,16,27.2,"br") + seg(0,0,18,33.5,82,33.5) + seg(0,0,18,33.5,18,35.2) + seg(0,0,82,33.5,82,35.2)
-        + seg(0,0,50,38.8,50,43.2) + seg(0,0,18,41.5,82,41.5) + seg(0,0,18,41.5,18,43.2) + seg(0,0,82,41.5,82,43.2)}<path d="M50 46.8 C50 51 22 49 18.5 53.2"/></svg>`); }
+        seg(0,0,50,15,31,19.2) + seg(0,0,50,15,69,19.2) + seg(0,0,50,21,50,35.2) + seg(0,0,70,23,70,27.2,"br") + seg(0,0,26,23.5,16,27.2,"br") + seg(0,0,33,23.5,39,27.2) + seg(0,0,15,33.5,85,33.5) + seg(0,0,15,33.5,15,35.2) + seg(0,0,85,33.5,85,35.2)
+        + seg(0,0,15,38.8,15,43.2) + seg(0,0,50,38.8,50,43.2) + seg(0,0,58,45,70,45)}<path d="M4 80.6 C24 79.6 36 81.6 50 80.6 S76 79.6 96 80.6"/></svg>`); }
     function openFam(){ const v = $("famv"); v.querySelectorAll(".fn").forEach(n => n.remove()); $("famcap").textContent = ""; v.classList.add("on"); famLines(v); v.classList.remove("lines");
       const me = life(mk("fn", FLAY[0][0], FSUB[FLAY[0][0]]), FLAY[0][0]); me.style.left = "50%"; me.style.top = "48%"; v.appendChild(me);
       me.addEventListener("click", e => { $("famcap").textContent = "Billy. The seed of the tree."; alive(me, "Billy", e.clientX, e.clientY, {view: "family"}); openThread("Billy"); ovT.push(setTimeout(() => dustForm("Billy"), 650)); });
@@ -920,20 +927,20 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       const end = mk("fn end", "One tree. Every light. Always connected."); end.style.left = "50%"; end.style.top = "93%"; v.appendChild(end);
       ovT.push(setTimeout(() => { $("famcap").textContent = ""; end.classList.add("on"); sparkle(end, 30, 110); buzz(); }, 3600 + (FLAY.length-1)*1100 + 600)); }
     // signal: every connection linked to William; each relationship fires its own haptic signature, colour, spark and note
-    const SIG_IN = [["Jennifer"],["Billy"],["Mom"],["Dad","early thirties"]];
-    const SIG_OUT = [["Edgardo","Jennifer's dad"],["Uncle Steve"],["Grandma"],["Grandma Sarah"],["Grandpa Hal"],["Uncle Stu"],["Pat"],["Rusty"],["Cindy"],["Sonny"],["Merlin"],["Tutu"],["The animals"],["Kevin"],["Steve Lee"],["Steve Samoji"],["Dave Trejo"],["Aunt Diane"],["Mark Temple"],["Roy"],["Pat Murray"],["Mary Schaefer"],["Bill Schaefer"]];
+    const SIG_IN = [["Jennifer"],["Billy"],["Mom"],["Dad"]];
+    const SIG_OUT = [["Edgardo","Jennifer's dad"],["Uncle Steve"],["Grandma"],["Grandma Sarah"],["Grandpa Hal"],["Uncle Stu"],["Pat"],["Rusty"],["Cindy"],["Sonny"],["Merlin"],["Tutu"],["The animals"],["Kevin"],["Steve Lee"],["Steve Samoji"],["Dave Trejo"],["Aunt Diane"],["Mark Temple"],["Roy"],["Pat Murray"],["Mary Shaffer"],["Bill Shaffer"]];
     const REL = {parent:{v:[120,200,120],c:"255,196,120",hz:146.84}, spouse:{v:[80,60,40],c:"255,176,196",hz:220.26}, sibling:{v:[40,60,40],c:"190,220,255",hz:293.68},
       grand:{v:[90,150,60,150,30],c:"255,228,168",hz:110.13}, uncle:{v:[60,120,60],c:"214,196,255",hz:183.55}, cousin:{v:[50,90,50],c:"168,206,255",hz:220}, aunt:{v:[110,190,110],c:"255,216,164",hz:146.84}, friend:{v:[25],c:"168,232,212",hz:256.97},
       pet:{v:[15,40,15,40,15],c:"255,242,196",hz:330.39}, sonny:{v:[15,40,15,40,15,60,90],c:"255,206,110",hz:367.1}, alfred:{v:[30,120,30],c:"255,164,72",hz:293.68}, dave:{v:[25,60,25],c:"170,236,255",hz:513.94}, edgardo:{v:[120,200,120,300,40,110,70],c:"255,202,112",hz:73.42}, mom:{v:[70,70,40,50,120],c:"255,186,208",hz:293.68}};
-    const RELOF = {Alfred:"alfred", Jennifer:"spouse", Billy:"parent", Mom:"mom", Dad:"parent", Edgardo:"edgardo", "Uncle Steve":"uncle", "Uncle Stu":"uncle", "Mark Temple":"cousin", "Aunt Diane":"aunt", Roy:"uncle", "Pat Murray":"friend", "Mary Schaefer":"grand", "Bill Schaefer":"grand", Grandma:"grand", "Grandma Sarah":"grand", "Grandpa Hal":"grand",
+    const RELOF = {Alfred:"alfred", Jennifer:"spouse", Billy:"parent", Mom:"mom", Dad:"parent", Edgardo:"edgardo", "Uncle Steve":"uncle", "Uncle Stu":"uncle", "Mark Temple":"cousin", "Aunt Diane":"aunt", Roy:"uncle", "Pat Murray":"friend", "Mary Shaffer":"grand", "Bill Shaffer":"grand", Grandma:"grand", "Grandma Sarah":"grand", "Grandpa Hal":"grand",
       Pat:"friend", Kevin:"friend", "Steve Lee":"friend", "Steve Samoji":"friend", "Dave Trejo":"dave", Cindy:"pet", Rusty:"pet", Sonny:"sonny", Merlin:"pet", Tutu:"pet", "The animals":"pet", "All the animals":"pet"};
-    const HARM = {Edgardo: 1, "Aunt Diane": 2, "Mark Temple": 6, Roy: 5, "Pat Murray": 10, "Mary Schaefer": 3, "Bill Schaefer": 3, "Grandpa Hal": 2, "Grandma Sarah": 2, "Uncle Steve": 2, Mom: 4, Kevin: 4, Cindy: 4, Tutu: 4, Sonny: 5, Alfred: 3,
+    const HARM = {Edgardo: 1, "Aunt Diane": 2, "Mark Temple": 6, Roy: 5, "Pat Murray": 10, "Mary Shaffer": 3, "Bill Shaffer": 3, "Grandpa Hal": 2, "Grandma Sarah": 2, "Uncle Steve": 2, Mom: 4, Kevin: 4, Cindy: 4, Tutu: 4, Sonny: 5, Alfred: 3,
       Dad: 6, "Uncle Stu": 6, Grandma: 6, "Dave Trejo": 7, Billy: 8, William: 8, Jennifer: 9, Pat: 10, "Steve Lee": 10, "Steve Samoji": 10, Merlin: 10, Rusty: 10, "All the animals": 12}, RELC = {};   // integer harmonics of BASE
     const relOf = name => RELC[name] || (RELC[name] = Object.assign({}, REL[RELOF[name] || "friend"], {hz: +(BASE*(HARM[name] || 8)).toFixed(2)}));
     function chime(hz){ try{ if (!ac || muted || ac.state !== "running") return; const t = beatT(), o = ac.createOscillator(), g = ac.createGain(); o.type = "sine"; o.frequency.value = hz*2;
       g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.05, t+.03); g.gain.exponentialRampToValueAtTime(.0001, t+1.6); o.connect(g); g.connect(acOut()); o.start(t); o.stop(t+1.7); }catch(e){} }
     let sigNodes = [], sigK = 0, lsparks = [], sigC = {x: 0, y: 0};
-    function openSig(){ const v = $("sigv"), svg = $("sigsvg"), NS = "http://www.w3.org/2000/svg"; v.querySelectorAll(".sn").forEach(n => n.remove()); svg.innerHTML = ""; sigNodes = []; lsparks = []; v.classList.add("on");
+    function openSig(){ align = null; const v = $("sigv"), svg = $("sigsvg"), NS = "http://www.w3.org/2000/svg"; v.querySelectorAll(".sn").forEach(n => n.remove()); svg.innerHTML = ""; sigNodes = []; lsparks = []; v.classList.add("on");
       const w = v.clientWidth, h = v.clientHeight, cx0 = w/2, cy0 = h*.47; sigC = {x: cx0, y: cy0};
       const line = (x1,y1,x2,y2) => { const l = document.createElementNS(NS, "line"); l.setAttribute("x1",x1); l.setAttribute("y1",y1); l.setAttribute("x2",x2); l.setAttribute("y2",y2); svg.appendChild(l); return l; };
       const place = (list, rx, ry, off, st) => list.forEach((f, i) => { const a = off + i/list.length*6.283, k = st && i % 2 ? st : 1, x = cx0 + Math.cos(a)*rx*k, y = cy0 + Math.sin(a)*ry*k;
@@ -958,12 +965,13 @@ This is our stamp.<br><b id="dad">Dad</b></div>
           A.o.x = Math.max(A.hw, Math.min(w - A.hw, A.o.x)); A.o.y = Math.max(h*.09 + A.hh, Math.min(h*.82 - A.hh, A.o.y)); }
         if (!moved) break; }
       for (const o of sigNodes){ o.n.style.left = o.x + "px"; o.n.style.top = o.y + "px"; o.lines[0].setAttribute("x2", o.x); o.lines[0].setAttribute("y2", o.y); } }
-    function nextSig(){ sigK = (sigK + 1) % sigNodes.length; hot(sigNodes[sigK], false); }
+    const edgK = () => sigNodes.findIndex(o => o.name === "Edgardo");
+    function nextSig(){ if (dkey === "jen"){ if (sigK !== edgK()) hot(sigNodes[edgK()], false); return; } sigK = (sigK + 1) % sigNodes.length; hot(sigNodes[sigK], false); }   // on Jennifer's door her dad stays the one reaching
     function hot(node, tapped, quiet){ sigK = sigNodes.indexOf(node); if (!reach) emT0 = performance.now(); document.querySelectorAll(".sn.hot,#sigsvg line.hot").forEach(el => el.classList.remove("hot"));
       node.n.classList.add("hot"); node.lines.forEach(l => l.classList.add("hot")); sparkle(node.n, tapped ? 16 : 8, 40);
       // the link fires like a synapse: its own haptic rhythm, and a spark travels the link on each pulse of that rhythm
       const R = relOf(node.name), now = performance.now(); if (!quiet){ if (tapped) pattern(R.v); chime(R.hz); fireSparks(node, now); }
-      $("sighint").style.opacity = MEM[node.name] ? 0 : ""; $("sigcap").textContent = MEM[node.name] ? node.name + ". " + memCap(node.name) : node.name + (node.sub ? ", " + node.sub : "") + ". Always linked to you."; }
+      $("sighint").style.opacity = MEM[node.name] ? 0 : ""; $("sigcap").textContent = MEM[node.name] ? capFor(node.name) : node.name + (node.sub ? ", " + node.sub : "") + ". Always linked to you."; }
 
 
     function fireSparks(node, now){ const R = relOf(node.name); for (let i = 0, at = 0; i < R.v.length; i += 2){ lsparks.push({node, at: now + at, c: R.c, jen: node.name === "Edgardo"}); at += R.v[i] + (R.v[i+1] || 0); } }
@@ -981,7 +989,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       const lit = [node.n]; if (gold) lit.push(jen.n); else if (type === "tutu") lit.push(billy.n); else lit.push(meEl);
       lit.forEach(e => e && e.classList.add("meet")); (gold ? [node.lines[1]] : type === "meet" ? [node.lines[0]] : []).forEach(l => l && l.classList.add("meet"));
       v.classList.add("moment"); v.classList.toggle("gold", gold);
-      const line = gold ? "Align, and the signal gets stronger." : MEM[nm] ? nm + ". " + memCap(nm) : nm + (node.sub ? ", " + node.sub : "") + ". Always linked to you.";
+      const line = gold ? "Align, and the signal gets stronger." : MEM[nm] ? capFor(nm) : nm + (node.sub ? ", " + node.sub : "") + ". Always linked to you.";
       momentCap(line, type === "touch" ? 200 : meetAt*.7, dur - 800);
       if (type === "touch") burst(moment, now);
       momentT = setTimeout(() => endMoment(), dur); }
@@ -1043,6 +1051,37 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       // her finger on the glass: a lub-dub on every beat, a little stronger as the tip nears hers
       if (reach && !reach.out){ if (!vib(lubdub(reach.met ? 1 : reach.glow))) reach.tickDue = true; }
       try { if (ac && !muted && ac.state === "running" && !$("viewer").classList.contains("on")){ const t = ac.currentTime + .01; thump(t, BASE); thump(t+.24, BASE); } } catch(e){} }
+    // Align: the finger breaks through the glass; a bright double helix winds between his light and her touch, a pulse runs Jennifer to her dad and he answers back, then it settles
+    let align = null; const alignLog = [];
+    function startAlign(r, ox, oy){ const jn = sigNodes[0], now = performance.now(); align = {t0: now, x: r.fx - ox, y: r.fy - oy, node: r.node, jn: jn && jn.name === "Jennifer" ? jn : null, bn: sigNodes.find(o => o.name === "Billy"), ans: false};
+      alignLog.push({t: now, jen: !!align.jn}); if (alignLog.length > 8) alignLog.shift();
+      const fl = $("sigflash"); fl.style.setProperty("--fx", r.fx + "px"); fl.style.setProperty("--fy", r.fy + "px"); if (fl.animate) fl.animate([{opacity: 0}, {opacity: .55}, {opacity: 0}], {duration: 520, easing: "ease-out"}); }
+    function drawAlign(c2, now, ox, oy){ const A = align, t = now - A.t0; if (t > 4200){ align = null; A.node.n.classList.remove("answer"); if (A.bn) A.bn.n.classList.remove("answer"); return; }
+      const ex = A.node.x + ox, ey = A.node.y + oy, x = A.x + ox, y = A.y + oy; c2.save(); c2.globalCompositeOperation = "lighter";
+      if (t < 900){ const w = t/900, R = 24 + 230*ez(w), a = (1 - w)*(1 - w), g = c2.createRadialGradient(x, y, 0, x, y, R);   // through the glass: a white flare and a star at the touch
+        g.addColorStop(0, `rgba(255,255,245,${.9*a})`); g.addColorStop(.35, `rgba(255,214,140,${.45*a})`); g.addColorStop(1, "rgba(255,190,100,0)"); c2.fillStyle = g; c2.beginPath(); c2.arc(x, y, R, 0, 6.283); c2.fill();
+        c2.strokeStyle = `rgba(255,248,225,${.8*a})`; c2.lineWidth = 1.4; c2.beginPath(); const L = 30 + 150*ez(w); c2.moveTo(x - L, y); c2.lineTo(x + L, y); c2.moveTo(x, y - L*.7); c2.lineTo(x, y + L*.7); c2.stroke();
+        c2.strokeStyle = `rgba(255,226,170,${a})`; c2.lineWidth = 2; c2.beginPath(); c2.arc(x, y, 14 + 120*ez(w), 0, 6.283); c2.stroke(); }
+      if (t < 1800){ const w = t/1800, env = Math.sin(Math.PI*Math.min(1, w*1.15)), dx = x - ex, dy = y - ey, len = Math.hypot(dx, dy) || 1, nx = -dy/len, ny = dx/len, amp = 9 + 7*env, ph = t/110;   // the helix: two strands wind between them
+        for (let sd = 0; sd < 2; sd++){ c2.strokeStyle = sd ? `rgba(255,250,235,${.85*env})` : `rgba(255,198,96,${.9*env})`; c2.lineWidth = 2.2; c2.beginPath();
+          for (let i = 0; i <= 36; i++){ const u = i/36, o = Math.sin(u*Math.PI*6 + ph + sd*Math.PI)*amp*Math.sin(Math.PI*u), px = ex + dx*u + nx*o, py = ey + dy*u + ny*o; if (i) c2.lineTo(px, py); else c2.moveTo(px, py); } c2.stroke(); }
+        for (let i = 1; i < 6; i++){ const u = ((i/6) + t/1400) % 1, px = ex + dx*u, py = ey + dy*u, rr = 3 + 3*env; c2.fillStyle = `rgba(255,255,240,${.8*env})`; c2.beginPath(); c2.arc(px, py, rr, 0, 6.283); c2.fill(); } }
+      if (A.jn){ const jx = A.jn.x + ox, jy = A.jn.y + oy, pulse = (x0, y0, x1, y1, u, a) => { for (let k = 0; k < 6; k++){ const uu = Math.max(0, u - k*.035), px = x0 + (x1 - x0)*uu, py = y0 + (y1 - y0)*uu, rr = (11 - k*1.4), g = c2.createRadialGradient(px, py, 0, px, py, rr*2);
+            g.addColorStop(0, `rgba(255,252,236,${a*(1 - k/6)})`); g.addColorStop(1, "rgba(255,200,110,0)"); c2.fillStyle = g; c2.beginPath(); c2.arc(px, py, rr*2, 0, 6.283); c2.fill(); } };
+        for (const t0 of [80, 380]) if (t >= t0 && t < t0 + 850) pulse(jx, jy, ex, ey, ez((t - t0)/850), t0 > 100 ? .75 : 1);   // two soft beats along their thread, Jennifer to her dad
+        if (t >= 1230){ if (!A.ans){ A.ans = true; A.node.n.classList.add("answer"); alignLog[alignLog.length - 1].ans = performance.now(); }   // he answers: his light swells and one beat comes back down the same thread
+          const w = Math.min(1, (t - 1230)/1100), a = 1 - w, g = c2.createRadialGradient(ex, ey, 0, ex, ey, 30 + 70*ez(w)); g.addColorStop(0, `rgba(255,246,220,${.8*a})`); g.addColorStop(1, "rgba(255,200,110,0)"); c2.fillStyle = g; c2.beginPath(); c2.arc(ex, ey, 30 + 70*ez(w), 0, 6.283); c2.fill();
+          c2.strokeStyle = `rgba(255,214,140,${a})`; c2.lineWidth = 1.6; c2.beginPath(); c2.arc(ex, ey, 16 + 80*ez(w), 0, 6.283); c2.stroke();
+          if (t < 2130) pulse(ex, ey, jx, jy, ez((t - 1230)/900), .85); } }
+      if (A.bn && t >= 1900){ const bx = A.bn.x + ox, by = A.bn.y + oy, dx = bx - ex, dy = by - ey, len = Math.hypot(dx, dy) || 1, mx0 = (ex + bx)/2, my0 = (ey + by)/2, o1x = mx0 - dy*.34, o1y = my0 + dx*.34, o2x = mx0 + dy*.34, o2y = my0 - dx*.34, jx0 = A.jn ? A.jn.x + ox : mx0, jy0 = A.jn ? A.jn.y + oy : -1e4, f1 = Math.hypot(o1x - jx0, o1y - jy0) > Math.hypot(o2x - jx0, o2y - jy0), cxq = f1 ? o1x : o2x, cyq = f1 ? o1y : o2y;   // the arc bows away from Jennifer's light   // football: a small ball of light arcs from Edgardo to his grandson and back
+        if (!A.bm){ A.bm = true; A.bn.n.classList.add("meet"); }
+        const la = Math.min(1, (t - 1900)/300)*Math.min(1, Math.max(0, (4100 - t)/400)); c2.strokeStyle = `rgba(255,226,170,${.35*la})`; c2.lineWidth = 1.2; c2.beginPath(); c2.moveTo(ex, ey); c2.quadraticCurveTo(cxq, cyq, bx, by); c2.stroke();
+        if (t >= 2000 && t < 3600){ const out = t < 2800, u = ez(out ? (t - 2000)/800 : (t - 2800)/800), v = out ? u : 1 - u;
+          if (!out && !A.caught){ A.caught = true; A.bn.n.classList.add("answer"); alignLog[alignLog.length - 1].ball = performance.now(); }
+          for (let k = 4; k >= 0; k--){ const vv = Math.max(0, Math.min(1, v - (out ? 1 : -1)*k*.025)), [qx, qy] = qpt(ex, ey, cxq, cyq, bx, by, vv), rr = k ? 4 - k*.6 : 6, g = c2.createRadialGradient(qx, qy, 0, qx, qy, rr*2.2);
+            g.addColorStop(0, `rgba(255,252,236,${k ? .35 - k*.06 : 1})`); g.addColorStop(1, "rgba(255,200,110,0)"); c2.fillStyle = g; c2.beginPath(); c2.arc(qx, qy, rr*2.2, 0, 6.283); c2.fill(); } }
+        if (t >= 3600 && t < 4100){ const w = (t - 3600)/500; c2.strokeStyle = `rgba(255,226,170,${1 - w})`; c2.lineWidth = 1.4; c2.beginPath(); c2.arc(ex, ey, 14 + 40*w, 0, 6.283); c2.stroke(); } }
+      c2.restore(); }
     function startSigLife(){ const v = $("sigv"), cv2 = $("sigcv"), c2 = cv2.getContext("2d"), dpr = Math.min(v.clientWidth*v.clientHeight*9 <= 3.3e6 ? 3 : 2, devicePixelRatio||1);
       cv2.width = v.clientWidth*dpr; cv2.height = v.clientHeight*dpr; c2.setTransform(dpr,0,0,dpr,0,0);
       clearInterval(hbI); hbI = setTimeout(() => { beatOnce(); if (v.classList.contains("on")) hbI = setInterval(beatOnce, BEAT); }, toBeat()); emT0 = performance.now();
@@ -1057,15 +1096,15 @@ This is our stamp.<br><b id="dad">Dad</b></div>
         { const bf = ((now - hbT0) % HBMS)/HBMS, ra = (1 - bf)*(moment ? .05 : .11); c2.lineWidth = 1;
           c2.strokeStyle = `rgba(255,226,170,${ra})`; c2.beginPath(); c2.arc(sigC.x + ox, sigC.y + oy, 44 + ez(bf)*70, 0, 6.283); c2.stroke();
           if (node0 && !moment){ c2.strokeStyle = `rgba(${relOf(node0.name).c},${ra})`; c2.beginPath(); c2.arc(node0.x + ox, node0.y + oy, 14 + ez(bf)*44, 0, 6.283); c2.stroke(); } }
-        drawMoment(c2, now, ox, oy);
+        drawMoment(c2, now, ox, oy); if (align) drawAlign(c2, now, ox, oy);
         const fdt = Math.min(64, now - (lastLife || now)); lastLife = now; const L05 = 1 - Math.pow(.95, fdt/16.7), L04 = 1 - Math.pow(.96, fdt/16.7);   // time-based easing: same feel at any frame rate
         if (reach){ const r = reach, sx = r.node.x + ox, sy = r.node.y + oy, k = Math.min(1, (now - r.t0)/MEET_MS);
           // gentle tracking: the tip drifts about a third of the way toward her finger, then reaches her; slow smoothing, never snaps
           const gf = r.met ? 1 : .3 + .7*ez((k - .35)/.65), tgx = sx + (r.fx - sx)*gf, tgy = sy + (r.fy - sy)*gf;
           r.px += (tgx - r.px)*L05; r.py += (tgy - r.py)*L05;
           const d = Math.hypot(r.fx - r.px, r.fy - r.py);
-          if (!r.met && !r.out && !r.spoke && d < 60){ r.spoke = true; speakLine(r.node.name); }   // closing in: the lit person speaks once per reach
-          if (!r.met && !r.out && d < MEET_PX && k >= 1){ r.met = now; pattern([60,90,110,300,60,90,110]); { const rc = r.node.n.getBoundingClientRect(); portalMoment(rc.left + rc.width/2, rc.top + rc.height/2, r.node.name, "reach"); } if (r.node.name === "Edgardo") startMoment(r.node, {x: r.fx - ox, y: r.fy - oy});
+          if (!r.met && !r.out && !r.spoke && d < 60 && r.node.name !== "Edgardo"){ r.spoke = true; speakLine(r.node.name); }   // closing in: the lit person speaks once per reach
+          if (!r.met && !r.out && d < MEET_PX && k >= 1){ r.met = now; pattern([60,90,110,300,60,90,110]); { const rc = r.node.n.getBoundingClientRect(); portalMoment(rc.left + rc.width/2, rc.top + rc.height/2, r.node.name, "reach"); } if (r.node.name === "Edgardo"){ startMoment(r.node, {x: r.fx - ox, y: r.fy - oy}); startAlign(r, ox, oy); r.spoke = true; speakLine("Edgardo", "Align.", "I’m right here, anak."); }
             sparkle({getBoundingClientRect: () => ({left: r.fx-24, top: r.fy-24, width: 48, height: 48})}, 22, 80); }
           r.glow += ((r.met ? 1 : Math.max(0, 1 - d/320)) - r.glow)*L04;
           const fade = r.out ? Math.max(0, 1 - (now - r.out)/1200) : 1; if (!fade){ reach = null; emT0 = now; }
@@ -1076,7 +1115,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
           finger(c2, now, sx, sy, px, py, e, .75, idleGlow, 0); }
         raf(life); })(); }
     const sv = $("sigv");
-    sv.addEventListener("touchstart", e => { if (e.target.closest(".sn,.x")) return; if (e.cancelable) e.preventDefault(); const t = e.touches[0], node = sigNodes[sigK] || sigNodes[0]; if (!node) return;
+    sv.addEventListener("touchstart", e => { if (e.target.closest(".sn,.x")) return; if (e.cancelable) e.preventDefault(); const t = e.touches[0], node = (dkey === "jen" && sigNodes[edgK()]) || sigNodes[sigK] || sigNodes[0]; if (!node) return;
       clearInterval(sigI); hot(node, true); reach = {node, t0: performance.now(), px: node.x + tx*18, py: node.y + ty*18, fx: t.clientX, fy: t.clientY, met: 0, out: 0, glow: 0, tickDue: false};
       $("sigcap").textContent = node.name + " is reaching for you..."; }, {passive:false});
     sv.addEventListener("touchmove", e => { if (!reach || reach.out) return; const t = e.touches[0]; reach.fx = t.clientX; reach.fy = t.clientY;
@@ -1116,7 +1155,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     function portalTap(){ portalTouch = performance.now(); if (!src){ srcOpen(); if (src){ buzz(); return; } } else srcClose(); buzz(); keepLight(); layer = (layer+1) % layers.length; layerAt = performance.now(); hotCn = null;
       edT.forEach(clearTimeout); $("edq").classList.remove("on"); setPcap(); $("pcap").classList.add("on");
       for (let k=0;k<3;k++) ringAt(performance.now() + k*260); }
-        window.__legacy = { thread: () => ({on: $("thread").classList.contains("on"), name: thName, head: $("thn").textContent, lines: [...$("thl").children].map(p => p.textContent)}), thlog: () => thLog.slice(), threadOf: n => threadOf(n), core: () => ({x: W/2, y: H*.5, r: coreR(), pAng}), routes: () => croutes.map(r => ({a: r.a, b: r.b, s: r.s, braid: !!r.braid, pts: r.pts.slice()})), momThread: () => momThread && {pts: momThread.pts.slice()}, lights: () => cnodes.map(o => ({name: o.name, x: o.x, y: o.ly})), pool: () => ({made: pNew, free: [...POOLS.values()].reduce((a, q) => a + q.length, 0)}), momSparks: () => momSparks, moments: () => pmLog.slice(), spoke: () => speakLog.slice(), src: () => src && {name: src.name, c: src.c, rungs: 22, ph: $("srcw").placeholder, val: $("srcw").value, on: $("srcw").classList.contains("on")}, arrows: () => carr.map(x => x.slice()), woke: () => !!wakeAt && performance.now() - wakeAt < 2000, strongest: () => strongestFor(), harm: () => HARM, glow: () => GLOW, threads: () => cthr.map(x => x.slice()), wonder: () => ({n: wonderN, shape: wonder && wonder.shape, pts: wonder ? wonder.P.length : 0}), wonderGo: sh => wonderGo(sh), shots: () => shots, dad: () => !!shoot, hold: () => !!whisper, mem: () => linksOn, viewer: () => $("viewer").classList.contains("on") && ($("viewer").classList.contains("vid") ? $("vvid").src : $("vframe").src), portal: () => portalOn, layer: () => layer, kept: () => kept.length,
+        window.__legacy = { thread: () => ({on: $("thread").classList.contains("on"), name: thName, head: $("thn").textContent, lines: [...$("thl").children].map(p => p.textContent)}), thlog: () => thLog.slice(), threadOf: n => threadOf(n), core: () => ({x: W/2, y: H*.5, r: coreR(), pAng}), routes: () => croutes.map(r => ({a: r.a, b: r.b, s: r.s, braid: !!r.braid, pts: r.pts.slice()})), momThread: () => momThread && {pts: momThread.pts.slice()}, lights: () => cnodes.map(o => ({name: o.name, x: o.x, y: o.ly})), flames: () => sparks.length, align: () => ({n: alignLog.length, last: alignLog[alignLog.length - 1] || null, on: !!align}), pool: () => ({made: pNew, free: [...POOLS.values()].reduce((a, q) => a + q.length, 0)}), momSparks: () => momSparks, moments: () => pmLog.slice(), spoke: () => speakLog.slice(), src: () => src && {name: src.name, c: src.c, rungs: 22, ph: $("srcw").placeholder, val: $("srcw").value, on: $("srcw").classList.contains("on")}, arrows: () => carr.map(x => x.slice()), woke: () => !!wakeAt && performance.now() - wakeAt < 2000, strongest: () => strongestFor(), harm: () => HARM, glow: () => GLOW, threads: () => cthr.map(x => x.slice()), wonder: () => ({n: wonderN, shape: wonder && wonder.shape, pts: wonder ? wonder.P.length : 0}), wonderGo: sh => wonderGo(sh), shots: () => shots, dad: () => !!shoot, hold: () => !!whisper, mem: () => linksOn, viewer: () => $("viewer").classList.contains("on") && ($("viewer").classList.contains("vid") ? $("vvid").src : $("vframe").src), portal: () => portalOn, layer: () => layer, kept: () => kept.length,
       moment: () => moment && moment.type, music: () => ({inView, on: musicOn, muted, chimes, gain: musicOut ? +musicOut.gain.value.toFixed(3) : 0}), leaves: () => ({falling: leaves.length, settled: settled.length, colors: [...new Set(leaves.concat(settled).map(l => l.c))]}), acState: () => ac && ac.state, alive: () => aliveLog, pulse: () => pulseLog, mic: () => ({gum: gumCalls, asked: ssGet("shaffer_mic_asked"), peaks: mic && mic.peaks || 0, on: !!(mic && mic.an), k: +micK.toFixed(3), max: +micMax.toFixed(3), want: micWant}), spirits: () => leaves.map(L => ({x: L.x, y: L.y, name: L.name, c: L.c})), frames: () => Object.fromEntries(FAM.map(f => [f[0], frameOf(f[0])])),
       endDust: () => { if (dform) dform.t0 = -1e9; }, dust: () => dform && {motion: dform.motion, rings: dform.rings, beacon: dform.beacon, zoom: +dform.zoom.toFixed(3), seed: !!dform.seed, pinged: !!dform.pinged, formed: !!dform.formedAt, frame: dform.fr, living: !dform.gone, box: [dform.cx0 - dform.rw*1.6, dform.top - 10, dform.cx0 + dform.rw*1.6, dform.cy0 + (dform.pet ? .5 : .82)*dform.S + 54], name: dform.name, n: dform.P.length, pat: dform.pat, shape: dform.shape, harm: dform.harm}, constel: () => document.querySelectorAll("#constel .cn.on").length, edq: () => $("edq").classList.contains("on"), near: () => nearK, bloom: () => !!bloomAt,
       tip: () => reach ? {px: reach.px, py: reach.py, fx: reach.fx, fy: reach.fy, met: !!reach.met, glow: reach.glow} : null, voice: () => voiceOK };
