@@ -11,23 +11,32 @@
   var tilt = {x:0, y:0, tx:0, ty:0, src:0};
   // Shared with Legacy (constant only, no links between the two).
   const LEGACY_FREQ = { root: 55, bpm: 55, ratios: [1, 1.5, 2, 3, 4, 6, 8] };
-  var BEAT_MS = 60000 / LEGACY_FREQ.bpm, lastBeat = -1, ac = null, tone = null;
+  var BEAT_MS = 60000 / LEGACY_FREQ.bpm, lastBeat = -1, ac = null, tone = null, vibeLeft = 0, VIBE_BEATS = 4;
+  var soundOn = false; try { soundOn = localStorage.getItem('pulse-sound') === '1'; } catch (e) {}
   // 55 Hz is below phone speakers, so voice the root through its 110 and 220 Hz harmonics (ratios 2 and 4).
   function startTone() {
+    if (!soundOn) return;
     if (ac) { if (ac.state === 'suspended' && !document.hidden) ac.resume(); return; }
     var A = window.AudioContext || window.webkitAudioContext; if (!A) return;
     try {
       ac = new A(); tone = ac.createGain(); tone.gain.value = 0; tone.connect(ac.destination);
       [[2, .6], [4, .4]].forEach(function (h) { var o = ac.createOscillator(), g = ac.createGain(); o.type = 'sine'; o.frequency.value = LEGACY_FREQ.root * h[0]; g.gain.value = h[1]; o.connect(g); g.connect(tone); o.start(); });
       tone.gain.setTargetAtTime(.035, ac.currentTime, .8);
-    } catch (e) { ac = null; }
+    } catch (e) { ac = null; tone = null; }
   }
   function onBeat() {
-    if (tone && ac.state === 'running') { var c = ac.currentTime, g = tone.gain; g.cancelScheduledValues(c); g.setValueAtTime(g.value, c); g.linearRampToValueAtTime(.07, c + .06); g.setTargetAtTime(.035, c + .12, .25); }
-    if (!calm && navigator.vibrate && (!navigator.userActivation || navigator.userActivation.hasBeenActive)) try { navigator.vibrate(30); } catch (e) {}
+    if (soundOn && ac && tone && ac.state === 'running') { var c = ac.currentTime, g = tone.gain; g.cancelScheduledValues(c); g.setValueAtTime(g.value, c); g.linearRampToValueAtTime(.07, c + .06); g.setTargetAtTime(.035, c + .12, .25); }
+    if (vibeLeft > 0) { vibeLeft--; if (!calm && navigator.vibrate) try { navigator.vibrate(30); } catch (e) {} }
   }
-  addEventListener('pointerup', startTone); addEventListener('keydown', startTone);
-  document.addEventListener('visibilitychange', function () { if (!ac) return; if (document.hidden) ac.suspend(); else ac.resume(); });
+  addEventListener('pointerup', function () { vibeLeft = VIBE_BEATS; startTone(); }); addEventListener('keydown', startTone);
+  document.addEventListener('visibilitychange', function () { if (!ac) return; if (document.hidden || !soundOn) ac.suspend(); else ac.resume(); });
+  // Sound starts muted; the choice is remembered on this phone.
+  var mute = document.createElement('button'); mute.type = 'button';
+  mute.style.cssText = 'position:fixed;top:10px;right:10px;z-index:20;width:40px;height:40px;border:0;border-radius:50%;background:rgba(255,236,200,.08);color:#ffeed6;font:18px/40px system-ui,sans-serif;opacity:.55;cursor:pointer;-webkit-tap-highlight-color:transparent';
+  function paintMute() { mute.textContent = soundOn ? '\u{1F50A}' : '\u{1F507}'; mute.setAttribute('aria-label', soundOn ? 'Mute sound' : 'Turn sound on'); mute.setAttribute('aria-pressed', soundOn ? 'true' : 'false'); }
+  mute.addEventListener('click', function (e) { e.stopPropagation(); soundOn = !soundOn; try { localStorage.setItem('pulse-sound', soundOn ? '1' : '0'); } catch (x) {} paintMute(); if (soundOn) startTone(); else if (ac) ac.suspend(); });
+  mute.addEventListener('pointerup', function (e) { e.stopPropagation(); vibeLeft = VIBE_BEATS; });
+  paintMute(); document.body.appendChild(mute);
   addEventListener('deviceorientation', function (e) { if (e.gamma == null) return; tilt.src = 1; tilt.tx = Math.max(-1, Math.min(1, e.gamma / 28)); tilt.ty = Math.max(-1, Math.min(1, ((e.beta == null ? 45 : e.beta) - 45) / 28)); });
   addEventListener('pointermove', function (e) { if (tilt.src === 1 || e.pointerType !== 'mouse') return; tilt.src = 2; tilt.tx = (e.clientX / innerWidth - .5) * 1.6; tilt.ty = (e.clientY / innerHeight - .5) * 1.6; });
   function askTilt() { var D = window.DeviceOrientationEvent; if (D && typeof D.requestPermission === 'function' && !window.PULSE_TILT_ASKED) { window.PULSE_TILT_ASKED = true; D.requestPermission().catch(function () {}); } }
