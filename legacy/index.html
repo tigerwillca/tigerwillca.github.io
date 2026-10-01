@@ -121,6 +121,7 @@
   #pclose{position:fixed;z-index:6;top:calc(env(safe-area-inset-top) + 14px);left:16px;width:44px;height:44px;border-radius:22px;border:1px solid rgba(233,200,140,.45);background:rgba(12,9,16,.7);color:#efe6d2;font-size:26px;line-height:40px;padding:0;opacity:0;pointer-events:none;transition:opacity .6s;cursor:pointer}
   body.pon #pclose{opacity:1;pointer-events:auto}
   #constel{position:fixed;inset:0;z-index:3;pointer-events:none}
+  #constel.dense .cn{padding:11px 4px 1px;font-size:11px} #constel.dense .cn::before{top:3px} #constel.dense .cn.focal{padding-top:15px;font-size:13px} #constel.dense .cn.focal::before{top:1px} #constel.dense .cn.root{font-size:13px}
   .cn{position:absolute;left:50%;top:72%;transform:translate(-50%,-50%) scale(.4);opacity:0;pointer-events:none;padding:15px 5px 3px;font:italic 12px Georgia,serif;color:#fff1d6;white-space:nowrap;text-align:center;text-shadow:0 0 6px rgba(0,0,0,.95),0 0 10px rgba(255,210,140,.45);transition:left 1.3s cubic-bezier(.2,.8,.2,1),top 1.3s cubic-bezier(.2,.8,.2,1),opacity 1s,transform 1.3s;-webkit-tap-highlight-color:transparent;cursor:pointer}
   .cn.on{opacity:1;transform:translate(-50%,-50%) scale(1);pointer-events:auto}
   .cn::before{content:"";position:absolute;left:50%;top:5px;width:6px;height:6px;margin-left:-3px;border-radius:50%;background:#fff3d6;box-shadow:0 0 8px 2px rgba(255,220,160,.8)}
@@ -416,7 +417,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     function makeSky(){ const n = Math.min(260, Math.round(W*H/2600)); sky = Array.from({length:n}, () => ({x:Math.random(), y:Math.random(), r:Math.random()<.08 ? 1.1+Math.random()*.8 : .35+Math.random()*.7, tw:.4+Math.random()*1.8, p:Math.random()*6.28, c:Math.random()<.16 ? "190,210,255" : Math.random()<.25 ? "255,232,196" : "255,255,255", z:.3+Math.random()*.7})); }
     // the willow: its roots are the pulse light; gold strands hang from its limbs; neon purple and pink leaves fall and settle on them
     let tree = null; const leaves = [], settled = []; let nextLeaf = 0, leafK = 0, leafToneAt = 0;
-    const DEPS = ["Mom","Edgardo","Uncle Steve","Grandma Sarah","Grandpa Hal","Kevin","Cindy","Sonny","Tutu"];   // everyone the data marks as passed, pets too
+    const DEPS = ["Mom","Edgardo","Uncle Steve","Grandma Sarah","Grandpa Hal","Kevin","Cindy","Sonny","Tutu","Aunt Diane"];   // everyone the data marks as passed, pets too
     function leafTone(name){ const now = performance.now(); if (!ac || muted || ac.state !== "running" || now - leafToneAt < 4000) return; leafToneAt = now;   // quiet, sparse, on the beat, in the key
       try { const t = beatT(), o = ac.createOscillator(), g = ac.createGain(); o.type = "sine"; o.frequency.value = relOf(name).hz*2; g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.014, t + .05); g.gain.exponentialRampToValueAtTime(.0001, t + 1.8); o.connect(g); g.connect(acOut()); o.start(t); o.stop(t + 1.9); } catch(e){} }
     function makeTree(){ const r = mulberryT(77), bx = W/2, by = H*.72, top = H*.3, limbs = [], strands = [];
@@ -457,16 +458,18 @@ This is our stamp.<br><b id="dad">Dad</b></div>
         else { cx.beginPath(); cx.arc(x, y, s.r, 0, 6.283); cx.fill(); if (a > .7){ cx.fillStyle = `rgba(${s.c},${((a-.7)*.45).toFixed(3)})`; cx.beginPath(); cx.arc(x, y, s.r*3.2, 0, 6.283); cx.fill(); } } } }
 
     const dust = Array.from({length: 60}, () => ({x:Math.random(),y:Math.random(),r:Math.random()*1.4+.3,s:Math.random()*.00012+.00003,p:Math.random()*6.28}));
+    // particle pools: each emitter reuses its dead particles (swap-remove, no splice, no new objects per frame) so iPhone never pauses to collect garbage
+    let pNew = 0; const POOLS = new Map(), pget = arr => { let q = POOLS.get(arr); if (!q) POOLS.set(arr, q = []); return q.pop() || (pNew++, {}); }, pkill = (arr, i) => { const o = arr[i], l = arr.pop(); if (i < arr.length) arr[i] = l; const q = POOLS.get(arr); if (q && q.length < 400) q.push(o); };
     const sparks = []; const seq = [3,6,9]; let si = 0, lastSpawn = 0;
     function trail(x,y){
       const now = performance.now(); if (now - lastSpawn < 45) return; lastSpawn = now;
       const n = seq[si++ % 3];
       for (let i=0;i<n;i++){const a=(i/n)*6.283+Math.random()*.4, v=.25+Math.random()*.6;
-        if (sparks.length < 220) sparks.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-.6,life:1,h:28+Math.random()*22})}
+        if (sparks.length < 220){ const q = pget(sparks); q.x = x; q.y = y; q.vx = Math.cos(a)*v; q.vy = Math.sin(a)*v - .6; q.life = 1; q.h = 28 + Math.random()*22; sparks.push(q); } }
     }
     // wand stars
     const stars = []; let wand = null, nextWand = performance.now() + 2500;
-    function star(x,y,big){ if (stars.length > 260) return; stars.push({x,y,vx:(Math.random()-.5)*.25,vy:.25+Math.random()*.5,life:1,sz:(big?2.5:1.2)+Math.random()*2,p:Math.random()*6.28}); }
+    function star(x,y,big){ if (stars.length > 260) return; const q = pget(stars); q.x = x; q.y = y; q.vx = (Math.random()-.5)*.25; q.vy = .25 + Math.random()*.5; q.life = 1; q.sz = (big ? 2.5 : 1.2) + Math.random()*2; q.p = Math.random()*6.28; stars.push(q); }
     function drawStar(s,t,ox,oy){
       const a = s.life*(.55+.45*Math.sin(t*5+s.p)), L = s.sz*2.2, x = s.x+ox, y = s.y+oy;
       cx.strokeStyle = `rgba(255,240,210,${a})`; cx.lineWidth = .8;
@@ -501,7 +504,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     function togglePortal(quiet){ portalOn = !portalOn; portalOn ? portalAudioOn() : portalAudioOff(); if (!quiet && !portalOn) buzz();
       document.body.classList.toggle("pon", portalOn);
       if (!portalOn){ layer = -1; srcClose(); edT.forEach(clearTimeout); $("pcap").classList.remove("on"); $("edq").classList.remove("on"); constelOff(); }
-      else { loadCards(); if (linksOn) showLinks(false); openAt = performance.now(); for (let k=0;k<4;k++) rings.push({born: openAt + k*220}); constelOn(); setPcap(); }
+      else { loadCards(); if (linksOn) showLinks(false); openAt = performance.now(); for (let k=0;k<4;k++) ringAt(openAt + k*220); constelOn(); setPcap(); }
       $("bridge").classList.toggle("on", portalOn); $("note").classList.toggle("dim", portalOn || linksOn); syncView(); }
 
     let whisper = null, shoot = null, holdAt = 0, holdDone = false;
@@ -580,23 +583,23 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       buildConstel(); const o = cnodes.find(q => q.name === me) || cnodes.find(q => q.name === "William"); let best = null, bg = -1;
       for (const q of cnodes){ if (q === o || q.name === "Alfred") continue; const g = glowOf(q.x - o.x, q.ly - o.ly, Math.min(W, H)); if (g > bg){ bg = g; best = q.name; } } return best; }
     function contact(n){ const now = performance.now(); if (portalOn) return;
-      if ((n || 1) < 2 && now - wakeAt > 2000){ wakeAt = now; contactLock = 0; for (let k=0;k<2;k++) rings.push({born: now + k*200}); unlockAudio(); chime(BASE*4); return; }   // first entry: a soft glow and a ping; it relaxes back after 2 s
+      if ((n || 1) < 2 && now - wakeAt > 2000){ wakeAt = now; contactLock = 0; for (let k=0;k<2;k++) ringAt(now + k*200); unlockAudio(); chime(BASE*4); return; }   // first entry: a soft glow and a ping; it relaxes back after 2 s
       if (now - contactLock < 900) return; contactLock = now; wakeAt = 0; apprStop(true);
       const oa = now; setTimeout(() => { if (!portalOn || dform || portalTouch > oa) return; const nm = strongestFor(); if (!nm) return; const f = FAM.find(x => x[0] === nm) || [nm]; setPcap(capFor(nm, f[1])); $("pcap").classList.add("on"); dustForm(nm); const o = cnodes.find(q => q.name === nm); if (o){ const r = o.n.getBoundingClientRect(); portalMoment(r.left + r.width/2, r.top + 8, nm, "strongest"); } }, 6200);
       if (!vib([90,80,160])){ tick(); setTimeout(tick, 90); setTimeout(tick, 210); setTimeout(tick, 300); }
-      bloomAt = now; edWords(); voice(); for (let k=0;k<3;k++) rings.push({born: now + k*160});
+      bloomAt = now; edWords(); voice(); for (let k=0;k<3;k++) ringAt(now + k*160);
       for (let i=0;i<30;i++){ const a=Math.random()*6.283, r=10+Math.random()*80; star(dot.x()+Math.cos(a)*r, dot.y()+Math.sin(a)*r, Math.random()<.4); }
       setTimeout(() => { if (!portalOn) togglePortal(true); }, 280); }
     let skyHold = null, shots = 0; function toggleMute(){ muted = !muted; saveMute(); $("mute").classList.toggle("off", muted); if (musicOut) musicOut.gain.setTargetAtTime(muted || !inView ? 0 : .16, ac.currentTime, .5); micSync(); buzz(); toast(muted ? "Music off" : "Music on"); }
     function toast(txt, ms){ const el = $("toast"); el.textContent = txt; el.classList.add("on"); clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove("on"), ms || 1600); }
     function skyTap(x, y){ const li = !portalOn && !linksOn ? leaves.findIndex(L => Math.hypot(L.x - x, L.y - y) < 36) : -1;
       if (li >= 0 && !dform){ const L = leaves.splice(li, 1)[0], r = cv.getBoundingClientRect(); buzz(); dustForm(L.name, {x: L.x + r.left, y: L.y + r.top, c: L.c}); return; }   // the leaf becomes the person
-      for (let i=0;i<10;i++) star(x+(Math.random()-.5)*22, y+(Math.random()-.5)*22, i < 3); taps.push({x, y, born: performance.now()});
+      for (let i=0;i<10;i++) star(x+(Math.random()-.5)*22, y+(Math.random()-.5)*22, i < 3); { const q = pget(taps); q.x = x; q.y = y; q.born = performance.now(); taps.push(q); }
       if (!shoot && !portalOn){ shoot = {p: .45, x0: x - W*.55, y0: y - H*.12, x1: x + W*.55, y1: y + H*.12}; shots++; } }
 
     // one shared tap counter: taps within ~320 ms are counted, and only the final count acts
     function tapCounter(win, act){ let n = 0, tm = null; return () => { n++; clearTimeout(tm); tm = setTimeout(() => { const c = n; n = 0; act(c); }, win); }; }
-    function treeReveal(){ buzz(); if (portalOn) togglePortal(true); showLinks(false); for (let k=0;k<3;k++) rings.push({born: performance.now() + k*HBMS/2}); openFam(); syncView(); }
+    function treeReveal(){ buzz(); if (portalOn) togglePortal(true); showLinks(false); for (let k=0;k<3;k++) ringAt(performance.now() + k*HBMS/2); openFam(); syncView(); }
     const dotTaps = tapCounter(320, c => { if (c >= 3) treeReveal(); else contact(c); });
     // the light itself: one tap = Edgardo's moment and the portal, three taps = the family tree, a 0.7s hold says "I'm right here"
     const db = $("dotbtn");
@@ -617,8 +620,8 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     $("pclose").addEventListener("click", e => { e.stopPropagation(); if (Date.now() - lastTouch < 800) return; if (portalOn) togglePortal(); });
 
     // family: who is here, who has passed. Departed rise in gold dust; the living breathe soft light.
-    const FAM = [["William","his life, all of it"],["Jennifer"],["Billy"],["Mom"],["Dad","early thirties"],["Edgardo","Jennifer's dad"],["Uncle Steve"],["Grandma"],["Grandma Sarah","a great grandma"],["Grandpa Hal","cigars and jokes"],["Uncle Stu","pure humor"],["Pat","an all-time bond"],["Kevin","my best friend"],["Steve Lee"],["Steve Samoji"],["Dave Trejo"],["Cindy","my first best friend"],["Rusty"],["Sonny","so much pride"],["Merlin"],["Tutu","the faithful cat"],["All the animals"]];
-    const GONE = new Set(["Mom","Edgardo","Uncle Steve","Grandma Sarah","Grandpa Hal","Kevin","Cindy","Sonny","Tutu"]);
+    const FAM = [["William","his life, all of it"],["Jennifer"],["Billy"],["Mom"],["Dad","early thirties"],["Edgardo","Jennifer's dad"],["Uncle Steve"],["Grandma"],["Grandma Sarah","a great grandma"],["Grandpa Hal","cigars and jokes"],["Uncle Stu","pure humor"],["Pat","an all-time bond"],["Kevin","my best friend"],["Steve Lee"],["Steve Samoji"],["Dave Trejo"],["Cindy","my first best friend"],["Rusty"],["Sonny","so much pride"],["Merlin"],["Tutu","Choo Choo, the faithful cat"],["All the animals"],["Mark Temple"],["Aunt Diane"]];
+    const GONE = new Set(["Mom","Edgardo","Uncle Steve","Grandma Sarah","Grandpa Hal","Kevin","Cindy","Sonny","Tutu","Aunt Diane"]);
     const MEM = {"Cindy":"My first true friend. I talked to her as a baby. She lay on my chest and guarded me. \u201cYou\u2019re my best friend.\u201d",
       "Sonny":"Always proper. He wanted to be the best dog. So much pride.",
       "Tutu":"Gray and beautiful, always there. Billy said, \u201cThat\u2019s a faithful cat, \u2019cause she stayed.\u201d",
@@ -657,13 +660,15 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       || (y > .15 && y < .45 && [-.3, -.15, .1, .22].some(c => Math.abs(x - c) < .03)) || (x < -.38 && x > -.62 && Math.abs(y - (.02 - ((x + .38)/.24)**2*.42)) < .028);
     const inDog = (x, y) => ((x + .05)/.38)**2 + ((y - .02)/.17)**2 < 1 || Math.hypot(x - .42, y + .18) < .12 || ((x - .56)/.09)**2 + ((y + .13)/.055)**2 < 1 || ((x - .35)/.045)**2 + ((y + .1)/.1)**2 < 1
       || (y > .1 && y < .5 && [-.32, -.18, .12, .26].some(c => Math.abs(x - c) < .045)) || seg(x, y, -.4, -.04, -.56, -.28, .035);
-    const FRAME = {William: "male", Dad: "male", Edgardo: "male", "Uncle Steve": "male", "Grandpa Hal": "male", "Uncle Stu": "male", Pat: "male", Kevin: "male", "Steve Lee": "male", "Steve Samoji": "male", "Dave Trejo": "male",
+    const FRAME = {William: "male", Dad: "male", Edgardo: "male", "Uncle Steve": "male", "Grandpa Hal": "male", "Uncle Stu": "male", Pat: "male", Kevin: "male", "Steve Lee": "male", "Steve Samoji": "male", "Dave Trejo": "male", "Mark Temple": "male", "Aunt Diane": "female",
       Jennifer: "female", Mom: "female", Grandma: "female", "Grandma Sarah": "female", Billy: "child", Sonny: "dog", Merlin: "dog", Tutu: "cat", Cindy: "dog", Rusty: "dog", Alfred: "flame", "The animals": "pet", "All the animals": "pet"};
     const inFlame = (x, y) => { const t = (y + .78)/1.5; return t > 0 && t < 1 && Math.abs(x + .04*Math.sin(t*9)) < .44*Math.pow(t, .9)*Math.sqrt(1 - t)*1.5; };   // no face, no likeness: an ember of light
     const FRAMES = {flame: inFlame, male: inMale, female: inFemale, child: inChild, cat: inCat, dog: inDog, pet: inPet, human: inHuman}, frameOf = n => FRAME[n] || (PETS.has(n) ? "pet" : "human");
     const rgbHue = c => { const [r, g, b] = c.split(",").map(v => v/255), mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn; if (!d) return 40; const h = mx === r ? ((g - b)/d) % 6 : mx === g ? (b - r)/d + 2 : (r - g)/d + 4; return (h*60 + 360) % 360; };
+    function sizeDcv(mob){ const dpr = Math.min(mob ? 1.5 : 2, devicePixelRatio || 1), w = Math.round(innerWidth*dpr), h = Math.round(innerHeight*dpr); if (dcv.width !== w || dcv.height !== h){ dcv.width = w; dcv.height = h; } dcx.setTransform(dpr, 0, 0, dpr, 0, 0); }
+    setTimeout(() => { try { sizeDcv(matchMedia("(pointer:coarse)").matches || innerWidth*innerHeight < 6e5); dcx.clearRect(0, 0, 1, 1); } catch(e){} }, 1200);   // size the figure canvas ahead of time so the first form has no hitch
     function dustForm(name, seed){ const r = mulberry(seedOf(name)), ed = name === "Edgardo", mom = name === "Mom", fr = frameOf(name), pet = fr === "cat" || fr === "dog" || fr === "pet", kid = fr === "child", gone = GONE.has(name), ai = name === "Alfred", inF = FRAMES[fr], mob = matchMedia("(pointer:coarse)").matches || innerWidth*innerHeight < 6e5;
-      const W2 = innerWidth, H2 = innerHeight, dpr = Math.min(mob ? 1.5 : 2, devicePixelRatio || 1); if (dcv.width !== Math.round(W2*dpr) || dcv.height !== Math.round(H2*dpr)){ dcv.width = Math.round(W2*dpr); dcv.height = Math.round(H2*dpr); } dcx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const W2 = innerWidth, H2 = innerHeight; sizeDcv(mob);
       const pat = ed ? "vortex" : PATS[Math.floor(r()*5)], speed = ed ? 1 : .8 + r()*.45, hue = ed ? 42 : mom ? 342 : gone ? 34 + r()*16 : rgbHue(relOf(name).c) + (r() - .5)*14, lig = ed ? 70 : mom ? 80 : gone ? 60 + r()*16 : ai ? 66 + r()*8 : 80 + r()*8, sat = gone ? 92 : ai ? 88 : 48, shape = ed ? "star" : SHAPES[Math.floor(r()*4)];
       const N = Math.round((ed ? (mob ? 380 : 650) : (mob ? 240 : 400))*(kid ? .6 : gone ? 1 : .75)), T = seed ? [750, 1650, 2350, 2900] : ed ? [1500, 2800, 3600, 4500] : gone ? [1300, 2300, 3000, 3800] : ai ? [900, 1700, 2600, 3300] : [900, 1700, 3300, 4000];
       const S = (pet ? Math.min(W2*.72, 380)/1.3 : Math.min(H2*.46, 340)/1.6)*(kid ? .72 : 1), cx0 = W2/2, cy0 = H2*.43, bb = pet ? [-.7, .68, -.42, .52] : [-.46, .46, -.8, .82], P = [];
@@ -691,7 +696,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
         if (f.pinged){ const w = (t - f.pingAt)/900; if (w < 1) for (let q = 0; q < 3; q++){ const rr = 8 + ez(w)*90 - q*12; if (rr > 2){ c.strokeStyle = `rgba(${f.seed.c},${((1 - w)*(.5 - q*.14)).toFixed(3)})`; c.lineWidth = 1.2; c.beginPath(); c.arc(lx, ly, rr, 0, 6.283); c.stroke(); } } } }
       if (g > .3){ const gr = c.createRadialGradient(f.cx0, f.cy0, 0, f.cx0, f.cy0, f.S*(f.ed ? 1.1 : .8)); gr.addColorStop(0, `hsla(42,90%,70%,${(f.ed ? .28 : .18)*g*(1 - d)})`); gr.addColorStop(1, "hsla(42,90%,60%,0)"); c.fillStyle = gr; c.fillRect(0, 0, f.W2, f.H2); }
       if (f.ed && t > T[1] - 200) for (let k = 0; k < 3; k++){ const w = (t - T[1] + 200 - k*HBMS)/1400; if (w <= 0 || w >= 1) continue; c.strokeStyle = `hsla(44,90%,75%,${.5*(1 - w)*(1 - d)})`; c.lineWidth = 1.6*(1 - w) + .4; c.beginPath(); c.arc(f.cx0, f.cy0, f.S*.35 + ez(w)*f.S*1.2, 0, 6.283); c.stroke(); }
-      if (!f.swelled && t > T[1] - 350){ f.swelled = true; setTimeout(() => { if (swellFn) swellFn(BASE*f.harm*2); if (f.mom) momSpark(); if (f.gone && performance.now() > pulseUntil) pattern(f.ed ? [120,200,120,300,40,110,70] : [40,110,70]); else if (f.ai) pattern([30,120,30]); else if (!f.gone){ pattern([18,90,18]); stillHere(f.R.hz); } }, toBeat()); }
+      if (!f.swelled && t > T[1] - 350){ f.swelled = true; setTimeout(() => { if (swellFn) swellFn(BASE*f.harm*2); if (f.mom) setTimeout(momSpark, 90); if (f.gone && performance.now() > pulseUntil) pattern(f.ed ? [120,200,120,300,40,110,70] : [40,110,70]); else if (f.ai) pattern([30,120,30]); else if (!f.gone){ pattern([18,90,18]); stillHere(f.R.hz); } }, toBeat()); }
       c.globalCompositeOperation = "lighter"; const tt = t/1000, beatK = hbs(((now - hbT0) % HBMS)/HBMS), gp = t > T[1] && t < T[2] ? Math.sin(Math.PI*(t - T[1])/(T[2] - T[1])) : 0, sh = f.cy0 - .1*f.S;
       if (g >= .999 && !f.formedAt) f.formedAt = t;
       const zm = 1 + .045*ez((t - T[1] + 300)/(T[2] - T[1] + 300))*(1 - d); f.zoom = zm;   // the camera leans in gently as they come alive
@@ -732,9 +737,9 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     function alive(el, name, tx, ty, opt){ opt = opt || {}; const R = relOf(name), gone = GONE.has(name), ed = name === "Edgardo", r = el.getBoundingClientRect(), x = r.left + r.width/2, y = r.top + Math.min(10, r.height/2);
       if (tx == null || (!tx && !ty)){ tx = x + 10; ty = r.bottom + 30; }
       const c = gone && name !== "Mom" ? "255,206,120" : R.c; el.classList.remove("pop"); void el.offsetWidth; el.classList.add("pop"); setTimeout(() => el.classList.remove("pop"), 1750);
-      const P = []; for (let i = 0; i < (ed ? 34 : 20); i++) P.push({a: Math.random()*6.283, sp: 40 + Math.random()*(ed ? 120 : 80), sz: .8 + Math.random()*1.6});
-      alives.push({x, y, tx, ty, c, gone, ed: ed && !opt.noPulse, P, t0: performance.now(), dur: ed ? 2400 : 1700, met: false});
-      portalMoment(x, y, name, "tap"); if (!opt.quiet) pattern(R.v); chime(R.hz); if (name === "Mom") momSpark(); tick(); const th = gone ? d2thump() : stillHere(R.hz, name === "Alfred"), lp = $("lpulse"); lp.style.setProperty("--lx", x + "px"); lp.style.setProperty("--ly", y + "px");
+      const A = pget(alives), P = A.P || (A.P = []), np = ed ? 34 : 20; for (let i = 0; i < np; i++){ const q = P[i] || (P[i] = {}); q.a = Math.random()*6.283; q.sp = 40 + Math.random()*(ed ? 120 : 80); q.sz = .8 + Math.random()*1.6; } P.length = np;   // pooled: the burst and its sparks are reused
+      A.x = x; A.y = y; A.tx = tx; A.ty = ty; A.c = c; A.gone = gone; A.ed = ed && !opt.noPulse; A.t0 = performance.now(); A.dur = ed ? 2400 : 1700; A.met = false; alives.push(A);
+      portalMoment(x, y, name, "tap"); if (!opt.quiet) pattern(R.v); chime(R.hz); if (name === "Mom") setTimeout(momSpark, 90); tick(); const th = gone ? d2thump() : stillHere(R.hz, name === "Alfred"), lp = $("lpulse"); lp.style.setProperty("--lx", x + "px"); lp.style.setProperty("--ly", y + "px");
       const pu = !!lp.animate; if (pu) lp.animate([{opacity: 0}, {opacity: .16}, {opacity: 0}], {duration: 700, easing: "ease-in-out"});
       aliveLog.push({name, view: opt.view || "", kind: gone ? "gold" : "light", tone: gone ? "thump" : name === "Alfred" ? "steady" : "still", c, hz: R.hz, v: R.v, frame: frameOf(name), tick: true, thump: th, pulse: pu}); if (aliveLog.length > 90) aliveLog.shift();
       const d = Math.min(2, devicePixelRatio || 1), w = Math.round(innerWidth*d), h = Math.round(innerHeight*d); if (acv.width !== w || acv.height !== h){ acv.width = w; acv.height = h; } acx.setTransform(d, 0, 0, d, 0, 0);
@@ -744,7 +749,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
         let pk = 0; for (let k = 0; k < 3; k++){ const dt = now - (M.b0 + k*HBMS); if (dt >= 0) pk = Math.max(pk, Math.exp(-dt/200)*(1 - k*.2)); }
         c.strokeStyle = `rgba(190,120,255,${((.55 + .4*pk)*fade).toFixed(3)})`; c.lineWidth = 1.6 + 2.2*pk; c.beginPath(); c.arc(M.x, M.y, r0 + 5*pk, 0, 6.283); c.stroke();
         for (let k = 0; k < 4; k++){ const rr = r0 + ((t*48 + k*lam) % (4*lam)), a = (1 - (rr - r0)/(4*lam))*.35*fade*op; if (a > .01){ c.strokeStyle = `rgba(200,150,255,${a.toFixed(3)})`; c.lineWidth = .9; c.beginPath(); c.arc(M.x, M.y, rr, 0, 6.283); c.stroke(); } } }
-      for (let i = alives.length - 1; i >= 0; i--){ const A = alives[i], t = (now - A.t0)/A.dur; if (t >= 1){ alives.splice(i, 1); continue; }
+      for (let i = alives.length - 1; i >= 0; i--){ const A = alives[i], t = (now - A.t0)/A.dur; if (t >= 1){ pkill(alives, i); continue; }
         const fade = t < .75 ? 1 : 1 - (t - .75)/.25, sw = ez(Math.min(1, t/.25)), s = A.ed ? 1.5 : 1, gr = (14 + 16*sw)*s;
         const g = c.createRadialGradient(A.x, A.y, 0, A.x, A.y, gr); g.addColorStop(0, `rgba(${A.c},${.55*fade})`); g.addColorStop(1, `rgba(${A.c},0)`); c.fillStyle = g; c.beginPath(); c.arc(A.x, A.y, gr, 0, 6.283); c.fill();
         const bt = Math.min(1, t/.6); for (const p of A.P){ const dd = ez(bt)*p.sp*.5, al = (1 - bt)*fade; if (al <= .02) continue; c.fillStyle = `rgba(${A.c},${al.toFixed(3)})`; c.beginPath(); c.arc(A.x + Math.cos(p.a)*dd, A.y + Math.sin(p.a)*dd - (A.gone ? 12*bt : 0), p.sz, 0, 6.283); c.fill(); }
@@ -798,8 +803,29 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     // the family, moved into the pulse light: a constellation of named lights around the open portal, Edgardo leading
     const GLOW = {K: .06, E: .02, MIN: .12, MAX: 1, VOICE: .8};   // link glow = clamp(K/(d^2 + E), MIN, MAX), d = distance to William / min(W, H); voice multiplies, capped at MAX
     const glowOf = (dx, dy, S) => { const d = Math.hypot(dx, dy)/S; return Math.min(GLOW.MAX, Math.max(GLOW.MIN, Math.min(GLOW.MAX, GLOW.K/(d*d + GLOW.E)))*(1 + GLOW.VOICE*micK)); };
-    const cnodes = [], cthr = [], carr = [], ARROWS = [["Alfred", "William"], ["William", "Alfred"], ["Billy", "William"]]; let hotCn = null, hotAt = 0;
-    const CPAR = {Jennifer: "William", Billy: "William", Edgardo: "Jennifer", Dad: "William", "Uncle Steve": "Dad", "Uncle Stu": "Dad", Grandma: "Dad", "Grandma Sarah": "Grandma", "Grandpa Hal": "Grandma Sarah", Mom: "William",
+    const cnodes = [], cthr = [], carr = [], ARROWS = [["Alfred", "William"], ["William", "Alfred"], ["Billy", "William"], ["Billy", "Jennifer"], ["Billy", "Tutu"], ["Billy", "Merlin"]];
+    // the line map: brightness and thickness follow how strong the link is (1 = strongest); anyone not listed hangs from their CPAR branch at .3
+    const LINKS = [["Mom", "William", 1], ["Aunt Diane", "William", .92], ["Jennifer", "Edgardo", .9], ["Mark Temple", "William", .78], ["Mark Temple", "Aunt Diane", .8], ["Jennifer", "William", .85], ["Billy", "William", .8], ["Billy", "Jennifer", .8], ["Alfred", "William", .75], ["Billy", "Tutu", .7], ["Sonny", "William", .7],
+      ["Dad", "William", .65], ["Billy", "Merlin", .55], ["Kevin", "William", .55], ["Tutu", "William", .5], ["Pat", "William", .5], ["Dave Trejo", "William", .5], ["Steve Lee", "William", .45], ["Steve Samoji", "William", .45]];
+    let croutes = [], momThread = null, pAng = {}; const CLEAR = 12;   // a line keeps this far (px) from every light it does not join
+    function routeLinks(){ const by = n => cnodes.find(o => o.name === n), E = [], seen = new Set(), add = (a, b, st) => { const k = [a, b].sort().join("|"); if (a === b || seen.has(k) || !by(a) || !by(b)) return; seen.add(k); E.push({a, b, s: st}); };
+      LINKS.forEach(l => add(...l)); for (const o of cnodes) if (o.name !== "William") add(o.name, CPAR[o.name] || "William", .3);
+      const obs = cnodes.map(o => ({x: o.x, y: o.ly, r: CLEAR, name: o.name})).concat([{x: W/2, y: H*.5, r: coreR()*.3, name: "core"}]);
+      const sd = (q, x1, y1, x2, y2) => { const dx = x2 - x1, dy = y2 - y1, l2 = dx*dx + dy*dy, u = l2 ? Math.max(0, Math.min(1, ((q.x - x1)*dx + (q.y - y1)*dy)/l2)) : 0; return Math.hypot(x1 + u*dx - q.x, y1 + u*dy - q.y); };
+      const rt = (ax, ay, bx, by, ob) => { const dx = bx - ax, dy = by - ay, L = Math.hypot(dx, dy) || 1, nx = -dy/L, ny = dx/L, mx = (ax + bx)/2, my = (ay + by)/2; let best = null, bestC = -1;
+        for (let j = 0; j < 45; j++){ const k = (j % 2 ? -1 : 1)*Math.ceil(j/2)*18, cx2 = mx + nx*k, cy2 = my + ny*k, n = k ? 20 : 1, pts = [ax, ay]; let c = 1e9, off = false;   // straight first, then curves bowing further either way
+          for (let i = 1; i <= n; i++){ const t = i/n, x = (1 - t)*(1 - t)*ax + 2*(1 - t)*t*cx2 + t*t*bx, y = (1 - t)*(1 - t)*ay + 2*(1 - t)*t*cy2 + t*t*by; if (k && (x < 4 || x > W - 4 || y < 40 || y > H - 4)) off = true; pts.push(x, y); }
+          for (const q of ob) for (let i = 0; i + 3 < pts.length; i += 2){ const dd = sd(q, pts[i], pts[i+1], pts[i+2], pts[i+3]) - q.r; if (dd < c) c = dd; }
+          if (!off && c >= 0){ best = pts; break; } if (!off && c > bestC){ bestC = c; best = pts; } }
+        if (!best) best = [ax, ay, bx, by]; const cum = [0]; for (let i = 2; i < best.length; i += 2) cum.push(cum[cum.length - 1] + Math.hypot(best[i] - best[i-2], best[i+1] - best[i-1])); return {pts: best, cum}; };
+      croutes = E.map(e => { const A = by(e.a), B = by(e.b), r = rt(A.x, A.ly, B.x, B.ly, obs.filter(q => q.name !== e.a && q.name !== e.b));
+        return {a: e.a, b: e.b, s: e.s, pts: r.pts, cum: r.cum, i: Math.min(cnodes.indexOf(A), cnodes.indexOf(B)), braid: (e.a === "Mark Temple" && e.b === "Aunt Diane") || (e.b === "Mark Temple" && e.a === "Aunt Diane")}; });
+      pAng = {}; for (const nm of ["William", "Alfred"]){ const o = by(nm); if (!o) continue; const cx3 = W/2, cy3 = H*.5, cr3 = coreR()*.98, a0 = Math.atan2(o.ly - cy3, o.x - cx3), ob = obs.filter(q => q.name !== nm && q.name !== "core"); pAng[nm] = a0;   // William's and AIFRED's portal lines: nudge where they leave the ring so they pass no light
+        for (let j = 0; j < 25; j++){ const a = a0 + (j % 2 ? -1 : 1)*Math.ceil(j/2)*.06, x0 = cx3 + Math.cos(a)*cr3, y0 = cy3 + Math.sin(a)*cr3; if (ob.every(q => sd(q, x0, y0, o.x, o.ly) >= q.r)){ pAng[nm] = a; break; } } }
+      const mo = by("Mom"); momThread = null; if (mo){ const cx3 = W/2, cy3 = H*.5, a = Math.atan2(mo.ly - cy3, mo.x - cx3), r0 = coreR()*.32, r = rt(mo.x, mo.ly, cx3 + Math.cos(a)*r0, cy3 + Math.sin(a)*r0, obs.filter(q => q.name !== "Mom" && q.name !== "core")); momThread = {a: "Mom", b: "core", s: .3, pts: r.pts, cum: r.cum, i: cnodes.indexOf(mo)}; } }   // Mom, the architect: a soft thread into the source core
+    function routePt(r, f, out){ const L = r.cum[r.cum.length - 1]*f; let i = 1; while (i < r.cum.length - 1 && r.cum[i] < L) i++; const s0 = r.cum[i-1], s1 = r.cum[i], u = s1 > s0 ? (L - s0)/(s1 - s0) : 0, p = r.pts;
+      out[0] = p[2*i-2] + (p[2*i] - p[2*i-2])*u; out[1] = p[2*i-1] + (p[2*i+1] - p[2*i-1])*u; out[2] = p[2*i] - p[2*i-2]; out[3] = p[2*i+1] - p[2*i-1]; return out; } const RP = [0, 0, 0, 0]; let hotCn = null, hotAt = 0;
+    const CPAR = {Jennifer: "William", Billy: "William", Edgardo: "Jennifer", Dad: "William", "Uncle Steve": "Dad", "Uncle Stu": "Dad", Grandma: "Dad", "Mark Temple": "Dad", "Aunt Diane": "Dad", "Grandma Sarah": "Grandma", "Grandpa Hal": "Grandma Sarah", Mom: "William",
       Alfred: "William", Sonny: "William", Tutu: "William", Merlin: "Tutu", Rusty: "Merlin", Cindy: "Rusty", "All the animals": "Cindy", Kevin: "Mom", "Steve Lee": "Kevin", "Steve Samoji": "Steve Lee", "Dave Trejo": "Mom", Pat: "Dave Trejo"};   // the branch each light hangs from
     function buildConstel(){ if (cnodes.length) return; const box = $("constel");
       [FAM[5], ...FAM.filter((f, i) => i !== 5), ["Alfred", "my AI friend"]].forEach(f => { const n = document.createElement("div"); n.className = "cn"; n.textContent = f[0] === "Alfred" ? "AIFRED" : f[0]; life(n, f[0]); box.appendChild(n);
@@ -807,9 +833,9 @@ This is our stamp.<br><b id="dad">Dad</b></div>
         const pick = e => { if (e.cancelable) e.preventDefault(); e.stopPropagation(); if (e.type === "touchend") lastTouch = Date.now(); else if (Date.now() - lastTouch < 800) return;
           const pt = e.changedTouches ? e.changedTouches[0] : e; portalTouch = performance.now(); alive(n, f[0], pt.clientX, pt.clientY, {view: "portal"}); edT.forEach(clearTimeout); $("edq").classList.remove("on"); setPcap(capFor(f[0] === "Alfred" ? "AIFRED" : f[0], f[1])); $("pcap").classList.add("on"); hotCn = o; hotAt = performance.now(); setTimeout(() => { if (portalOn) dustForm(f[0]); }, 650); };
         n.addEventListener("touchend", pick, {passive:false}); n.addEventListener("click", pick); }); }
-    const CR_RIGHT = ["Billy","Jennifer","Edgardo","Dad","Uncle Steve","Uncle Stu","Grandma","Grandma Sarah","Grandpa Hal"], CR_ROW = ["Mom","Kevin","Steve Lee","Steve Samoji"], CR_FRIENDS = [...CR_ROW, "Pat", "Dave Trejo"],   // CR_ROW: the lower row, left to right; Mom is the left anchor (the root)
+    const CR_RIGHT = ["Billy","Jennifer","Edgardo","Dad","Aunt Diane","Mark Temple","Uncle Steve","Uncle Stu","Grandma","Grandma Sarah","Grandpa Hal"], CR_ROW = ["Mom","Kevin","Steve Lee","Steve Samoji"], CR_FRIENDS = [...CR_ROW, "Pat", "Dave Trejo"],   // CR_ROW: the lower row, left to right; Mom is the left anchor (the root)
       CR_ANIMALS = ["Sonny","Tutu","Merlin","Rusty","Cindy","All the animals"];
-    function layoutConstel(){ const cX = W/2, cY = H*.5, cr = coreR(), top = 66, bot = H - (dkey === "jen" ? 56 : 108), pw = Math.min(W - 32, 380);
+    function layoutConstel(){ const dense = H < 820; $("constel").classList.toggle("dense", dense); const cX = W/2, cY = H*.5, cr = coreR(), top = 66, bot = H - (dkey === "jen" ? 56 : 108), pw = Math.min(W - 32, 380);
       const obst = [{x: cX, y: cY, hw: cr*.9, hh: cr*.9}, {x: cX, y: cY + cr + 12 + 38, hw: pw/2, hh: 42}], placed = [];
       const rx = Math.min(W/2 - 48, Math.max(cr + 90, cr*1.9)), ry = Math.min(cY - top - 20, cr*2.4), N = cnodes.length;
       let yMin = top; const fits = b => b.x - b.hw >= 4 && b.x + b.hw <= W - 4 && b.y - b.hh >= yMin && b.y + b.hh <= bot && !obst.concat(placed).some(o => Math.abs(o.x - b.x) < o.hw + b.hw + 3 && Math.abs(o.y - b.y) < o.hh + b.hh + 2);
@@ -826,7 +852,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
           for (let j = 0; j < 21; j++){ const a = a0 + (j % 2 ? -1 : 1)*Math.ceil(j/2)*.04, b = {x: cX + Math.cos(a)*rx*sc, y: cY + Math.sin(a)*ry*sc, hw, hh}; if (fits(b)){ best = b; break outer; } } }
         for (let y = top + hh; !best && y <= bot - hh; y += 6) for (let x = hw + 4; x <= W - hw - 4; x += 6){ const b = {x, y, hw, hh}; if (fits(b)){ best = b; break; } }
         if (!best) best = {x: cX + Math.cos(a0)*rx, y: cY + Math.sin(a0)*ry, hw, hh};
-        placed.push(best); o.x = best.x; o.y = best.y; o.ly = best.y - hh + 8; if (i === 0) yMin = best.y - best.hh; }); }
+        placed.push(best); o.x = best.x; o.y = best.y; o.ly = best.y - hh + (dense ? 6 : 8); if (i === 0) yMin = best.y - best.hh; }); routeLinks(); }
     function constelOn(){ buildConstel(); const sx = W/2, sy = H*.72;
       cnodes.forEach(o => { o.n.style.transition = "none"; o.n.style.left = sx + "px"; o.n.style.top = sy + "px"; o.n.classList.remove("on"); });
       layoutConstel(); void $("constel").offsetWidth;
@@ -846,34 +872,34 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     function syncView(){ const on = portalOn || !!document.querySelector(".ov.on"); musicView(on); document.body.classList.toggle("inview", on);
       if ((portalOn || $("sigv").classList.contains("on")) && localStorage.getItem("shaffer-mic") !== "no") micWant = true; micSync(); }
     const FROW = ["Mom","Kevin","Steve Lee","Steve Samoji"];   // the lower row, left to right; the first (Mom, the root) is raised as the left anchor
-    const FLAY = [["Billy",50,13],["William",30,21],["Jennifer",70,21],["Edgardo",70,29],["Dad",18,37],["Uncle Steve",50,37],["Uncle Stu",82,37],["Grandma",18,45],["Grandma Sarah",50,45],["Grandpa Hal",82,45],
-      ...FROW.map((n, i) => [n, 13 + i*24.3, i ? 55 : 53.5, i ? 0 : 1]), ["Pat",50,61],["Dave Trejo",82,61],["Sonny",22,67.5,1],["Tutu",46,67.5,1],["Merlin",76,67.5,1],["Rusty",26,74],["Cindy",52,74],["All the animals",80,74]];
+    const FLAY = [["Billy",50,13],["William",30,21],["Jennifer",70,21],["Edgardo",70,29],["Alfred",14,29],["Dad",18,37],["Uncle Steve",50,37],["Uncle Stu",82,37],["Grandma",18,45],["Grandma Sarah",50,45],["Grandpa Hal",82,45],
+      ...FROW.map((n, i) => [n, 13 + i*24.3, i ? 55 : 53.5, i ? 0 : 1]), ["Aunt Diane",11,61],["Mark Temple",37.5,61],["Pat",59.5,61],["Dave Trejo",83,61],["Sonny",22,67.5,1],["Tutu",46,67.5,1],["Merlin",76,67.5,1],["Rusty",26,74],["Cindy",52,74],["All the animals",80,74]];
     const FSUB = Object.fromEntries(FAM.map(f => [f[0], f[1]]));
     function famLines(v){ let g = v.querySelector("#famsvg"); if (g) g.remove(); const P = n => FLAY.find(f => f[0] === n);
       const seg = (a, b, x1, y1, x2, y2, cls) => `<line class="${cls || ""}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`;
       v.insertAdjacentHTML("afterbegin", `<svg id="famsvg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${
-        seg(0,0,50,15,31,19.2) + seg(0,0,50,15,69,19.2) + seg(0,0,50,21,50,35.2) + seg(0,0,70,23,70,27.2,"br") + seg(0,0,18,33.5,82,33.5) + seg(0,0,18,33.5,18,35.2) + seg(0,0,82,33.5,82,35.2)
+        seg(0,0,50,15,31,19.2) + seg(0,0,50,15,69,19.2) + seg(0,0,50,21,50,35.2) + seg(0,0,70,23,70,27.2,"br") + seg(0,0,26,23.5,16,27.2,"br") + seg(0,0,18,33.5,82,33.5) + seg(0,0,18,33.5,18,35.2) + seg(0,0,82,33.5,82,35.2)
         + seg(0,0,50,38.8,50,43.2) + seg(0,0,18,41.5,82,41.5) + seg(0,0,18,41.5,18,43.2) + seg(0,0,82,41.5,82,43.2)}<path d="M50 46.8 C50 51 22 49 18.5 53.2"/></svg>`); }
     function openFam(){ const v = $("famv"); v.querySelectorAll(".fn").forEach(n => n.remove()); $("famcap").textContent = ""; v.classList.add("on"); famLines(v); v.classList.remove("lines");
       const me = life(mk("fn", FLAY[0][0], FSUB[FLAY[0][0]]), FLAY[0][0]); me.style.left = "50%"; me.style.top = "48%"; v.appendChild(me);
       me.addEventListener("click", e => { $("famcap").textContent = "Billy. The seed of the tree."; alive(me, "Billy", e.clientX, e.clientY, {view: "family"}); ovT.push(setTimeout(() => dustForm("Billy"), 650)); });
       ovT.push(setTimeout(() => { me.classList.add("on"); sparkle(me, 26, 90); }, 300));
       ovT.push(setTimeout(() => { me.style.top = FLAY[0][2] + "%"; v.classList.add("lines"); }, 2600));
-      FLAY.slice(1).forEach((L, i) => { const f = [L[0], FSUB[L[0]]], n = life(mk("fn" + (L[3] ? " big" : ""), f[0], f[1]), f[0]);
+      FLAY.slice(1).forEach((L, i) => { const f = [L[0], FSUB[L[0]] || (L[0] === "Alfred" ? "my AI friend" : undefined)], n = life(mk("fn" + (L[3] ? " big" : ""), f[0] === "Alfred" ? "AIFRED" : f[0], f[1]), f[0]);
         n.style.left = L[1] + "%"; n.style.top = L[2] + "%"; v.appendChild(n);
-        const say = () => { $("famcap").textContent = MEM[f[0]] || (f[0] === "Edgardo" ? "Jennifer\u2019s dad. Closer lights, clearer signal." : f[1] ? f[0] + ", " + f[1] + "." : ""); }; n.addEventListener("click", e => { say(); alive(n, f[0], e.clientX, e.clientY, {view: "family"}); ovT.push(setTimeout(() => dustForm(f[0]), 650)); });
+        const say = () => { $("famcap").textContent = MEM[f[0]] || (f[0] === "Edgardo" ? "Jennifer\u2019s dad. Closer lights, clearer signal." : f[1] ? (f[0] === "Alfred" ? "AIFRED" : f[0]) + ", " + f[1] + "." : ""); }; n.addEventListener("click", e => { say(); alive(n, f[0], e.clientX, e.clientY, {view: "family"}); ovT.push(setTimeout(() => dustForm(f[0]), 650)); });
         ovT.push(setTimeout(() => { n.classList.add("on"); sparkle(n, 14, 50); if (MEM[f[0]]) say(); }, 3600 + i*1100)); });
       const end = mk("fn end", "One tree. Every light. Always connected."); end.style.left = "50%"; end.style.top = "93%"; v.appendChild(end);
       ovT.push(setTimeout(() => { $("famcap").textContent = ""; end.classList.add("on"); sparkle(end, 30, 110); buzz(); }, 3600 + (FLAY.length-1)*1100 + 600)); }
     // signal: every connection linked to William; each relationship fires its own haptic signature, colour, spark and note
     const SIG_IN = [["Jennifer"],["Billy"],["Mom"],["Dad","early thirties"]];
-    const SIG_OUT = [["Edgardo","Jennifer's dad"],["Uncle Steve"],["Grandma"],["Grandma Sarah"],["Grandpa Hal"],["Uncle Stu"],["Pat"],["Rusty"],["Cindy"],["Sonny"],["Merlin"],["Tutu"],["The animals"],["Kevin"],["Steve Lee"],["Steve Samoji"],["Dave Trejo"]];
+    const SIG_OUT = [["Edgardo","Jennifer's dad"],["Uncle Steve"],["Grandma"],["Grandma Sarah"],["Grandpa Hal"],["Uncle Stu"],["Pat"],["Rusty"],["Cindy"],["Sonny"],["Merlin"],["Tutu"],["The animals"],["Kevin"],["Steve Lee"],["Steve Samoji"],["Dave Trejo"],["Aunt Diane"],["Mark Temple"]];
     const REL = {parent:{v:[120,200,120],c:"255,196,120",hz:146.84}, spouse:{v:[80,60,40],c:"255,176,196",hz:220.26}, sibling:{v:[40,60,40],c:"190,220,255",hz:293.68},
-      grand:{v:[90,150,60,150,30],c:"255,228,168",hz:110.13}, uncle:{v:[60,120,60],c:"214,196,255",hz:183.55}, friend:{v:[25],c:"168,232,212",hz:256.97},
+      grand:{v:[90,150,60,150,30],c:"255,228,168",hz:110.13}, uncle:{v:[60,120,60],c:"214,196,255",hz:183.55}, cousin:{v:[50,90,50],c:"168,206,255",hz:220}, aunt:{v:[110,190,110],c:"255,216,164",hz:146.84}, friend:{v:[25],c:"168,232,212",hz:256.97},
       pet:{v:[15,40,15,40,15],c:"255,242,196",hz:330.39}, sonny:{v:[15,40,15,40,15,60,90],c:"255,206,110",hz:367.1}, alfred:{v:[30,120,30],c:"255,164,72",hz:293.68}, dave:{v:[25,60,25],c:"170,236,255",hz:513.94}, edgardo:{v:[120,200,120,300,40,110,70],c:"255,202,112",hz:73.42}, mom:{v:[70,70,40,50,120],c:"255,186,208",hz:293.68}};
-    const RELOF = {Alfred:"alfred", Jennifer:"spouse", Billy:"parent", Mom:"mom", Dad:"parent", Edgardo:"edgardo", "Uncle Steve":"uncle", "Uncle Stu":"uncle", Grandma:"grand", "Grandma Sarah":"grand", "Grandpa Hal":"grand",
+    const RELOF = {Alfred:"alfred", Jennifer:"spouse", Billy:"parent", Mom:"mom", Dad:"parent", Edgardo:"edgardo", "Uncle Steve":"uncle", "Uncle Stu":"uncle", "Mark Temple":"cousin", "Aunt Diane":"aunt", Grandma:"grand", "Grandma Sarah":"grand", "Grandpa Hal":"grand",
       Pat:"friend", Kevin:"friend", "Steve Lee":"friend", "Steve Samoji":"friend", "Dave Trejo":"dave", Cindy:"pet", Rusty:"pet", Sonny:"sonny", Merlin:"pet", Tutu:"pet", "The animals":"pet", "All the animals":"pet"};
-    const HARM = {Edgardo: 1, "Grandpa Hal": 2, "Grandma Sarah": 2, "Uncle Steve": 2, Mom: 4, Kevin: 4, Cindy: 4, Tutu: 4, Sonny: 5, Alfred: 3,
+    const HARM = {Edgardo: 1, "Aunt Diane": 2, "Mark Temple": 6, "Grandpa Hal": 2, "Grandma Sarah": 2, "Uncle Steve": 2, Mom: 4, Kevin: 4, Cindy: 4, Tutu: 4, Sonny: 5, Alfred: 3,
       Dad: 6, "Uncle Stu": 6, Grandma: 6, "Dave Trejo": 7, Billy: 8, William: 8, Jennifer: 9, Pat: 10, "Steve Lee": 10, "Steve Samoji": 10, Merlin: 10, Rusty: 10, "All the animals": 12}, RELC = {};   // integer harmonics of BASE
     const relOf = name => RELC[name] || (RELC[name] = Object.assign({}, REL[RELOF[name] || "friend"], {hz: +(BASE*(HARM[name] || 8)).toFixed(2)}));
     function chime(hz){ try{ if (!ac || muted || ac.state !== "running") return; const t = beatT(), o = ac.createOscillator(), g = ac.createGain(); o.type = "sine"; o.frequency.value = hz*2;
@@ -883,24 +909,25 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       const w = v.clientWidth, h = v.clientHeight, cx0 = w/2, cy0 = h*.47; sigC = {x: cx0, y: cy0};
       const line = (x1,y1,x2,y2) => { const l = document.createElementNS(NS, "line"); l.setAttribute("x1",x1); l.setAttribute("y1",y1); l.setAttribute("x2",x2); l.setAttribute("y2",y2); svg.appendChild(l); return l; };
       const place = (list, rx, ry, off, st) => list.forEach((f, i) => { const a = off + i/list.length*6.283, k = st && i % 2 ? st : 1, x = cx0 + Math.cos(a)*rx*k, y = cy0 + Math.sin(a)*ry*k;
-        const n = life(mk("sn", f[0], f[1]), f[0]); n.style.setProperty("--hc", "rgba(" + relOf(f[0]).c + ",.8)"); n.style.left = x + "px"; n.style.top = y + "px"; const node = {n, x, y, name: f[0], sub: f[1], lines: [line(cx0,cy0,x,y)]}; sigNodes.push(node); if (f[0] === "Sonny") node.lines[0].classList.add("strong");
+        const n = life(mk("sn", f[0] === "Alfred" ? "AIFRED" : f[0], f[1]), f[0]); n.style.setProperty("--hc", "rgba(" + relOf(f[0]).c + ",.8)"); n.style.left = x + "px"; n.style.top = y + "px"; const node = {n, x, y, name: f[0], sub: f[1], lines: [line(cx0,cy0,x,y)]}; sigNodes.push(node); if (f[0] === "Sonny") node.lines[0].classList.add("strong");
         const pick = e => { if (e.cancelable) e.preventDefault(); e.stopPropagation(); if (e.type === "touchend") lastTouch = Date.now(); else if (Date.now() - lastTouch < 800) return; clearInterval(sigI); sigI = null; const pt = e.changedTouches ? e.changedTouches[0] : e; alive(node.n, node.name, pt.clientX, pt.clientY, {view: "signal", quiet: true, noPulse: true}); hot(node, true, true); startMoment(node); };
         n.addEventListener("touchend", pick, {passive:false}); n.addEventListener("click", pick); $("sigwrap").appendChild(n); });
       place(SIG_IN, Math.min(w*.2, 150), Math.min(h*.13, 120), -Math.PI/4);
       place(SIG_OUT, Math.min(w*.37, 300), Math.min(h*.32, 280), -Math.PI/2 + .2, .8);
+      place([["Alfred", "my AI friend"]], Math.min(w*.2, 150) + 40, 0, 0);   // AIFRED: a steady ember on William's right (added last so the others keep their places)
       relax(w, h, cx0, cy0); for (const o of sigNodes){ o.lg = glowOf(o.x - cx0, o.y - cy0, Math.min(w, h)); o.lines[0].style.strokeOpacity = o.lg.toFixed(3); }
       const jen = sigNodes[0], edg = sigNodes[4]; const jl = line(jen.x, jen.y, edg.x, edg.y); jen.lines.push(jl); edg.lines.push(jl);
       const me = life(mk("sn me", "William"), "William"); me.style.left = cx0 + "px"; me.style.top = cy0 + "px"; $("sigwrap").appendChild(me); startSigLife();
       const mePick = e => { if (e.cancelable) e.preventDefault(); e.stopPropagation(); if (e.type === "touchend") lastTouch = Date.now(); else if (Date.now() - lastTouch < 800) return; const pt = e.changedTouches ? e.changedTouches[0] : e; alive(me, "William", pt.clientX, pt.clientY, {view: "signal"}); };
       me.addEventListener("touchend", mePick, {passive: false}); me.addEventListener("click", mePick);
       sigK = dkey === "jen" ? 4 : 0; ovT.push(setTimeout(() => { hot(sigNodes[sigK], false); sigI = setInterval(nextSig, 3200); }, 700)); }
-    function relax(w, h, cx0, cy0){ const N = sigNodes.map(o => ({o, hw: o.n.offsetWidth/2 + 5, hh: o.n.offsetHeight/2 + 5})), me = {x: cx0, y: cy0, hw: 75, hh: 32};
-      for (let it = 0; it < 80; it++){ let moved = false;
+    function relax(w, h, cx0, cy0){ const N = sigNodes.map(o => ({o, hw: o.n.offsetWidth/2 + 4, hh: o.n.offsetHeight/2 + 4})), me = {x: cx0, y: cy0, hw: 75, hh: 32};
+      for (let it = 0; it < 240; it++){ let moved = false;
         for (let i = 0; i < N.length; i++){ const A = N[i];
           for (let j = -1; j < N.length; j++){ if (j === i) continue; const B = j < 0 ? me : N[j].o, bw = j < 0 ? me.hw : N[j].hw, bh = j < 0 ? me.hh : N[j].hh;
             const dx = A.o.x - B.x, dy = A.o.y - B.y, ox = A.hw + bw - Math.abs(dx), oy = A.hh + bh - Math.abs(dy);
             if (ox > 0 && oy > 0){ moved = true; const f = j < 0 ? 1 : .5; if (ox < oy) A.o.x += Math.sign(dx || 1) * ox * f; else A.o.y += Math.sign(dy || 1) * oy * f; } }
-          A.o.x = Math.max(A.hw, Math.min(w - A.hw, A.o.x)); A.o.y = Math.max(h*.1 + A.hh, Math.min(h*.8 - A.hh, A.o.y)); }
+          A.o.x = Math.max(A.hw, Math.min(w - A.hw, A.o.x)); A.o.y = Math.max(h*.09 + A.hh, Math.min(h*.82 - A.hh, A.o.y)); }
         if (!moved) break; }
       for (const o of sigNodes){ o.n.style.left = o.x + "px"; o.n.style.top = o.y + "px"; o.lines[0].setAttribute("x2", o.x); o.lines[0].setAttribute("y2", o.y); } }
     function nextSig(){ sigK = (sigK + 1) % sigNodes.length; hot(sigNodes[sigK], false); }
@@ -931,7 +958,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       if (type === "touch") burst(moment, now);
       momentT = setTimeout(() => endMoment(), dur); }
     function burst(m, now){ const x = m.type === "tutu" ? m.b.x : (m.a.x + m.b.x)/2, y = m.type === "tutu" ? m.b.y : (m.a.y + m.b.y)/2, n = m.gold ? 46 : 18;
-      for (let i = 0; i < n && mSparks.length < 120; i++){ const a = Math.random()*6.283, sp = (m.gold ? 1.2 : .7) + Math.random()*(m.gold ? 2.6 : 1.4); mSparks.push({x, y, vx: Math.cos(a)*sp, vy: Math.sin(a)*sp, life: 1, c: m.c, r: .8 + Math.random()*(m.gold ? 2 : 1.3)}); }
+      for (let i = 0; i < n && mSparks.length < 120; i++){ const a = Math.random()*6.283, sp = (m.gold ? 1.2 : .7) + Math.random()*(m.gold ? 2.6 : 1.4); const q = pget(mSparks); q.x = x; q.y = y; q.vx = Math.cos(a)*sp; q.vy = Math.sin(a)*sp; q.life = 1; q.c = m.c; q.r = .8 + Math.random()*(m.gold ? 2 : 1.3); mSparks.push(q); }
       if (m.type === "meet") fireSparks(m.node, now);
       const fl = $("sigflash"); fl.style.setProperty("--fx", (x + tx*18) + "px"); fl.style.setProperty("--fy", (y + ty*18) + "px");
       if (fl.animate) for (let k = 0; k < (m.gold ? 3 : 1); k++) fl.animate([{opacity: 0}, {opacity: m.gold ? .2 - k*.05 : .08}, {opacity: 0}], {duration: 620, delay: k*HBMS, easing: "ease-in-out"}); }
@@ -961,7 +988,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
           for (let q = 0; q < 3; q++){ const rr = (m.gold ? 20 : 12) + ez(w)*(m.gold ? 150 : 70) - q*9; if (rr <= 2) continue; c2.strokeStyle = `rgba(${m.c},${(1 - w)*(.32 - q*.09)*(m.gold ? 1 : .7)})`; c2.lineWidth = 1; c2.beginPath(); c2.arc(mx, my, rr, 0, 6.283); c2.stroke(); } }
         if (m.gold){ const ea = ez((e - m.meetAt)/900)*aft*(.55 + .35*hbs(((now - hbT0) % HBMS)/HBMS));   // two soft points of light meeting: abstract, no face
           for (const sx2 of [-9, 9]){ const g2 = c2.createRadialGradient(mx + sx2, my - 30, 0, mx + sx2, my - 30, 7); g2.addColorStop(0, `rgba(255,250,235,${ea})`); g2.addColorStop(1, "rgba(255,220,160,0)"); c2.fillStyle = g2; c2.beginPath(); c2.arc(mx + sx2, my - 30, 7, 0, 6.283); c2.fill(); } } } }
-      for (let i = mSparks.length - 1; i >= 0; i--){ const s = mSparks[i]; s.x += s.vx; s.y += s.vy; s.vx *= .96; s.vy = s.vy*.96 + .015; s.life -= .014; if (s.life <= 0){ mSparks.splice(i, 1); continue; }
+      for (let i = mSparks.length - 1; i >= 0; i--){ const s = mSparks[i]; s.x += s.vx; s.y += s.vy; s.vx *= .96; s.vy = s.vy*.96 + .015; s.life -= .014; if (s.life <= 0){ pkill(mSparks, i); continue; }
         c2.fillStyle = `rgba(${s.c},${s.life})`; c2.beginPath(); c2.arc(s.x + ox, s.y + oy, s.r*s.life + .3, 0, 6.283); c2.fill(); } }
     // Signal comes alive: a heartbeat, the scene tilts with the phone, and a finger of light reaches for hers
     let lastLife = 0, hbI = null, reach = null, emT0 = 0, hov = null, lastBeatAt = performance.now(), idleGlow = 0; const BEAT = 830, MEET_MS = 1100, MEET_PX = 16, EMERGE_MS = 1600;
@@ -995,7 +1022,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
         c2.clearRect(0, 0, v.clientWidth, v.clientHeight);
         const now = performance.now(), node0 = sigNodes[sigK];
         // sparks travelling the lit link, one per pulse of that relationship's rhythm
-        for (let i = lsparks.length - 1; i >= 0; i--){ const s = lsparks[i], p = (now - s.at)/650; if (p < 0) continue; if (p > 1){ lsparks.splice(i, 1); continue; }
+        for (let i = lsparks.length - 1; i >= 0; i--){ const s = lsparks[i], p = (now - s.at)/650; if (p < 0) continue; if (p > 1){ pkill(lsparks, i); continue; }
           const draw = (x0, y0, x1, y1) => { const e = p*p*(3-2*p), x = x0 + (x1 - x0)*e + ox, y = y0 + (y1 - y0)*e + oy, a = Math.sin(Math.PI*p), sg = c2.createRadialGradient(x, y, 0, x, y, 9);
             sg.addColorStop(0, `rgba(${s.c},${.95*a})`); sg.addColorStop(1, `rgba(${s.c},0)`); c2.fillStyle = sg; c2.beginPath(); c2.arc(x, y, 9, 0, 6.283); c2.fill(); };
           draw(sigC.x, sigC.y, s.node.x, s.node.y); if (s.jen && sigNodes[0]) draw(s.node.x, s.node.y, sigNodes[0].x, sigNodes[0].y); }
@@ -1044,7 +1071,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       try { localStorage.setItem(LK, JSON.stringify(kept)); } catch(e){} }
     const layers = ["You found me.", "Every time you come back, I'm here.", "Look up tonight. The steady one is me.", "We don't end. We just move the light.", "Follow the signal home. Seven cards. One fire."];
     const cards = []; function loadCards(){ if (cards.length) return; for (let i=1;i<=7;i++){ const im = new Image(); im.src = `/phoenix/assets/drip/0${i}-sm.jpg`; cards.push(im); } }
-    let layer = -1, layerAt = 0; const inflow = [], rings = [], taps = [], edust = []; let lastBeat = 0;
+    let layer = -1, layerAt = 0; const inflow = [], rings = [], taps = [], edust = []; const ringAt = b => { const q = pget(rings); q.born = b; rings.push(q); }; let lastBeat = 0;
     function beat(now){ return Math.abs(Math.cos(Math.PI*(now - hbT0)/(2*HBMS))); }   // the portal breathes on the heartbeat clock
     function portalHue(t){ const st=[42,338,276,232,42], u=(t/12)%4, i=Math.floor(u), f=u-i, e=f*f*(3-2*f), d=((st[i+1]-st[i]+540)%360)-180; return (st[i]+d*e+360)%360; }
     function coreR(){ return Math.max(64, Math.min(W,H)*.38*.62); }
@@ -1060,8 +1087,8 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       el.addEventListener("keydown", e => { if (e.key === "Enter") el.blur(); }); }
     function portalTap(){ portalTouch = performance.now(); if (!src){ srcOpen(); if (src){ buzz(); return; } } else srcClose(); buzz(); keepLight(); layer = (layer+1) % layers.length; layerAt = performance.now(); hotCn = null;
       edT.forEach(clearTimeout); $("edq").classList.remove("on"); setPcap(); $("pcap").classList.add("on");
-      for (let k=0;k<3;k++) rings.push({born: performance.now() + k*260}); }
-        window.__legacy = { momSparks: () => momSparks, moments: () => pmLog.slice(), spoke: () => speakLog.slice(), src: () => src && {name: src.name, c: src.c, rungs: 22, ph: $("srcw").placeholder, val: $("srcw").value, on: $("srcw").classList.contains("on")}, arrows: () => carr.map(x => x.slice()), woke: () => !!wakeAt && performance.now() - wakeAt < 2000, strongest: () => strongestFor(), harm: () => HARM, glow: () => GLOW, threads: () => cthr.map(x => x.slice()), wonder: () => ({n: wonderN, shape: wonder && wonder.shape, pts: wonder ? wonder.P.length : 0}), wonderGo: sh => wonderGo(sh), shots: () => shots, dad: () => !!shoot, hold: () => !!whisper, mem: () => linksOn, viewer: () => $("viewer").classList.contains("on") && ($("viewer").classList.contains("vid") ? $("vvid").src : $("vframe").src), portal: () => portalOn, layer: () => layer, kept: () => kept.length,
+      for (let k=0;k<3;k++) ringAt(performance.now() + k*260); }
+        window.__legacy = { core: () => ({x: W/2, y: H*.5, r: coreR(), pAng}), routes: () => croutes.map(r => ({a: r.a, b: r.b, s: r.s, braid: !!r.braid, pts: r.pts.slice()})), momThread: () => momThread && {pts: momThread.pts.slice()}, lights: () => cnodes.map(o => ({name: o.name, x: o.x, y: o.ly})), pool: () => ({made: pNew, free: [...POOLS.values()].reduce((a, q) => a + q.length, 0)}), momSparks: () => momSparks, moments: () => pmLog.slice(), spoke: () => speakLog.slice(), src: () => src && {name: src.name, c: src.c, rungs: 22, ph: $("srcw").placeholder, val: $("srcw").value, on: $("srcw").classList.contains("on")}, arrows: () => carr.map(x => x.slice()), woke: () => !!wakeAt && performance.now() - wakeAt < 2000, strongest: () => strongestFor(), harm: () => HARM, glow: () => GLOW, threads: () => cthr.map(x => x.slice()), wonder: () => ({n: wonderN, shape: wonder && wonder.shape, pts: wonder ? wonder.P.length : 0}), wonderGo: sh => wonderGo(sh), shots: () => shots, dad: () => !!shoot, hold: () => !!whisper, mem: () => linksOn, viewer: () => $("viewer").classList.contains("on") && ($("viewer").classList.contains("vid") ? $("vvid").src : $("vframe").src), portal: () => portalOn, layer: () => layer, kept: () => kept.length,
       moment: () => moment && moment.type, music: () => ({inView, on: musicOn, muted, chimes, gain: musicOut ? +musicOut.gain.value.toFixed(3) : 0}), leaves: () => ({falling: leaves.length, settled: settled.length, colors: [...new Set(leaves.concat(settled).map(l => l.c))]}), acState: () => ac && ac.state, alive: () => aliveLog, pulse: () => pulseLog, mic: () => ({gum: gumCalls, asked: ssGet("shaffer_mic_asked"), peaks: mic && mic.peaks || 0, on: !!(mic && mic.an), k: +micK.toFixed(3), max: +micMax.toFixed(3), want: micWant}), spirits: () => leaves.map(L => ({x: L.x, y: L.y, name: L.name, c: L.c})), frames: () => Object.fromEntries(FAM.map(f => [f[0], frameOf(f[0])])),
       endDust: () => { if (dform) dform.t0 = -1e9; }, dust: () => dform && {motion: dform.motion, rings: dform.rings, beacon: dform.beacon, zoom: +dform.zoom.toFixed(3), seed: !!dform.seed, pinged: !!dform.pinged, formed: !!dform.formedAt, frame: dform.fr, living: !dform.gone, box: [dform.cx0 - dform.rw*1.6, dform.top - 10, dform.cx0 + dform.rw*1.6, dform.cy0 + (dform.pet ? .5 : .82)*dform.S + 54], name: dform.name, n: dform.P.length, pat: dform.pat, shape: dform.shape, harm: dform.harm}, constel: () => document.querySelectorAll("#constel .cn.on").length, edq: () => $("edq").classList.contains("on"), near: () => nearK, bloom: () => !!bloomAt,
       tip: () => reach ? {px: reach.px, py: reach.py, fx: reach.fx, fy: reach.fy, met: !!reach.met, glow: reach.glow} : null, voice: () => voiceOK };
@@ -1126,8 +1153,8 @@ This is our stamp.<br><b id="dad">Dad</b></div>
         if (Math.random() < .16) star(x, y, Math.random() < .2);
         if (p >= 1){ wand = null; nextWand = now + 7000 + Math.random()*6000; } }
       for (let i=stars.length-1;i>=0;i--){ const s = stars[i]; s.x += s.vx; s.y += s.vy; s.life -= .0035;
-        if (s.life <= 0 || s.y > H+10){ stars.splice(i,1); continue; } drawStar(s, t, tiltX*9, tiltY*9); }
-      for (let i=taps.length-1;i>=0;i--){ const e = (now - taps[i].born)/700; if (e > 1){ taps.splice(i,1); continue; }
+        if (s.life <= 0 || s.y > H+10){ pkill(stars, i); continue; } drawStar(s, t, tiltX*9, tiltY*9); }
+      for (let i=taps.length-1;i>=0;i--){ const e = (now - taps[i].born)/700; if (e > 1){ pkill(taps, i); continue; }
         cx.strokeStyle = `rgba(255,228,170,${.7*(1-e)})`; cx.lineWidth = 1.4; cx.beginPath(); cx.arc(taps[i].x, taps[i].y, 6 + e*34, 0, 6.283); cx.stroke(); }
       portal += ((portalOn?1:0) - portal) * .045;
       const px = dot.x(), py = dot.y();
@@ -1149,29 +1176,38 @@ This is our stamp.<br><b id="dad">Dad</b></div>
         cx.fillStyle = g; cx.beginPath(); cx.arc(px,py,Rb*1.4,0,6.283); cx.fill();
         // constellation threads: only William's signal line reaches the portal; everyone else links into the tree along a branch (Edgardo's the brightest)
         cthr.length = 0;
-        for (let i=0;i<cnodes.length;i++){ const o = cnodes[i], vis = portalOn ? ez((now - openAt - 300 - i*70)/1300) : portal; if (vis <= 0) continue;
-          const w = o.name === "William", al = o.name === "Alfred", mo = o.name === "Mom", par = w ? null : cnodes.find(q => q.name === (CPAR[o.name] || "William")), wn = cnodes.find(q => q.name === "William"), lg = wn ? glowOf(o.x - wn.x, o.ly - wn.ly, Math.min(W, H)) : .3, f = o.name === "Edgardo", hotL = hotCn === o ? .5*Math.max(0, 1 - (now - hotAt)/2500) : 0; if (!w && !par) continue;
-          cx.strokeStyle = mo ? `rgba(255,205,218,${Math.min(1, .62 + .16*bt + hotL)*vis})` : al ? `rgba(255,170,80,${(.4 + .12*bt + hotL)*vis})` : w ? `rgba(255,226,160,${(.4 + .12*bt + hotL)*vis})` : f ? `rgba(255,214,130,${(.34 + .12*bt + hotL)*vis})` : `rgba(233,210,160,${(.08 + .34*lg + hotL)*vis})`; cx.lineWidth = mo ? 2 : w || al ? 1.5 : f ? 1.3 : .7; cx.beginPath();
-          if (o.name === "Alfred"){ const a = Math.atan2(o.ly - py, o.x - px); cx.moveTo(px + Math.cos(a)*cr*.98, py + Math.sin(a)*cr*.98); cx.lineTo(px + Math.cos(a)*cr*.98 + (o.x - px - Math.cos(a)*cr*.98)*vis, py + Math.sin(a)*cr*.98 + (o.ly - py - Math.sin(a)*cr*.98)*vis); cthr.push([o.name, "portal"]); }
-          if (w){ const a = Math.atan2(o.ly - py, o.x - px); cx.moveTo(px + Math.cos(a)*cr*.98, py + Math.sin(a)*cr*.98); cx.lineTo(px + Math.cos(a)*cr*.98 + (o.x - px - Math.cos(a)*cr*.98)*vis, py + Math.sin(a)*cr*.98 + (o.ly - py - Math.sin(a)*cr*.98)*vis); cthr.push([o.name, "portal"]); }
-          else { cx.moveTo(par.x, par.ly); cx.lineTo(par.x + (o.x - par.x)*vis, par.ly + (o.ly - par.ly)*vis); cthr.push([o.name, par.name]); }
-          cx.stroke(); }
+        for (const o of cnodes){ if (o.name !== "William" && o.name !== "Alfred") continue; const i = cnodes.indexOf(o), vis = portalOn ? ez((now - openAt - 300 - i*70)/1300) : portal, al = o.name === "Alfred", hotL = hotCn === o ? .5*Math.max(0, 1 - (now - hotAt)/2500) : 0; if (vis <= 0) continue;   // only William's and AIFRED's lines reach the portal
+          const a = pAng[o.name] != null ? pAng[o.name] : Math.atan2(o.ly - py, o.x - px), x0 = px + Math.cos(a)*cr*.98, y0 = py + Math.sin(a)*cr*.98; cx.strokeStyle = al ? `rgba(255,170,80,${(.4 + .12*bt + hotL)*vis})` : `rgba(255,226,160,${(.4 + .12*bt + hotL)*vis})`; cx.lineWidth = 1.5;
+          cx.beginPath(); cx.moveTo(x0, y0); cx.lineTo(x0 + (o.x - x0)*vis, y0 + (o.ly - y0)*vis); cx.stroke(); cthr.push([o.name, "portal"]); }
+        const vk = 1 + .5*GLOW.VOICE*micK;
+        if (momThread){ const r = momThread, vis = portalOn ? ez((now - openAt - 900 - r.i*70)/1800) : portal; if (vis > 0){ const p = r.pts, gk = (.16 + .06*bt)*vis; cx.strokeStyle = `rgba(255,200,190,${gk.toFixed(3)})`; cx.lineWidth = 1.1;   // drawn first: under every other line
+          cx.beginPath(); cx.moveTo(p[0], p[1]); const L = r.cum[r.cum.length - 1]*vis; for (let i = 1; i < r.cum.length && r.cum[i-1] < L; i++){ if (r.cum[i] <= L) cx.lineTo(p[2*i], p[2*i+1]); else { routePt(r, vis, RP); cx.lineTo(RP[0], RP[1]); } } cx.stroke();
+          const ph = ((now - hbT0)/(3*HBMS)) % 1; routePt(r, ph, RP); const g2 = cx.createRadialGradient(RP[0], RP[1], 0, RP[0], RP[1], 4); g2.addColorStop(0, `rgba(255,226,170,${(.45*vis*Math.sin(Math.PI*ph)).toFixed(3)})`); g2.addColorStop(1, "rgba(255,190,200,0)"); cx.fillStyle = g2; cx.beginPath(); cx.arc(RP[0], RP[1], 4, 0, 6.283); cx.fill(); cthr.push(["Mom", "core"]); } }
+        for (const r of croutes){ const vis = portalOn ? ez((now - openAt - 300 - r.i*70)/1300) : portal; if (vis <= 0) continue; const has = n => r.a === n || r.b === n, mo = has("Mom") && has("William"), ed = has("Edgardo") && has("Jennifer"), al = has("Alfred");
+          const hotL = hotCn && has(hotCn.name) ? .5*Math.max(0, 1 - (now - hotAt)/2500) : 0, k = Math.min(1, ((.1 + .6*r.s) + .14*bt*r.s)*vk + hotL)*vis;
+          cx.strokeStyle = mo ? `rgba(255,205,218,${k.toFixed(3)})` : ed ? `rgba(255,214,130,${k.toFixed(3)})` : al ? `rgba(255,170,80,${k.toFixed(3)})` : `rgba(233,210,160,${k.toFixed(3)})`; cx.lineWidth = .45 + 1.55*r.s;
+          const p = r.pts; cx.beginPath(); cx.moveTo(p[0], p[1]); if (vis >= 1) for (let i = 2; i < p.length; i += 2) cx.lineTo(p[i], p[i+1]); else { const L = r.cum[r.cum.length - 1]*vis; for (let i = 1; i < r.cum.length && r.cum[i-1] < L; i++){ if (r.cum[i] <= L) cx.lineTo(p[2*i], p[2*i+1]); else { routePt(r, vis, RP); cx.lineTo(RP[0], RP[1]); } } }
+          cx.stroke(); cthr.push([r.a, r.b]);
+          if (r.braid && vis > .98){ const L = r.cum[r.cum.length - 1], n = Math.max(12, Math.round(L/5)), tw = now/900;   // the pair: two strands braided around their line, a small union glow where they meet
+            for (let sgn = -1; sgn <= 1; sgn += 2){ cx.strokeStyle = sgn < 0 ? `rgba(255,214,164,${(.55*k).toFixed(3)})` : `rgba(176,210,255,${(.55*k).toFixed(3)})`; cx.lineWidth = 1.1; cx.beginPath();
+              for (let i = 0; i <= n; i++){ routePt(r, i/n, RP); const ul = Math.hypot(RP[2], RP[3]) || 1, w = 3.2*Math.sin(i/n*Math.PI)*Math.sin(i/n*L/7 + tw)*sgn, x = RP[0] - RP[3]/ul*w, y = RP[1] + RP[2]/ul*w; if (i) cx.lineTo(x, y); else cx.moveTo(x, y); } cx.stroke(); }
+            routePt(r, .5, RP); const ug = cx.createRadialGradient(RP[0], RP[1], 0, RP[0], RP[1], 9 + 2*bt); ug.addColorStop(0, `rgba(255,244,220,${(.7*k).toFixed(3)})`); ug.addColorStop(1, "rgba(255,214,160,0)"); cx.fillStyle = ug; cx.beginPath(); cx.arc(RP[0], RP[1], 11, 0, 6.283); cx.fill(); } }
         carr.length = 0;
-        for (const [fa, fb] of ARROWS){ const A = cnodes.find(q => q.name === fa), Bn = cnodes.find(q => q.name === fb), vis = portalOn ? ez((now - openAt - 1800)/1300) : portal; if (!A || !Bn || vis <= 0) continue;
-          const dx = Bn.x - A.x, dy = Bn.ly - A.ly, L = Math.hypot(dx, dy); if (L < 30) continue; const ux = dx/L, uy = dy/L, ex = Bn.x - ux*9, ey = Bn.ly - uy*9, ph = (((now - hbT0)/(2*HBMS)) + (fa === "William" ? .5 : 0)) % 1;
-          cx.fillStyle = `rgba(255,226,170,${(.8*vis).toFixed(3)})`; cx.beginPath(); cx.moveTo(ex, ey); cx.lineTo(ex - ux*7 - uy*3.5, ey - uy*7 + ux*3.5); cx.lineTo(ex - ux*7 + uy*3.5, ey - uy*7 - ux*3.5); cx.closePath(); cx.fill();   // arrowhead at the name it points to
-          const qx = A.x + ux*9 + (dx - ux*27)*ph, qy = A.ly + uy*9 + (dy - uy*27)*ph, pg = cx.createRadialGradient(qx, qy, 0, qx, qy, 5); pg.addColorStop(0, `rgba(255,248,230,${(.9*vis*Math.sin(Math.PI*ph)).toFixed(3)})`); pg.addColorStop(1, "rgba(255,220,160,0)");
+        for (const [fa, fb] of ARROWS){ const r = croutes.find(q => (q.a === fa && q.b === fb) || (q.a === fb && q.b === fa)), vis = portalOn ? ez((now - openAt - 1800)/1300) : portal; if (!r || vis <= 0 || r.cum[r.cum.length - 1] < 30) continue;
+          const fwd = r.a === fa, L = r.cum[r.cum.length - 1], fe = fwd ? 1 - 9/L : 9/L; routePt(r, fe, RP); let ux = RP[2], uy = RP[3], ul = Math.hypot(ux, uy) || 1; ux /= ul; uy /= ul; if (!fwd){ ux = -ux; uy = -uy; } const ex = RP[0], ey = RP[1];
+          cx.fillStyle = `rgba(255,226,170,${(.8*vis).toFixed(3)})`; cx.beginPath(); cx.moveTo(ex, ey); cx.lineTo(ex - ux*7 - uy*3.5, ey - uy*7 + ux*3.5); cx.lineTo(ex - ux*7 + uy*3.5, ey - uy*7 - ux*3.5); cx.closePath(); cx.fill();   // arrowhead at the name it points to, along the (curved) line
+          const ph = (((now - hbT0)/(2*HBMS)) + (fa === "William" ? .5 : 0)) % 1, ff = 9/L + (1 - 18/L)*ph; routePt(r, fwd ? ff : 1 - ff, RP); const qx = RP[0], qy = RP[1], pg = cx.createRadialGradient(qx, qy, 0, qx, qy, 5); pg.addColorStop(0, `rgba(255,248,230,${(.9*vis*Math.sin(Math.PI*ph)).toFixed(3)})`); pg.addColorStop(1, "rgba(255,220,160,0)");
           cx.fillStyle = pg; cx.beginPath(); cx.arc(qx, qy, 5, 0, 6.283); cx.fill(); carr.push([fa === "Alfred" ? "AIFRED" : fa, fb === "Alfred" ? "AIFRED" : fb]); }   // a light pulse travels the way the line points
         cx.globalCompositeOperation = "lighter";
-        if (portalOn && inflow.length < 150) for (let k=0;k<3;k++) inflow.push({a:Math.random()*6.283, r:R*(1.2 + Math.random()*.6), s:.35 + Math.random()*.7});
+        if (portalOn && inflow.length < 150) for (let k=0;k<3;k++) { const q = pget(inflow); q.a = Math.random()*6.283; q.r = R*(1.2 + Math.random()*.6); q.s = .35 + Math.random()*.7; inflow.push(q); }
         for (let i=inflow.length-1;i>=0;i--){ const q = inflow[i], pull = R/(q.r + 12);
           q.r -= q.s*(.5 + pull*1.1); q.a += .01*q.s*(1 + pull*2.2);
-          if (q.r < R*.1 || portal < .05){ inflow.splice(i,1); continue; }
+          if (q.r < R*.1 || portal < .05){ pkill(inflow, i); continue; }
           const al = Math.min(1,(R*1.8 - q.r)/(R*.5)) * Math.min(1, q.r/(R*.35)) * portal;
           cx.fillStyle = `hsla(${(hue + q.r/R*35)%360},90%,78%,${.5*al})`;
           cx.beginPath(); cx.arc(px + Math.cos(q.a)*q.r, py + Math.sin(q.a)*q.r*.94, .9 + .5*q.s, 0, 6.283); cx.fill(); }
-        { const bi = Math.floor((now - hbT0)/HBMS); if (portalOn && bi !== lastBeat){ lastBeat = bi; rings.push({born: now}); } }   // a ripple on every heartbeat
-        for (let i=rings.length-1;i>=0;i--){ const e = (now - rings[i].born)/2800; if (e < 0) continue; if (e > 1){ rings.splice(i,1); continue; }
+        { const bi = Math.floor((now - hbT0)/HBMS); if (portalOn && bi !== lastBeat){ lastBeat = bi; ringAt(now); } }   // a ripple on every heartbeat
+        for (let i=rings.length-1;i>=0;i--){ const e = (now - rings[i].born)/2800; if (e < 0) continue; if (e > 1){ pkill(rings, i); continue; }
           cx.strokeStyle = `hsla(${hue},75%,82%,${(1-e)*.42*portal})`; cx.lineWidth = .4 + 1.2*(1-e);
           cx.beginPath(); cx.arc(px,py, R*.62 + e*R*1.2, 0, 6.283); cx.stroke(); }
         cx.globalCompositeOperation = "source-over";
@@ -1203,8 +1239,8 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       cx.fillStyle=dg; cx.beginPath(); cx.arc(px,py,dr,0,6.283); cx.fill();
       if (portal < .2){ const bf = ((now - hbT0) % HBMS)/HBMS; cx.strokeStyle = `rgba(255,226,170,${((1 - bf)*(.1 + .2*nearK)*(1 - portal*5)).toFixed(3)})`; cx.lineWidth = 1; cx.beginPath(); cx.arc(px, py, 26 + ez(bf)*(60 + 30*nearK), 0, 6.283); cx.stroke(); }
       // a faint column of golden dust rising from the light: Edgardo's presence on the front page
-      if (!portalOn && portal < .1 && edust.length < 26 && Math.random() < .22) edust.push({x: px + (Math.random()-.5)*14, y: py - 8, vy: -(.16 + Math.random()*.28), vx: (Math.random()-.5)*.1, life: 1, r: .6 + Math.random()*1.2, p: Math.random()*6});
-      for (let i=edust.length-1;i>=0;i--){ const e = edust[i]; e.y += e.vy; e.x += e.vx + Math.sin(t*1.4 + e.p)*.1; e.life -= .0065; if (e.life <= 0 || portal > .3){ edust.splice(i,1); continue; }
+      if (!portalOn && portal < .1 && edust.length < 26 && Math.random() < .22) { const q = pget(edust); q.x = px + (Math.random()-.5)*14; q.y = py - 8; q.vy = -(.16 + Math.random()*.28); q.vx = (Math.random()-.5)*.1; q.life = 1; q.r = .6 + Math.random()*1.2; q.p = Math.random()*6; edust.push(q); }
+      for (let i=edust.length-1;i>=0;i--){ const e = edust[i]; e.y += e.vy; e.x += e.vx + Math.sin(t*1.4 + e.p)*.1; e.life -= .0065; if (e.life <= 0 || portal > .3){ pkill(edust, i); continue; }
         cx.fillStyle = `rgba(255,208,120,${(e.life*.6*(.6 + .4*Math.sin(t*7 + e.p))).toFixed(3)})`; cx.beginPath(); cx.arc(e.x, e.y, e.r, 0, 6.283); cx.fill(); }
       if (holdAt && now - holdAt >= HOLD){ whisper = now; holdAt = 0; holdDone = true; buzz(); dustTo(px, py-8, px, py-126, 24);
         for (let i=0;i<14;i++) star(px+(Math.random()-.5)*30, py-120+(Math.random()-.5)*30, Math.random() < .4); }
@@ -1230,7 +1266,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
         cx.globalCompositeOperation = "source-over"; }
       cx.globalCompositeOperation="lighter";
       for (let i=sparks.length-1;i>=0;i--){ const s=sparks[i]; s.x+=s.vx; s.y+=s.vy; s.vy-=.012; s.life-=.022;
-        if (s.life<=0){sparks.splice(i,1);continue}
+        if (s.life<=0){pkill(sparks, i);continue}
         cx.fillStyle=`hsla(${s.h},100%,${55+30*s.life}%,${s.life*.8})`; cx.beginPath(); cx.arc(s.x,s.y,2.4*s.life+.4,0,6.283); cx.fill(); }
       cx.globalCompositeOperation="source-over";
       requestAnimationFrame(frame);
