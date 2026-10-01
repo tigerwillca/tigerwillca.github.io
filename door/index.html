@@ -1,5 +1,5 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Pulse · the door</title>
+<title>Soft7 · the door</title>
 <style>
 :root{--ember:#ff6a1a;--gold:#f2c14e;--ash:#9a8f86}
 *{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:radial-gradient(ellipse at 50% 85%,#3a1206 0%,#120604 45%,#050202 100%);color:#f3e9df;font-family:Georgia,"Times New Roman",serif}
@@ -22,7 +22,7 @@ button:hover{background:#ff6a1a22}button:disabled{opacity:.5;cursor:wait}
   <div class="fire">🔥</div>
   <div id="knock">
     <h1>THE DOOR</h1>
-    <p>Pulse opens to those the fire already knows.<br>Knock, and the gate will answer.</p>
+    <p>The door opens to those the fire already knows.<br>Knock, and the gate will answer.</p>
     <button id="go">KNOCK</button>
     <p class="status" id="status"></p>
     <p class="small">Your wallet signs one free message. No gas, nothing moves.</p>
@@ -60,7 +60,7 @@ function proofFor(tier, lf){
 }
 // EIP-4361 Sign-In with Ethereum message, built by hand (no extra library). Exact line layout per the spec.
 const SIWE = { chainId: 4663, fallbackHost: "tigerwillca.github.io", fallbackUri: "https://tigerwillca.github.io/door/",
-  statement: "Knock at the Pulse door. This signature is free. It is not a transaction and it moves nothing." };
+  statement: "Knock at the Soft7 door. This signature is free. It is not a transaction and it moves nothing." };
 function siweNonce(len){                     // alphanumeric, crypto.getRandomValues, rejection sampling (no modulo bias)
   const A = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"; let out = "";
   while(out.length < len){ for(const b of crypto.getRandomValues(new Uint8Array(len))){ if(b < 248 && out.length < len) out += A[b % 62]; } }
@@ -91,7 +91,7 @@ async function knock(){
     const signer = verifyMessage(msg, sig);             // the wallet comes from the signature itself
     if(getAddress(signer) !== getAddress(account)) throw new Error('mismatch');
     const lf = leafOf(signer), short = signer.slice(0,6)+'\u2026'+signer.slice(-4);
-    let p = proofFor('holders', lf), tier='FIRST LIGHT \u00b7 SOFT7 HOLDER', line=' may pass. First access to Pulse is yours.';
+    let p = proofFor('holders', lf), tier='FIRST LIGHT \u00b7 SOFT7 HOLDER', line=' may pass. First access is yours.';
     if(!p){ p = proofFor('wl', lf); tier='SECOND LIGHT \u00b7 THE 702'; line=' may pass. Your door opens right after first light.'; }
     if(p){ show('yes'); $('yesline').textContent = short + line; $('tier').textContent = tier;
            $('yesproof').textContent = 'signature checked \u00b7 proof checked against sealed root \u00b7 ' + p.length + ' steps'; }
