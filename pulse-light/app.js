@@ -9,6 +9,25 @@
   var arrivalAt = 0, arrivalRing = false, ARRIVE = 7000;
   var jen = /(^|[#&])d=1(&|$)/.test(location.hash) && !!cfg.dedication, eggs = !jen, calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
   var tilt = {x:0, y:0, tx:0, ty:0, src:0};
+  // Shared with Legacy (constant only, no links between the two).
+  const LEGACY_FREQ = { root: 55, bpm: 55, ratios: [1, 1.5, 2, 3, 4, 6, 8] };
+  var BEAT_MS = 60000 / LEGACY_FREQ.bpm, lastBeat = -1, ac = null, tone = null;
+  // 55 Hz is below phone speakers, so voice the root through its 110 and 220 Hz harmonics (ratios 2 and 4).
+  function startTone() {
+    if (ac) { if (ac.state === 'suspended' && !document.hidden) ac.resume(); return; }
+    var A = window.AudioContext || window.webkitAudioContext; if (!A) return;
+    try {
+      ac = new A(); tone = ac.createGain(); tone.gain.value = 0; tone.connect(ac.destination);
+      [[2, .6], [4, .4]].forEach(function (h) { var o = ac.createOscillator(), g = ac.createGain(); o.type = 'sine'; o.frequency.value = LEGACY_FREQ.root * h[0]; g.gain.value = h[1]; o.connect(g); g.connect(tone); o.start(); });
+      tone.gain.setTargetAtTime(.035, ac.currentTime, .8);
+    } catch (e) { ac = null; }
+  }
+  function onBeat() {
+    if (tone && ac.state === 'running') { var c = ac.currentTime, g = tone.gain; g.cancelScheduledValues(c); g.setValueAtTime(g.value, c); g.linearRampToValueAtTime(.07, c + .06); g.setTargetAtTime(.035, c + .12, .25); }
+    if (!calm && navigator.vibrate && (!navigator.userActivation || navigator.userActivation.hasBeenActive)) try { navigator.vibrate(30); } catch (e) {}
+  }
+  addEventListener('pointerup', startTone); addEventListener('keydown', startTone);
+  document.addEventListener('visibilitychange', function () { if (!ac) return; if (document.hidden) ac.suspend(); else ac.resume(); });
   addEventListener('deviceorientation', function (e) { if (e.gamma == null) return; tilt.src = 1; tilt.tx = Math.max(-1, Math.min(1, e.gamma / 28)); tilt.ty = Math.max(-1, Math.min(1, ((e.beta == null ? 45 : e.beta) - 45) / 28)); });
   addEventListener('pointermove', function (e) { if (tilt.src === 1 || e.pointerType !== 'mouse') return; tilt.src = 2; tilt.tx = (e.clientX / innerWidth - .5) * 1.6; tilt.ty = (e.clientY / innerHeight - .5) * 1.6; });
   function askTilt() { var D = window.DeviceOrientationEvent; if (D && typeof D.requestPermission === 'function' && !window.PULSE_TILT_ASKED) { window.PULSE_TILT_ASKED = true; D.requestPermission().catch(function () {}); } }
@@ -53,7 +72,7 @@
     ctx.fillStyle=current.color; ctx.shadowColor=current.color; ctx.shadowBlur=10;
     for (var n=0;n<embers.length;n++) { var e=embers[n], k=(now/9000*e.s + e.o) % 1, ex=x+Math.sin(e.a+now/2600*e.d)*r*(.5+k*.9), ey=y+r*1.1-k*(r*2.9+h*.12);
       ctx.globalAlpha=Math.sin(Math.PI*k)*.55*grow; ctx.beginPath(); ctx.arc(ex,ey,.9+e.s*1.3,0,Math.PI*2); ctx.fill(); }
-    var hb=(now%1600)/1600, beat=hb<.12?Math.sin(hb/.12*Math.PI):hb>.2&&hb<.3?.6*Math.sin((hb-.2)/.1*Math.PI):0;
+    var hb=(now%BEAT_MS)/BEAT_MS, beat=hb<.12?Math.sin(hb/.12*Math.PI):hb>.2&&hb<.3?.6*Math.sin((hb-.2)/.1*Math.PI):0;
     var hg=ctx.createRadialGradient(x,y-r*.1,0,x,y-r*.1,r*.7); hg.addColorStop(0,'rgba(255,236,200,'+(.22+.3*beat)*grow+')'); hg.addColorStop(1,'transparent'); ctx.globalAlpha=1; ctx.fillStyle=hg; ctx.fillRect(x-r,y-r,r*2,r*2);
     if (current.sea) { ctx.lineWidth=1.2; ctx.shadowColor='#7cc4e0'; ctx.shadowBlur=8;
       for (var v=0;v<4;v++) { var wy=y+r*(1.25+v*.16), amp=r*.035*(1+v*.3), span=r*(1.1+v*.45); ctx.strokeStyle='rgba(124,196,224,'+((.42-v*.08)*grow)+')'; ctx.beginPath();
@@ -73,6 +92,7 @@
   function sourceAt(px, py, w, h) { var hit=Math.min(w,h)*.12; for(var i=0;i<sources.length;i++){var s=sources[i],dx=px-w*s.x,dy=py-h*s.y;if(dx*dx+dy*dy<hit*hit)return s;} return null; }
   function frame() {
     t += .016; var now = performance.now(), w = innerWidth, h = innerHeight, age = now - pulseAt, kick = age < 900 ? (1 - age / 900) * (0.5 + 0.5 * Math.sin(age / 145)) : 0;
+    var beatN = Math.floor(now / BEAT_MS); if (beatN !== lastBeat) { if (lastBeat >= 0) onBeat(); lastBeat = beatN; }
     if (!tilt.src && !calm) { tilt.tx = Math.sin(now/5200)*.35; tilt.ty = Math.sin(now/7100)*.25; }
     tilt.x += (tilt.tx - tilt.x) * .08; tilt.y += (tilt.ty - tilt.y) * .08; var ox = tilt.x, oy = tilt.y;
     if (hold && now - hold > 1100) { hold = null; held = true; glow = now; }
