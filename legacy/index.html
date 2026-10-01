@@ -333,7 +333,10 @@ This is our stamp.<br><b id="dad">Dad</b></div>
   // Exact line still to come from William. Leave it "" until then: when it's set, it appears softly on Jennifer's door after "Align 👉👈"; empty shows nothing extra.
   const JENNIFER_LINE = "";
   const XGIFT = "A gift from William, in your father\u2019s memory.";   // the framing, shown quietly at the end of Jennifer's door
-  const EDGARDO_FATHER_NAME = null;   // no name in the notes; set it to show "<name>, his father."
+  const EDGARDO_FATHER_NAME = null;
+  // v43.1 flags: unfinished pieces stay in the file but are hidden until William finishes them
+  const SHOW_SOON = false;   // the third niece's light ("Name coming"): hidden until her first name is in
+  window.LEGACY_FLAGS = Object.assign({billsr: false}, window.LEGACY_FLAGS || {});   // billsr: Bill Shaffer Sr.'s section (photos, clippings, recording) stays off until William approves it for the live site   // no name in the notes; set it to show "<name>, his father."
   // one heartbeat clock for everything: light, portal, music, Signal (55 BPM, about 1091 ms)
   const HBMS = Math.round(60000/LEGACY_FREQ.bpm), BASE = LEGACY_FREQ.root, hbT0 = performance.now(), toBeat = () => HBMS - ((performance.now() - hbT0) % HBMS);
   const gate = $("gate"), msg = $("msg");
@@ -357,7 +360,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       () => { micP = null; ssSet("shaffer_mic_asked", "denied"); try { localStorage.setItem("shaffer-mic", "no"); } catch(e){} return null; });
     return micP; }
   function micRelease(){ try { if (micStream) micStream.getTracks().forEach(t => t.stop()); } catch(e){} micStream = null; micP = null; }
-  let spkPrimed = false; function primeSpeech(){ if (spkPrimed || !window.speechSynthesis) return; spkPrimed = true; try { const u = new SpeechSynthesisUtterance(" "); u.volume = 0; speechSynthesis.speak(u); } catch(e){} }   // iOS: speech unlocked by the entry tap
+  function primeSpeech(){}   // iOS: speech unlocked by the entry tap
   function askMotion(){
     if (motionAsked) return; motionAsked = true;
     const on = () => addEventListener("deviceorientation", e => {
@@ -611,17 +614,21 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     // Edgardo at the light: her finger approaching makes the light beat (and a light heartbeat buzz);
     // contact gives one strong heartbeat, his words, the golden bloom, then the portal opens
     let appr = null, apprI = null, nearK = 0, hoverXY = null, bloomAt = 0, slid = false, contactLock = 0, openAt = 0, edT = [], voiceOK = null;
-    fetch("/legacy/edgardo-voice.mp3", {method:"HEAD", cache:"no-store"}).then(r => { voiceOK = r.ok; }).catch(() => { voiceOK = false; });
+    const EDGARDO_VOICE_SRC = "";   // a real recording only, if William ever adds one; empty = nothing is requested (no 404)
+    if (EDGARDO_VOICE_SRC) fetch(EDGARDO_VOICE_SRC, {method:"HEAD", cache:"no-store"}).then(r => { voiceOK = r.ok; }).catch(() => { voiceOK = false; }); else voiceOK = false;
     const speakLog = [];
     function duckMusic(ms){ try { if (musicOut && ac && !muted){ const t = ac.currentTime; musicOut.gain.cancelScheduledValues(t); musicOut.gain.setTargetAtTime(.04, t, .15); setTimeout(() => { if (musicOut) musicOut.gain.setTargetAtTime(inView && !muted ? .16 : 0, ac.currentTime, .6); }, ms); } } catch(e){} }
-    function speakLine(name, over, then){ const ed = name === "Edgardo", mom = name === "Mom", line = over || (ed ? "I’m right here, anak." : mom ? "I’ve got you, honey." : "I’m right here.");
-      if (ed && voiceOK && !over){ duckMusic(3500); voice(); speakLog.push({name, via: "file", line, t: performance.now()}); return; }
-      speakLog.push({name, via: "none", line, t: performance.now()}); return;   // rule: no synthetic voices for real people; only real recordings play
-      const ss = window.speechSynthesis; if (!ss || muted){ speakLog.push({name, via: "none", line, t: performance.now()}); return; }
-      try { const vs = ss.getVoices(), loc = vs.filter(v => v.localService), en = loc.filter(v => /^en/i.test(v.lang)); if (vs.length && !loc.length){ speakLog.push({name, via: "none", line, t: performance.now()}); return; }   // on-device voices only
-        const u = new SpeechSynthesisUtterance(line); u.rate = ed ? .85 : mom ? 1 : .92; u.pitch = ed ? .8 : mom ? 1.1 : 1; u.volume = 1; if (en.length || loc.length) u.voice = (en.find(v => /PH|US/.test(v.lang)) || en[0] || loc[0]);
-        ss.cancel(); if (!/^Align/.test(line)) duckMusic(then ? 4600 : 3200); ss.speak(u); if (then){ const u2 = new SpeechSynthesisUtterance(then); u2.rate = u.rate; u2.pitch = u.pitch; u2.volume = 1; if (u.voice) u2.voice = u.voice; ss.speak(u2); } speakLog.push({name, via: "speech", line, then, t: performance.now()}); } catch(e){ speakLog.push({name, via: "none", line, t: performance.now()}); } }
-    function voice(){ if (!voiceOK) return; try{ const a = new Audio("/legacy/edgardo-voice.mp3"); a.volume = muted ? 0 : .6; a.play().catch(()=>{}); }catch(e){} }
+    // v43.1: no synthetic voice, no words in anyone's mouth. Where a line used to be spoken, Edgardo answers in tone only:
+    // a gentle two-beat heartbeat going out, then one warm tone coming back, on the D2 harmonic family (73.42 Hz: x1 thump, x2 + x3 answer)
+    const D2 = 73.42;
+    function d2Answer(at){ try { if (!ac || muted || ac.state !== "running") return false; const t0 = Math.max(ac.currentTime + .01, at || 0);
+      for (const [dt, k] of [[0, 1], [.26, .65]]){ const t = t0 + dt, o = ac.createOscillator(), g = ac.createGain(); o.type = "sine"; o.frequency.setValueAtTime(D2*2, t); o.frequency.exponentialRampToValueAtTime(D2, t + .16);
+        g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.11*k, t + .015); g.gain.exponentialRampToValueAtTime(.0001, t + .24); o.connect(g); g.connect(acOut()); o.start(t); o.stop(t + .26); }
+      const ta = t0 + HBMS/1000; for (const [m, a] of [[3, .028], [2, .018], [6, .004]]){ const o = ac.createOscillator(), g = ac.createGain(); o.type = "sine"; o.frequency.value = D2*m;
+        g.gain.setValueAtTime(0, ta); g.gain.linearRampToValueAtTime(a, ta + .09); g.gain.setTargetAtTime(0, ta + .09, .5); o.connect(g); g.connect(acOut()); o.start(ta); o.stop(ta + 2.8); }
+      return true; } catch(e){ return false; } }
+    function speakLine(name){ const ed = name === "Edgardo"; speakLog.push({name, via: ed ? "tone" : "none", t: performance.now()}); if (ed) d2Answer(); }
+    function voice(){ if (!voiceOK || !EDGARDO_VOICE_SRC) return; try{ const a = new Audio(EDGARDO_VOICE_SRC); a.volume = muted ? 0 : .6; a.play().catch(()=>{}); }catch(e){} }
     function apprK(x, y){ const R0 = Math.max(220, Math.min(W, H)*.8); return Math.max(0, Math.min(1, 1 - (Math.hypot(x-dot.x(), y-dot.y()) - 40)/R0)); }
     function apprBeat(gesture){ if (!appr || !appr.moved) return; const now = performance.now(), k = apprK(appr.x, appr.y);
       if (k <= .05 || now - appr.mt > 1000 || now - appr.last < BEAT - 40) return; appr.last = now; appr.sent = true;
@@ -673,7 +680,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     $("pclose").addEventListener("click", e => { e.stopPropagation(); if (Date.now() - lastTouch < 800) return; if (portalOn) togglePortal(); });
 
     // family: who is here, who has passed. Departed rise in gold dust; the living breathe soft light.
-    const FAM = [["William","his life, all of it"],["Jennifer"],["Billy"],["Mom"],["Dad"],["Edgardo","Jennifer's dad"],["Uncle Steve"],["Grandma"],["Grandma Sarah","a great grandma"],["Grandpa Hal","cigars and jokes"],["Uncle Stu","pure humor"],["Pat","an all-time bond"],["Kevin","my best friend"],["Steve Lee"],["Steve Samoji"],["Dave Trejo"],["Cindy","my first best friend"],["Rusty"],["Sonny","so much pride"],["Merlin"],["Tutu","Choo Choo, the faithful cat"],["All the animals"],["Mark Temple"],["Aunt Diane"],["Roy"],["Pat Murray"],["Mary Shaffer"],["Bill Shaffer"],["Christina"],["Carter"],["Chloe"],["Name coming"]];   // living: William's sister Christina and her children (first names only)
+    const FAM = [["William","his life, all of it"],["Jennifer"],["Billy"],["Mom"],["Dad"],["Edgardo","Jennifer's dad"],["Uncle Steve"],["Grandma"],["Grandma Sarah","a great grandma"],["Grandpa Hal","cigars and jokes"],["Uncle Stu","pure humor"],["Pat","an all-time bond"],["Kevin","my best friend"],["Steve Lee"],["Steve Samoji"],["Dave Trejo"],["Cindy","my first best friend"],["Rusty"],["Sonny","so much pride"],["Merlin"],["Tutu","Choo Choo, the faithful cat"],["All the animals"],["Mark Temple"],["Aunt Diane"],["Roy"],["Pat Murray"],["Mary Shaffer"],["Bill Shaffer"],["Christina"],["Carter"],["Chloe"],["Name coming"]].filter(f => SHOW_SOON || f[0] !== "Name coming");   // living: William's sister Christina and her children (first names only)
     // TODO(name): the third child's first name (a girl); "Name coming" renders as a soft, unlabeled light (class "soon")
     const GONE = new Set(["Mom","Edgardo","Uncle Steve","Grandma Sarah","Grandpa Hal","Kevin","Cindy","Sonny","Tutu","Aunt Diane"]);
     // threads: each light's memory card, in William's voice (one line per entry); captions use the first line
@@ -916,7 +923,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
           const pt = e.changedTouches ? e.changedTouches[0] : e; portalTouch = performance.now(); alive(n, f[0], pt.clientX, pt.clientY, {view: "portal"}); edT.forEach(clearTimeout); $("edq").classList.remove("on"); setPcap(capFor(f[0] === "Alfred" ? "AIFRED" : f[0], f[1])); $("pcap").classList.add("on"); hotCn = o; hotAt = performance.now(); setTimeout(() => { if (portalOn) dustForm(f[0]); }, 650); };
         n.addEventListener("touchend", pick, {passive:false}); n.addEventListener("click", pick); }); }
     const CR_RIGHT = ["Billy","Jennifer","Edgardo","Mom","Dad","Aunt Diane","Mark Temple","Uncle Stu","Grandma","Grandma Sarah","Mary Shaffer","Bill Shaffer","Roy"], CR_ROW = ["Grandpa Hal","Uncle Steve","Pat","Kevin"], CR_FRIENDS = [...CR_ROW, "Steve Lee", "Steve Samoji", "Dave Trejo", "Pat Murray"],   // CR_ROW: the roots, the lower row, left to right (William's order)
-      CR_ANIMALS = ["Sonny","Tutu","Merlin","Rusty","Cindy","All the animals"], CR_SIS = ["Christina","Carter","Chloe","Name coming"];
+      CR_ANIMALS = ["Sonny","Tutu","Merlin","Rusty","Cindy","All the animals"], CR_SIS = ["Christina","Carter","Chloe","Name coming"].filter(n => SHOW_SOON || n !== "Name coming");
     function layoutConstel(){ const dense = H < 820, d2 = dense && cnodes.length > 25; $("constel").classList.toggle("dense", dense); $("constel").classList.toggle("d2", d2); const cX = W/2, cY = H*.5, cr = coreR(), top = 66, bot = H - (dkey === "jen" ? 56 : 108), pw = Math.min(W - 32, 380);
       const obst = [{x: cX, y: cY, hw: cr*.9, hh: cr*.9}, {x: cX, y: cY + cr + 12 + 38, hw: pw/2, hh: 42}], placed = [];
       const rx = Math.min(W/2 - 48, Math.max(cr + 90, cr*1.9)), ry = Math.min(cY - top - 20, cr*2.4), N = cnodes.length;
@@ -957,6 +964,8 @@ This is our stamp.<br><b id="dad">Dad</b></div>
         th.style.setProperty("--hc", gone && k !== "pet" ? "255,214,150" : relOf(nm).c); th.dataset.k = k; th.dataset.g = gone ? "1" : "0";
         if (k === "here"){ const t = document.createElement("small"); t.className = "hwu"; t.textContent = "Here with us"; $("thn").appendChild(t); }
         th.classList.remove("bloom"); void th.offsetWidth; th.classList.add("bloom"); }
+      { const th = $("thread"), src = document.querySelector(`#sigv.on .sn[data-name="${n === "AIFRED" ? "Alfred" : n}"],#famv.on .fn[data-name="${n === "AIFRED" ? "Alfred" : n}"]`); th.style.top = "";   // v43.1: a light near the top gets its card just below it, so its name and caption stay readable
+        if (src){ const r = src.getBoundingClientRect(), safe = 60 + 8; if (r.bottom > safe - 40 && r.top < innerHeight*.34) th.style.top = Math.round(Math.min(innerHeight*.5, r.bottom + 14)) + "px"; } }
       $("thread").classList.add("on"); thName = n; thLog.push({name: n, lines: L.length, ms: +(performance.now() - t0).toFixed(1)}); if (thLog.length > 80) thLog.shift(); }
     function closeThread(){ if (!thName) return; $("thread").classList.remove("on"); thName = null; }
     $("thx").addEventListener("click", e => { e.stopPropagation(); closeThread(); }); $("thx").addEventListener("touchend", e => { if (e.cancelable) e.preventDefault(); e.stopPropagation(); lastTouch = Date.now(); closeThread(); }, {passive: false});
@@ -967,7 +976,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     function syncView(){ const on = portalOn || !!document.querySelector(".ov.on"); musicView(on); document.body.classList.toggle("inview", on);
       if ((portalOn || $("sigv").classList.contains("on")) && localStorage.getItem("shaffer-mic") === "yes" && micStream) micWant = true; micSync(); }   // listening resumes only on a stream already opened by a tap this session
     const FROW = ["Grandpa Hal","Uncle Steve","Pat","Kevin"];   // the roots: the bottom row, left to right (William's order)
-    const FLAY = [["Billy",50,13],["William",30,21],["Jennifer",70,21],["Christina",12,21],["Carter",10,14.5],["Chloe",23,14.5],["Name coming",33,14.5],["Alfred",12,29],["Mom",41,29,1],["Edgardo",70,29],["Aunt Diane",15,37],["Dad",50,37],["Uncle Stu",85,37],
+    const FLAY = [["Billy",50,13],["William",30,21],["Jennifer",70,21],["Christina",12,21],["Carter",10,14.5],["Chloe",23,14.5],...(SHOW_SOON ? [["Name coming",33,14.5]] : []),["Alfred",12,29],["Mom",41,29,1],["Edgardo",70,29],["Aunt Diane",15,37],["Dad",50,37],["Uncle Stu",85,37],
       ["Mark Temple",15,45],["Grandma",50,45],["Grandma Sarah",82,45],["Mary Shaffer",15,51.5],["Bill Shaffer",42,51.5],["Roy",63,51.5],["Pat Murray",84,51.5],["Steve Lee",18,57.5],["Steve Samoji",50,57.5],["Dave Trejo",82,57.5],
       ["Sonny",22,64,1],["Tutu",46,64,1],["Merlin",76,64,1],["Rusty",26,70],["Cindy",52,70],["All the animals",80,70],...FROW.map((n, i) => [n, [15,40,62,84][i], 77.5])];
     const FSUB = Object.fromEntries(FAM.map(f => [f[0], f[1]]));
@@ -976,7 +985,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       v.insertAdjacentHTML("afterbegin", `<svg id="famsvg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${
         seg(0,0,50,15,31,19.2) + seg(0,0,50,15,69,19.2) + seg(0,0,50,21,50,35.2) + seg(0,0,70,23,70,27.2,"br") + seg(0,0,26,23.5,16,27.2,"br") + seg(0,0,33,23.5,39,27.2) + seg(0,0,35.5,23.4,63,27.6) + seg(0,0,15,33.5,85,33.5) + seg(0,0,15,33.5,15,35.2) + seg(0,0,85,33.5,85,35.2)
         + seg(0,0,15,38.8,15,43.2) + seg(0,0,50,38.8,50,43.2) + seg(0,0,58,45,70,45)
-        + seg(0,0,21,21,23,21) + seg(0,0,10,16.2,11,19.3) + seg(0,0,21.5,16.2,13.5,19.3) + seg(0,0,32,16,15.5,19.4)}<path d="M4 80.6 C24 79.6 36 81.6 50 80.6 S76 79.6 96 80.6"/></svg>`); }
+        + seg(0,0,21,21,23,21) + seg(0,0,10,16.2,11,19.3) + seg(0,0,21.5,16.2,13.5,19.3) + (SHOW_SOON ? seg(0,0,32,16,15.5,19.4) : "")}<path d="M4 80.6 C24 79.6 36 81.6 50 80.6 S76 79.6 96 80.6"/></svg>`); }
     function openFam(){ const v = $("famv"); v.querySelectorAll(".fn").forEach(n => n.remove()); $("famcap").textContent = ""; v.classList.add("on"); famLines(v); v.classList.remove("lines");
       const me = life(mk("fn", FLAY[0][0], FSUB[FLAY[0][0]]), FLAY[0][0]); me.style.left = "50%"; me.style.top = "48%"; v.appendChild(me);
       me.addEventListener("click", e => { $("famcap").textContent = "Billy. The seed of the tree."; alive(me, "Billy", e.clientX, e.clientY, {view: "family"}); openThread("Billy"); ovT.push(setTimeout(() => dustForm("Billy"), 650)); });
@@ -990,7 +999,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       ovT.push(setTimeout(() => { $("famcap").textContent = "What is legacy? A memory."; end.classList.add("on"); sparkle(end, 30, 110); buzz(); }, 3600 + (FLAY.length-1)*1100 + 600)); }
     // signal: every connection linked to William; each relationship fires its own haptic signature, colour, spark and note
     const SIG_IN = [["Jennifer"],["Billy"],["Mom"],["Dad"]];
-    const SIG_OUT = [["Edgardo","Jennifer's dad"],["Uncle Steve"],["Grandma"],["Grandma Sarah"],["Grandpa Hal"],["Uncle Stu"],["Pat"],["Rusty"],["Cindy"],["Sonny"],["Merlin"],["Tutu"],["The animals"],["Kevin"],["Steve Lee"],["Steve Samoji"],["Dave Trejo"],["Aunt Diane"],["Mark Temple"],["Roy"],["Pat Murray"],["Mary Shaffer"],["Bill Shaffer"],["Christina"],["Carter"],["Chloe"],["Name coming"]];
+    const SIG_OUT = [["Edgardo","Jennifer's dad"],["Uncle Steve"],["Grandma"],["Grandma Sarah"],["Grandpa Hal"],["Uncle Stu"],["Pat"],["Rusty"],["Cindy"],["Sonny"],["Merlin"],["Tutu"],["The animals"],["Kevin"],["Steve Lee"],["Steve Samoji"],["Dave Trejo"],["Aunt Diane"],["Mark Temple"],["Roy"],["Pat Murray"],["Mary Shaffer"],["Bill Shaffer"],["Christina"],["Carter"],["Chloe"],["Name coming"]].filter(f => SHOW_SOON || f[0] !== "Name coming");
     const REL = {parent:{v:[120,200,120],c:"255,196,120",hz:110}, spouse:{v:[80,60,40],c:"255,176,196",hz:165}, sibling:{v:[40,60,40],c:"190,220,255",hz:220},
       grand:{v:[90,150,60,150,30],c:"255,228,168",hz:82.5}, uncle:{v:[60,120,60],c:"214,196,255",hz:137.5}, cousin:{v:[50,90,50],c:"168,206,255",hz:165}, aunt:{v:[110,190,110],c:"255,216,164",hz:110}, friend:{v:[25],c:"168,232,212",hz:192.5},
       pet:{v:[15,40,15,40,15],c:"255,242,196",hz:247.5}, sonny:{v:[15,40,15,40,15,60,90],c:"255,206,110",hz:275}, alfred:{v:[30,120,30],c:"255,164,72",hz:220}, dave:{v:[25,60,25],c:"170,236,255",hz:385}, edgardo:{v:[120,200,120,300,40,110,70],c:"255,202,112",hz:55}, mom:{v:[70,70,40,50,120],c:"255,186,208",hz:220}};
@@ -1155,13 +1164,12 @@ This is our stamp.<br><b id="dad">Dad</b></div>
           const w = Math.min(1, (t - 1230)/1100), a = 1 - w, g = c2.createRadialGradient(ex, ey, 0, ex, ey, 30 + 70*ez(w)); g.addColorStop(0, `rgba(255,246,220,${.8*a})`); g.addColorStop(1, "rgba(255,200,110,0)"); c2.fillStyle = g; c2.beginPath(); c2.arc(ex, ey, 30 + 70*ez(w), 0, 6.283); c2.fill();
           c2.strokeStyle = `rgba(255,214,140,${a})`; c2.lineWidth = 1.6; c2.beginPath(); c2.arc(ex, ey, 16 + 80*ez(w), 0, 6.283); c2.stroke();
           if (t < 2130) pulse(ex, ey, jx, jy, ez((t - 1230)/900), .85); } }
-      if (A.bn && t >= 1900){ const bx = A.bn.x + ox, by = A.bn.y + oy, dx = bx - ex, dy = by - ey, len = Math.hypot(dx, dy) || 1, mx0 = (ex + bx)/2, my0 = (ey + by)/2, o1x = mx0 - dy*.34, o1y = my0 + dx*.34, o2x = mx0 + dy*.34, o2y = my0 - dx*.34, jx0 = A.jn ? A.jn.x + ox : mx0, jy0 = A.jn ? A.jn.y + oy : -1e4, f1 = Math.hypot(o1x - jx0, o1y - jy0) > Math.hypot(o2x - jx0, o2y - jy0), cxq = f1 ? o1x : o2x, cyq = f1 ? o1y : o2y;   // the arc bows away from Jennifer's light   // football: a small ball of light arcs from Edgardo to his grandson and back
+      if (A.bn && t >= 1900){ const jx0 = A.jn ? A.jn.x + ox : -1e4, jy0 = A.jn ? A.jn.y + oy : -1e4, BP = ballPath(ex, ey, A.bn, ox, oy, jx0, jy0);   // football: v43.1 parabola, lands above Billy's name
         if (!A.bm){ A.bm = true; A.bn.n.classList.add("meet"); }
-        const la = Math.min(1, (t - 1900)/300)*Math.min(1, Math.max(0, (4100 - t)/400)); c2.strokeStyle = `rgba(255,226,170,${.35*la})`; c2.lineWidth = 1.2; c2.beginPath(); c2.moveTo(ex, ey); c2.quadraticCurveTo(cxq, cyq, bx, by); c2.stroke();
-        if (t >= 2000 && t < 3600){ const out = t < 2800, u = ez(out ? (t - 2000)/800 : (t - 2800)/800), v = out ? u : 1 - u;
+        const la = Math.min(1, (t - 1900)/300)*Math.min(1, Math.max(0, (4100 - t)/400)), gl2 = (gx, gy, r, a) => { const g = c2.createRadialGradient(gx, gy, 0, gx, gy, r); g.addColorStop(0, `rgba(255,252,236,${a.toFixed(3)})`); g.addColorStop(1, "rgba(255,200,110,0)"); c2.fillStyle = g; c2.beginPath(); c2.arc(gx, gy, r, 0, 6.283); c2.fill(); };
+        if (t >= 2000 && t < 3600){ const out = t < 2800, u = easeIO(out ? (t - 2000)/800 : (t - 2800)/800);
           if (!out && !A.caught){ A.caught = true; A.bn.n.classList.add("answer"); alignLog[alignLog.length - 1].ball = performance.now(); }
-          for (let k = 4; k >= 0; k--){ const vv = Math.max(0, Math.min(1, v - (out ? 1 : -1)*k*.025)), [qx, qy] = qpt(ex, ey, cxq, cyq, bx, by, vv), rr = k ? 4 - k*.6 : 6, g = c2.createRadialGradient(qx, qy, 0, qx, qy, rr*2.2);
-            g.addColorStop(0, `rgba(255,252,236,${k ? .35 - k*.06 : 1})`); g.addColorStop(1, "rgba(255,200,110,0)"); c2.fillStyle = g; c2.beginPath(); c2.arc(qx, qy, rr*2.2, 0, 6.283); c2.fill(); } }
+          drawBall(c2, BP, out ? u : 1 - u, out ? 1 : -1, 1, gl2); } else if (la > 0) drawBall(c2, BP, -1, 1, la, () => {});
         if (t >= 3600 && t < 4100){ const w = (t - 3600)/500; c2.strokeStyle = `rgba(255,226,170,${1 - w})`; c2.lineWidth = 1.4; c2.beginPath(); c2.arc(ex, ey, 14 + 40*w, 0, 6.283); c2.stroke(); } }
       c2.restore(); }
     // ===== Jennifer's crossing (?d=jen), v43: the finger through the glass.
@@ -1173,7 +1181,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     // into light that drifts home to him. "Align 👉👈", then JENNIFER_LINE if it's set. His father's star, his grandson, the football.
     // A small, quiet replay. No voice, no face, no words in his mouth: only light, touch and the heartbeat. Every beat after the touch
     // is one 55 BPM beat; every tone is a ratio of the 55 Hz root. A gift from William, in her father's memory.
-    let X = null, xHH = null; const xLog = [], xAud = [], xVib = [], html = document.documentElement, XG = .42, XHOLD = 600, XHIT = 96;   // XG: where the glass is on the finger's way (0 = deep behind, 1 = right in front of her)
+    let X = null, xHH = null; const xLog = [], xAud = [], xVib = [], html = document.documentElement, XG = .42, XHOLD = 2000, XHIT = 96, XGRACE = 260;   // v43.1: the hold lands at ~2 s; a lift shorter than XGRACE ms keeps it going   // XG: where the glass is on the finger's way (0 = deep behind, 1 = right in front of her)
     const xNoise = (() => { const P = []; for (let i = 0; i < 64; i++) P.push(Math.random()*2 - 1); return t => { const i = Math.floor(t), f = t - i, u = f*f*(3 - 2*f); return P[i & 63]*(1 - u) + P[(i + 1) & 63]*u; }; })();   // smooth 1D value noise for the tremble
     const xOK = () => ac && !muted && ac.state !== "closed";
     function xTone(f, at, a, dur, atk){ if (!xOK()) return; try { const t = Math.max(ac.currentTime + .005, at), o = ac.createOscillator(), g = ac.createGain(); o.type = "sine"; o.frequency.value = f;
@@ -1196,6 +1204,13 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       if (!on || !xOK()) return; try { const R = LEGACY_FREQ.root, t = ac.currentTime + .01, s = XHOLD/1000, g = ac.createGain(), lp = ac.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.setValueAtTime(220, t); lp.frequency.linearRampToValueAtTime(1100, t + s); lp.connect(g); g.connect(acOut());
         g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.045, t + s);   // while she holds: a soft hum on the root rises under her finger; it lets go the instant she lifts
         xHH = {g, os: [[2, 1], [3, .4], [4, .25]].map(([m, k]) => { const o = ac.createOscillator(), og = ac.createGain(); o.frequency.value = R*m; og.gain.value = k; o.connect(og); og.connect(lp); o.start(t); xAud.push({f: R*m, at: 0, hold: 1}); return o; })}; } catch(e){} }
+    function xAnswer(){ try { if (!xOK()) return; const t = ac.currentTime + .01; for (const [m, a] of [[3, .03], [2, .02], [6, .004]]) xTone(D2*m, t, a, 2.4, .09); } catch(e){} }   // v43.1: his beat comes back as one warm tone on D2 (x3 = A3, x2 = D3)
+    // v43.1: the ball path. A true parabola (bowed away from Jennifer), eased in and out, ending just above Billy's label so his name stays readable
+    const easeIO = u => u <= 0 ? 0 : u >= 1 ? 1 : .5 - .5*Math.cos(Math.PI*u);
+    function ballPath(ex, ey, bn, ox, oy, jx, jy){ const lh = bn.n ? bn.n.offsetHeight/2 : 12, bx = bn.x + ox, by = bn.y + oy - lh - 12, dx = bx - ex, dy = by - ey, ln = Math.hypot(dx, dy) || 1, nx = -dy/ln, ny = dx/ln, mx = (ex + bx)/2, my = (ey + by)/2, sg = Math.hypot(mx + nx*40 - jx, my + ny*40 - jy) > Math.hypot(mx - nx*40 - jx, my - ny*40 - jy) ? 1 : -1, h = Math.min(72, ln*.24)*sg;
+      return {bx, by, at: u => { const k = 4*u*(1 - u)*h; return [ex + dx*u + nx*k, ey + dy*u + ny*k]; }}; }
+    function drawBall(c2, P, v, dir, a, glow){ c2.strokeStyle = `rgba(255,226,170,${(.18*a).toFixed(3)})`; c2.lineWidth = 1; c2.beginPath(); for (let i = 0; i <= 24; i++){ const [qx, qy] = P.at(i/24); if (i) c2.lineTo(qx, qy); else c2.moveTo(qx, qy); } c2.stroke();
+      for (let k = 4; k >= 0; k--){ const vv = Math.max(0, Math.min(1, v - dir*k*.03)), [qx, qy] = P.at(vv); glow(qx, qy, (k ? 4 - k*.6 : 6)*2.2, (k ? .3 - k*.055 : 1)*a); } }
     function xUI(on){ const r = $("xreplay"), g = $("xgift"); if (r) r.classList.toggle("on", !!on); if (g){ g.textContent = XGIFT; g.classList.toggle("on", !!on && !!XGIFT); } if (!on){ const l = $("xline"); if (l) l.classList.remove("on"); } }
     function xReset(){ xSettle(true); xHoldHum(false); const now = performance.now(), RMm = RM.matches, v = $("sigv"), W = v.clientWidth, H = v.clientHeight, e = sigNodes[edgK()];
       X = {ph: "intro", t0: now, rm: RMm, T: RMm ? {br: 0, rp: 0, e0: 250, e1: 1700, hint: 1900} : {br: 2600, rp: 2000, e0: 3300, e1: 7700, hint: 6900}, ev: {}, log: [{ev: "intro", t: now}], B: HBMS,
@@ -1207,18 +1222,20 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       try { if (ac) muffle(true); } catch(err){} xLog.push({ev: "intro", t: now}); if (xLog.length > 80) xLog.shift(); }   // the music waits behind the glass until they touch
     const xEv = (k, at) => { if (X.ev[k]) return false; X.ev[k] = at; X.log.push({ev: k, t: performance.now(), at}); xLog.push({ev: k, t: performance.now(), at}); if (xLog.length > 80) xLog.shift(); return true; };
     // her touch: anywhere near his fingertip counts; elsewhere the finger just leans toward her and the hint comes back
-    function xDown(x, y, id){ if (!X) return; try { unlockAudio(); } catch(e){} X.pd = {x, y, id}; if (X.ph === "intro" || X.ph === "offer"){ if (!xTryHold()){ X.lean = {x, y, t: performance.now()}; if (X.ph === "offer") $("sighint").style.opacity = ""; } } }
+    function xDown(x, y, id){ if (!X) return; try { unlockAudio(); } catch(e){} if (X.ph === "hold" && X.upAt && Math.hypot(x - X.hx, y - X.hy) < XHIT*1.5){ X.upAt = 0; X.hid = id; X.held = true; X.hx = x; X.hy = y; X.pd = {x, y, id}; return; }   // a quick re-touch: the hold carries on
+      X.pd = {x, y, id}; if (X.ph === "intro" || X.ph === "offer"){ if (!xTryHold()){ X.lean = {x, y, t: performance.now()}; if (X.ph === "offer") $("sighint").style.opacity = ""; } } }
     function xTryHold(){ const P = X.pd, T = X.tipS; if (!P || !T || X.zNow < .55 || Math.hypot(P.x - T.x, P.y - T.y) > T.R + XHIT) return false;
       X.ph = "hold"; X.h0 = performance.now(); X.hx = P.x; X.hy = P.y; X.hid = P.id; X.held = true; X.tickDue = [10]; X.lean = null; xHoldHum(true); $("sighint").style.opacity = 0; clearTimeout(capT); $("sigcap").classList.add("fade"); xEv("hold" + (X.log.filter(l => /^hold/.test(l.ev)).length || ""), X.h0); return true; }
-    function xMove(x, y, id){ if (!X) return; if (X.pd && X.pd.id === id){ X.pd.x = x; X.pd.y = y; } if (X.ph === "hold" && X.hid === id){ X.hx = x; X.hy = y; const T = X.tipS; if (T && Math.hypot(x - T.rx, y - T.ry) > T.R + XHIT*1.6) xLetGo(); } }
-    function xUp(id){ if (!X) return; if (X.pd && X.pd.id === id) X.pd = null; if (X.ph === "hold" && X.hid === id) xLetGo(); }
-    function xLetGo(){ const now = performance.now(), T = X.tipS; X.ph = "offer"; X.held = false; X.rel = {t: now, k: Math.min(1, (now - X.h0)/XHOLD), x: T ? T.x : X.hx, y: T ? T.y : X.hy, hx: X.hx, hy: X.hy}; X.pd = null; xHoldHum(false); momentCap("Hold a little longer.", 0, 2200); setTimeout(() => { if (X && X.ph === "offer") $("sighint").style.opacity = ""; }, 2300); xLog.push({ev: "letgo", t: now}); }
+    function xMove(x, y, id){ if (!X) return; if (X.pd && X.pd.id === id){ X.pd.x = x; X.pd.y = y; } if (X.ph === "hold" && X.hid === id){ X.hx = x; X.hy = y; const T = X.tipS; if (T && Math.hypot(x - T.rx, y - T.ry) > T.R + XHIT*2.4) xLetGo(); } }   // small jitter never breaks the hold
+    function xUp(id){ if (!X) return; if (X.pd && X.pd.id === id) X.pd = null; if (X.ph === "hold" && X.hid === id) X.upAt = performance.now(); }   // let go only if she stays lifted past XGRACE (see drawCross)
+    function xLetGo(){ const now = performance.now(), T = X.tipS; X.ph = "offer"; X.held = false; X.upAt = 0; X.rel = {t: now, k: Math.min(1, (now - X.h0)/XHOLD), x: T ? T.x : X.hx, y: T ? T.y : X.hy, hx: X.hx, hy: X.hy}; X.pd = null; xHoldHum(false); momentCap("Hold a little longer.", 0, 2200); setTimeout(() => { if (X && X.ph === "offer") $("sighint").style.opacity = ""; }, 2300); xLog.push({ev: "letgo", t: now}); }
     function xContact(now){ const x = X, R = LEGACY_FREQ.root; x.ph = "go"; x.held = false; x.fx = x.hx; x.fy = x.hy; x.met = now; x.b5 = now; x.S = JENNIFER_LINE ? 3 : 0; xEv("meet", now);
       xHoldHum(false); x.tickDue = 0; if (!vib([60, 120, 60])) ticks([60, 120, 60]); xVib.push({p: [60, 120, 60], t: now});   // the heartbeat in her hand (iPhone: the hidden switch, if it's allowed here; otherwise nothing)
       try { unlockAudio(); if (ac && xOK()){ const t = ac.currentTime + .01; [[1, .07, 5, .6], [2, .05, 4.4, .45], [3, .03, 3.8, .45], [4, .026, 3.6, .5], [6, .012, 3, .5]].forEach(([m, a, d, k]) => xTone(R*m, t, a, d, k)); xTone(R*16, t + .05, .007, 2.4, .3);   // a low warm chord on the 55 Hz root, swelling gently
         hbThump(0, .9); hbThump(.24, .6); if (majorFn) majorFn(10*x.B/1000); if (swellFn) swellFn(0); xLift(); } if (ac) muffle(false); } catch(err){}   // the organ and choir open from behind the glass
+      if (!x.rm) x.rip.push({x: x.fx, y: x.fy, t0: now, dur: 1800, R: 170, a: .5, cs: Math.random()*6.283});   // v43.1: the glass ripples out from the touch
       const v = $("sigv"); v.classList.remove("xdark"); v.classList.add("xmeet"); [x.jn, x.edg, x.bil].forEach(o => o && o.n.classList.add("xkeep"));
-      const fl = $("sigflash"); fl.style.setProperty("--fx", x.fx + "px"); fl.style.setProperty("--fy", x.fy + "px"); if (fl.animate) fl.animate([{opacity: 0}, {opacity: x.rm ? .25 : .42}, {opacity: 0}], {duration: x.rm ? 1400 : 900, easing: "ease-out"});
+      const fl = $("sigflash"); fl.style.setProperty("--fx", x.fx + "px"); fl.style.setProperty("--fy", x.fy + "px"); if (fl.animate) fl.animate([{opacity: 0}, {opacity: x.rm ? .12 : .2, offset: .35}, {opacity: 0}], {duration: x.rm ? 1800 : 1700, easing: "ease-in-out"});   // v43.1: a soft bloom, no flash
       if (!x.rm) for (let i = 0; i < 26; i++){ const a = Math.random()*6.283, sp = .25 + Math.random()*.9; x.burst.push({x: x.fx, y: x.fy, vx: Math.cos(a)*sp, vy: Math.sin(a)*sp*.8 + .05, t0: now + Math.random()*260, r: .7 + Math.random()*1.5}); } }
     function xEnd(){ const x = X; x.ph = "after"; html.dataset.xing = "0"; const v = $("sigv"); v.classList.remove("xmeet", "xdark"); v.querySelectorAll(".xkeep").forEach(el => el.classList.remove("xkeep")); xUI(true); xLog.push({ev: "after", t: performance.now()}); }
     // the finger itself: warm light, seen almost end-on. The pad faces her and glows; the body runs back toward his light and fades.
@@ -1282,6 +1299,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       const R = x.R*(RMm ? 1 : .35 + .65*z)*(go ? 1.04 : 1);
       x.tipS = {x: px, y: py, rx, ry, R};
       if (x.ph === "offer" || x.ph === "intro"){ if (x.pd && zH >= .55) xTryHold(); }   // she was already reaching: it counts as soon as he's close enough
+      if (x.ph === "hold" && x.upAt && now - x.upAt > XGRACE) xLetGo();
       if (x.ph === "hold" && hk >= 1) xContact(now);
       // the dissolve: a few seconds after the touch the finger lets go as light, which drifts home to him
       const D0 = go ? b(9.5) : Infinity, fin = go ? Math.max(0, 1 - ez((now - D0)/(1.3*B))) : 1;
@@ -1295,19 +1313,21 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       // the finger (and, before the touch, the glow building under her finger)
       if (x.ph !== "after") xFinger(c2, px, py, R, Math.min(1.06, z), fa*fin, ex, ey, go ? 1 : hk, P);
       if (!RMm && zE >= XG && x.ev.through){ const at = now - x.ev.through; if (at < 600){ const w2 = at/600; c2.strokeStyle = `rgba(255,250,236,${(1 - w2).toFixed(3)})`; c2.lineWidth = 2.4*(1 - w2) + .6; c2.beginPath(); c2.arc(rx, ry, R*1.1 + 40*ez(w2), 0, 6.283); c2.stroke(); glow(rx, ry, R*1.6 + 30*w2, .5*(1 - w2)); } }
-      if (x.ph === "hold"){ glow(x.hx, x.hy, 26 + 54*hk, .1 + .45*hk, "255,214,160"); glow(x.hx, x.hy, 10 + 14*hk, .35*hk); }
+      if (x.ph === "hold"){ glow(x.hx, x.hy, 26 + 54*hk, .1 + .45*hk, "255,214,160"); glow(x.hx, x.hy, 10 + 14*hk, .35*hk);
+        const pr = R*1.25 + 16, pe = ez(hk), a0 = -Math.PI/2; c2.lineCap = "round"; c2.strokeStyle = "rgba(255,226,180,.12)"; c2.lineWidth = 2; c2.beginPath(); c2.arc(x.hx, x.hy, pr, 0, 6.283); c2.stroke();   // v43.1: the progress glow, so she knows it's working
+        c2.strokeStyle = `rgba(255,232,190,${(.35 + .45*pe).toFixed(3)})`; c2.lineWidth = 2.4; c2.beginPath(); c2.arc(x.hx, x.hy, pr, a0, a0 + 6.283*pe); c2.stroke(); const hx2 = x.hx + Math.cos(a0 + 6.283*pe)*pr, hy2 = x.hy + Math.sin(a0 + 6.283*pe)*pr; glow(hx2, hy2, 9, .55); }
       if (x.ph === "offer" && x.rel){ const age = now - x.rel.t; if (age < 450) glow(x.rel.hx, x.rel.hy, 26 + 54*x.rel.k, (.1 + .45*x.rel.k)*(1 - age/450), "255,214,160"); }
       if (x.lean && !go){ const age = now - x.lean.t; if (age < 900) glow(x.lean.x, x.lean.y, 30, .16*(1 - age/900), "255,226,180"); }
       if (!go){ c2.restore(); return; }
       // the touch: the flare, two gold rings on the heartbeat, a burst of dust; his tip about 30% brighter
-      if (now < b(5) + 1000){ const w2 = (now - b(5))/1000; glow(x.fx, x.fy, 52 + 190*ez(w2), .62*(1 - w2)); }
+      if (now < b(5) + 1600){ const w2 = Math.max(0, (now - b(5))/1600), rise = Math.min(1, w2/.25); glow(x.fx, x.fy, 48 + 150*ez(w2), .34*ez(rise)*(1 - ez(w2))); }   // v43.1: the bloom swells in and lets go, never a hard flash
       if (fin > 0) glow(px, py, 62 + 6*Math.sin(now*6.283/4600), .3*fin, "255,206,120");
-      if (!RMm) for (const d0 of [0, 160]){ const w2 = (now - b(5) - d0)/700; if (w2 > 0 && w2 < 1){ c2.strokeStyle = `rgba(255,214,120,${(.9*(1 - w2)).toFixed(3)})`; c2.lineWidth = 2.2*(1 - w2) + .6; c2.beginPath(); c2.arc(x.fx, x.fy, 22 + 110*ez(w2), 0, 6.283); c2.stroke(); } }
+      if (!RMm) for (const d0 of [0, 160]){ const w2 = (now - b(5) - d0)/700; if (w2 > 0 && w2 < 1){ c2.strokeStyle = `rgba(255,222,150,${(.45*Math.sin(Math.PI*w2)).toFixed(3)})`; c2.lineWidth = 1.4; c2.beginPath(); c2.arc(x.fx, x.fy, 22 + 110*ez(w2), 0, 6.283); c2.stroke(); } }
       for (const d of x.burst){ const age = now - d.t0; if (age < 0 || age > 2400) continue; const s = age/16.7, dr = 1 - Math.exp(-s/40); c2.fillStyle = `rgba(255,214,130,${(.85*(1 - age/2400)).toFixed(3)})`; c2.beginPath(); c2.arc(d.x + d.vx*40*dr, d.y + d.vy*40*dr + .0008*s*s, d.r, 0, 6.283); c2.fill(); }
       if (now >= b(5) + 700 && xEv("dad", b(5) + 700)) momentCap("Your dad is on the other side.", 0, 2.6*B);
       // two beats up the thread to his light, one back to her finger; each lands on a beat
       for (const [k0, up] of [[6, 1], [7, 1], [8, 0]]){ const t0 = b(k0), t1 = b(k0 + 1); if (now >= t0 && now < t1 + 120){ const u = ez(Math.min(1, (now - t0)/(t1 - t0))); if (RMm){ if (u > .7) glow(up ? ex : px, up ? ey : py, 40, .5*(1 - (u - .7)/.3)); } else lineDot(u, up ? (k0 === 6 ? 1 : .8) : .85, !up); }
-        if (now >= t1 && xEv(up ? "up" + (k0 - 5) : "back", t1)){ const el = up ? e.n : jn.n; el.classList.add("answer"); setTimeout(() => el.classList.remove("answer"), 900); if (up) hbThump(0, .45); else { hbThump(0, .8); hbThump(.24, .55); xVibe([40, 100, 40]); x.backAt = now; } } }
+        if (now >= t1 && xEv(up ? "up" + (k0 - 5) : "back", t1)){ const el = up ? e.n : jn.n; el.classList.add("answer"); setTimeout(() => el.classList.remove("answer"), 900); if (up) hbThump(0, .45); else { xAnswer(); xVibe([40, 100, 40]); x.backAt = now; } } }
       if (x.backAt && now - x.backAt < 900){ const w2 = (now - x.backAt)/900; glow(px, py, 40 + 80*ez(w2), .5*(1 - w2)); }   // his beat arrives back in her fingertip
       // the light drifts home to him; his light takes it in
       for (const f of x.fly){ const u0 = (now - f.t0)/f.dur; if (u0 < 0 || u0 > 1) continue; const u = ez(u0), mx = (f.sx + ex)/2 - (ey - f.sy)/(Math.hypot(ex - f.sx, ey - f.sy) || 1)*f.side, my = (f.sy + ey)/2 + (ex - f.sx)/(Math.hypot(ex - f.sx, ey - f.sy) || 1)*f.side, [qx, qy] = qpt(f.sx, f.sy, mx, my, ex, ey, u), a = Math.sin(Math.PI*Math.min(1, u0*1.25))*.9;
@@ -1327,9 +1347,8 @@ This is our stamp.<br><b id="dad">Dad</b></div>
         if (g0 < 2200) glow(ex + dx/ln*16, ey + dy/ln*16, 34, .34*(1 - g0/2200));
         const gr = Math.min(1, g0/600), fo = now > b(18) ? Math.max(0, 1 - (now - b(18))/900) : 1; if (fo > 0){ c2.strokeStyle = `rgba(255,214,130,${(.55*fo).toFixed(3)})`; c2.lineWidth = 1; c2.beginPath(); c2.moveTo(ex, ey); c2.lineTo(ex + dx*gr, ey + dy*gr); c2.stroke(); }
         if (now >= b(16)) xEv("ball", b(16));
-        if (!RMm && now >= b(16) && now < b(18) + 100){ const out = now < b(17), u = ez(Math.min(1, out ? (now - b(16))/B : (now - b(17))/B)), vv0 = out ? u : 1 - u, mx0 = (ex + bx)/2, my0 = (ey + by)/2, o1x = mx0 - dy*.34, o1y = my0 + dx*.34, o2x = mx0 + dy*.34, o2y = my0 - dx*.34, f1 = Math.hypot(o1x - jx, o1y - jy) > Math.hypot(o2x - jx, o2y - jy), cq = f1 ? [o1x, o1y] : [o2x, o2y];   // the arc bows away from Jennifer's light
-          c2.strokeStyle = "rgba(255,226,170,.22)"; c2.lineWidth = 1; c2.beginPath(); c2.moveTo(ex, ey); c2.quadraticCurveTo(cq[0], cq[1], bx, by); c2.stroke();
-          for (let k = 4; k >= 0; k--){ const vv = Math.max(0, Math.min(1, vv0 - (out ? 1 : -1)*k*.025)), [qx, qy] = qpt(ex, ey, cq[0], cq[1], bx, by, vv); glow(qx, qy, (k ? 4 - k*.6 : 6)*2.2, k ? .35 - k*.06 : 1); } }
+        if (!RMm && now >= b(16) && now < b(18) + 100){ const out = now < b(17), u = easeIO(Math.min(1, out ? (now - b(16))/B : (now - b(17))/B)), BP = ballPath(ex, ey, bl, ox, oy, jx, jy);
+          drawBall(c2, BP, out ? u : 1 - u, out ? 1 : -1, 1, glow); }
         if (now >= b(17) && xEv("ballOut", b(17))){ bl.n.classList.add("answer"); setTimeout(() => bl.n.classList.remove("answer"), 900); }
         if (now >= b(18) && xEv("ballBack", b(18))) xSettle(false); }
       c2.restore();
@@ -1361,7 +1380,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
           r.px += (tgx - r.px)*L05; r.py += (tgy - r.py)*L05;
           const d = Math.hypot(r.fx - r.px, r.fy - r.py);
           if (!r.met && !r.out && !r.spoke && d < 60 && r.node.name !== "Edgardo"){ r.spoke = true; speakLine(r.node.name); }   // closing in: the lit person speaks once per reach
-          if (!r.met && !r.out && d < MEET_PX && k >= 1){ r.met = now; pattern(r.node.name === "Edgardo" ? [28,40,60,90,110,300,60,90,110] : [60,90,110,300,60,90,110]); { const rc = r.node.n.getBoundingClientRect(); portalMoment(rc.left + rc.width/2, rc.top + rc.height/2, r.node.name, "reach"); } if (r.node.name === "Edgardo"){ startMoment(r.node, {x: r.fx - ox, y: r.fy - oy}); startAlign(r, ox, oy); r.spoke = true; speakLine("Edgardo", "Align.", "I’m right here, anak."); }
+          if (!r.met && !r.out && d < MEET_PX && k >= 1){ r.met = now; pattern(r.node.name === "Edgardo" ? [28,40,60,90,110,300,60,90,110] : [60,90,110,300,60,90,110]); { const rc = r.node.n.getBoundingClientRect(); portalMoment(rc.left + rc.width/2, rc.top + rc.height/2, r.node.name, "reach"); } if (r.node.name === "Edgardo"){ startMoment(r.node, {x: r.fx - ox, y: r.fy - oy}); startAlign(r, ox, oy); r.spoke = true; speakLine("Edgardo"); }
             sparkle({getBoundingClientRect: () => ({left: r.fx-24, top: r.fy-24, width: 48, height: 48})}, 22, 80); }
           r.glow += ((r.met ? 1 : Math.max(0, 1 - d/320)) - r.glow)*L04;
           const fade = r.out ? Math.max(0, 1 - (now - r.out)/1200) : 1; if (!fade){ reach = null; emT0 = now; }
@@ -1691,6 +1710,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
 <!-- Bill Shaffer Sr. (billsr): his own data entry, code block and assets folder (legacy/billsr/). Self-contained; nothing above this line was changed for him. -->
 <script id="billsr">
 (() => {
+  if (!(window.LEGACY_FLAGS && window.LEGACY_FLAGS.billsr)) return;   // v43.1: off on the live site until William approves it (turn on with LEGACY_FLAGS.billsr = true)
   // ===== Bill Shaffer Sr.: his own data entry, code and assets (legacy/billsr/) =====
   // Kept apart from everything else: no other light's data is read or changed, and his light shows only in the Family tree.
   // Only documented facts and his own recorded voice. No generated voice or words, and no home addresses.
