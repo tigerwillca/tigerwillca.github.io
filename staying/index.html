@@ -23,7 +23,7 @@
 <meta property="og:url" content="https://tigerwillca.github.io/staying/">
 <meta name="twitter:card" content="summary_large_image">
 <!-- Private daily practice. Everything is saved only in this phone's localStorage. No analytics, no network calls.
-     Test: ?t=HH:MM sets the clock (period, light, 11:11). #today #thanks #family #healing open a tab. -->
+     Test: ?t=HH:MM sets the clock (period, light, 11:11). #today #flow #thanks #family #healing open a tab. ?pause opens Pause, ?flow opens Flow. -->
 <style>
 :root{--bg1:#f8e6d2;--bg2:#f3d2bd;--ink:#3b2a24;--soft:rgba(59,42,36,.68);--card:rgba(255,250,244,.62);--line:rgba(120,72,50,.18);
   --glow:#f2a65a;--glow2:#ffd79a;--btn:#b8643a;--btnInk:#fffaf2;--sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px)}
@@ -156,6 +156,28 @@ body.night .carry{background:rgba(255,200,140,.08)}
 .pz-foot{text-align:center;padding:8px 20px calc(var(--sab) + 16px)}
 .pz-foot button{min-height:48px;padding:0 20px;border-radius:999px;border:1.5px solid rgba(36,64,60,.25);background:rgba(255,255,255,.35);font-size:18px;font-weight:600;color:#24403c}
 .pz-foot div{font-size:15px;color:rgba(36,64,60,.6);margin-top:10px}
+.ahead{display:flex;gap:10px;align-items:center}
+.ahead input[type=text]{flex:1;font-size:19px;padding:11px 14px}
+.ahead button{flex:none;min-width:84px;min-height:50px;border-radius:999px;border:1.5px solid var(--glow);background:transparent;font-size:17px;font-weight:650;color:#8a4421}
+/* ---- Flow ---- */
+.flowhead h2{margin-bottom:6px}
+.cue{text-align:center}
+.cuebox{min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:20px;padding:16px;margin:4px 0 0;
+  background:radial-gradient(circle at 50% 40%,rgba(255,250,236,.95),rgba(255,222,170,.55) 70%,rgba(255,222,170,.2));transition:opacity .35s}
+.cuebox b{font-size:24px;line-height:1.3;margin-bottom:6px}
+.cuebox span{font-size:20px;line-height:1.5}
+.cuebox.fade{opacity:0}
+.practices{display:flex;flex-direction:column;gap:12px;margin:0 0 16px}
+.prac{display:flex;gap:14px;align-items:flex-start;width:100%;min-height:64px;text-align:left;border:1px solid var(--line);border-radius:22px;padding:16px 18px;
+  background:var(--card);box-shadow:0 6px 22px rgba(120,60,30,.07);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);transition:box-shadow .6s,border-color .6s}
+.prac:active{transform:scale(.99)}
+.prac i{flex:none;width:26px;height:26px;margin-top:3px;border-radius:50%;border:2px solid var(--line);background:rgba(255,255,255,.4);transition:all .8s}
+.prac b{display:block;font-size:21px;line-height:1.3;margin-bottom:4px}
+.prac span{display:block;font-size:19px;line-height:1.5;color:var(--soft)}
+.prac.lit{border-color:var(--glow);box-shadow:0 0 0 3px rgba(242,166,90,.14),0 6px 22px rgba(120,60,30,.07)}
+.prac.lit i{border-color:transparent;background:radial-gradient(circle,#fffbe8,var(--glow2) 50%,var(--glow));box-shadow:0 0 14px 4px rgba(255,196,110,.55)}
+body.night .cuebox{background:radial-gradient(circle at 50% 40%,rgba(255,220,170,.22),rgba(255,200,140,.08) 70%,rgba(255,200,140,0))}
+body.night .ahead button{color:#ffd59a}
 details.fast{font-size:16px;color:var(--soft);margin-top:18px;text-align:left;background:rgba(255,255,255,.25);border-radius:16px;padding:10px 14px}
 details.fast summary{font-weight:600;cursor:pointer}details.fast p{margin:8px 0 0}
 body.night details.fast{background:rgba(255,255,255,.06)}
@@ -195,6 +217,13 @@ body.night details.fast{background:rgba(255,255,255,.06)}
         <p>Amen. Go gently.</p>
         <button class="btn ghost" id="prayAgain" type="button">Change my prayer</button>
       </div>
+      <div class="card">
+        <p class="small" style="margin-bottom:8px"><label for="aheadIn">Today's three steps ahead:</label></p>
+        <div class="ahead">
+          <input type="text" id="aheadIn" placeholder="Optional. One line." maxlength="120" enterkeyhint="done">
+          <button id="aheadBtn" type="button">Save</button>
+        </div>
+      </div>
     </div>
 
     <div id="p-midday" hidden>
@@ -213,6 +242,14 @@ body.night details.fast{background:rgba(255,255,255,.06)}
           Open the <b>Clock</b> app. Add an alarm at noon. Name it "Still with You."<br>
           Or use <b>Shortcuts</b>: Automation, then Time of Day. Choose "Open URL" and paste this page's address.</div>
       </div>
+      <div class="card">
+        <div id="midAheadBox" hidden>
+          <h3>Today's three steps ahead:</h3>
+          <div class="quote" id="midAhead"></div>
+        </div>
+        <p class="small" id="midAheadNone">Three steps ahead. Feet right here.</p>
+        <button class="btn ghost" id="toFlow" type="button">Flow cue</button>
+      </div>
     </div>
 
     <div id="p-evening" hidden>
@@ -227,6 +264,20 @@ body.night details.fast{background:rgba(255,255,255,.06)}
         <p class="small" id="eveSaved" hidden></p>
       </div>
     </div>
+  </section>
+
+  <!-- FLOW -->
+  <section id="flow">
+    <div class="card flowhead">
+      <h2>Flow</h2>
+      <p>Three steps ahead.<br>Feet right here.</p>
+    </div>
+    <div class="card cue">
+      <div class="cuebox" id="cueBox"><span>One quick cue before you go in.</span></div>
+      <button class="btn" id="cueBtn" type="button">Flow cue</button>
+    </div>
+    <div class="practices" id="practices"></div>
+    <p class="small" id="flowNote" style="text-align:center"></p>
   </section>
 
   <!-- GRATITUDE -->
@@ -297,12 +348,14 @@ body.night details.fast{background:rgba(255,255,255,.06)}
       <p>This link opens Pause right away: <b>tigerwillca.github.io/staying/?pause</b></p>
       <p>In <b>Shortcuts</b>, make a shortcut with "Open URL" and that link.</p>
       <p>Then go to Settings, Accessibility, Touch, <b>Back Tap</b>. Pick your shortcut. Now a double tap on the back of the phone opens Pause.</p>
+      <p>Flow works the same way: <b>tigerwillca.github.io/staying/?flow</b></p>
     </details>
   </footer>
 </main>
 
 <nav>
   <button data-tab="today" type="button"><span>&#9728;</span>Today</button>
+  <button data-tab="flow" type="button"><span>&#187;</span>Flow</button>
   <button data-tab="thanks" type="button"><span>&#10047;</span>Thanks</button>
   <button data-tab="family" type="button"><span>&#9825;</span>Family</button>
   <button data-tab="healing" type="button"><span>&#10022;</span>Healing</button>
@@ -402,7 +455,7 @@ function paint(){
 }
 
 /* ---------- tabs ---------- */
-const TABS=['today','thanks','family','healing'];
+const TABS=['today','flow','thanks','family','healing'];
 function show(tab){if(!TABS.includes(tab))tab='today';
   TABS.forEach(t=>$(t).classList.toggle('on',t===tab));
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.tab===tab));
@@ -431,6 +484,8 @@ function renderToday(){
   $('midPrayer').hidden=!D.prayer;$('midPrayer').textContent=D.prayer||'';$('midNone').hidden=!!D.prayer;
   const L=$('lights');L.innerHTML='';(D.still||[]).forEach(ts=>{const s=document.createElement('span');s.className='dot';s.innerHTML='<i></i>';s.append(fmtTime(ts));L.appendChild(s)});
   const c=(D.still||[]).length;$('lightsNote').textContent=c?(c===1?'One light today.':c+' lights today.'):'Your lights will show here.';
+  if(document.activeElement!==$('aheadIn'))$('aheadIn').value=D.ahead||'';
+  $('midAheadBox').hidden=!D.ahead;$('midAhead').textContent=D.ahead||'';$('midAheadNone').hidden=!!D.ahead;
   // evening
   if(document.activeElement!==$('well'))$('well').value=D.well||'';
   if(document.activeElement!==$('carry'))$('carry').value=D.carry||'';
@@ -441,6 +496,40 @@ $('amen').addEventListener('click',()=>{const v=$('prayer').value.trim();if(!v){
 $('prayAgain').addEventListener('click',()=>{editing=true;$('prayer').value=day().prayer||'';renderToday();$('prayer').focus()});
 $('still').addEventListener('click',()=>{const D=day();(D.still=D.still||[]).push(now().getTime());save();renderToday()});
 $('saveEve').addEventListener('click',()=>{const D=day();D.well=$('well').value.trim();D.carry=$('carry').value.trim();D.eveAt=now().getTime();save();renderToday()});
+
+function saveAhead(){const D=day(),v=$('aheadIn').value.trim();if(v)D.ahead=v;else delete D.ahead;save();renderToday();
+  const b=$('aheadBtn');b.textContent=v?'Saved':'Save';$('aheadIn').blur();setTimeout(()=>b.textContent='Save',1800)}
+$('aheadBtn').addEventListener('click',saveAhead);
+$('aheadIn').addEventListener('keydown',e=>{if(e.key==='Enter')saveAhead()});
+
+/* ---------- flow: three steps ahead, feet right here ---------- */
+const FLOW=[
+  ['walk','Before you walk in',['One breath.','Notice the room:','who, mood, what\u2019s needed.']],
+  ['three','Three moves',['What happens next?','And after that? And after that?','Then come back to now.']],
+  ['flash','Flash the light',['Say the one useful thing at the right moment.','Then stop. Less is more.']],
+  ['pause','Hold the pause',['Let a beat pass before you answer.','Silence reads as confidence.']],
+  ['notice','Notice first',['Name one thing others missed:','a need, a detail.','Quietly handle it.']],
+  ['leave','Leave early, leave strong',['Exit on a high note.']],
+  ['reset','Reset',['Overthinking?','Hand on chest. Feel your feet.','One word: \u201cNow.\u201d']]];
+function F(){const D=day();return D.flow||(D.flow={})}
+function linesEl(tag,lines){const e=document.createElement(tag);lines.forEach((l,i)=>{if(i)e.appendChild(document.createElement('br'));e.append(l)});return e}
+function renderFlow(){
+  const f=(S.days[today()]||{}).flow||{},P=$('practices');P.innerHTML='';
+  FLOW.forEach(([id,title,lines])=>{const b=document.createElement('button');b.type='button';b.className='prac'+(f[id]?' lit':'');
+    b.setAttribute('aria-pressed',f[id]?'true':'false');
+    const t=document.createElement('div'),h=document.createElement('b');h.textContent=title;t.append(h,linesEl('span',lines));
+    b.append(document.createElement('i'),t);
+    b.addEventListener('click',()=>{const x=F();x[id]=!x[id];if(!x[id])delete x[id];save();renderFlow()});P.appendChild(b)});
+  const n=FLOW.filter(a=>f[a[0]]).length;
+  $('flowNote').textContent=n?(n===1?'One practice lit today.':n+' practices lit today.'):'Tap a card when you use it.';
+}
+let lastCue=-1,cueT=null;
+function flowCue(){let i;do{i=Math.floor(Math.random()*FLOW.length)}while(FLOW.length>1&&i===lastCue);lastCue=i;
+  const box=$('cueBox');box.classList.add('fade');clearTimeout(cueT);
+  cueT=setTimeout(()=>{box.innerHTML='';const h=document.createElement('b');h.textContent=FLOW[i][1];box.append(h,linesEl('span',FLOW[i][2]));
+    box.classList.remove('fade');$('cueBtn').textContent='Another cue'},180)}
+$('cueBtn').addEventListener('click',flowCue);
+$('toFlow').addEventListener('click',()=>{show('flow');flowCue()});
 
 /* ---------- gratitude ---------- */
 function renderThanks(){
@@ -503,9 +592,11 @@ $('export').addEventListener('click',async()=>{
   const out=['Staying In It: my words',''];
   Object.keys(S.days).sort().forEach(k=>{const D=S.days[k],L=[];
     if(D.prayer)L.push('Morning prayer ('+fmtTime(D.prayerAt)+'): '+D.prayer);
+    if(D.ahead)L.push('Three steps ahead: '+D.ahead);
     if(D.still&&D.still.length)L.push('Still with You: '+D.still.map(fmtTime).join(', '));
     if(D.well)L.push('What went well: '+D.well);
     if(D.carry)L.push('Carry forward: '+D.carry);
+    if(D.flow){const fl=FLOW.filter(a=>D.flow[a[0]]).map(a=>a[1]);if(fl.length)L.push('Flow: '+fl.join(', '))}
     (D.thanks||[]).forEach(x=>L.push('Thankful: '+x.text));
     const h=D.heal;if(h){const p=AREAS.filter(a=>h.pray[a[0]]).map(a=>a[1]);if(p.length)L.push('Healing prayers: '+p.join(', '));
       if(h.still)L.push('Was still for 30 seconds');if(h.thankful)L.push("Today I'm thankful my body "+h.thankful);
@@ -559,8 +650,8 @@ $('pzDriveBack').addEventListener('click',pzBreathe);
 addEventListener('keydown',e=>{if(e.key==='Escape'&&$('pause').classList.contains('on'))closePause()});
 
 /* ---------- start ---------- */
-function renderAll(){paint();renderToday();renderThanks();renderHeal();renderWeek();check1111()}
-showPeriod(P);show(location.hash.slice(1));renderAll();
+function renderAll(){paint();renderToday();renderFlow();renderThanks();renderHeal();renderWeek();check1111()}
+showPeriod(P);show(Q.has('flow')?'flow':location.hash.slice(1));renderAll();
 let lastP=P;setInterval(()=>{const p=period(now());if(p!==lastP){lastP=p;showPeriod(p)}paint();check1111()},20000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)renderAll()});
 addEventListener('hashchange',()=>show(location.hash.slice(1)));
