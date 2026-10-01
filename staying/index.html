@@ -32,7 +32,7 @@ html{background:var(--bg2)}
 body{min-height:100dvh;color:var(--ink);background:linear-gradient(180deg,var(--bg1) 0%,var(--bg2) 100%) fixed;
   font:400 21px/1.55 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Verdana,sans-serif;letter-spacing:.012em;word-spacing:.06em;
   transition:background 2s,color 2s;-webkit-text-size-adjust:100%}
-main{max-width:520px;margin:0 auto;padding:calc(var(--sat) + 18px) 20px calc(var(--sab) + 108px)}
+main{max-width:520px;margin:0 auto;padding:0 20px calc(var(--sab) + 108px)}
 h1{font-size:15px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--soft);margin:4px 2px 2px}
 .when{font-size:17px;color:var(--soft);margin:0 2px 16px}
 h2{font-size:29px;line-height:1.25;font-weight:650;margin:6px 0 14px}
@@ -115,16 +115,58 @@ body.night{--ink:#f6e8da;--soft:rgba(246,232,218,.7);--card:rgba(60,40,52,.55);-
 body.night textarea,body.night input[type=text]{background:rgba(255,255,255,.08)}
 body.night nav{background:rgba(40,28,38,.85)}
 body.night nav button{color:rgba(246,232,218,.6)}body.night nav button.on{color:#ffd59a}
-body.night .count,body.night .amen,body.night .circle{color:#ffd59a}
+body.night .count,body.night .amen{color:#ffd59a}
 body.night .tip{background:rgba(255,255,255,.06)}
 body.night a.link{background:rgba(255,255,255,.06)}
 body.night .care button{background:rgba(255,255,255,.06)}
 body.night .care button.on{background:rgba(155,181,122,.25);color:#e6f2d4}
 body.night .carry{background:rgba(255,200,140,.08)}
+/* ---- Pause ---- */
+.pausebar{position:sticky;top:0;z-index:4;margin:0 -20px 12px;padding:calc(var(--sat) + 10px) 20px 8px;background:var(--bg1);transition:background 2s;
+  box-shadow:0 12px 14px -14px rgba(0,0,0,.25)}
+#pauseBtn{display:flex;align-items:center;justify-content:center;gap:14px;width:100%;min-height:62px;border:0;border-radius:999px;background:#5d8a84;color:#fff;
+  font-size:25px;font-weight:650;letter-spacing:.08em;box-shadow:0 6px 18px rgba(50,96,90,.3)}
+#pauseBtn:active{transform:scale(.985)}
+.bars{display:inline-flex;gap:6px}.bars i{display:block;width:6px;height:22px;border-radius:3px;background:#fff}
+#weekCount{text-align:center;font-size:15px;color:var(--soft);margin-top:6px}
+#pause{position:fixed;inset:0;z-index:30;display:none;flex-direction:column;background:linear-gradient(180deg,#eef4f0 0%,#d5e5e0 100%);color:#24403c;overflow-y:auto}
+#pause.on{display:flex;animation:fadein .6s ease}
+.pz-top{display:flex;justify-content:space-between;align-items:center;padding:calc(var(--sat) + 12px) 18px 4px}
+.pz-top b{font-size:15px;letter-spacing:.2em;text-transform:uppercase;color:rgba(36,64,60,.6)}
+.pz-x{min-height:46px;padding:0 18px;border-radius:999px;border:1.5px solid rgba(36,64,60,.25);background:rgba(255,255,255,.4);font-size:17px;font-weight:600;color:#24403c}
+.pz-step{flex:1;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8px 26px}
+.pz-step.on{display:flex;animation:in .6s ease}
+.pz-step h2{font-size:32px;line-height:1.3;margin:0 0 10px}
+.pz-step p{font-size:22px;line-height:1.5;max-width:400px}
+.pz-circle{width:190px;height:190px;border-radius:50%;margin:0 0 26px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:600;color:#2f5a54;
+  background:radial-gradient(circle,rgba(255,255,255,.95),rgba(190,222,212,.85) 60%,rgba(93,138,132,.25));box-shadow:0 0 44px 12px rgba(150,200,188,.45);transform:scale(.7);transition:transform 5s ease-in-out}
+.pz-circle.in{transform:scale(1)}
+.pz-n{font-size:16px;font-weight:600;letter-spacing:.14em;color:rgba(36,64,60,.6);margin-bottom:18px}
+.pz-dots{display:flex;gap:8px;justify-content:center;margin-bottom:14px}.pz-dots i{width:10px;height:10px;border-radius:50%;background:rgba(36,64,60,.18)}.pz-dots i.on{background:#5d8a84}
+.pz-q{font-size:31px;line-height:1.32;font-weight:650;max-width:420px}
+.pz-hint{font-size:19px!important;color:rgba(36,64,60,.7);margin-top:14px}
+.pz-btn{display:block;width:100%;max-width:400px;min-height:60px;margin-top:22px;border:0;border-radius:999px;background:#5d8a84;color:#fff;font-size:22px;font-weight:650;box-shadow:0 6px 18px rgba(50,96,90,.25)}
+.pz-btn:disabled{opacity:.55;box-shadow:none}
+.pz-btn.ghost{background:transparent;color:#24403c;border:1.5px solid rgba(36,64,60,.3);box-shadow:none;font-weight:550;font-size:19px;margin-top:12px}
+#pzNote{max-width:400px;background:rgba(255,255,255,.75);color:#24403c;border-color:rgba(36,64,60,.2);margin-top:6px}
+.pz-label{font-size:19px;font-weight:600;margin-top:4px;align-self:center}
+.pz-glow{width:140px;height:140px;border-radius:50%;margin-bottom:26px;background:radial-gradient(circle,#fff 0%,#fff6dc 40%,rgba(200,230,215,.6) 65%,rgba(200,230,215,0) 72%);animation:pzglow 5s ease-in-out infinite}
+@keyframes pzglow{50%{transform:scale(1.08);filter:brightness(1.06)}}
+.pz-lines{font-size:28px!important;line-height:1.7!important;font-weight:600}
+.pz-foot{text-align:center;padding:8px 20px calc(var(--sab) + 16px)}
+.pz-foot button{min-height:48px;padding:0 20px;border-radius:999px;border:1.5px solid rgba(36,64,60,.25);background:rgba(255,255,255,.35);font-size:18px;font-weight:600;color:#24403c}
+.pz-foot div{font-size:15px;color:rgba(36,64,60,.6);margin-top:10px}
+details.fast{font-size:16px;color:var(--soft);margin-top:18px;text-align:left;background:rgba(255,255,255,.25);border-radius:16px;padding:10px 14px}
+details.fast summary{font-weight:600;cursor:pointer}details.fast p{margin:8px 0 0}
+body.night details.fast{background:rgba(255,255,255,.06)}
 </style>
 </head>
 <body>
 <main>
+  <div class="pausebar">
+    <button id="pauseBtn" type="button" aria-label="Pause"><span class="bars"><i></i><i></i></span>Pause</button>
+    <div id="weekCount"></div>
+  </div>
   <h1>Staying In It</h1>
   <div class="when" id="when"></div>
 
@@ -251,6 +293,11 @@ body.night .carry{background:rgba(255,200,140,.08)}
   <footer>
     <div>Your words stay on this phone.</div>
     <button class="btn ghost" id="export" type="button">Export .txt</button>
+    <details class="fast"><summary>Open Pause fast</summary>
+      <p>This link opens Pause right away: <b>tigerwillca.github.io/staying/?pause</b></p>
+      <p>In <b>Shortcuts</b>, make a shortcut with "Open URL" and that link.</p>
+      <p>Then go to Settings, Accessibility, Touch, <b>Back Tap</b>. Pick your shortcut. Now a double tap on the back of the phone opens Pause.</p>
+    </details>
   </footer>
 </main>
 
@@ -260,6 +307,53 @@ body.night .carry{background:rgba(255,200,140,.08)}
   <button data-tab="family" type="button"><span>&#9825;</span>Family</button>
   <button data-tab="healing" type="button"><span>&#10022;</span>Healing</button>
 </nav>
+
+<div id="pause" role="dialog" aria-label="Pause" aria-modal="true">
+  <div class="pz-top"><b>Pause</b><button class="pz-x" id="pzClose" type="button">Close</button></div>
+
+  <div class="pz-step" id="pz-breathe">
+    <div class="pz-circle" id="pzCircle">Breathe in</div>
+    <h2>Breathe.</h2>
+    <p>You don't have to decide this second.</p>
+    <button class="pz-btn" id="pzGo" type="button" disabled>10</button>
+  </div>
+
+  <div class="pz-step" id="pz-q">
+    <div class="pz-dots" id="pzDots"><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="pz-n" id="pzN"></div>
+    <div class="pz-q" id="pzQ"></div>
+    <p class="pz-hint" id="pzHint" hidden></p>
+    <button class="pz-btn" id="pzNext" type="button">Next</button>
+  </div>
+
+  <div class="pz-step" id="pz-choose">
+    <h2>What will you do?</h2>
+    <label class="pz-label" for="pzNote">What was the decision?</label>
+    <input type="text" id="pzNote" placeholder="Optional. One line." maxlength="160" enterkeyhint="done">
+    <button class="pz-btn" id="pzWait" type="button">I'll wait</button>
+    <button class="pz-btn ghost" id="pzClear" type="button">It's clear, I'm free to go ahead</button>
+  </div>
+
+  <div class="pz-step" id="pz-done">
+    <div class="pz-glow" id="pzGlow"></div>
+    <h2 id="pzDoneT"></h2>
+    <p class="small" id="pzDoneC" style="font-size:18px;color:rgba(36,64,60,.65)"></p>
+    <button class="pz-btn" id="pzDone" type="button">Done</button>
+  </div>
+
+  <div class="pz-step" id="pz-drive">
+    <h2>Before I drive</h2>
+    <p class="pz-lines">Phone down.<br>Speed easy.<br>Papers with me.<br>Breathe.</p>
+    <button class="pz-btn" id="pzDriveOk" type="button">Ready</button>
+    <p class="small" id="pzDriveDone" hidden style="font-size:19px;margin-top:16px;color:rgba(36,64,60,.7)">Drive gently.</p>
+    <button class="pz-btn ghost" id="pzDriveBack" type="button">Back to Pause</button>
+  </div>
+
+  <div class="pz-foot">
+    <button id="pzDrive" type="button">Before I drive</button>
+    <div>A pause, not legal advice.</div>
+  </div>
+</div>
 
 <div id="eleven" role="dialog" aria-label="11:11">
   <div class="g"></div>
@@ -417,17 +511,62 @@ $('export').addEventListener('click',async()=>{
       if(h.still)L.push('Was still for 30 seconds');if(h.thankful)L.push("Today I'm thankful my body "+h.thankful);
       const c=CARE.filter(a=>h.care[a[0]]).map(a=>a[1]);if(c.length)L.push('Caring: '+c.join(', '))}
     if(L.length){out.push('== '+fmtDay(k)+' ==',...L,'')}});
+  const fmtAt=ts=>new Date(ts).toLocaleDateString([], {month:'short',day:'numeric'})+' '+fmtTime(ts);
+  if(S.pauses.length){out.push('== Pauses ==');S.pauses.forEach(p=>out.push(fmtAt(p.at)+': '+(p.choice==='waited'?'paused and waited':'clear, went ahead')+(p.note?' ('+p.note+')':'')));out.push('')}
+  if(S.drives.length){out.push('== Before I drive ==');S.drives.forEach(d=>out.push(fmtAt(d.at)+': ready'));out.push('')}
   const txt=out.join('\n'),name='staying-'+today()+'.txt';
   try{const f=new File([txt],name,{type:'text/plain'});if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:'Staying In It'});return}}catch(e){if(e&&e.name==='AbortError')return}
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type:'text/plain'}));a.download=name;document.body.appendChild(a);a.click();
   setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000)});
 
+/* ---------- Pause: a moment before a decision (not legal advice) ---------- */
+S.pauses=S.pauses||[];S.drives=S.drives||[];
+const PQ=[['Is this fully legal and above board?',''],['Would I be okay if this was seen in the light, by anyone?',''],
+  ['Does this protect my freedom and my family, or risk them?',''],['Can this wait 24 hours?',''],['Who could I ask first?','Someone I trust, or a professional.']];
+let pzTimer=null,pzI=0;
+function weekStart(){const d=now();d.setHours(0,0,0,0);d.setDate(d.getDate()-((d.getDay()+6)%7));return d.getTime()}  // Monday
+function weekPauses(){const w=weekStart();return S.pauses.filter(p=>p.at>=w).length}
+function weekText(){const n=weekPauses();return n===0?'Pausing is a strength.':n===1?'You paused once this week. Good.':'You paused '+n+' times this week. That\u2019s wisdom.'}
+function renderWeek(){$('weekCount').textContent=weekText()}
+function pzStep(id){document.querySelectorAll('.pz-step').forEach(x=>x.classList.toggle('on',x.id===id));$('pzDrive').hidden=id==='pz-drive';$('pause').scrollTop=0}
+function pzBreathe(){
+  pzStep('pz-breathe');clearInterval(pzTimer);let n=10;const c=$('pzCircle'),b=$('pzGo');
+  b.disabled=true;b.textContent='10';c.classList.remove('in');c.textContent='Breathe in';
+  setTimeout(()=>c.classList.add('in'),60);
+  pzTimer=setInterval(()=>{n--;if(n===5){c.classList.remove('in');c.textContent='Breathe out'}
+    if(n>0)b.textContent=n;else{clearInterval(pzTimer);pzTimer=null;c.textContent='Still';b.disabled=false;b.textContent='Continue'}},1000)}
+function pzShowQ(i){pzI=i;pzStep('pz-q');$('pzN').textContent=(i+1)+' of '+PQ.length;$('pzQ').textContent=PQ[i][0];
+  $('pzHint').hidden=!PQ[i][1];$('pzHint').textContent=PQ[i][1];
+  document.querySelectorAll('#pzDots i').forEach((d,k)=>d.classList.toggle('on',k<=i));$('pzNext').textContent=i<PQ.length-1?'Next':'I\u2019ve thought about it'}
+function openPause(){$('pause').classList.add('on');document.body.style.overflow='hidden';$('pzNote').value='';$('pzDriveDone').hidden=true;pzBreathe()}
+function closePause(){$('pause').classList.remove('on');document.body.style.overflow='';clearInterval(pzTimer);pzTimer=null;
+  if(Q.has('pause')){Q.delete('pause');const q=Q.toString();history.replaceState(null,'',location.pathname+(q?'?'+q:'')+location.hash)}renderWeek()}
+function pzLog(choice){S.pauses.push({at:now().getTime(),choice,note:$('pzNote').value.trim()});save();renderWeek();
+  $('pzGlow').hidden=choice!=='waited';
+  $('pzDoneT').textContent=choice==='waited'?'Wise. Your freedom stays with you.':'Noted. Go in peace.';
+  $('pzDoneC').textContent=weekText();pzStep('pz-done')}
+$('pauseBtn').addEventListener('click',openPause);
+$('pzClose').addEventListener('click',closePause);
+$('pzDone').addEventListener('click',closePause);
+$('pzGo').addEventListener('click',()=>pzShowQ(0));
+$('pzNext').addEventListener('click',()=>pzI<PQ.length-1?pzShowQ(pzI+1):pzStep('pz-choose'));
+$('pzWait').addEventListener('click',()=>pzLog('waited'));
+$('pzClear').addEventListener('click',()=>pzLog('clear'));
+$('pzNote').addEventListener('keydown',e=>{if(e.key==='Enter')e.target.blur()});
+$('pzDrive').addEventListener('click',()=>{clearInterval(pzTimer);pzTimer=null;$('pzDriveDone').hidden=true;$('pzDriveOk').disabled=false;$('pzDriveOk').textContent='Ready';pzStep('pz-drive')});
+$('pzDriveOk').addEventListener('click',()=>{S.drives.push({at:now().getTime()});save();$('pzDriveDone').hidden=false;$('pzDriveOk').disabled=true;$('pzDriveOk').textContent='Ready \u2713'});
+$('pzDriveBack').addEventListener('click',pzBreathe);
+addEventListener('keydown',e=>{if(e.key==='Escape'&&$('pause').classList.contains('on'))closePause()});
+
 /* ---------- start ---------- */
-function renderAll(){paint();renderToday();renderThanks();renderHeal();check1111()}
+function renderAll(){paint();renderToday();renderThanks();renderHeal();renderWeek();check1111()}
 showPeriod(P);show(location.hash.slice(1));renderAll();
 let lastP=P;setInterval(()=>{const p=period(now());if(p!==lastP){lastP=p;showPeriod(p)}paint();check1111()},20000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)renderAll()});
 addEventListener('hashchange',()=>show(location.hash.slice(1)));
+if('scrollRestoration' in history)history.scrollRestoration='manual';
+addEventListener('load',()=>setTimeout(()=>scrollTo(0,0),0));  // tabs use #hash; don't jump under the Pause bar
+if(Q.has('pause'))openPause();
 if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
 })();
 </script>
