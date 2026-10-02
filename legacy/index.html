@@ -1139,7 +1139,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     function hbSound(beats){ const n = performance.now(); if (n - hbSndAt < 250) return; hbSndAt = n; if (beats.length > 1) beats.forEach((b, i) => hbThump(b/1000, i ? .7 : 1)); else { hbThump(beats[0]/1000, 1); hbThump(beats[0]/1000 + .22, .65); } }
     // the partner thread: William's door runs along the Edgardo-William thread; otherwise Jennifer's
     function startAlign(r, ox, oy){ const jn = sigNodes[0], meEl = $("sigwrap").querySelector(".sn.me"), now = performance.now(), bil = sigNodes.find(o => o.name === "Billy"), pn = dkey === "will" && meEl ? {x: sigC.x, y: sigC.y, n: meEl, name: "William"} : dkey === "billy" && bil ? bil : jn && jn.name === "Jennifer" ? jn : null; align = {t0: now, x: r.fx - ox, y: r.fy - oy, node: r.node, jn: pn, bn: sigNodes.find(o => o.name === "Billy"), ans: false};
-      if (!RM.matches){ const cr = []; for (let i = 0, n = 9 + Math.floor(Math.random()*3); i < n; i++){ let a = i/n*6.283 + Math.random()*.5, x = 0, y = 0; const ray = [0, 0], L = 46 + Math.random()*80;   // the glass gives: jagged cracks from the touch
+      if (!RM.matches && dkey !== "jen"){ const cr = []; for (let i = 0, n = 9 + Math.floor(Math.random()*3); i < n; i++){ let a = i/n*6.283 + Math.random()*.5, x = 0, y = 0; const ray = [0, 0], L = 46 + Math.random()*80;   // the glass gives: jagged cracks from the touch
           for (let k = 0; k < 4; k++){ a += (Math.random() - .5)*.6; x += Math.cos(a)*L/4; y += Math.sin(a)*L/4; ray.push(x, y); } cr.push(ray); } align.cracks = cr; }
       alignLog.push({t: now, jen: !!pn && pn.name === "Jennifer", with: pn && pn.name, crack: !!align.cracks}); if (dkey === "jen"){ const lg = alignLog[alignLog.length - 1]; setTimeout(() => { if (align && align.t0 === now){ momentCap("Your dad is on the other side.", 350, 3700); lg.dad = true; } }, 1600); }   // once per reach, after "Align."
       if (pn && pn.name === "Billy"){ pn.n.classList.add("meet"); (pn.lines || []).forEach(l => l.classList && l.classList.contains("eb") && l.classList.add("meet")); } if (alignLog.length > 8) alignLog.shift();
@@ -1174,10 +1174,10 @@ This is our stamp.<br><b id="dad">Dad</b></div>
           drawBall(c2, BP, out ? u : 1 - u, out ? 1 : -1, 1, gl2); } else if (la > 0) drawBall(c2, BP, -1, 1, la, () => {});
         if (t >= 3600 && t < 4100){ const w = (t - 3600)/500; c2.strokeStyle = `rgba(255,226,170,${1 - w})`; c2.lineWidth = 1.4; c2.beginPath(); c2.arc(ex, ey, 14 + 40*w, 0, 6.283); c2.stroke(); } }
       c2.restore(); }
-    // ===== Jennifer's crossing (?d=jen), v43: the finger through the glass.
+    // ===== Jennifer's crossing (?d=jen), v44: the finger pressing on the glass.
     // The glass breathes; a ripple of light runs out from the middle as if the screen were a membrane; fine dust hangs in it.
-    // Her dad's finger, made only of warm light, slowly comes through toward her: blurred and cool behind the glass, sharp, warm and
-    // close in front of it, with a soft shadow on the glass, a rim of light and a small living tremble. "Reach for him."
+    // Her dad's finger, made only of warm light, slowly comes toward her from behind the glass and presses against it from inside:
+    // the glass bulges toward her like a soft membrane over his fingertip and never breaks. A small living tremble. "Raise your finger to his."
     // She holds her fingertip anywhere near his for ~0.6 s (the glow builds under her finger) and they touch: a heartbeat in her hand,
     // a flare from the touch, two beats up the thread to his light and one beat back. The finger stays a few seconds, then dissolves
     // into light that drifts home to him. "Align 👉👈", then JENNIFER_LINE if it's set. His father's star, his grandson, the football.
@@ -1220,7 +1220,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       if (!RMm){ const Rm = Math.hypot(W, H)*.75; [[0, 1], [420, .7], [900, .45]].forEach(([d, a]) => X.rip.push({x: X.c.x, y: X.c.y, t0: now + X.T.rp + d, dur: 2900, R: Rm, a, cs: Math.random()*6.283})); }
       for (let i = 0, n = RMm ? 0 : matchMedia("(pointer:coarse)").matches ? 54 : 80; i < n; i++) X.motes.push({x: Math.random(), y: Math.random(), z: .3 + Math.random()*.7, ph: Math.random()*6.283, s: .4 + Math.random()*1.1});
       html.dataset.xing = "1"; v.classList.add("xdark"); v.classList.remove("xmeet"); xFilter(false); if (e) e.n.classList.add("xe"); v.querySelectorAll(".xlit,.xwarm,.xkeep,.answer").forEach(el => el.classList.remove("xlit", "xwarm", "xkeep", "answer")); $("xfa") && $("xfa").classList.remove("on");
-      $("sighint").textContent = "Reach for him."; $("sighint").style.opacity = 0; clearTimeout(capT); $("sigcap").textContent = ""; $("sigcap").classList.remove("fade"); xUI(false);
+      $("sighint").textContent = "Raise your finger to his."; $("sighint").style.opacity = 0; clearTimeout(capT); $("sigcap").textContent = ""; $("sigcap").classList.remove("fade"); xUI(false);
       try { if (ac) muffle(true); } catch(err){} xLog.push({ev: "intro", t: now}); if (xLog.length > 80) xLog.shift(); }   // the music waits behind the glass until they touch
     const xEv = (k, at) => { if (X.ev[k]) return false; X.ev[k] = at; X.log.push({ev: k, t: performance.now(), at}); xLog.push({ev: k, t: performance.now(), at}); if (xLog.length > 80) xLog.shift(); return true; };
     // her touch: anywhere near his fingertip counts; elsewhere the finger just leans toward her and the hint comes back
@@ -1255,13 +1255,13 @@ This is our stamp.<br><b id="dad">Dad</b></div>
         g.filter = "none"; const N = r > 6 ? 40 : 24; g.globalCompositeOperation = "lighter"; g.globalAlpha = 1/N; for (let i = 0; i < N; i++){ const rr = r*Math.sqrt((i + .5)/N), a = i*2.39996; g.drawImage(src, Math.cos(a)*rr, Math.sin(a)*rr); } return c; };   // otherwise an average of shifted copies
       xSP = {R0, cx, cy, front: soften(paint(false), 3.5), back: soften(paint(true), 16)}; return xSP; }
     function xFinger(c2, px, py, R, z, a, ex, ey, gk, P){ if (a <= .003) return; const k = z > XG ? Math.min(1, (z - XG)/(1 - XG)) : 0, ang = Math.atan2(ey - py, ex - px), sp = xSprites(), kf = ez((z - (XG - .14))/.22), ab = a*(.5 + .5*Math.min(1, z/XG));
-      if (k > 0){ c2.globalCompositeOperation = "source-over"; const sx = px + (4 + 14*k) - P.x*7*k, sy = py + (7 + 20*k) - P.y*7*k, sr = R*(1.35 + .55*k), sg = c2.createRadialGradient(sx, sy, 0, sx, sy, sr); sg.addColorStop(0, `rgba(0,0,0,${(.5*k*a).toFixed(3)})`); sg.addColorStop(1, "rgba(0,0,0,0)"); c2.fillStyle = sg; c2.beginPath(); c2.arc(sx, sy, sr, 0, 6.283); c2.fill();   // its soft shadow on the glass, further off the closer it comes
-        const bx = sx + Math.cos(ang)*R*1.4, by = sy + Math.sin(ang)*R*1.4, bg = c2.createRadialGradient(bx, by, 0, bx, by, sr*1.1); bg.addColorStop(0, `rgba(0,0,0,${(.28*k*a).toFixed(3)})`); bg.addColorStop(1, "rgba(0,0,0,0)"); c2.fillStyle = bg; c2.beginPath(); c2.arc(bx, by, sr*1.1, 0, 6.283); c2.fill(); c2.globalCompositeOperation = "lighter"; }
+      if (k > 0){ const Rd = R*(1.45 + .45*k); c2.globalCompositeOperation = "source-over"; c2.strokeStyle = `rgba(0,0,0,${(.22*k*a).toFixed(3)})`; c2.lineWidth = 8; c2.beginPath(); c2.arc(px, py, Rd + 4, 0, 6.283); c2.stroke(); c2.globalCompositeOperation = "lighter";   // v44: he stays inside; the glass stretches toward her over his fingertip (a soft trough where the membrane lifts)
+        const mx = px - P.x*R*.25 - R*.3, my = py - P.y*R*.25 - R*.35, mg = c2.createRadialGradient(mx, my, 0, px, py, Rd); mg.addColorStop(0, `rgba(232,236,255,${(.14*k*a).toFixed(3)})`); mg.addColorStop(.7, `rgba(200,210,255,${(.05*k*a).toFixed(3)})`); mg.addColorStop(1, "rgba(190,200,255,0)"); c2.fillStyle = mg; c2.beginPath(); c2.arc(px, py, Rd, 0, 6.283); c2.fill(); }   // the bulge itself: a faint film of glass over him, lit from above
       const hr = R*(2.6 + 1.1*gk), hg = c2.createRadialGradient(px, py, 0, px, py, hr); hg.addColorStop(0, `rgba(255,214,150,${((.12 + .16*gk)*ab).toFixed(3)})`); hg.addColorStop(1, "rgba(255,200,120,0)"); c2.fillStyle = hg; c2.beginPath(); c2.arc(px, py, hr, 0, 6.283); c2.fill();   // the glow around the fingertip
       c2.save(); c2.translate(px, py); c2.rotate(ang + Math.PI/2); const sc = R/sp.R0; c2.scale(sc, sc*(1.1 - .22*Math.min(1, z)));   // the body points back toward his light, a little foreshortened as it nears her
-      if (kf < 1){ c2.globalAlpha = Math.min(1, ab*(1 - kf)*.85); c2.drawImage(sp.back, -sp.cx, -sp.cy); } if (kf > 0){ c2.globalAlpha = Math.min(1, a*kf); c2.drawImage(sp.front, -sp.cx, -sp.cy); } c2.restore();   // blur to sharp, cool to warm, as it comes through the glass
-      if (k > 0){ c2.strokeStyle = `rgba(255,244,226,${(.5*k*a).toFixed(3)})`; c2.lineWidth = 1.3; c2.beginPath(); c2.arc(px, py, R*.97, -2.75, -.85); c2.stroke();   // rim light, from above
-        c2.fillStyle = `rgba(255,252,240,${(.28*k*a).toFixed(3)})`; c2.beginPath(); c2.ellipse(px - R*.3, py - R*.38, R*.22, R*.1, -.6, 0, 6.283); c2.fill(); } }
+      if (kf < 1){ c2.globalAlpha = Math.min(1, ab*(1 - kf)*.85); c2.drawImage(sp.back, -sp.cx, -sp.cy); } if (kf > 0){ c2.globalAlpha = Math.min(1, a*kf); c2.drawImage(sp.front, -sp.cx, -sp.cy); } c2.restore();   // blur to sharp, cool to warm, as it presses against the glass
+      if (k > 0){ c2.strokeStyle = `rgba(255,244,226,${(.5*k*a).toFixed(3)})`; c2.lineWidth = 1.3; c2.beginPath(); c2.arc(px, py, R*(1.45 + .45*k)*.86, -2.75, -.85); c2.stroke();   // the light catching the curve of the bulging glass, from above
+        c2.fillStyle = `rgba(255,252,240,${(.28*k*a).toFixed(3)})`; c2.beginPath(); c2.ellipse(px - R*.55, py - R*.7, R*.3, R*.11, -.6, 0, 6.283); c2.fill(); c2.fillStyle = `rgba(255,246,232,${(.16*k*a).toFixed(3)})`; c2.beginPath(); c2.ellipse(px, py, R*.72, R*.62, 0, 0, 6.283); c2.fill(); } }   // and his pad, flattened a little where it presses
     function drawCross(c2, now, ox, oy){ const x = X; if (!x) return; const v = $("sigv"), W = v.clientWidth, H = v.clientHeight, t = now - x.t0, T = x.T, B = x.B, RMm = x.rm, e = x.edg; if (!e) return;
       const ex = e.x + ox, ey = e.y + oy, jn = x.jn, jx = jn.x + ox, jy = jn.y + oy, S = x.S || 0, b = k => x.b5 + (k - 5)*B + (k >= 12 ? S*B : 0), go = x.ph === "go" || x.ph === "after";
       const glow = (gx, gy, r, a, c) => { if (a <= .002) return; const g = c2.createRadialGradient(gx, gy, 0, gx, gy, r); g.addColorStop(0, `rgba(${c || "255,248,226"},${a.toFixed(3)})`); g.addColorStop(1, `rgba(${c || "255,210,130"},0)`); c2.fillStyle = g; c2.beginPath(); c2.arc(gx, gy, r, 0, 6.283); c2.fill(); };
@@ -1289,10 +1289,10 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       let z = zE + (RMm || x.ph !== "offer" ? 0 : .025*Math.sin(now/2200)), pin = 0, hk = 0;
       if (x.ph === "hold"){ hk = Math.min(1, (now - x.h0)/XHOLD); pin = ez(hk); z = 1 + .06*hk; }
       if (go) pin = 1;
-      if (!RMm && zE >= XG && xEv("through", now)){ x.rip.push({x: x.c.x, y: x.c.y, t0: now, dur: 1500, R: 150, a: .65, cs: Math.random()*6.283}); xVibe([10]); try { if (ac) xTone(LEGACY_FREQ.root*8, ac.currentTime + .01, .016, .9); } catch(err){} }   // it crosses the glass: a bright rim, a small ripple, a faint tick
+      if (!RMm && zE >= XG && xEv("press", now)){ x.rip.push({x: x.c.x, y: x.c.y, t0: now, dur: 1500, R: 150, a: .65, cs: Math.random()*6.283}); xVibe([10]); try { if (ac) xTone(LEGACY_FREQ.root*8, ac.currentTime + .01, .016, .9); } catch(err){} }   // it meets the glass from inside: a small ripple, a faint tick
       const zH = RMm ? em : zE; x.zNow = zH;
       const trm = RMm ? 0 : (1 - .7*pin)*Math.min(1, zE*1.5), twx = (xNoise(now/700)*1.2 + xNoise(now/230 + 5)*.35)*trm, twy = (xNoise(now/760 + 11)*1.2 + xNoise(now/250 + 23)*.35)*trm;   // the tremble of a real hand, 1-2 px
-      const par = (1 - pin)*(10 + 22*zE), rx = cx + P.x*par + twx, ry = cy + P.y*par + twy;   // in front of the glass, so it moves more with the tilt than the names behind it
+      const par = (1 - pin)*(10 + 22*zE), rx = cx + P.x*par + twx, ry = cy + P.y*par + twy;   // right at the glass, so it moves more with the tilt than the names behind it
       let px = rx, py = ry;
       if (x.lean && x.ph !== "hold" && !go){ const age = now - x.lean.t; if (age < 1400){ const dx = x.lean.x - rx, dy = x.lean.y - ry, dl = Math.hypot(dx, dy) || 1, s = Math.min(16, dl*.08)*Math.sin(Math.PI*age/1400); px += dx/dl*s; py += dy/dl*s; } }
       if (x.ph === "offer" && x.rel){ const age = now - x.rel.t; if (age < 520){ const w2 = 1 - ez(age/520); px += (x.rel.x - rx)*w2; py += (x.rel.y - ry)*w2; } }
@@ -1314,7 +1314,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       const lineDot = (u, a, back, r) => { for (let k = 0; k < 6; k++){ const uu = Math.max(0, u - k*.04), [qx, qy] = back ? qpt(ex, ey, qcx, qcy, px, py, uu) : qpt(px, py, qcx, qcy, ex, ey, uu); glow(qx, qy, (r || 11)*(1 - k*.13)*2, a*(1 - k/6)); } };
       // the finger (and, before the touch, the glow building under her finger)
       if (x.ph !== "after") xFinger(c2, px, py, R, Math.min(1.06, z), fa*fin, ex, ey, go ? 1 : hk, P);
-      if (!RMm && zE >= XG && x.ev.through){ const at = now - x.ev.through; if (at < 600){ const w2 = at/600; c2.strokeStyle = `rgba(255,250,236,${(1 - w2).toFixed(3)})`; c2.lineWidth = 2.4*(1 - w2) + .6; c2.beginPath(); c2.arc(rx, ry, R*1.1 + 40*ez(w2), 0, 6.283); c2.stroke(); glow(rx, ry, R*1.6 + 30*w2, .5*(1 - w2)); } }
+      if (!RMm && zE >= XG && x.ev.press){ const at = now - x.ev.press; if (at < 1400) glow(rx, ry, R*1.8 + 24*ez(at/1400), .22*Math.sin(Math.PI*at/1400)); }   // v44: a soft glow as the glass takes his press, no break
       if (x.ph === "hold"){ glow(x.hx, x.hy, 26 + 54*hk, .1 + .45*hk, "255,214,160"); glow(x.hx, x.hy, 10 + 14*hk, .35*hk);
         const pr = R*1.25 + 16, pe = ez(hk), a0 = -Math.PI/2; c2.lineCap = "round"; c2.strokeStyle = "rgba(255,226,180,.12)"; c2.lineWidth = 2; c2.beginPath(); c2.arc(x.hx, x.hy, pr, 0, 6.283); c2.stroke();   // v43.1: the progress glow, so she knows it's working
         c2.strokeStyle = `rgba(255,232,190,${(.35 + .45*pe).toFixed(3)})`; c2.lineWidth = 2.4; c2.beginPath(); c2.arc(x.hx, x.hy, pr, a0, a0 + 6.283*pe); c2.stroke(); const hx2 = x.hx + Math.cos(a0 + 6.283*pe)*pr, hy2 = x.hy + Math.sin(a0 + 6.283*pe)*pr; glow(hx2, hy2, 9, .55); }
