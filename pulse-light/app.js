@@ -16,10 +16,13 @@
   // 55 Hz is below phone speakers, so voice the root through its 110 and 220 Hz harmonics (ratios 2 and 4).
   function startTone() {
     if (!soundOn) return;
-    if (ac) { if (ac.state === 'suspended' && !document.hidden) ac.resume(); return; }
+    if (ac) { if (ac.state !== 'running' && !document.hidden) ac.resume(); return; }
     var A = window.AudioContext || window.webkitAudioContext; if (!A) return;
     try {
-      ac = new A(); tone = ac.createGain(); tone.gain.value = 0; tone.connect(ac.destination);
+      try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (x) {} // iPhone: play even with the ring switch on silent
+      ac = new A(); if (ac.state !== 'running') ac.resume(); // iPhone: a new context starts suspended, resume inside the tap
+      var b = ac.createBufferSource(); b.buffer = ac.createBuffer(1, 1, 22050); b.connect(ac.destination); b.start(0); // silent unlock blip
+      tone = ac.createGain(); tone.gain.value = 0; tone.connect(ac.destination);
       [[2, .6], [4, .4]].forEach(function (h) { var o = ac.createOscillator(), g = ac.createGain(); o.type = 'sine'; o.frequency.value = LEGACY_FREQ.root * h[0]; g.gain.value = h[1]; o.connect(g); g.connect(tone); o.start(); });
       tone.gain.setTargetAtTime(.035, ac.currentTime, .8);
     } catch (e) { ac = null; tone = null; }
@@ -28,11 +31,11 @@
     if (soundOn && ac && tone && ac.state === 'running') { var c = ac.currentTime, g = tone.gain; g.cancelScheduledValues(c); g.setValueAtTime(g.value, c); g.linearRampToValueAtTime(.07, c + .06); g.setTargetAtTime(.035, c + .12, .25); }
     if (vibeLeft > 0) { vibeLeft--; if (!calm && navigator.vibrate) try { navigator.vibrate(30); } catch (e) {} }
   }
-  addEventListener('pointerup', function () { vibeLeft = VIBE_BEATS; startTone(); }); addEventListener('keydown', startTone);
+  addEventListener('pointerup', function () { vibeLeft = VIBE_BEATS; startTone(); }); addEventListener('keydown', startTone); addEventListener('touchend', startTone, { passive: true }); addEventListener('click', startTone); // older iPhones only unlock audio on touchend/click
   document.addEventListener('visibilitychange', function () { if (!ac) return; if (document.hidden || !soundOn) ac.suspend(); else ac.resume(); });
   // Sound starts muted; the choice is remembered on this phone.
   var mute = document.createElement('button'); mute.type = 'button';
-  mute.style.cssText = 'position:fixed;top:10px;right:10px;z-index:20;width:40px;height:40px;border:0;border-radius:50%;background:rgba(255,236,200,.08);color:#ffeed6;font:18px/40px system-ui,sans-serif;opacity:.55;cursor:pointer;-webkit-tap-highlight-color:transparent';
+  mute.style.cssText = 'position:fixed;top:10px;right:10px;top:max(10px,calc(env(safe-area-inset-top) + 6px));right:max(10px,calc(env(safe-area-inset-right) + 6px));z-index:20;width:40px;height:40px;border:0;border-radius:50%;background:rgba(255,236,200,.08);color:#ffeed6;font:18px/40px system-ui,sans-serif;opacity:.55;cursor:pointer;-webkit-tap-highlight-color:transparent';
   function paintMute() { mute.textContent = soundOn ? '\u{1F50A}' : '\u{1F507}'; mute.setAttribute('aria-label', soundOn ? 'Mute sound' : 'Turn sound on'); mute.setAttribute('aria-pressed', soundOn ? 'true' : 'false'); }
   mute.addEventListener('click', function (e) { e.stopPropagation(); soundOn = !soundOn; try { localStorage.setItem('pulse-sound', soundOn ? '1' : '0'); } catch (x) {} paintMute(); if (soundOn) startTone(); else if (ac) ac.suspend(); });
   mute.addEventListener('pointerup', function (e) { e.stopPropagation(); vibeLeft = VIBE_BEATS; });
