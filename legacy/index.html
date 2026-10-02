@@ -102,6 +102,7 @@
   #welcome.on{opacity:1} #welcome.nowel:not(.found){display:none} #welcome.found{top:calc(72% - 345px);z-index:6}
   #bridge{position:fixed;left:0;right:0;bottom:calc(env(safe-area-inset-bottom) + 5vh + 30px);text-align:center;opacity:0;pointer-events:none;transition:opacity 1.4s;z-index:4}
   #bridge.on{opacity:1;pointer-events:auto}
+  #flink{position:fixed;right:calc(env(safe-area-inset-right) + 14px);bottom:calc(env(safe-area-inset-bottom) + 12px);z-index:3;padding:10px 6px;font-size:10px;letter-spacing:.24em;text-transform:uppercase;text-decoration:none;color:rgba(233,200,140,.42);transition:opacity .8s} body.inview #flink{opacity:0;pointer-events:none}
   #bridge a{display:inline-block;padding:11px 18px;border:1px solid rgba(233,200,140,.32);border-radius:22px;background:rgba(10,8,14,.62);
     color:rgba(233,200,140,.92);font-size:12px;letter-spacing:.22em;text-transform:uppercase;text-decoration:none}
   #vig{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 46%,rgba(0,0,0,0) 52%,rgba(0,0,0,.6) 100%)}
@@ -291,6 +292,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
   <a id="sig" role="button"><b>Signal</b><span>Every connection, linked. Tap a name to feel it.</span></a>
 </div>
 <div id="bridge"><a href="/phoenix/">Follow the signal &middot; Reynard Soft7</a></div>
+<a id="flink" href="/legacy/family-line/">Family Line</a>
 <div id="viewer"><button id="vclose" aria-label="Close">&times;</button><div id="vtitle"></div><div id="vload">Loading&hellip;</div><video id="vvid" playsinline controls preload="none"></video><button id="vsound" aria-label="Tap for sound">&#9835; tap for sound</button><div id="vwrap"><iframe id="vframe" allow="autoplay; fullscreen" allowfullscreen></iframe><div id="vshield"></div></div></div>
 <canvas id="dustcv"></canvas>
 <div id="thread" aria-live="polite"><button class="x" id="thx" aria-label="Close">&times;</button><b id="thn"></b><div id="thl"></div></div>
