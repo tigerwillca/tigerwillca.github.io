@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#04030a">
+<title>Intention · House of Shaffer</title>
+<link rel="icon" href="/legacy/favicon.svg" type="image/svg+xml">
+<style>
+  html,body{margin:0;min-height:100%;background:radial-gradient(ellipse at 50% 30%,#14102a 0%,#04030a 70%);color:#efe6d2;font:16px/1.55 Georgia,"Times New Roman",serif}
+  main{max-width:520px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 56px) 20px 40px}
+  a.back{position:fixed;left:14px;top:12px;color:rgba(233,200,140,.7);text-decoration:none;font-size:13px;letter-spacing:.12em;padding:8px}
+  h1{margin:0 0 6px;text-align:center;font-weight:normal;font-size:32px;letter-spacing:.3em;text-indent:.3em;color:#f6ead2}
+  .sub{text-align:center;font-style:italic;color:rgba(239,230,210,.6);margin:0 0 26px}
+  .orb{width:90px;height:90px;margin:0 auto 24px;border-radius:50%;background:radial-gradient(circle,rgba(255,214,150,.55) 0%,rgba(120,110,255,.25) 55%,rgba(4,3,10,0) 72%);animation:br 4.4s ease-in-out infinite}
+  @keyframes br{50%{transform:scale(1.08);opacity:.8}} @media (prefers-reduced-motion:reduce){.orb{animation:none}}
+  label{display:block;font-size:13px;letter-spacing:.12em;color:rgba(233,200,140,.85);margin:0 0 6px}
+  select,textarea{width:100%;box-sizing:border-box;font:16px Georgia,serif;color:#efe6d2;background:rgba(255,255,255,.04);border:1px solid rgba(233,200,140,.35);border-radius:14px;padding:12px 14px;margin:0 0 14px}
+  select option{background:#0b0816}
+  textarea{min-height:120px;resize:vertical}
+  .row{display:flex;gap:10px}
+  button{flex:1;font:15px Georgia,serif;letter-spacing:.06em;color:#efe6d2;background:rgba(233,200,140,.08);border:1px solid rgba(233,200,140,.5);border-radius:14px;padding:12px;cursor:pointer}
+  button.on{background:rgba(255,120,120,.15);border-color:rgba(255,160,160,.6)}
+  .note{font-size:13px;color:rgba(239,230,210,.55);margin:12px 0 0}
+  #msg{min-height:22px;text-align:center;color:#ffe2aa;font-style:italic;margin:10px 0}
+  h2{font-weight:normal;font-size:16px;letter-spacing:.16em;color:rgba(233,200,140,.9);margin:30px 0 10px}
+  .item{border-top:1px solid rgba(233,200,140,.18);padding:12px 0}
+  .item .meta{font-size:12px;color:rgba(239,230,210,.5);display:flex;justify-content:space-between}
+  .item .meta button{flex:none;padding:2px 10px;font-size:12px;border-radius:10px;opacity:.6}
+  .item p{margin:4px 0 0;white-space:pre-wrap}
+</style>
+</head>
+<body>
+<a class="back" href="/legacy/tutu.html">&lsaquo; Tutu</a>
+<main>
+  <div class="orb" aria-hidden="true"></div>
+  <h1>Intention</h1>
+  <p class="sub">A quiet place to set down what you hope for.</p>
+  <label for="who">For</label>
+  <select id="who"><option>Tutu</option><option>Sonny</option><option>Family</option><option>Myself</option></select>
+  <label for="txt">Your intention</label>
+  <textarea id="txt" placeholder="Type it, or tap Speak."></textarea>
+  <div class="row"><button id="mic" type="button">Speak</button><button id="save" type="button">Keep it</button></div>
+  <p id="msg"></p>
+  <p class="note">Kept only on this device, in this browser. Nothing is sent anywhere and no one else sees it. (If you use Speak, your browser's own speech service turns your words into text.)</p>
+  <h2>Kept here</h2>
+  <div id="list"></div>
+</main>
+<script>
+(() => {
+  const K = "shaffer-intentions", $ = id => document.getElementById(id);
+  const load = () => { try { return JSON.parse(localStorage.getItem(K) || "[]"); } catch(e){ return []; } };
+  const store = a => localStorage.setItem(K, JSON.stringify(a));
+  const q = new URLSearchParams(location.search).get("for"); if (q) [...$("who").options].forEach(o => { if (o.text.toLowerCase() === q.toLowerCase()) o.selected = true; });
+  function draw(){ const a = load(), L = $("list"); L.textContent = ""; if (!a.length){ L.innerHTML = '<p class="note">Nothing yet.</p>'; return; }
+    a.slice().reverse().forEach(it => { const d = document.createElement("div"); d.className = "item"; const m = document.createElement("div"); m.className = "meta"; const s = document.createElement("span"); s.textContent = it.who + " \u00b7 " + new Date(it.at).toLocaleString([], {dateStyle: "medium", timeStyle: "short"}); const x = document.createElement("button"); x.textContent = "remove"; x.onclick = () => { if (confirm("Remove this one?")){ store(load().filter(y => y.at !== it.at)); draw(); } }; m.append(s, x); const p = document.createElement("p"); p.textContent = it.text; d.append(m, p); L.append(d); }); }
+  $("save").onclick = () => { const t = $("txt").value.trim(); if (!t){ $("msg").textContent = "Write or speak it first."; return; } const a = load(); a.push({who: $("who").value, text: t, at: Date.now()}); store(a); $("txt").value = ""; $("msg").textContent = "Kept."; setTimeout(() => $("msg").textContent = "", 3000); draw(); };
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition; let rec = null, on = false;
+  if (!SR){ $("mic").disabled = true; $("mic").textContent = "Speak (not in this browser)"; $("mic").style.opacity = .45; }
+  else { $("mic").onclick = () => { if (on){ rec.stop(); return; } rec = new SR(); rec.lang = "en-US"; rec.interimResults = false; rec.continuous = true; const base = $("txt").value;
+      rec.onresult = e => { let s = ""; for (let i = 0; i < e.results.length; i++) s += e.results[i][0].transcript; $("txt").value = (base ? base + " " : "") + s.trim(); };
+      rec.onend = () => { on = false; $("mic").classList.remove("on"); $("mic").textContent = "Speak"; };
+      rec.onerror = e => { $("msg").textContent = e.error === "not-allowed" ? "The microphone is blocked for this page." : "Couldn't hear that. Try again or type."; };
+      rec.start(); on = true; $("mic").classList.add("on"); $("mic").textContent = "Stop"; }; }
+  draw();
+})();
+</script>
+</body>
+</html>
