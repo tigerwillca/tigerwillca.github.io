@@ -18,8 +18,8 @@
   #win video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;filter:saturate(.75) sepia(.18) brightness(.95);transition:opacity 2s ease}
   #win::after{content:"";position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,rgba(4,3,10,0) 42%,rgba(20,14,40,.55) 68%,rgba(4,3,10,.96) 80%)}   /* the memory window: soft at the centre, feathered into the glow */
   h1{position:fixed;left:0;right:0;top:calc(env(safe-area-inset-top) + 5.5vh);margin:0;text-align:center;z-index:4;font-weight:normal;font-size:clamp(28px,7vw,44px);letter-spacing:.32em;text-indent:.32em;color:#f6ead2;text-shadow:0 0 18px rgba(200,180,255,.3),0 0 4px rgba(0,0,0,.9);pointer-events:none}
-  #line{position:fixed;left:0;right:0;bottom:calc(env(safe-area-inset-bottom) + 9vh);z-index:4;margin:0;text-align:center;font:italic clamp(15px,4.2vw,19px) Georgia,serif;color:rgba(243,231,204,.86);text-shadow:0 0 10px rgba(0,0,0,.95);pointer-events:none}
-  #hint{position:fixed;left:0;right:0;bottom:calc(env(safe-area-inset-bottom) + 9vh - 26px);z-index:4;text-align:center;font:italic 12px Georgia,serif;letter-spacing:.08em;color:rgba(239,230,210,.5);transition:opacity 2.8s;pointer-events:none}
+  #line{position:fixed;left:0;right:0;bottom:calc(env(safe-area-inset-bottom) + 9vh + 30px);z-index:4;margin:0;text-align:center;font:italic clamp(15px,4.2vw,19px) Georgia,serif;color:rgba(243,231,204,.86);text-shadow:0 0 10px rgba(0,0,0,.95);pointer-events:none}
+  #hint{position:fixed;left:0;right:0;bottom:calc(env(safe-area-inset-bottom) + 9vh + 4px);z-index:4;text-align:center;font:italic 12px Georgia,serif;letter-spacing:.08em;color:rgba(239,230,210,.5);transition:opacity 2.8s;pointer-events:none}
   a#back{position:fixed;left:calc(env(safe-area-inset-left) + 14px);top:calc(env(safe-area-inset-top) + 12px);z-index:5;color:rgba(233,200,140,.7);text-decoration:none;font:13px Georgia,serif;letter-spacing:.12em;padding:8px}
   button#snd{position:fixed;right:calc(env(safe-area-inset-right) + 12px);top:calc(env(safe-area-inset-top) + 10px);z-index:5;width:40px;height:40px;border:0;border-radius:50%;background:transparent;color:rgba(233,200,140,.7);font:18px/40px Georgia,serif;cursor:pointer;opacity:0;transition:opacity 1.8s}
   button#snd.on{opacity:1} button#snd.off{color:rgba(233,200,140,.3)}
@@ -27,7 +27,21 @@
   #gate.on{display:flex} #gate p{margin:0;font:italic 15px Georgia,serif;color:rgba(239,230,210,.7)}
   #gate form{display:flex;gap:10px} #gate input{font:16px Georgia,serif;padding:12px 16px;border-radius:14px;border:1px solid rgba(233,200,140,.35);background:rgba(255,255,255,.04);color:#efe6d2;width:min(60vw,240px);text-transform:uppercase}
   #gate button{font:16px Georgia,serif;padding:12px 16px;border-radius:14px;border:1px solid rgba(233,200,140,.5);background:rgba(233,200,140,.08);color:#efe6d2}
-  @media (prefers-reduced-motion:reduce){#win{transition-duration:6s}#win video{transition-duration:3s}#hint,button#snd{transition-duration:4s}}
+  /* bring her home: one button, one panel */
+  #findbtn{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 18px);z-index:5;font:13px Georgia,serif;letter-spacing:.1em;color:rgba(233,200,140,.85);background:rgba(10,8,22,.55);border:1px solid rgba(233,200,140,.4);border-radius:20px;padding:8px 16px;cursor:pointer;display:none;white-space:nowrap}
+  #findbtn.on{display:block}
+  #find{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 14px);z-index:6;width:min(92vw,420px);max-height:78vh;overflow-y:auto;box-sizing:border-box;padding:20px 20px 16px;background:rgba(10,8,22,.94);border:1px solid rgba(233,200,140,.35);border-radius:18px;box-shadow:0 0 40px rgba(120,110,255,.18);font:15px/1.5 Georgia,serif;color:#efe6d2;touch-action:pan-y;-webkit-user-select:text;user-select:text;opacity:0;visibility:hidden;transform:translate(-50%,24px);transition:opacity .5s ease,transform .5s ease,visibility 0s .5s}
+  #find.on{opacity:1;visibility:visible;transform:translate(-50%,0);transition:opacity .5s ease,transform .5s ease}
+  #find h2{margin:0 0 10px;font-weight:normal;font-size:20px;letter-spacing:.18em;color:#f6ead2}
+  #find h3{margin:16px 0 4px;font-weight:normal;font-size:15px;letter-spacing:.12em;color:rgba(233,200,140,.9)}
+  #find p{margin:0 0 10px} #find .dim{color:rgba(239,230,210,.62);font-size:13px} #find .when{color:#ffe2aa}
+  #find .row{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 12px}
+  #find .row a{flex:1 1 auto;text-align:center;text-decoration:none;color:#efe6d2;border:1px solid rgba(233,200,140,.5);background:rgba(233,200,140,.08);border-radius:14px;padding:10px 12px;font-size:14px}
+  #find a.lk{color:rgba(233,200,140,.9)}
+  #find .cam{position:relative;width:100%;padding-top:56.25%;border-radius:12px;overflow:hidden;background:#000;margin:6px 0}
+  #find .cam iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  #fx{position:absolute;right:10px;top:8px;width:36px;height:36px;border:0;background:transparent;color:rgba(233,200,140,.8);font:22px Georgia,serif;cursor:pointer}
+  @media (prefers-reduced-motion:reduce){#win{transition-duration:6s}#win video{transition-duration:3s}#hint,button#snd{transition-duration:4s}#find,#find.on{transform:translate(-50%,0)}}
 </style>
 </head>
 <body>
@@ -36,6 +50,21 @@
 <canvas id="fg" aria-hidden="true"></canvas>
 <a id="back" href="/legacy/" aria-label="Back to Legacy">&lsaquo; Legacy</a>
 <button id="snd" aria-label="Sound on or off">&#9835;</button>
+<button id="findbtn" aria-label="Bring her home">&#9825; Bring her home</button>
+<div id="find" role="dialog" aria-label="Bring her home">
+  <button id="fx" aria-label="Close">&times;</button>
+  <h2>Bring her home</h2>
+  <p>Microchip ending <b>2749</b> matches a female cat Kitten Rescue LA found on September 1 (their ID 89280). Not confirmed yet.</p>
+  <p class="when" id="when"></p>
+  <div class="row"><a href="tel:+18183473037">Call (818) 347-3037</a><a href="mailto:mail@kittenrescue.org?subject=Found%20cat%20%2389280%20%E2%80%93%20microchip%20ending%202749">Email</a><a href="https://www.google.com/maps/search/?api=1&query=3519+Casitas+Ave+Los+Angeles+CA+90039" target="_blank" rel="noopener">Directions</a></div>
+  <p class="dim">Kitten Rescue LA &middot; 3519 Casitas Ave, Los Angeles 90039 &middot; Open Thu&ndash;Mon, 12&ndash;4 PM</p>
+  <p>When you call, ask: can they text or email a current photo of her?</p>
+  <h3>Sanctuary cam</h3>
+  <p class="dim">Their nursery room. She may not be on it.</p>
+  <div class="cam" id="cam"></div>
+  <p><a class="lk" href="https://explore.org/livecams/kitten-rescue/kitten-rescue-cam" target="_blank" rel="noopener">Open the cam</a></p>
+  <p class="dim">Current photo: none yet.</p>
+</div>
 <h1>Tutu</h1>
 <p id="line">Still out there. Held in light.</p>
 <div id="hint">Move, or touch and hold.</div>
@@ -68,7 +97,7 @@
   let hold = 0, bloomAt = -1e9, pulses = [], dust = [], reveal = 0, started = false;
   function move(x, y){ const now = performance.now(), sp = ptr.on ? Math.hypot(x - ptr.lx, y - ptr.ly) : 0; ptr.x = x; ptr.y = y; ptr.lx = x; ptr.ly = y; ptr.on = true; ptr.left = false; ptr.at = now; ptr.e = Math.min(1, ptr.e + sp/220); if (inZone(x, y)) ptr.out = 0; else if (!ptr.out) ptr.out = now; if (ptr.down && !inZone(x, y) && now - ptr.out > GRACE && Math.hypot(x - ptr.dx, y - ptr.dy) > 60){ ptr.dx = x; ptr.dy = y; ptr.d0 = now; } }   // a small drag keeps the hold; a big one restarts it
   addEventListener("pointermove", e => move(e.clientX, e.clientY), {passive: true});
-  addEventListener("pointerdown", e => { if (e.target.closest("a,button,#gate")) return; begin(); const now = performance.now(), slip = now - ptr.upAt < GRACE; move(e.clientX, e.clientY); ptr.down = true; if (!slip){ ptr.d0 = now; ptr.dx = e.clientX; ptr.dy = e.clientY; } hint(false); });
+  addEventListener("pointerdown", e => { if (e.target.closest("a,button,#gate,#find")) return; begin(); const now = performance.now(), slip = now - ptr.upAt < GRACE; move(e.clientX, e.clientY); ptr.down = true; if (!slip){ ptr.d0 = now; ptr.dx = e.clientX; ptr.dy = e.clientY; } hint(false); });
   const up = () => { if (ptr.down) ptr.upAt = performance.now(); ptr.down = false; }; addEventListener("pointerup", up); addEventListener("pointercancel", up);
   const leave = () => { if (!mob){ ptr.at = performance.now() - 900; ptr.left = true; } }; addEventListener("pointerleave", leave); document.documentElement.addEventListener("pointerleave", leave);
   let hintT = 0; function hint(on){ $("hint").style.opacity = on ? 1 : 0; }
@@ -131,8 +160,17 @@
     for (let i = pulses.length - 1; i >= 0; i--){ const P = pulses[i], u = (now - P.t0)/(rm ? 2100 : 1400); if (u < 0) continue; if (u >= 1){ pulses.splice(i, 1); continue; } const p = TH[P.k]; if (!p) continue; const [x, y] = q(p, ez(u)); glow(fx, x, y, 14, .5*(1 - u*.4), "255,250,236", "255,200,120"); }   // the brighter pulse
     requestAnimationFrame(frame); }
 
+  // ---------- bring her home: the Kitten Rescue lead, the noon call, their sanctuary cam ----------
+  const fp = $("find"), fb = $("findbtn"), CALL = Date.parse("2026-10-02T19:00:00Z"); let fT = 0;   // Fri Oct 2, 12:00 PM Pacific
+  function when(){ const ms = CALL - Date.now(); if (ms > 0){ const h = Math.floor(ms/3600000), m = Math.floor(ms%3600000/60000); $("when").textContent = "Call at noon Friday, in " + (h ? h + "h " : "") + m + "m"; } else $("when").textContent = "Call during open hours: Thu\u2013Mon, 12\u20134 PM"; }
+  function showFind(on){ fp.classList.toggle("on", on); clearInterval(fT); const cam = $("cam");
+    if (on){ when(); fT = setInterval(when, 30000); if (!cam.firstChild){ const f = document.createElement("iframe"); f.src = "https://www.youtube-nocookie.com/embed/-m_nQT62B4Y?autoplay=1&mute=1&playsinline=1"; f.allow = "autoplay; encrypted-media; picture-in-picture"; f.allowFullscreen = true; f.title = "Kitten Rescue sanctuary cam"; cam.appendChild(f); } }
+    else cam.textContent = ""; }   // the cam only streams while the panel is open
+  fb.addEventListener("click", e => { e.stopPropagation(); begin(); showFind(!fp.classList.contains("on")); });
+  $("fx").addEventListener("click", e => { e.stopPropagation(); showFind(false); });
+
   // ---------- open (after the family word) ----------
-  function open(){ $("gate").classList.remove("on"); play(va, 0); requestAnimationFrame(frame); setTimeout(() => hint(true), 2500); setTimeout(() => hint(false), 9500); }
+  function open(){ $("gate").classList.remove("on"); fb.classList.add("on"); play(va, 0); requestAnimationFrame(frame); setTimeout(() => hint(true), 2500); setTimeout(() => hint(false), 9500); }
   function gateCheck(){ const ck = (document.cookie.match(/(?:^|; )shaffer-key=([^;]+)/) || [])[1]; try { if (!localStorage.getItem(KEY) && ck) localStorage.setItem(KEY, decodeURIComponent(ck)); } catch(e){}
     let saved = null; try { saved = localStorage.getItem(KEY); } catch(e){}
     if (saved) sha(saved).then(h => { if (h === TOKH) open(); else $("gate").classList.add("on"); }); else $("gate").classList.add("on"); }
@@ -140,7 +178,7 @@
     if (await sha(v) === HASH){ const k1 = await sha(v + "|house-of-shaffer"); try { localStorage.setItem(KEY, k1); } catch(e){} document.cookie = "shaffer-key=" + k1 + "; max-age=31536000; path=/legacy; SameSite=Lax; Secure"; open(); }
     else $("gm").textContent = "I'm afraid I don't recognize you."; });
   gateCheck();
-  window.__tutu = {reveal: () => +reveal.toFixed(3), hold: () => +hold.toFixed(3), bloom: () => performance.now() - bloomAt < BLOOM, clip: () => cur.currentSrc, playing: () => !cur.paused, ac: () => ac && ac.state, dust: () => dust.length};
+  window.__tutu = {reveal: () => +reveal.toFixed(3), hold: () => +hold.toFixed(3), bloom: () => performance.now() - bloomAt < BLOOM, clip: () => cur.currentSrc, playing: () => !cur.paused, ac: () => ac && ac.state, dust: () => dust.length, find: () => fp.classList.contains("on")};
 })();
 </script>
 </body>
