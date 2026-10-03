@@ -208,7 +208,7 @@ var SOFT7_DRIP = [
   <div class="badge">7 of 7 · Robinhood Chain</div>
   <h1>Soft7</h1>
   <p class="lede">Seven Reynard cards. A small first circle.</p>
-  <a class="cta" href="https://opensea.io/collection/reynard-soft7">See Soft7 on OpenSea</a>
+  <a class="cta" href="https://robinhoodchain.blockscout.com/token/0x73D7b2611509C14078e16f572bE5aC7D91879DC2?tab=inventory" target="_blank" rel="noopener noreferrer">See Soft7 on-chain</a>
   <div class="hero" id="hero">
     <div class="hero-frame">
       <img class="hero-img" id="heroImg" src="assets/phoenix-poster.jpg?v=20260929g" alt="Reynard Soft7 phoenix" width="720" height="1280" />
@@ -297,7 +297,7 @@ var SOFT7_DRIP = [
   function reveal(i, delay){
     if (opened[i]) return; opened[i]=true; var el=cards[i];
     var a=document.createElement('a'); a.className='card';
-    a.href='https://opensea.io/collection/reynard-soft7';
+    a.href='https://robinhoodchain.blockscout.com/token/0x73D7b2611509C14078e16f572bE5aC7D91879DC2/instance/'+i; a.target='_blank'; a.rel='noopener noreferrer';
     a.style.animationDelay=delay+'s';
     var img=document.createElement('img'); img.alt='Reynard Soft7 #'+i;
     img.src=IMG+String(32+i).padStart(3,'0')+'.jpg';
@@ -527,8 +527,8 @@ var SOFT7_DRIP = [
   var grid = document.getElementById('dripGrid');
   var sec = document.getElementById('drip');
   if (!grid || !sec || !slots.length) return;
-  var COL = 'https://opensea.io/collection/reynard-soft7';
-  var ITEM = 'https://opensea.io/item/robinhood/0x73d7b2611509c14078e16f572be5ac7d91879dc2/';
+  var COL = 'https://robinhoodchain.blockscout.com/token/0x73D7b2611509C14078e16f572bE5aC7D91879DC2?tab=inventory';
+  var ITEM = 'https://robinhoodchain.blockscout.com/token/0x73D7b2611509C14078e16f572bE5aC7D91879DC2/instance/';
   var shown = {};
   function pad(n){ return (n<10?'0':'')+n; }
   function artCode(id){ return String(32+id).padStart(3,'0'); }
@@ -612,7 +612,7 @@ var SOFT7_DRIP = [
     }
     var go = document.createElement('span');
     go.className = 'drip-os';
-    go.textContent = 'View on OpenSea';
+    go.textContent = 'View on-chain';
     meta.appendChild(go);
     a.appendChild(frame);
     a.appendChild(meta);
