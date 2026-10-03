@@ -1,5 +1,5 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
-<meta name="soft777-build" content="202609302123">
+<meta name="soft777-build" content="202610022020">
 <title>Reynard Soft7 777 · deploy</title>
 <style>
 body{background:#0b0b10;color:#eee;font:19px/1.5 system-ui,sans-serif;margin:0;padding:20px 14px;text-align:center;letter-spacing:.01em}
@@ -15,15 +15,20 @@ button.alt{background:#333;color:#eee;font-size:17px;padding:12px}button:disable
 table{width:100%;font-size:14px;border-collapse:collapse;margin-top:8px}td{padding:3px 4px;border-bottom:1px solid #222;vertical-align:top;word-break:break-all}
 small{color:#aaa}label.ck{display:block;margin-top:12px;font-size:18px}label.ck input{transform:scale(1.5);margin-right:10px}
 input.typed{width:100%;box-sizing:border-box;font-size:20px;padding:10px;margin-top:8px;border-radius:8px;border:1px solid #666;background:#15151c;color:#fff;text-transform:uppercase}
+.done{background:#0f2a17;border:1px solid #2e9b4f;color:#b9f5c8;border-radius:10px;padding:10px 12px;margin-top:10px;font-size:17px}
+.box.gift{border:2px solid #e0a526}
+#gl{list-style:none;padding:0;margin:10px 0 0;font-size:16px}#gl li{padding:6px 4px;border-bottom:1px solid #222}#gl a{color:#ffd27a}
+.prog{font-size:22px;font-weight:700;margin-top:8px}
 .tag{display:inline-block;background:#7a6a3a;color:#111;font-weight:700;border-radius:6px;padding:1px 8px;font-size:15px}
 </style></head><body>
 <h2>Reynard Soft7 777</h2>
-<p>Deploy page · Robinhood Chain (4663)<br><small>SOFT777-DEPLOY-PAGE · build 202609302123 · direct deploy only</small></p>
+<p>Deploy page · Robinhood Chain (4663)<br><small>SOFT777-DEPLOY-PAGE · build 202610022020 · deployed · gift Primes</small></p>
 
 <div id="gate" class="gate" data-ok="0">LOCKED. Tap "Connect wallet". Only wallet 0xe53b…677a on Robinhood Chain (4663) can use this page.</div>
 <div class="box"><button id="bc" class="alt">Connect wallet</button><div class="s" id="sc"></div></div>
 
-<div class="box"><b>Signature 1 of 2 · Deploy</b>
+<div class="box"><b>Signature 1 of 2 · Deploy</b> <span class="tag">DONE</span>
+<div class="done">DONE Fri Oct 2, 8:07 PM PT. Contract 0xd402…DFDF is live and owned by you (0xe53b…677a). Cards 0-4 are in your wallet. <b>Do not deploy again.</b> These buttons stay off.</div>
 <div class="what"><b>What this does, in plain words:</b><ul>
 <li>Makes the new "Reynard Soft7 777" contract. You become the owner.</li>
 <li>Gives you cards 0, 1, 2, 3, 4 (Mascot, Black Tiger, Black Fox, 2 specials).</li>
@@ -37,7 +42,8 @@ input.typed{width:100%;box-sizing:border-box;font-size:20px;padding:10px;margin-
 <button class="alt" id="y1b" disabled>Wallet refused? Try again with fixed gas (same deploy)</button>
 <div class="s" id="s1"></div></div>
 
-<div class="box"><b>Signature 2 of 2 · Open wave 1</b>
+<div class="box"><b>Signature 2 of 2 · Open wave 1</b> <span class="tag">DONE</span>
+<div class="done">DONE. Wave 1 is open: cap 82, 0.01 ETH, max 3 per wallet. Nothing to sign here.</div>
 <div class="what"><b>What this does, in plain words:</b><ul>
 <li>Opens the public mint for 77 cards (ids 5 to 81).</li>
 <li>Price 0.01 ETH per card. Max 3 cards per wallet.</li>
@@ -50,13 +56,28 @@ input.typed{width:100%;box-sizing:border-box;font-size:20px;padding:10px;margin-
 <button id="y2" disabled>Sign 2 · Open wave 1</button>
 <div class="s" id="s2"></div></div>
 
+<div class="box gift" id="gift"><b>Gift Primes · 7 cards, 1 each</b>
+<div class="what"><b>What this does, in plain words:</b><ul>
+<li>Sends 1 Soft7 777 card to each of the 7 Reynard Soft7 Prime holders (Prime #1 to #7).</li>
+<li>One wallet prompt per gift, 7 in a row. Tap Confirm each time.</li>
+<li>Gifts come out of wave 1: 7 gifts + 70 public = 77 cards (ids 5 to 81).</li>
+<li>Sends no ETH. Gas only, about 0.0000025 ETH per gift.</li>
+<li>Stopped halfway? Tap again. Gifts already sent are skipped.</li></ul>
+<small>Call: ownerMint(holder, 1) · selector 0x484b973c · contract 0xd402…DFDF</small></div>
+<div class="prog" id="gp">Checking gifts…</div>
+<ul id="gl"></ul>
+<label class="ck"><input type="checkbox" id="k5" disabled> I want to gift the 7 Prime holders now.</label>
+<button id="y5" disabled>Gift Primes · 7 prompts</button>
+<button class="alt" id="y5b" disabled>Wallet refused? Try again with fixed gas (same gifts)</button>
+<div class="s" id="s5"></div></div>
+
 <div class="box later"><span class="tag">LATER</span> <b>Reveal wave 1 · NOT today</b>
-<div class="what"><b>Only after all 77 cards are sold.</b><ul>
+<div class="what"><b>Only after wave 1 is full: 7 Prime gifts + 70 sold = 82 cards in total.</b><ul>
 <li>Turns the sealed cards face-up: cards 5 to 81 get their art (fair shuffle).</li>
 <li>Cards 0 to 4 show their own art too.</li>
-<li>If the art changes before this, first update the metadata link (1 extra signature).</li>
+<li>The art link is already set. No extra signature is needed.</li>
 <li>Sends no ETH. Costs only gas.</li></ul>
-<small>Call: reveal(82) · selector 0xc2ca0ac5 · the page blocks it until 82 cards exist</small></div>
+<small>Call: reveal(82) · selector 0xc2ca0ac5 · the page blocks it until 82 cards exist (5 yours + 7 gifts + 70 public)</small></div>
 <label class="ck"><input type="checkbox" id="k3" disabled> Wave 1 is sold out. I want to reveal now.</label>
 <input class="typed" id="w3" placeholder="type REVEAL" autocomplete="off" disabled>
 <button id="y3" disabled>Reveal wave 1 (later)</button>
@@ -81,8 +102,8 @@ function decStr(r){const b=r.slice(2);const off=parseInt(b.slice(0,64),16)*2;con
 const WAVE1={cap:82n,price:10000000000000000n,per:3n,open:true,ownerQty:0n};
 const $=i=>document.getElementById(i);
 const short=a=>a?a.slice(0,6)+"…"+a.slice(-4):"none";
-$("ca").value=localStorage.getItem("s777addr")||"";
-let P=window.ethereum||null,gateOK=false,busy=false;
+const DEPLOYED="0xd402e72cad129c2E64A9b04B5e8Ec93D1d64DFDF";$("ca").value=DEPLOYED;
+let P=window.ethereum||null,gateOK=false,busy=false,giftsDone=false;
 window.addEventListener("eip6963:announceProvider",e=>{if(!P||/robinhood/i.test((e.detail.info||{}).name||""))P=e.detail.provider;});
 window.dispatchEvent(new Event("eip6963:requestProvider"));
 const getP=()=>new Promise(r=>{if(P||window.ethereum)return r(P||window.ethereum);let n=0;const t=setInterval(()=>{window.dispatchEvent(new Event("eip6963:requestProvider"));if(P||window.ethereum||++n>15){clearInterval(t);r(P||window.ethereum||null);}},200);});
@@ -101,7 +122,9 @@ async function refresh(){let g;try{g=await readGate();}catch(e){g={ok:false,msg:
 const WORD={1:"DEPLOY",2:"OPEN",3:"REVEAL"};
 function armed(n){return gateOK&&!busy&&$("k"+n).checked&&$("w"+n).value.trim().toUpperCase()===WORD[n];}
 function locks(){for(const n of [1,2,3]){$("k"+n).disabled=!gateOK||busy;$("w"+n).disabled=!gateOK||busy;}
- $("y1").disabled=!armed(1);$("y1b").disabled=!armed(1);$("y2").disabled=!armed(2);$("y3").disabled=!armed(3);}
+ for(const n of [1,2]){$("k"+n).disabled=true;$("w"+n).disabled=true;}
+ $("y1").disabled=true;$("y1b").disabled=true;$("y2").disabled=true;$("y3").disabled=!armed(3);
+ $("k5").disabled=!gateOK||busy||giftsDone;const g5=gateOK&&!busy&&!giftsDone&&$("k5").checked;$("y5").disabled=!g5;$("y5b").disabled=!g5;}
 function relock(n){$("k"+n).checked=false;$("w"+n).value="";locks();}
 for(const n of [1,2,3]){$("k"+n).onchange=locks;$("w"+n).oninput=locks;}
 $("bc").onclick=async()=>{const out=t=>$("sc").textContent=t;try{const eth=await getP();if(!eth)throw new Error("No wallet found. Open this page in your wallet app's browser.");
@@ -113,7 +136,7 @@ async function sendChecked(n,tx,out){const g=await refresh();if(!g.ok||!armed(n)
  const eth=await getP();busy=true;locks();try{out("Confirm in your wallet…");return await eth.request({method:"eth_sendTransaction",params:[{from:g.a,...tx}]});}finally{busy=false;relock(n);}}
 async function call(eth,to,data){return await eth.request({method:"eth_call",params:[{to,data},"latest"]});}
 async function receipt(eth,h,out){for(let i=0;i<150;i++){const r=await eth.request({method:"eth_getTransactionReceipt",params:[h]});if(r){if(r.status!=="0x1")throw new Error("Transaction failed on chain: "+h);return r;}out("Waiting for the block… tx "+h);await new Promise(z=>setTimeout(z,2000));}throw new Error("Still pending. Tx "+h);}
-async function deploy(fixedGas){const out=t=>$("s1").textContent=t;try{const p=ctorParams();const tx={data:BYTECODE+encodeCtor(p),value:"0x0"};if(fixedGas)tx.gas="0x30d400";// 3,200,000
+async function deploy(fixedGas){if(DEPLOYED){$("s1").textContent="Already deployed: "+short(DEPLOYED)+". Do not deploy again.";return;}const out=t=>$("s1").textContent=t;try{const p=ctorParams();const tx={data:BYTECODE+encodeCtor(p),value:"0x0"};if(fixedGas)tx.gas="0x30d400";// 3,200,000
  const h=await sendChecked(1,tx,out);out("Signed. tx "+h);const r=await receipt(await getP(),h,out);const addr=r.contractAddress;if(!addr)throw new Error("Mined but no contract address. Tx "+h);
  localStorage.setItem("s777addr",addr);$("ca").value=addr;out("Deployed.\nContract: "+addr+"\nTx: "+h+"\nhttps://robinhoodchain.blockscout.com/address/"+addr+"\nSave this address. Next: Signature 2.");}catch(e){out("Stopped: "+(e.message||e));}}
 $("y1").onclick=()=>deploy(false);$("y1b").onclick=()=>deploy(true);
@@ -122,11 +145,47 @@ $("y2").onclick=async()=>{const out=t=>$("s2").textContent=t;try{const ca=$("ca"
  const minted=BigInt(await call(eth,ca,"0x18160ddd")),cap=BigInt(await call(eth,ca,"0x2b3c4906"));if(minted!==5n||cap!==5n)throw new Error("Expected 5 minted / cap 5, found "+minted+" / "+cap+". Wave already opened?");
  const data=encOpenWave(WAVE1.cap,WAVE1.price,WAVE1.per,WAVE1.open,WAVE1.ownerQty);const h=await sendChecked(2,{to:ca,data,value:"0x0"},out);out("Signed. tx "+h);await receipt(eth,h,out);out("Wave 1 is open.\nTx: "+h+"\n77 cards, 0.01 ETH each, max 3 per wallet.");}catch(e){out("Stopped: "+(e.message||e));}};
 $("y3").onclick=async()=>{const out=t=>$("s3").textContent=t;try{const ca=$("ca").value.trim();const eth=await getP();await checkOwned(eth,ca);
- const minted=BigInt(await call(eth,ca,"0x18160ddd"));if(minted<82n)throw new Error("Not sold out yet: "+minted+" of 82 minted. Reveal only after sell-out.");
+ const minted=BigInt(await call(eth,ca,"0x18160ddd"));if(minted<82n)throw new Error("Not full yet: "+minted+" of 82 minted (5 yours + 7 gifts + 70 public). Reveal only after sell-out.");
  const h=await sendChecked(3,{to:ca,data:encReveal(82n),value:"0x0"},out);out("Signed. tx "+h);await receipt(eth,h,out);out("Wave 1 revealed.\nTx: "+h);}catch(e){out("Stopped: "+(e.message||e));}};
 $("b4").onclick=async()=>{const out=t=>$("s4").textContent=t;try{const eth=await getP();if(!eth)throw new Error("Open inside the wallet browser");const ca=$("ca").value.trim();
  const own="0x"+(await call(eth,ca,"0x8da5cb5b")).slice(-40);const ts=BigInt(await call(eth,ca,"0x18160ddd"));const cap=BigInt(await call(eth,ca,"0x2b3c4906"));const mo=BigInt(await call(eth,ca,"0x24bbd049"));
  const pr=BigInt(await call(eth,ca,"0x6817c76c"));const roy=await call(eth,ca,"0x2a55205a"+hx(0)+hx(10000n));const uri=ts>5n?decStr(await call(eth,ca,"0xc87b56dd"+hx(5))):"(no public card yet)";
  out("owner "+own+(own.toLowerCase()===OWNER?" ✓":" ✗")+"\nminted "+ts+" / wave cap "+cap+"\npublic mint open: "+(mo?"yes":"no")+" · price "+(Number(pr)/1e18)+" ETH\nroyalty "+("0x"+roy.slice(26,66))+" "+(Number(BigInt("0x"+roy.slice(66,130)))/100)+"%\ncard 5 link: "+uri);}catch(e){out("Stopped: "+(e.message||e));}};
+
+// ---- Gift Primes: ownerMint(holder,1) for Prime #1..#7, in order, skip already gifted ----
+const GCA="0xd402e72cad129c2e64a9b04b5e8ec93d1d64dfdf",RPC="https://rpc.mainnet.chain.robinhood.com",EXP="https://robinhoodchain.blockscout.com",DEPLOY_BLOCK=78754494;
+const PRIMES=[["#1","0x78e7c6bdbc7f81a01a041053f7689157d530e131"],["#2","0x27cb78b27388083ccb95e214af0e662db08072d0"],["#3","0xbdb0dd845e95d2e24b77d9bef54d4df82baf8335"],["#4","0xfe5573c66273313034f7ff6050c54b5402553716"],["#5","0x5b76f5b8fc9d700624f78208132f91ad4e61a1f0"],["#6","0xfd22004806a6846ea67ad883356be810f0428793"],["#7","0x2ce780d7c743a57791b835a9d6f998b15bbba5a4"]];
+const SEL_OM="0x484b973c",T_TR="0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",GIFT_GAS="0x249f0";// 150,000 (estimate ~82.5k)
+const pad=a=>"0".repeat(24)+a.slice(2).toLowerCase(),GK=a=>"s777gift:"+a;
+async function rpcq(method,params){const r=await fetch(RPC,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({jsonrpc:"2.0",id:1,method,params})});const j=await r.json();if(j.error)throw new Error(j.error.message||"read failed");return j.result;}
+const rcall=async d=>BigInt(await rpcq("eth_call",[{to:GCA,data:d},"latest"]));
+async function giftState(a){const pend=localStorage.getItem(GK(a));
+ const logs=await rpcq("eth_getLogs",[{address:GCA,fromBlock:"0x"+DEPLOY_BLOCK.toString(16),toBlock:"latest",topics:[T_TR,"0x"+"0".repeat(64),"0x"+pad(a)]}]);
+ for(const l of logs){const t=await rpcq("eth_getTransactionByHash",[l.transactionHash]);if(t&&t.from.toLowerCase()===OWNER&&(t.input||"").slice(0,10)===SEL_OM){localStorage.removeItem(GK(a));return {done:l.transactionHash};}}
+ if(pend){const r=await rpcq("eth_getTransactionReceipt",[pend]);if(!r)return {pending:pend};if(r.status==="0x1")return {done:pend};localStorage.removeItem(GK(a));}
+ return {};}
+async function waitTx(h,out){for(let i=0;i<150;i++){const r=await rpcq("eth_getTransactionReceipt",[h]);if(r){if(r.status!=="0x1")throw new Error("Gift failed on chain: "+h);return r;}if(out)out();await new Promise(z=>setTimeout(z,2000));}throw new Error("Still pending. Tx "+h+". Tap again later.");}
+const txLink=h=>'<a href="'+EXP+'/tx/'+h+'" target="_blank" rel="noopener">tx '+h.slice(0,10)+'…</a>';
+async function renderGifts(){try{let n=0;const rows=[];for(const [lab,a] of PRIMES){const st=await giftState(a);if(st.done)n++;
+  rows.push("<li>"+(st.done?"✓":st.pending?"…":"○")+" Prime "+lab+" · "+short(a)+" · "+(st.done?"gifted "+txLink(st.done):st.pending?"sent, waiting "+txLink(st.pending):"not yet")+"</li>");}
+ $("gl").innerHTML=rows.join("");giftsDone=n===PRIMES.length;$("gp").textContent=giftsDone?"Gifted 7/7 ✓ All done.":"Gifted "+n+"/7";locks();return n;}catch(e){$("gp").textContent="Could not read gifts: "+(e.message||e);return -1;}}
+async function giftRun(fixed){const out=t=>$("s5").textContent=t;if(busy)return;
+ try{const g=await refresh();if(!g.ok||!$("k5").checked)throw new Error("Locked. Check the wallet, the network and the confirm box.");
+  const eth=await getP();busy=true;locks();
+  const own="0x"+(await rpcq("eth_call",[{to:GCA,data:"0x8da5cb5b"},"latest"])).slice(-40);if(own.toLowerCase()!==OWNER)throw new Error("Contract owner is "+short(own)+", not you. Stop and ask for help.");
+  for(let i=0;i<PRIMES.length;i++){const [lab,a]=PRIMES[i];const tag="Gift "+(i+1)+"/7 · Prime "+lab+" · "+short(a);
+   let st=await giftState(a);if(st.done)continue;
+   if(st.pending){await waitTx(st.pending,()=>out(tag+"\nAlready sent. Waiting for the block…"));localStorage.removeItem(GK(a));await renderGifts();continue;}
+   const tm=await rcall("0x18160ddd"),cap=await rcall("0x2b3c4906");if(tm+1n>cap)throw new Error("Wave 1 is full ("+tm+" of "+cap+"). "+tag+" does not fit. Stop and ask for help.");
+   const gg=await readGate();if(!gg.ok)throw new Error(gg.msg);
+   out(tag+"\nConfirm in your wallet…");
+   const tx={from:gg.a,to:GCA,data:SEL_OM+pad(a)+hx(1),value:"0x0"};if(fixed)tx.gas=GIFT_GAS;
+   const h=await eth.request({method:"eth_sendTransaction",params:[tx]});localStorage.setItem(GK(a),h);await renderGifts();
+   await waitTx(h,()=>out(tag+"\nSigned. Waiting for the block… "+h.slice(0,10)+"…"));localStorage.removeItem(GK(a));await renderGifts();}
+  const n=await renderGifts();out(n===7?"All 7 Prime holders have their card. ✓":"Done for now. Gifted "+n+"/7. Tap again to finish.");
+ }catch(e){out("Stopped: "+(e.message||e)+"\nTap the button again to continue. Gifts already sent are skipped.");}
+ finally{busy=false;$("k5").checked=false;locks();renderGifts();}}
+$("k5").onchange=locks;$("y5").onclick=()=>giftRun(false);$("y5b").onclick=()=>giftRun(true);
+renderGifts();
 getP().then(eth=>{if(eth){refresh();if(eth.on&&!eth._s777){eth._s777=1;eth.on("accountsChanged",refresh);eth.on("chainChanged",refresh);}}});
 </script></body></html>
