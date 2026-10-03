@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#04030a">
+<title>Tutu · House of Shaffer</title>
+<link rel="icon" href="/legacy/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/legacy/apple-touch-icon.png">
+<style>
+  html,body{margin:0;height:100%;background:#04030a;color:#efe6d2;overflow:hidden;-webkit-tap-highlight-color:transparent}
+  body{font-family:Georgia,"Times New Roman",serif;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+  canvas{position:fixed;inset:0;width:100%;height:100%;display:block;pointer-events:none}
+  #bg{z-index:0} #fg{z-index:3}
+  #win{position:fixed;left:50%;top:50%;z-index:2;border-radius:50%;overflow:hidden;transform:translate(-50%,-50%);pointer-events:none;background:#0b0816;opacity:0;transition:opacity 4s ease}
+  #win.on{opacity:1}
+  #win video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;filter:saturate(.75) sepia(.18) brightness(.95);transition:opacity 2s ease}
+  #win::after{content:"";position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,rgba(4,3,10,0) 42%,rgba(20,14,40,.55) 68%,rgba(4,3,10,.96) 80%)}   /* the memory window: soft at the centre, feathered into the glow */
+  h1{position:fixed;left:0;right:0;top:calc(env(safe-area-inset-top) + 5.5vh);margin:0;text-align:center;z-index:4;font-weight:normal;font-size:clamp(28px,7vw,44px);letter-spacing:.32em;text-indent:.32em;color:#f6ead2;text-shadow:0 0 18px rgba(200,180,255,.3),0 0 4px rgba(0,0,0,.9);pointer-events:none}
+  #line{position:fixed;left:0;right:0;bottom:calc(env(safe-area-inset-bottom) + 9vh + 30px);z-index:4;margin:0;text-align:center;font:italic clamp(15px,4.2vw,19px) Georgia,serif;color:rgba(243,231,204,.86);text-shadow:0 0 10px rgba(0,0,0,.95);pointer-events:none}
+  #hint{position:fixed;left:0;right:0;bottom:calc(env(safe-area-inset-bottom) + 9vh + 4px);z-index:4;text-align:center;font:italic 12px Georgia,serif;letter-spacing:.08em;color:rgba(239,230,210,.5);transition:opacity 2.8s;pointer-events:none}
+  a#back{position:fixed;left:calc(env(safe-area-inset-left) + 14px);top:calc(env(safe-area-inset-top) + 12px);z-index:5;color:rgba(233,200,140,.7);text-decoration:none;font:13px Georgia,serif;letter-spacing:.12em;padding:8px}
+  button#snd{position:fixed;right:calc(env(safe-area-inset-right) + 12px);top:calc(env(safe-area-inset-top) + 10px);z-index:5;width:40px;height:40px;border:0;border-radius:50%;background:transparent;color:rgba(233,200,140,.7);font:18px/40px Georgia,serif;cursor:pointer;opacity:0;transition:opacity 1.8s}
+  button#snd.on{opacity:1} button#snd.off{color:rgba(233,200,140,.3)}
+  #gate{position:fixed;inset:0;z-index:10;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:#04030a;padding:24px;text-align:center}
+  #gate.on{display:flex} #gate p{margin:0;font:italic 15px Georgia,serif;color:rgba(239,230,210,.7)}
+  #gate form{display:flex;gap:10px} #gate input{font:16px Georgia,serif;padding:12px 16px;border-radius:14px;border:1px solid rgba(233,200,140,.35);background:rgba(255,255,255,.04);color:#efe6d2;width:min(60vw,240px);text-transform:uppercase}
+  #gate button{font:16px Georgia,serif;padding:12px 16px;border-radius:14px;border:1px solid rgba(233,200,140,.5);background:rgba(233,200,140,.08);color:#efe6d2}
+  /* bring her home: one button, one panel */
+  #findbtn{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 18px);z-index:5;font:13px Georgia,serif;letter-spacing:.1em;color:rgba(233,200,140,.85);background:rgba(10,8,22,.55);border:1px solid rgba(233,200,140,.4);border-radius:20px;padding:8px 16px;cursor:pointer;display:none;white-space:nowrap}
+  #findbtn.on{display:block}
+  #find{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 14px);z-index:6;width:min(92vw,420px);max-height:78vh;overflow-y:auto;box-sizing:border-box;padding:20px 20px 16px;background:rgba(10,8,22,.94);border:1px solid rgba(233,200,140,.35);border-radius:18px;box-shadow:0 0 40px rgba(120,110,255,.18);font:15px/1.5 Georgia,serif;color:#efe6d2;touch-action:pan-y;-webkit-user-select:text;user-select:text;opacity:0;visibility:hidden;transform:translate(-50%,24px);transition:opacity .5s ease,transform .5s ease,visibility 0s .5s}
+  #find.on{opacity:1;visibility:visible;transform:translate(-50%,0);transition:opacity .5s ease,transform .5s ease}
+  #find h2{margin:0 0 10px;font-weight:normal;font-size:20px;letter-spacing:.18em;color:#f6ead2}
+  #find h3{margin:16px 0 4px;font-weight:normal;font-size:15px;letter-spacing:.12em;color:rgba(233,200,140,.9)}
+  #find p{margin:0 0 10px} #find .dim{color:rgba(239,230,210,.62);font-size:13px} #find .when{color:#ffe2aa}
+  #find .row{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 12px}
+  #find .row a{flex:1 1 auto;text-align:center;text-decoration:none;color:#efe6d2;border:1px solid rgba(233,200,140,.5);background:rgba(233,200,140,.08);border-radius:14px;padding:10px 12px;font-size:14px}
+  #find a.lk{color:rgba(233,200,140,.9)}
+  #find .cam{position:relative;width:100%;padding-top:56.25%;border-radius:12px;overflow:hidden;background:#000;margin:6px 0}
+  #find .cam iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  #fx{position:absolute;right:10px;top:8px;width:36px;height:36px;border:0;background:transparent;color:rgba(233,200,140,.8);font:22px Georgia,serif;cursor:pointer}
+  @media (prefers-reduced-motion:reduce){#win{transition-duration:6s}#win video{transition-duration:3s}#hint,button#snd{transition-duration:4s}#find,#find.on{transform:translate(-50%,0)}}
+</style>
+</head>
+<body>
+<canvas id="bg" aria-hidden="true"></canvas>
+<div id="win" aria-hidden="true"><video id="va" muted playsinline preload="auto"></video><video id="vb" muted playsinline preload="none"></video></div>
+<canvas id="fg" aria-hidden="true"></canvas>
+<a id="back" href="/legacy/" aria-label="Back to Legacy">&lsaquo; Legacy</a>
+<button id="snd" aria-label="Sound on or off">&#9835;</button>
+<button id="findbtn" aria-label="Bring her home">&#9825; Bring her home</button>
+<div id="find" role="dialog" aria-label="Bring her home">
+  <button id="fx" aria-label="Close">&times;</button>
+  <h2>Bring her home</h2>
+  <p>Microchip ending <b>2749</b> matches a female cat Kitten Rescue LA found on September 1 (their ID 89280). Not confirmed yet.</p>
+  <p class="when" id="when"></p>
+  <div class="row"><a href="tel:+18183473037">Call (818) 347-3037</a><a href="mailto:mail@kittenrescue.org?subject=Found%20cat%20%2389280%20%E2%80%93%20microchip%20ending%202749">Email</a><a href="https://www.google.com/maps/search/?api=1&query=3519+Casitas+Ave+Los+Angeles+CA+90039" target="_blank" rel="noopener">Directions</a></div>
+  <p class="dim">Kitten Rescue LA &middot; 3519 Casitas Ave, Los Angeles 90039 &middot; Open Thu&ndash;Mon, 12&ndash;4 PM</p>
+  <p>When you call, ask: can they text or email a current photo of her?</p>
+  <h3>Sanctuary cam</h3>
+  <p class="dim">Their nursery room. She may not be on it.</p>
+  <div class="cam" id="cam"></div>
+  <p><a class="lk" href="https://explore.org/livecams/kitten-rescue/kitten-rescue-cam" target="_blank" rel="noopener">Open the cam</a></p>
+  <p class="dim">Current photo: none yet.</p>
+</div>
+<h1>Tutu</h1>
+<p id="line">Still out there. Held in light.</p>
+<div id="hint">Move, or touch and hold.</div>
+<div id="gate" role="dialog" aria-label="Family word"><h1 style="position:static">Tutu</h1><p>The family word, if you would.</p><form id="gf"><input id="pw" autocomplete="off" autocapitalize="characters" aria-label="Family word"><button>Enter</button></form><p id="gm"></p></div>
+<script>
+(() => {
+  // Tutu's Sphere: her own small room in Legacy. Light, threads and two of her real clips (metadata stripped, no sound, no faces).
+  // Nothing here says what happened to her. No voices, no words in anyone's mouth: only light, a warm hum and a purr.
+  const $ = id => document.getElementById(id);
+  const HASH = "e396c33d99318aa669ce64d95283ab9720cfc2d9ee765b9e8860bf06085480e3", KEY = "shaffer-key", TOKH = "5718fd85d9c00483a8cb0959a15b0d6961dd50bfb94f11314e26ec588acf6472";   // the same family word and device key as Legacy
+  const CLIPS = ["/legacy/tutu/tutu-2019.mp4", "/legacy/tutu/tutu-2018.mp4"];   // Jul 2019 (best), Oct 2018 (as a kitten)
+  const RM = matchMedia("(prefers-reduced-motion: reduce)"), mob = matchMedia("(pointer:coarse)").matches;
+  const D2 = 73.42;   // Legacy's D2 harmonic family
+  async function sha(s){ const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, "0")).join(""); }
+
+  // ---------- canvas + layout ----------
+  const bg = $("bg"), fg = $("fg"), bx = bg.getContext("2d"), fx = fg.getContext("2d"), win = $("win");
+  let W = 0, H = 0, S = {x: 0, y: 0, r: 0}, stars = [];
+  function size(){ const dpr = Math.min(mob ? 1.5 : 2, devicePixelRatio || 1); W = innerWidth; H = innerHeight;
+    for (const c of [bg, fg]){ c.width = Math.round(W*dpr); c.height = Math.round(H*dpr); c.getContext("2d").setTransform(dpr, 0, 0, dpr, 0, 0); }
+    S = {x: W/2, y: H*.49, r: Math.min(W*.36, H*.27, 260)}; const d = Math.round(S.r*2*.94); win.style.width = win.style.height = d + "px"; win.style.top = S.y + "px";
+    const n = Math.round(Math.min(260, W*H/4200)); stars = []; for (let i = 0; i < n; i++) stars.push({x: Math.random()*W, y: Math.random()*H, z: .2 + Math.random()*.8, p: Math.random()*6.283}); }
+  addEventListener("resize", size); size();
+  const glow = (c, x, y, r, a, rgb, rgb2) => { if (a <= .003 || r <= .5) return; const g = c.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, `rgba(${rgb},${Math.min(1, a).toFixed(3)})`); g.addColorStop(1, `rgba(${rgb2 || rgb},0)`); c.fillStyle = g; c.beginPath(); c.arc(x, y, r, 0, 6.283); c.fill(); };
+  const ez = u => u <= 0 ? 0 : u >= 1 ? 1 : u*u*(3 - 2*u);
+
+  // ---------- pointer: signal and thread ----------
+  const ptr = {x: -1, y: -1, on: false, at: -1e9, down: false, d0: 0, e: 0, lx: 0, ly: 0, upAt: -1e9, out: 0, left: false};
+  const GRACE = 600, BLOOM = 4000, zoneR = () => S.r + Math.max(60, S.r*.25), inZone = (x, y) => Math.hypot(x - S.x, y - S.y) <= zoneR();   // focus zone: the sphere plus a generous margin; slips under 600 ms keep the hold
+  let hold = 0, bloomAt = -1e9, pulses = [], dust = [], reveal = 0, started = false;
+  function move(x, y){ const now = performance.now(), sp = ptr.on ? Math.hypot(x - ptr.lx, y - ptr.ly) : 0; ptr.x = x; ptr.y = y; ptr.lx = x; ptr.ly = y; ptr.on = true; ptr.left = false; ptr.at = now; ptr.e = Math.min(1, ptr.e + sp/220); if (inZone(x, y)) ptr.out = 0; else if (!ptr.out) ptr.out = now; if (ptr.down && !inZone(x, y) && now - ptr.out > GRACE && Math.hypot(x - ptr.dx, y - ptr.dy) > 60){ ptr.dx = x; ptr.dy = y; ptr.d0 = now; } }   // a small drag keeps the hold; a big one restarts it
+  addEventListener("pointermove", e => move(e.clientX, e.clientY), {passive: true});
+  addEventListener("pointerdown", e => { if (e.target.closest("a,button,#gate,#find")) return; begin(); const now = performance.now(), slip = now - ptr.upAt < GRACE; move(e.clientX, e.clientY); ptr.down = true; if (!slip){ ptr.d0 = now; ptr.dx = e.clientX; ptr.dy = e.clientY; } hint(false); });
+  const up = () => { if (ptr.down) ptr.upAt = performance.now(); ptr.down = false; }; addEventListener("pointerup", up); addEventListener("pointercancel", up);
+  const leave = () => { if (!mob){ ptr.at = performance.now() - 900; ptr.left = true; } }; addEventListener("pointerleave", leave); document.documentElement.addEventListener("pointerleave", leave);
+  let hintT = 0; function hint(on){ $("hint").style.opacity = on ? 1 : 0; }
+
+  // ---------- the clips: inside the sphere, muted, cycling ----------
+  const va = $("va"), vb = $("vb"); let cur = va, ci = 0;
+  function play(v, i){ v.src = CLIPS[i]; v.load(); const p = v.play(); if (p && p.catch) p.catch(() => {}); }
+  function next(){ const nx = cur === va ? vb : va; ci = (ci + 1) % CLIPS.length; play(nx, ci); nx.onplaying = () => { nx.style.opacity = 1; cur.style.opacity = 0; const old = cur; cur = nx; setTimeout(() => { try { old.pause(); } catch(e){} }, 3200); nx.onplaying = null; }; }
+  va.addEventListener("ended", next); vb.addEventListener("ended", next);
+  va.addEventListener("playing", () => { if (cur === va) va.style.opacity = 1; }, {once: true});
+  document.addEventListener("visibilitychange", () => { try { if (document.hidden){ cur.pause(); if (ac) ac.suspend(); } else { cur.play().catch(() => {}); if (ac && !muted) ac.resume(); } } catch(e){} });
+
+  // ---------- sound: a low warm hum and a purr, only after the first touch ----------
+  let ac = null, out = null, purrG = null, humG = null, muted = false;
+  function begin(){ if (started) return; started = true; $("snd").classList.add("on"); try { cur.play().catch(() => {}); } catch(e){}
+    try { ac = new (window.AudioContext || window.webkitAudioContext)(); const comp = ac.createDynamicsCompressor(); comp.threshold.value = -14; comp.ratio.value = 12; comp.connect(ac.destination); out = ac.createGain(); out.gain.value = 0; out.connect(comp); out.gain.setTargetAtTime(1, ac.currentTime, 1.5);
+      humG = ac.createGain(); humG.gain.value = 1; const lp = ac.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 900; humG.connect(lp); lp.connect(out);
+      for (const [m, a] of [[1, .05], [2, .035], [3, .012], [4, .006]]){ const o = ac.createOscillator(), g = ac.createGain(); o.frequency.value = D2*m; o.detune.value = (m - 2)*2; g.gain.value = a; o.connect(g); g.connect(humG); o.start(); }   // D2, D3, A3, D4: warm, low
+      const lfo = ac.createOscillator(), lg = ac.createGain(); lfo.frequency.value = 55/60; lg.gain.value = .25; lfo.connect(lg); lg.connect(humG.gain); lfo.start();   // it breathes on Legacy's 55 BPM heart
+      const len = ac.sampleRate*2, b = ac.createBuffer(1, len, ac.sampleRate), d = b.getChannelData(0); let l = 0; for (let i = 0; i < len; i++){ l = (l + .02*(Math.random()*2 - 1))/1.02; d[i] = l*3.5; }
+      const src = ac.createBufferSource(); src.buffer = b; src.loop = true; const plp = ac.createBiquadFilter(); plp.type = "lowpass"; plp.frequency.value = 240; const am = ac.createGain(); am.gain.value = .55; const pl = ac.createOscillator(), pg = ac.createGain(); pl.frequency.value = 24; pg.gain.value = .45; pl.connect(pg); pg.connect(am.gain);
+      purrG = ac.createGain(); purrG.gain.value = .012; src.connect(plp); plp.connect(am); am.connect(purrG); purrG.connect(out); src.start(); pl.start(); } catch(e){ ac = null; } }   // the purr: brown noise, low-passed, a 24 Hz flutter
+  $("snd").addEventListener("click", e => { e.stopPropagation(); begin(); muted = !muted; $("snd").classList.toggle("off", muted); if (ac){ if (muted) ac.suspend(); else ac.resume(); } });
+
+  // ---------- one loop ----------
+  let last = performance.now();
+  function frame(now){ const dt = Math.min(64, now - last)/1000; last = now; const rm = RM.matches, t = now/1000, tw = rm ? t*.5 : t;
+    // stars, drifting slowly
+    bx.clearRect(0, 0, W, H); for (const s of stars){ if (!rm){ s.y += dt*2*s.z; s.x += dt*.6*s.z; if (s.y > H) s.y -= H; if (s.x > W) s.x -= W; } const a = (.25 + .5*s.z)*(rm ? 1 : .7 + .15*Math.sin(t*.65 + s.p)); bx.fillStyle = `rgba(235,232,255,${a.toFixed(3)})`; bx.fillRect(s.x, s.y, s.z*1.4, s.z*1.4); }
+    // hold: ~2 s sends a brighter pulse and the sphere blooms
+    const grip = ptr.down || now - ptr.upAt < GRACE, inZ = ptr.on && !ptr.left && inZone(ptr.x, ptr.y), stay = grip || (inZ && !mob);
+    const live = ptr.on && (now - ptr.at < 1400 || stay), hk = grip ? Math.min(1, (now - ptr.d0)/2000) : 0;
+    if (grip && hk >= 1 && now - bloomAt > BLOOM){ bloomAt = now; for (let k = 0; k < 5; k++) pulses.push({t0: now + k*120, k}); }
+    hold += ((grip ? 1 : 0) - hold)*Math.min(1, dt*1.5);
+    const bl = Math.max(0, 1 - (now - bloomAt)/BLOOM), blE = bl > 0 ? Math.sin(Math.PI*Math.min(1, (1 - bl)*1.6 + .001))*(bl) + bl*.4 : 0;
+    ptr.e = Math.max(0, ptr.e - dt*.5);
+    const near = live ? Math.max(0, 1 - (Math.hypot(ptr.x - S.x, ptr.y - S.y) - zoneR())/(S.r*2.2)) : 0;
+    const want = Math.min(1, .3 + .35*(live ? .5 + .5*near : 0) + .35*ptr.e + .4*hold + .6*blE); reveal += (want - reveal)*Math.min(1, dt*(want > reveal ? 1.1 : .4)*(rm ? .5 : 1));
+    win.style.opacity = started || !rm ? (.35 + .65*reveal).toFixed(3) : ".6"; if (!win.classList.contains("on")) win.classList.add("on");
+    if (purrG && ac){ purrG.gain.setTargetAtTime(.012 + .09*hold + .07*blE, ac.currentTime, .25); }
+    // the sphere: blue-violet with a gold heart, breathing
+    const br = rm ? .5 : .5 + .5*Math.sin(t*2*Math.PI*55/60/4);   // one breath per four heartbeats
+    glow(bx, S.x, S.y, S.r*(2.1 + .12*br + .5*blE), .14 + .03*br + .13*blE, "120,110,255", "40,20,90"); glow(bx, S.x, S.y, S.r*1.25, .16 + .1*blE, "255,214,150", "120,90,200");
+    fx.clearRect(0, 0, W, H); fx.globalCompositeOperation = "lighter";
+    fx.strokeStyle = `rgba(200,190,255,${(.2 + .07*br + .2*blE).toFixed(3)})`; fx.lineWidth = 1.6; fx.beginPath(); fx.arc(S.x, S.y, S.r*.94, 0, 6.283); fx.stroke();   // the rim of the window
+    fx.strokeStyle = `rgba(255,226,170,${(.14 + .05*br + .2*blE).toFixed(3)})`; fx.lineWidth = 3; fx.beginPath(); fx.arc(S.x, S.y, S.r*.97, -2.6, -.6); fx.stroke();
+    if (blE > 0) glow(fx, S.x, S.y, S.r*(1.1 + .9*(1 - bl)), .18*blE, "255,236,200", "180,150,255");
+    // threads from the pointer into the sphere, with phoenix dust travelling along them
+    const thA = live ? (stay ? 1 : Math.min(1, (1 - (now - ptr.at)/1400)*1.6)) : 0, N = 5, TH = [];
+    if (thA > 0 && Math.hypot(ptr.x - S.x, ptr.y - S.y) > S.r*.5){ const a0 = Math.atan2(ptr.y - S.y, ptr.x - S.x);
+      for (let i = 0; i < N; i++){ const a = a0 + (i - (N - 1)/2)*.32, ex = S.x + Math.cos(a)*S.r*.92, ey = S.y + Math.sin(a)*S.r*.92, mx = (ptr.x + ex)/2 + Math.sin(tw*.55 + i*1.7)*14 - (ey - ptr.y)*.12*(i - 2), my = (ptr.y + ey)/2 + Math.cos(tw*.45 + i)*14 + (ex - ptr.x)*.12*(i - 2);
+        TH.push([ptr.x, ptr.y, mx, my, ex, ey]); const gr = fx.createLinearGradient(ptr.x, ptr.y, ex, ey); gr.addColorStop(0, `rgba(255,230,190,${(.5*thA).toFixed(3)})`); gr.addColorStop(1, `rgba(170,160,255,${((.22 + .3*hold)*thA).toFixed(3)})`);
+        fx.strokeStyle = gr; fx.lineWidth = .9 + .9*hold; fx.beginPath(); fx.moveTo(ptr.x, ptr.y); fx.quadraticCurveTo(mx, my, ex, ey); fx.stroke(); }
+      glow(fx, ptr.x, ptr.y, 26 + 30*hk, .14 + .2*hk, "255,226,180");
+      if (grip && hk < 1){ fx.strokeStyle = `rgba(255,232,190,${(.3 + .5*hk).toFixed(3)})`; fx.lineWidth = 2; fx.lineCap = "round"; fx.beginPath(); fx.arc(ptr.x, ptr.y, 34, -Math.PI/2, -Math.PI/2 + 6.283*ez(hk)); fx.stroke(); }   // the hold building
+      if (!rm){ const rate = (mob ? 20 : 35)*(.4 + ptr.e + hold); let n = rate*dt; while (n > 0 && dust.length < (mob ? 120 : 180)){ if (n < 1 && Math.random() > n) break; n--; dust.push({i: Math.floor(Math.random()*N), u: 0, sp: .25 + Math.random()*.3, w: Math.random()*6.283, s: .7 + Math.random()*1.4, h: 28 + Math.random()*20}); } } }
+    const q = (p, u) => { const v = 1 - u; return [v*v*p[0] + 2*v*u*p[2] + u*u*p[4], v*v*p[1] + 2*v*u*p[3] + u*u*p[5]]; };
+    for (let i = dust.length - 1; i >= 0; i--){ const d = dust[i]; d.u += dt*d.sp*(1 + hold); const p = TH[d.i]; if (d.u >= 1 || !p){ dust.splice(i, 1); continue; } const [x, y] = q(p, d.u), sw = Math.sin(d.u*9 + d.w)*4*(1 - d.u), a = Math.sin(Math.PI*d.u)*(.6 + .4*hold);
+      fx.fillStyle = `hsla(${(d.h - 16*d.u).toFixed(0)},100%,${(80 - 26*d.u).toFixed(0)}%,${a.toFixed(3)})`; fx.beginPath(); fx.arc(x + sw, y - sw*.5, d.s*(1 - .4*d.u), 0, 6.283); fx.fill(); }   // embers spiral along the thread into her light
+    for (let i = pulses.length - 1; i >= 0; i--){ const P = pulses[i], u = (now - P.t0)/(rm ? 2100 : 1400); if (u < 0) continue; if (u >= 1){ pulses.splice(i, 1); continue; } const p = TH[P.k]; if (!p) continue; const [x, y] = q(p, ez(u)); glow(fx, x, y, 14, .5*(1 - u*.4), "255,250,236", "255,200,120"); }   // the brighter pulse
+    requestAnimationFrame(frame); }
+
+  // ---------- bring her home: the Kitten Rescue lead, the noon call, their sanctuary cam ----------
+  const fp = $("find"), fb = $("findbtn"), CALL = Date.parse("2026-10-02T19:00:00Z"); let fT = 0;   // Fri Oct 2, 12:00 PM Pacific
+  function when(){ const ms = CALL - Date.now(); if (ms > 0){ const h = Math.floor(ms/3600000), m = Math.floor(ms%3600000/60000); $("when").textContent = "Call at noon Friday, in " + (h ? h + "h " : "") + m + "m"; } else $("when").textContent = "Call during open hours: Thu\u2013Mon, 12\u20134 PM"; }
+  function showFind(on){ fp.classList.toggle("on", on); clearInterval(fT); const cam = $("cam");
+    if (on){ when(); fT = setInterval(when, 30000); if (!cam.firstChild){ const f = document.createElement("iframe"); f.src = "https://www.youtube-nocookie.com/embed/-m_nQT62B4Y?autoplay=1&mute=1&playsinline=1"; f.allow = "autoplay; encrypted-media; picture-in-picture"; f.allowFullscreen = true; f.title = "Kitten Rescue sanctuary cam"; cam.appendChild(f); } }
+    else cam.textContent = ""; }   // the cam only streams while the panel is open
+  fb.addEventListener("click", e => { e.stopPropagation(); begin(); showFind(!fp.classList.contains("on")); });
+  $("fx").addEventListener("click", e => { e.stopPropagation(); showFind(false); });
+
+  // ---------- open (after the family word) ----------
+  function open(){ $("gate").classList.remove("on"); fb.classList.add("on"); play(va, 0); requestAnimationFrame(frame); setTimeout(() => hint(true), 2500); setTimeout(() => hint(false), 9500); }
+  function gateCheck(){ const ck = (document.cookie.match(/(?:^|; )shaffer-key=([^;]+)/) || [])[1]; try { if (!localStorage.getItem(KEY) && ck) localStorage.setItem(KEY, decodeURIComponent(ck)); } catch(e){}
+    let saved = null; try { saved = localStorage.getItem(KEY); } catch(e){}
+    if (saved) sha(saved).then(h => { if (h === TOKH) open(); else $("gate").classList.add("on"); }); else $("gate").classList.add("on"); }
+  $("gf").addEventListener("submit", async e => { e.preventDefault(); begin(); const v = $("pw").value.trim().toUpperCase(); $("pw").value = "";
+    if (await sha(v) === HASH){ const k1 = await sha(v + "|house-of-shaffer"); try { localStorage.setItem(KEY, k1); } catch(e){} document.cookie = "shaffer-key=" + k1 + "; max-age=31536000; path=/legacy; SameSite=Lax; Secure"; open(); }
+    else $("gm").textContent = "I'm afraid I don't recognize you."; });
+  gateCheck();
+  window.__tutu = {reveal: () => +reveal.toFixed(3), hold: () => +hold.toFixed(3), bloom: () => performance.now() - bloomAt < BLOOM, clip: () => cur.currentSrc, playing: () => !cur.paused, ac: () => ac && ac.state, dust: () => dust.length, find: () => fp.classList.contains("on")};
+})();
+</script>
+<script src="/legacy/ocean.js" defer></script>
+</body>
+</html>

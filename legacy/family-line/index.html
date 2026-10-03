@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#07060a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Family Line">
+<link rel="icon" href="/legacy/favicon.svg">
+<link rel="apple-touch-icon" href="/legacy/apple-touch-icon.png">
+<title>Family Line</title>
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;min-height:100%;background:#07060a;color:#efe6d2;
+    font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%}
+  body{background:radial-gradient(120% 80% at 50% 35%,#1a1320 0%,#0b0910 55%,#050407 100%) fixed;min-height:100vh;min-height:100dvh;
+    padding:calc(env(safe-area-inset-top) + 28px) calc(env(safe-area-inset-right) + 16px) calc(env(safe-area-inset-bottom) + 28px) calc(env(safe-area-inset-left) + 16px)}
+  [hidden]{display:none!important}
+  .wrap{max-width:560px;margin:0 auto}
+  h1{margin:0 0 6px;text-align:center;font-weight:400;font-size:clamp(24px,7vw,34px);letter-spacing:.08em}
+  .sub{margin:0 0 28px;text-align:center;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:rgba(233,200,140,.7)}
+  .center{min-height:calc(100dvh - 120px);display:flex;flex-direction:column;justify-content:center}
+  form{display:flex;flex-direction:column;gap:12px;max-width:340px;margin:0 auto;width:100%}
+  input{width:100%;font:17px -apple-system,system-ui,sans-serif;padding:15px 16px;border-radius:14px;border:1px solid rgba(233,200,140,.3);
+    background:rgba(12,9,16,.8);color:#efe6d2;outline:none;text-align:center;-webkit-appearance:none}
+  input:focus{border-color:rgba(233,200,140,.7)}
+  .btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:50px;padding:12px;border-radius:14px;border:0;cursor:pointer;
+    font:600 17px -apple-system,system-ui,sans-serif;text-decoration:none;color:#1a1208;background:linear-gradient(#f0d9a6,#d9b874);-webkit-appearance:none}
+  .btn:active{transform:scale(.97);opacity:.9}
+  .btn.ghost{background:rgba(233,200,140,.12);color:#f0dcae;border:1px solid rgba(233,200,140,.28)}
+  .msg{min-height:20px;text-align:center;font-style:italic;font-size:15px;color:rgba(239,230,210,.75)}
+  .who{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:380px;margin:0 auto}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media (max-width:359px){.grid,.who{grid-template-columns:1fr}}
+  .card{display:flex;flex-direction:column;align-items:center;gap:10px;padding:20px 12px 14px;border-radius:24px;
+    background:rgba(14,10,18,.78);border:1px solid rgba(233,200,140,.18);box-shadow:0 10px 30px rgba(0,0,0,.35)}
+  .av{width:62px;height:62px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;
+    background:radial-gradient(circle at 35% 30%,#3a2a1c,#1a1210);border:1px solid rgba(233,200,140,.4);color:#f0d9a6}
+  .nm{font-size:19px;letter-spacing:.03em;text-align:center}
+  .nm small{display:block;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:rgba(233,200,140,.65);margin-top:3px}
+  .cap{font-size:12px;font-style:italic;color:rgba(239,230,210,.55);text-align:center;margin-top:-2px}
+  .acts{display:flex;flex-direction:column;gap:8px;width:100%;margin-top:auto}
+  .thread{margin:22px 0 0;padding:22px 18px 20px;border-radius:24px;text-align:center;background:rgba(14,10,18,.5);border:1px solid rgba(233,200,140,.1)}
+  .line{height:2px;margin:0 auto 16px;width:78%;border-radius:2px;
+    background:linear-gradient(90deg,transparent,rgba(240,205,140,.9),transparent);animation:pulse 4.7s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:.35;box-shadow:0 0 4px rgba(240,200,130,.2)}50%{opacity:1;box-shadow:0 0 14px rgba(240,200,130,.7)}}
+  @media (prefers-reduced-motion:reduce){.line{animation:none;opacity:.8}}
+  .thread h2{margin:0 0 8px;font-weight:400;font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:rgba(233,200,140,.78)}
+  .thread p{margin:0;font-style:italic;font-size:15px;line-height:1.7;color:rgba(239,230,210,.7)}
+  .foot{margin-top:26px;display:flex;justify-content:space-between;gap:12px;font-size:13px;color:rgba(239,230,210,.45)}
+  .foot a,.foot button{color:rgba(233,200,140,.7);text-decoration:none;background:none;border:0;font:inherit;padding:8px 0;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section id="lock" class="center">
+    <h1>Family Line</h1>
+    <p class="sub">House of Shaffer</p>
+    <form id="lf" autocomplete="off">
+      <input id="pc" type="password" placeholder="Passcode" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="go" aria-label="Passcode">
+      <button class="btn" id="go" type="submit">Open</button>
+      <div class="msg" id="lm" aria-live="polite"></div>
+    </form>
+  </section>
+
+  <section id="whos" class="center" hidden>
+    <h1>Who are you?</h1>
+    <p class="sub">Asked once</p>
+    <div class="who" id="who"></div>
+  </section>
+
+  <section id="main" hidden>
+    <h1>Family Line</h1>
+    <p class="sub">Tap to reach each other</p>
+    <div class="grid" id="grid"></div>
+    <div class="thread" id="thread"><div class="line"></div><h2>The Thread</h2><p id="tht"></p></div>
+    <div class="foot"><a href="/legacy/">&larr; Legacy</a><button id="me" type="button"></button></div>
+  </section>
+</div>
+<script>
+(() => {
+  const BLOB = {"v":1,"iter":310000,"salt":"pgZbH86fdoYqIfEOnEjQEw==","iv":"yMgKi9L5VL6hPtI/","ct":"EJtVFSJ1VHpPhdb1R3MygYqyWrRWlzVaGmGYAsiA1lgQ6eIiW+hC177kME89UxNVr4g4pKLfsB7L0EDWQs44VQ9ybWOhPJt3YQvSh+sjQ1Myqd5OI0ACvRk8OKfDZhyI24GbzdZ7APiRJ7i5JF79kUtfVQlw5qkGfjKwBdXtbMDLAGzBvaLjn6DvUt0x4kyN6JJn5vJoH2uiEL5a1zcr8a9VWq002MfTQBxfaCSh8EZ6sWOLe3hHHnrrDBJW4lhrdlOK5ZWc9sBZWMiwpYoWbUSVkGgxJuX/EpDsG0d1DQYwLI+gW9ZLadc214HlXGuyUHlZy7IpNEytdAAzgH3puJx1P/mQDLa084bEB6l0OtRRbqqmkuyqBgzuWdEti/acHWLvxd9lInIzc8ZvxiTbjmViEtP/wTVe7umBTPcDXOcjsFSD34LhpRgi/Hsi9u2hsVG7jWYfZeEgChNjrHyKwgW/tNHa42qRHVPIvMgJM8jAHpIHzbl3bdDp95Gvft9pTwC3ARClnKo9aa8KtNdN+s1sgiDnB+rkwxUUVZ7/nCznwT73wVqLzFo+TRx3vN4E4v+sZKkY52tI6lhgTN8UFKYYFLtMfUOhI+UY24EoU9z8ZABQfYMH/BbpAwhbvqSNw4dEgio5iLA2TRmq/U9Lqlj4ExJMbVGjv3mOo6yocY+J5w5nv2uSX77FMUK/6sgKY2163jEvTBwxzd3+N5lqJq+be7XHQygrMLB5FtExn0Gh/+/19NWErH8zc0FWK1P0ha2IacaNkQn9kxXVpkc4r5iDQZlt6/p2Bt+seKflEBCqODUC0+C+Yw5wxIuBp7zBwOTVDiU1kw=="};
+  const $ = id => document.getElementById(id);
+  const ub = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+  const bu = b => btoa(String.fromCharCode(...new Uint8Array(b)));
+  const SK = "fl.k", NK = "fl.me";
+  let data = null;
+
+  async function open(key) {
+    const pt = await crypto.subtle.decrypt({ name: "AES-GCM", iv: ub(BLOB.iv) }, key, ub(BLOB.ct));
+    data = JSON.parse(new TextDecoder().decode(pt));
+  }
+  async function derive(pass) {
+    const base = await crypto.subtle.importKey("raw", new TextEncoder().encode(pass), "PBKDF2", false, ["deriveKey"]);
+    return crypto.subtle.deriveKey({ name: "PBKDF2", hash: "SHA-256", salt: ub(BLOB.salt), iterations: BLOB.iter },
+      base, { name: "AES-GCM", length: 256 }, true, ["decrypt"]);
+  }
+  const show = id => { for (const s of ["lock", "whos", "main"]) $(s).hidden = s !== id; window.scrollTo(0, 0); };
+
+  function el(tag, cls, txt) { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+
+  function render() {
+    const me = localStorage.getItem(NK);
+    if (!me) {
+      const w = $("who"); w.textContent = "";
+      for (const c of data.contacts) {
+        const b = el("button", "btn ghost", c.name.split(" ")[0]);
+        b.type = "button"; b.onclick = () => { localStorage.setItem(NK, c.name.split(" ")[0]); render(); };
+        w.appendChild(b);
+      }
+      return show("whos");
+    }
+    const g = $("grid"); g.textContent = "";
+    const subj = encodeURIComponent("[Family Line] from " + me), body = encodeURIComponent("From " + me + ":\n\n");
+    for (const c of data.contacts) {
+      const card = el("div", "card");
+      card.appendChild(el("div", "av", c.av));
+      const nm = el("div", "nm", c.name); if (c.sub) nm.appendChild(el("small", "", c.sub)); card.appendChild(nm);
+      if (c.cap) card.appendChild(el("div", "cap", c.cap));
+      const acts = el("div", "acts");
+      if (c.sms) { const a = el("a", "btn", "Text"); a.href = "sms:" + c.sms + "?&body=" + encodeURIComponent("From " + me + ": "); acts.appendChild(a); }
+      if (c.email) {
+        const a = el("a", "btn" + (c.sms ? " ghost" : ""), "Email");
+        a.href = "mailto:" + c.email + "?subject=" + (c.subject ? encodeURIComponent(c.subject) : subj) +
+          "&body=" + (c.body != null ? encodeURIComponent(c.body + me + "\n\n") : body);
+        acts.appendChild(a);
+      }
+      card.appendChild(acts); g.appendChild(card);
+    }
+    $("tht").textContent = (data.thread || []).join(" ");
+    $("me").textContent = "I'm " + me + " · change";
+    show("main");
+  }
+
+  $("me").onclick = () => { localStorage.removeItem(NK); render(); };
+
+  $("lf").onsubmit = async e => {
+    e.preventDefault();
+    const pass = $("pc").value.trim().toLowerCase().replace(/\s+/g, "-");
+    if (!pass) return;
+    $("go").disabled = true; $("lm").textContent = "Opening…";
+    try {
+      const key = await derive(pass); await open(key);
+      try { sessionStorage.setItem(SK, bu(await crypto.subtle.exportKey("raw", key))); } catch (_) {}
+      $("pc").value = ""; $("pc").blur(); $("lm").textContent = ""; render();
+    } catch (_) { $("lm").textContent = "Try again"; $("pc").select(); }
+    $("go").disabled = false;
+  };
+
+  (async () => {
+    const k = sessionStorage.getItem(SK);
+    if (!k) return;
+    try { await open(await crypto.subtle.importKey("raw", ub(k), "AES-GCM", false, ["decrypt"])); render(); }
+    catch (_) { sessionStorage.removeItem(SK); }
+  })();
+})();
+</script>
+</body>
+</html>
