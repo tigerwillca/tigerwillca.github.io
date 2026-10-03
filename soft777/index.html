@@ -112,9 +112,9 @@ const IMG="https://cdn.jsdelivr.net/gh/tigerwillca/reynard-soft7-sepolia@ae7d304
 const $=id=>document.getElementById(id);
 
 // The Seven (Soft7 tokens 1-7, images from their on-chain tokenURI metadata)
-(function(){const g=$("seven");for(let i=1;i<=7;i++){const a=document.createElement("a");a.className="card";a.href="https://opensea.io/item/robinhood/"+SOFT7+"/"+i;a.target="_blank";a.rel="noopener";
+(function(){const g=$("seven");for(let i=1;i<=7;i++){const a=document.createElement("a");a.className="card";a.href="https://robinhoodchain.blockscout.com/token/"+SOFT7+"/instance/"+i;a.target="_blank";a.rel="noopener";
 const im=document.createElement("img");im.src=IMG+"0"+(32+i)+".jpg";im.alt="Reynard Soft7 #"+i;im.loading="lazy";im.decoding="async";
-const s=document.createElement("span");s.textContent="Reynard Soft7 #"+i;const sm=document.createElement("small");sm.textContent="View on OpenSea";s.appendChild(sm);a.appendChild(im);a.appendChild(s);g.appendChild(a);}})();
+const s=document.createElement("span");s.textContent="Reynard Soft7 #"+i;const sm=document.createElement("small");sm.textContent="View on Blockscout";s.appendChild(sm);a.appendChild(im);a.appendChild(s);g.appendChild(a);}})();
 
 const SEL={mintOpen:"0x24bbd049",mintPrice:"0x6817c76c",maxPerWallet:"0x453c2310",totalMinted:"0xa2309ff8",waveCap:"0x2b3c4906",wave:"0x6fe15b44",mintedInWave:"0x347edf86",mint:"0xa0712d68"};
 const ERR={"0x589ed34b":"Mint is closed right now.","0x524f409b":"Pick 1 to 3 cards.","0x7d990f05":"Not enough cards left in this wave.","0x5107dbe7":"That's over the 3-per-wallet limit for this wave.","0x569e8c11":"Price changed. Refresh and try again.","0x2d573a55":"Sold out."};
