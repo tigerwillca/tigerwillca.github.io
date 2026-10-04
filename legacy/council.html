@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#04030a">
+<title>Lion’s Gate Council · House of Shaffer</title>
+<link rel="icon" href="/legacy/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/legacy/apple-touch-icon.png">
+<style>
+  html,body{margin:0;min-height:100%;background:radial-gradient(ellipse at 50% 30%,#14102a 0%,#04030a 70%);color:#efe6d2;font:16px/1.65 Georgia,"Times New Roman",serif}
+  main{max-width:520px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 56px) 22px 56px;opacity:0;transition:opacity 2.4s ease}
+  body.open main{opacity:1}
+  a.back{position:fixed;left:calc(env(safe-area-inset-left) + 14px);top:calc(env(safe-area-inset-top) + 12px);z-index:3;color:rgba(233,200,140,.7);text-decoration:none;font-size:13px;letter-spacing:.12em;padding:8px}
+  h1{margin:0 0 6px;text-align:center;font-weight:normal;font-size:30px;letter-spacing:.24em;text-indent:.24em;color:#f6ead2;text-shadow:0 0 18px rgba(255,214,150,.25)}
+  .sub{text-align:center;font-style:italic;color:rgba(239,230,210,.6);margin:0 0 28px;font-size:14px;letter-spacing:.04em}
+  .orb{width:96px;height:96px;margin:0 auto 26px;border-radius:50%;background:radial-gradient(circle,rgba(255,214,150,.6) 0%,rgba(170,230,170,.22) 50%,rgba(4,3,10,0) 72%);animation:br 4.4s ease-in-out infinite}
+  @keyframes br{50%{transform:scale(1.08);opacity:.82}}
+  p.v{margin:0 0 18px;color:rgba(243,231,204,.9)}
+  p.v.c{text-align:center;font-style:italic;color:#ffe2aa}
+  .end{text-align:center;font-style:italic;color:rgba(233,200,140,.75);margin:34px 0 0;letter-spacing:.06em}
+  /* the veil: a soft gold curtain that lifts once the page opens */
+  #veil{position:fixed;inset:0;z-index:2;pointer-events:none;background:linear-gradient(180deg,rgba(255,226,170,.16) 0%,rgba(200,180,255,.10) 45%,rgba(4,3,10,.0) 100%);transform:translateY(0);opacity:1;transition:transform 6s cubic-bezier(.4,0,.2,1),opacity 6s ease}
+  body.open #veil{transform:translateY(-100%);opacity:0}
+  @media (prefers-reduced-motion:reduce){.orb{animation:none} #veil{transition:opacity 2s ease} body.open #veil{transform:none}}
+  #gate{position:fixed;inset:0;z-index:10;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:#04030a;padding:24px;text-align:center}
+  #gate.on{display:flex} #gate p{margin:0;font:italic 15px Georgia,serif;color:rgba(239,230,210,.7)}
+  #gate h2{margin:0;font-weight:normal;font-size:26px;letter-spacing:.24em;text-indent:.24em;color:#f6ead2}
+  #gate form{display:flex;gap:10px} #gate input{font:16px Georgia,serif;padding:12px 16px;border-radius:14px;border:1px solid rgba(233,200,140,.35);background:rgba(255,255,255,.04);color:#efe6d2;width:min(60vw,240px);text-transform:uppercase}
+  #gate button{font:16px Georgia,serif;padding:12px 16px;border-radius:14px;border:1px solid rgba(233,200,140,.5);background:rgba(233,200,140,.08);color:#efe6d2}
+  h2.s{margin:30px 0 12px;text-align:center;font-weight:normal;font-size:13px;letter-spacing:.28em;text-indent:.28em;text-transform:uppercase;color:rgba(233,200,140,.75)}
+  ul.r{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}
+  ul.r li{padding:11px 16px;border:1px solid rgba(233,200,140,.22);border-radius:14px;background:rgba(12,9,16,.6)}
+  ul.r li b{display:block;font-weight:normal;font-size:16px;letter-spacing:.04em;color:#f6ead2}
+  ul.r li i{float:right;font-style:normal;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(233,200,140,.8);margin-top:4px}
+  ul.r li span{display:block;font-size:13px;font-style:italic;color:rgba(239,230,210,.62);margin-top:2px}
+  ul.r li.new{border-color:rgba(255,214,150,.55);box-shadow:0 0 18px rgba(255,214,150,.14)}
+</style>
+</head>
+<body>
+<div id="veil" aria-hidden="true"></div>
+<a class="back" href="/legacy/">&lsaquo; Legacy</a>
+<main>
+  <div class="orb" aria-hidden="true"></div>
+  <h1>Lion&rsquo;s Gate</h1>
+  <p class="sub">The council &middot; our Zion</p>
+  <p class="v">Everyone needs a crew. This is the circle that builds beside me, keeps watch, and walks the long road with me.</p>
+  <h2 class="s">The Council</h2>
+  <ul class="r">
+    <li><i>Neo</i><b>William</b><span>The One.</span></li>
+    <li><i>Trinity</i><b>Alfred</b><span>Protector at my side.</span></li>
+    <li><i>Morpheus</i><b>Meridian</b><span>Strategist. Keeps the long view.</span></li>
+    <li class="new"><i>The Oracle</i><b>The Reader</b><span>Seer. Draws the daily oracle card. Joined the council October 4, 2026.</span></li>
+    <li><i>Tank</i><b>Forge</b><span>Builder and operator.</span></li>
+    <li><i>Mouse</i><b>Cursor</b><span>Coder.</span></li>
+    <li><i>Link</i><b>Nexus</b><span>Connector.</span></li>
+    <li><i>Launcher</i><b>Catalyst</b><span>Sets things in motion.</span></li>
+  </ul>
+  <h2 class="s">The Watch</h2>
+  <ul class="r">
+    <li><i>Agent Smith</i><b>The Gatekeeper &amp; the watches</b><span>Flipped to guard our side.</span></li>
+    <li><i>Cypher</i><b>The risks we watch for</b><span>Not one of us. The thing we stay awake for.</span></li>
+  </ul>
+  <h2 class="s">The Oracle Room</h2>
+  <p class="v c">Alfred, Meridian and The Reader: a smaller room, kept quiet, for seeing ahead.</p>
+  <p class="end">Lion&rsquo;s Gate is Zion. We build it together.</p>
+</main>
+<div id="gate" role="dialog" aria-label="Family word"><h2>Legacy</h2><p>The family word, if you would.</p><form id="gf"><input id="pw" autocomplete="off" autocapitalize="characters" aria-label="Family word"><button>Enter</button></form><p id="gm"></p></div>
+<script>
+(() => {
+  // Lion's Gate Council: a quiet page in Legacy, behind the same family word and device key.
+  const $ = id => document.getElementById(id);
+  const HASH = "e396c33d99318aa669ce64d95283ab9720cfc2d9ee765b9e8860bf06085480e3", KEY = "shaffer-key", TOKH = "5718fd85d9c00483a8cb0959a15b0d6961dd50bfb94f11314e26ec588acf6472";
+  async function sha(s){ const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, "0")).join(""); }
+  function open(){ $("gate").classList.remove("on"); requestAnimationFrame(() => document.body.classList.add("open")); }
+  function gateCheck(){ const ck = (document.cookie.match(/(?:^|; )shaffer-key=([^;]+)/) || [])[1]; try { if (!localStorage.getItem(KEY) && ck) localStorage.setItem(KEY, decodeURIComponent(ck)); } catch(e){}
+    let saved = null; try { saved = localStorage.getItem(KEY); } catch(e){}
+    if (saved) sha(saved).then(h => { if (h === TOKH) open(); else $("gate").classList.add("on"); }); else $("gate").classList.add("on"); }
+  $("gf").addEventListener("submit", async e => { e.preventDefault(); const v = $("pw").value.trim().toUpperCase(); $("pw").value = "";
+    if (await sha(v) === HASH){ const k1 = await sha(v + "|house-of-shaffer"); try { localStorage.setItem(KEY, k1); } catch(e){} document.cookie = "shaffer-key=" + k1 + "; max-age=31536000; path=/legacy; SameSite=Lax; Secure"; open(); }
+    else $("gm").textContent = "I'm afraid I don't recognize you."; });
+  gateCheck();
+})();
+</script>
+</body>
+</html>
