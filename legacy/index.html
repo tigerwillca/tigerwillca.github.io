@@ -339,7 +339,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
   const EDGARDO_FATHER_NAME = null;
   // v43.1 flags: unfinished pieces stay in the file but are hidden until William finishes them
   const SHOW_SOON = false;   // the third niece's light ("Name coming"): hidden until her first name is in
-  window.LEGACY_FLAGS = Object.assign({billsr: false}, window.LEGACY_FLAGS || {});   // billsr: Bill Shaffer Sr.'s section (photos, clippings, recording) stays off until William approves it for the live site   // no name in the notes; set it to show "<name>, his father."
+  window.LEGACY_FLAGS = Object.assign({billsr: true}, window.LEGACY_FLAGS || {});   // billsr: Bill Shaffer Sr.'s section (photos, clippings, recording): approved by William for the live site, Oct 4, 2026 (v48)   // no name in the notes; set it to show "<name>, his father."
   // one heartbeat clock for everything: light, portal, music, Signal (55 BPM, about 1091 ms)
   const HBMS = Math.round(60000/LEGACY_FREQ.bpm), BASE = LEGACY_FREQ.root, hbT0 = performance.now(), toBeat = () => HBMS - ((performance.now() - hbT0) % HBMS);
   const gate = $("gate"), msg = $("msg");
