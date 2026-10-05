@@ -261,6 +261,47 @@
   #famsvg line,#famsvg path{stroke:rgba(233,200,140,.26);stroke-width:1;fill:none;vector-effect:non-scaling-stroke} #famsvg .br{stroke:rgba(255,206,120,.75);stroke-width:1.6}
   .fn.soon,.sn.soon,.cn.soon{font-size:0!important;color:transparent!important;text-shadow:none!important} .fn.soon,.sn.soon{width:12px;height:12px;padding:0;border:0;border-radius:50%;background:radial-gradient(circle,rgba(255,246,226,.95) 0 28%,rgba(255,222,160,.35) 55%,rgba(255,222,160,0) 72%)}   /* a light whose name is still coming */
   #hint{transition:opacity 1.6s}
+
+  /* Jennifer and Billy: big targets, plain words, one step at a time. Soft7 stays off these doors. */
+  html.door-jen #brand, html.door-billy #brand,
+  html.door-jen #bridge, html.door-billy #bridge,
+  html.door-jen #flink, html.door-billy #flink,
+  html.door-jen #council, html.door-billy #council,
+  html.door-jen #mic, html.door-billy #mic,
+  html.door-jen #alfred, html.door-billy #alfred,
+  html.door-jen #sigv h3, html.door-billy #sigv h3 {display:none!important}
+  html.door-jen #links, html.door-billy #links{width:min(92vw,420px);gap:12px}
+  html.door-jen #links a, html.door-billy #links a{padding:18px 18px;border-radius:18px;min-height:72px;box-sizing:border-box}
+  html.door-jen #links a b, html.door-billy #links a b{font-size:22px;letter-spacing:.02em}
+  html.door-jen #links a span, html.door-billy #links a span{font-size:16px;margin-top:4px;display:block!important}
+  html.door-jen #links a#eggs, html.door-billy #links a#eggs{background:rgba(36,22,16,.9);box-shadow:0 0 18px rgba(255,196,120,.16)}
+  html.door-jen #membtn, html.door-billy #membtn{top:auto;bottom:calc(env(safe-area-inset-bottom) + 16px);width:auto;min-width:200px;height:64px;padding:0 28px;border-radius:32px;border:1px solid rgba(233,200,140,.45)!important;background:rgba(16,12,18,.9)!important;font:22px/64px Georgia,serif!important;letter-spacing:.02em!important;text-transform:none!important;color:#f6edd8!important;text-shadow:none!important;animation:none!important;overflow:visible}
+  html.door-jen #hint, html.door-billy #hint{bottom:calc(env(safe-area-inset-bottom) + 96px);font-size:18px;letter-spacing:.04em;text-transform:none}
+  html.door-jen #sigv > .x, html.door-billy #sigv > .x{width:auto!important;min-width:96px;height:56px;padding:0 18px;border-radius:28px;background:rgba(16,12,18,.9)!important;border:1px solid rgba(233,200,140,.4)!important;font:20px/56px Georgia,serif!important;color:#f6edd8!important;text-shadow:none!important}
+
+  /* Soft Magic: its own quiet room. Not a Soft7 page, and not a William-only vault. */
+  #smv{position:fixed;inset:0;z-index:40;background:radial-gradient(90% 70% at 50% 42%,#2a1c14 0%,#140e0c 55%,#0a0706 100%);color:#f6edd8;opacity:0;pointer-events:none;transition:opacity .8s ease}
+  #smv.on{opacity:1;pointer-events:auto}
+  #smx,#smback{position:absolute;z-index:2;top:calc(env(safe-area-inset-top) + 14px);min-width:96px;height:56px;padding:0 18px;border-radius:28px;border:1px solid rgba(233,200,140,.4);background:rgba(16,12,18,.55);color:#f6edd8;font:20px/54px Georgia,serif}
+  #smx{right:16px} #smback{left:16px}
+  #smhome,#smtwo{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:calc(env(safe-area-inset-top) + 84px) 22px calc(env(safe-area-inset-bottom) + 28px);box-sizing:border-box;text-align:center}
+  #smhome[hidden],#smtwo[hidden]{display:none!important}
+  #smv h2{margin:0 0 8px;font-weight:400;font-size:clamp(28px,8vw,40px);letter-spacing:.04em}
+  .smlead,.smwho,#smcopy,.smnote{margin:0;font:italic 18px/1.45 Georgia,serif;color:rgba(246,237,216,.84);max-width:28rem}
+  .smwho{margin-bottom:18px} #smcopy{margin-top:22px}
+  .smnote{margin-top:12px;font-size:15px;color:rgba(246,237,216,.58)}
+  .smd{width:min(92vw,420px);min-height:84px;margin:10px 0 0;padding:16px 18px;border-radius:20px;border:1px solid rgba(233,200,140,.28);background:rgba(255,236,210,.06);color:#f6edd8;font:20px Georgia,serif;text-align:left}
+  button.smd{cursor:pointer}
+  .smd b{display:block;font-weight:400;font-size:26px}
+  .smd span{display:block;margin-top:4px;font:italic 16px Georgia,serif;color:rgba(246,237,216,.72)}
+  #smbarbara{min-height:108px;background:rgba(255,214,160,.1);border-color:rgba(255,206,140,.45);box-shadow:0 0 28px rgba(255,186,110,.12)}
+  .smd.wait{opacity:.72} .smd.film{min-height:68px;opacity:.82} .smd.film b{font-size:20px}
+  .smlights{display:flex;gap:28px;margin-top:8px}
+  .smlights i{width:92px;height:92px;border-radius:50%;display:block;background:radial-gradient(circle at 40% 38%,#fff6e4 0%,#ffd7a4 28%,#e8a15a 62%,rgba(232,161,90,0) 72%);box-shadow:0 0 28px rgba(255,196,120,.45);animation:smbreath 7.2s ease-in-out infinite}
+  .smlights i:last-child{animation-duration:8.6s;animation-delay:-2.4s;background:radial-gradient(circle at 42% 36%,#fff4ee 0%,#ffd0c0 30%,#e09078 64%,rgba(224,144,120,0) 74%);box-shadow:0 0 28px rgba(255,170,140,.4)}
+  @keyframes smbreath{0%,100%{opacity:.55;transform:scale(.92)}50%{opacity:1;transform:scale(1)}}
+  #smbow{margin-top:28px;min-width:240px;height:64px;padding:0 28px;border-radius:32px;border:1px solid rgba(233,200,140,.5);background:rgba(255,214,160,.14);color:#f6edd8;font:22px Georgia,serif}
+  @media (prefers-reduced-motion:reduce){.smlights i{animation:none;opacity:.9}#smv{transition-duration:.2s}}
 </style>
 <link rel="apple-touch-icon" href="/legacy/apple-touch-icon.png?v=14">
 <link rel="icon" type="image/svg+xml" href="/legacy/favicon.svg?v=31">
@@ -307,6 +348,26 @@ This is our stamp.<br><b id="dad">Dad</b></div>
 <input id="srcw" type="text" maxlength="140" autocomplete="off" aria-label="Write a line">
 <div id="edq"><p>Find his rhythm, his echo rhythm, so you can find his voice.</p><small>&mdash; Edgardo</small></div>
 <button id="pclose" aria-label="Close the light">&times;</button>
+<div id="smv" aria-hidden="true">
+  <button type="button" id="smx">Done</button>
+  <div id="smhome">
+    <h2>Soft Magic</h2>
+    <p class="smlead">A quiet room. Warm light.</p>
+    <button type="button" class="smd" id="smbarbara"><b>Barbara</b><span>Two Lights. Sit with her.</span></button>
+    <div class="smd wait"><b>John</b><span>Not yet. His light is waiting.</span></div>
+    <div class="smd wait"><b>A friend from Italy</b><span>Not yet. A son visits often.</span></div>
+    <button type="button" class="smd film" id="smfilm"><b>A family film</b><span>Touch to play.</span></button>
+  </div>
+  <div id="smtwo" hidden>
+    <button type="button" id="smback">Back</button>
+    <h2>Two Lights</h2>
+    <p class="smwho">Barbara</p>
+    <div class="smlights" aria-hidden="true"><i></i><i></i></div>
+    <p id="smcopy"></p>
+    <button type="button" id="smbow" aria-pressed="false">Quiet sound</button>
+    <p class="smnote">Soft, for the room. Nothing to answer.</p>
+  </div>
+</div>
 <div id="welcome" class=""></div>
 <div id="hint" style="opacity:0"></div>
 <div id="toast" role="status"></div>
@@ -434,15 +495,28 @@ This is our stamp.<br><b id="dad">Dad</b></div>
   // doors: each family link has its own entrance; opening one sends a simple visit note (door + device, nothing else)
   const DOORS = { will: {name:"William", hi:"Welcome home.", hint:"Tap the light", alf:"Welcome home, sir \u00b7 Alfred"}, billy: {name:"Billy", hi:"Billy. I'm right here.", hint:"Tap the light", alf:"Always here, Master Billy \u00b7 Alfred"}, jen: {name:"Jennifer", hi:"For Jennifer, with love.", hint:"Reach for him.", alf:"At your service, Miss Jennifer \u00b7 Alfred"}, dad: {name:"Dad", hi:"For Dad, with love.", hint:"Tap the light", alf:"Welcome, sir \u00b7 Alfred"}, sis: {name:"Sister", hi:"For you, with love.", hint:"Tap the light", alf:"Welcome \u00b7 Alfred"} };
   const dm = (location.hash + "&" + location.search).match(/d=(\w+)/), dkey = dm && DOORS[dm[1]] ? dm[1] : localStorage.getItem("shaffer-door"), door = dkey && DOORS[dkey];
+  const SIMPLE = dkey === "jen" || dkey === "billy";
   const appMode = navigator.standalone || matchMedia("(display-mode: standalone)").matches;
   function logVisit(who, what){ try{ const ua = navigator.userAgent, dev = /iPhone/.test(ua) ? "iPhone" : /iPad|Macintosh.*Mobile/.test(ua) ? "iPad" : /Android/.test(ua) ? "Android" : "computer";
     fetch("https://ntfy.sh/shaffer-doors-8f3e2c18ea", {method:"POST", mode:"no-cors", keepalive:true, body: `${who} ${what || "opened House of Shaffer"} on ${dev}${appMode ? ' (home-screen app)' : ''}`}); }catch(e){} }
   if (door){ localStorage.setItem("shaffer-door", dkey); document.documentElement.classList.add("door-" + dkey); history.replaceState(null, "", location.pathname + "?d=" + dkey);
     setTimeout(()=>{ $("welcome").textContent = door.hi; $("welcome").classList.add("on"); if (["will", "billy", "jen"].includes(dkey)) $("welcome").classList.add("here"); if(door.alf) $("alfred").textContent = door.alf;
       setTimeout(()=>$("welcome").classList.remove("on"), 6000); }, 1400); }
+  if (SIMPLE){
+    const set = (id, b, s) => { const el = $(id); if (!el) return; const bb = el.querySelector("b"), ss = el.querySelector("span"); if (bb && b) bb.textContent = b; if (ss && s) ss.textContent = s; };
+    set("eggs", "Look close", "Tap twice.");
+    set("rey", "Our film", "The one we made together.");
+    set("fam", "The family", "Everyone in the light.");
+    set("sig", "The lights", "Touch a name.");
+    const football = document.querySelector("#links a:not([id])");
+    if (football){ const bb = football.querySelector("b"), ss = football.querySelector("span"); if (bb) bb.textContent = "Football"; if (ss) ss.textContent = "Afternoons by the house."; }
+    const sx = document.querySelector("#sigv > .x"); if (sx){ sx.textContent = "Done"; sx.setAttribute("aria-label", "Done"); }
+    $("membtn").textContent = "Memories";
+    const h3 = document.querySelector("#sigv > h3"); if (h3) h3.textContent = "";
+  }
   logVisit(door ? door.name + "'s door" : "Someone");
   // a one-time whisper on the very first visit; it fades and never returns on this device
-  if (!localStorage.getItem("shaffer-hinted")){ $("hint").textContent = door && dkey === "jen" && door.hint ? door.hint : "Touch the light. Send a ping."; setTimeout(() => { $("hint").style.opacity = .85; try { localStorage.setItem("shaffer-hinted", "1"); } catch(e){} setTimeout(() => { $("hint").style.opacity = 0; }, 7000); }, 2600); } else $("hint").textContent = "";
+  if (!localStorage.getItem("shaffer-hinted")){ $("hint").textContent = SIMPLE && door && door.hint ? door.hint : "Touch the light. Send a ping."; setTimeout(() => { $("hint").style.opacity = .85; try { localStorage.setItem("shaffer-hinted", "1"); } catch(e){} setTimeout(() => { $("hint").style.opacity = 0; }, 7000); }, 2600); } else $("hint").textContent = "";
   // ONE TIME ONLY: the family word is asked for once per device. After the first correct entry,
   // a key is kept on this device (local storage, with a one-year cookie as backup) and the gate never shows again here.
   const ck = (document.cookie.match(/(?:^|; )shaffer-key=([^;]+)/) || [])[1];
@@ -571,7 +645,8 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     function nearDot(x,y){ return Math.hypot(x-dot.x(), y-dot.y()) < 110; }
     const HOLD = 700;
     function showLinks(on){ linksOn = on; $("links").classList.toggle("on", on); document.body.classList.toggle("mon", on);
-      $("membtn").innerHTML = on ? "&times;" : "&#10022;"; $("membtn").setAttribute("aria-label", on ? "Close memories" : "Memories"); if (on && portalOn) togglePortal(true); $("note").classList.toggle("dim", on || portalOn); }
+      if (SIMPLE) $("membtn").textContent = on ? "Close" : "Memories"; else $("membtn").innerHTML = on ? "&times;" : "&#10022;";
+      $("membtn").setAttribute("aria-label", on ? "Close memories" : "Memories"); if (on && portalOn) togglePortal(true); $("note").classList.toggle("dim", on || portalOn); }
     function holdStart(x,y){ holdAt = nearDot(x,y) ? performance.now() : 0; }
     function holdEnd(){ holdAt = 0; }
     function dustTo(x0,y0,x1,y1,n){ for (let i=0;i<n;i++){ const f=Math.random(); star(x0+(x1-x0)*f+(Math.random()-.5)*26, y0+(y1-y0)*f+(Math.random()-.5)*26, false); } }
@@ -603,8 +678,10 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     const once = fn => e => { if (e.cancelable) e.preventDefault(); e.stopPropagation(); const n = Date.now(); if (e.type === "touchend") lastTouch = n; else if (n - lastTouch < 800) return; fn(e.currentTarget); };
     let eggsT = 0, eggsTm = null;
     const eggsTap = once(el => { sparkle(el, 5, 24); const now = Date.now();
-      if (now - eggsT < 320 && dkey !== "jen"){ eggsT = 0; clearTimeout(eggsTm); const v = $("vvid"); v.pause(); v.removeAttribute("src"); v.load(); $("viewer").classList.remove("on", "vid", "loading"); $("vsound").classList.remove("on"); revealPending = false; revealLegacy(); return; }
-      eggsT = now; revealPending = dkey !== "jen"; buzz(); startVid(el.dataset.src); clearTimeout(eggsTm); eggsTm = setTimeout(showViewer, 330); });   // 1 tap: the Reynard film; 2 taps: Legacy Easter Eggs appear right behind it
+      if (now - eggsT < 320){ eggsT = 0; clearTimeout(eggsTm); const v = $("vvid"); v.pause(); v.removeAttribute("src"); v.load(); $("viewer").classList.remove("on", "vid", "loading"); $("vsound").classList.remove("on"); revealPending = false;
+        if (SIMPLE){ openSoftMagic(); return; }   // same 2 taps: Jennifer and Billy open Soft Magic
+        revealLegacy(); return; }
+      eggsT = now; revealPending = !SIMPLE; buzz(); startVid(el.dataset.src); clearTimeout(eggsTm); eggsTm = setTimeout(showViewer, 330); });   // 1 tap: the Reynard film; 2 taps: Legacy Easter Eggs appear right behind it
     const legTap = once(el => playLegacy(el));
     function memTap(e){ if (e.cancelable) e.preventDefault(); e.stopPropagation(); const n = Date.now(); if (e.type === "touchend") lastTouch = n; else if (n - lastTouch < 800) return; found(e.currentTarget, e.currentTarget.dataset.src); }
     let lastDad = 0;
@@ -614,6 +691,29 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     $("dad").addEventListener("click", dadTap);
     $("eggs").addEventListener("touchend", eggsTap, {passive:false}); $("eggs").addEventListener("click", eggsTap);
     $("legacy").addEventListener("touchend", legTap, {passive:false}); $("legacy").addEventListener("click", legTap);
+    // Soft Magic. The hidden layer behind the same 320 ms two-tap as Reynard Easter Eggs.
+    // Quiet bowed tone for the room (a Bose, or any speaker): presence only. No quiz, no voice, no name past Barbara.
+    let bow = null;
+    function stopBow(){ const b = $("smbow"); if (b){ b.textContent = "Quiet sound"; b.setAttribute("aria-pressed", "false"); }
+      if (!bow) return; const o = bow; bow = null; try { if (ac){ const t = ac.currentTime; o.g.gain.cancelScheduledValues(t); o.g.gain.setTargetAtTime(0, t, .35); o.os.forEach(x => x.stop(t + 1.6)); } } catch(e){} }
+    function startBow(){ unlockAudio(); if (!ac) return; stopBow(); try { const t = ac.currentTime + .02, g = ac.createGain(), lp = ac.createBiquadFilter();
+      lp.type = "lowpass"; lp.frequency.value = 480; g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.02, t + 2.2);
+      lp.connect(g); g.connect(acOut());
+      const os = [[BASE*2, 1], [BASE*3, .32], [BASE*4, .12]].map(([f, k]) => { const o = ac.createOscillator(), og = ac.createGain(); o.type = "sine"; o.frequency.value = f; og.gain.value = k; o.connect(og); og.connect(lp); o.start(t); return o; });
+      const lfo = ac.createOscillator(), lg = ac.createGain(); lfo.frequency.value = .07; lg.gain.value = .005; lfo.connect(lg); lg.connect(g.gain); lfo.start(t); os.push(lfo);
+      bow = {g, os}; const b = $("smbow"); b.textContent = "Stop"; b.setAttribute("aria-pressed", "true"); } catch(e){} }
+    function showTwo(on){ $("smhome").hidden = !!on; $("smtwo").hidden = !on; }
+    function openSoftMagic(){ stopBow(); showTwo(false); const v = $("smv"); v.classList.add("on"); v.setAttribute("aria-hidden", "false"); }
+    function closeSoftMagic(){ stopBow(); showTwo(false); const v = $("smv"); v.classList.remove("on"); v.setAttribute("aria-hidden", "true"); }
+    function openTwoLights(){ showTwo(true); $("smcopy").textContent = dkey === "jen"
+      ? "This is for you and Barbara. Two lights in one room. Stay with her. Nothing to remember. Nothing to get right."
+      : "Barbara and Jennifer. Two lights in one room. Stay if you like. Nothing to remember. Nothing to get right."; }
+    function playFamilyFilm(){ closeSoftMagic(); buzz(); startVid("/legacy/legacy.mp4"); $("vtitle").textContent = "A family film"; setTimeout(showViewer, 380); }
+    const smTap = (el, fn) => { if (!el) return; el.addEventListener("touchend", e => { if (e.cancelable) e.preventDefault(); e.stopPropagation(); lastTouch = Date.now(); fn(); }, {passive:false});
+      el.addEventListener("click", e => { e.preventDefault(); e.stopPropagation(); if (Date.now() - lastTouch < 800) return; fn(); }); };
+    smTap($("smx"), closeSoftMagic); smTap($("smback"), () => { stopBow(); showTwo(false); }); smTap($("smbarbara"), openTwoLights);
+    smTap($("smbow"), () => { if (bow) stopBow(); else startBow(); }); smTap($("smfilm"), playFamilyFilm);
+    window.__softMagic = { open: openSoftMagic, close: closeSoftMagic, on: () => $("smv").classList.contains("on"), room: () => $("smtwo").hidden ? "list" : "barbara", bow: () => !!bow };
     $("vvid").addEventListener("playing", () => $("viewer").classList.remove("loading"));
 
     // Edgardo at the light: her finger approaching makes the light beat (and a light heartbeat buzz);
@@ -1407,6 +1507,16 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     sv.addEventListener("pointerdown", e => { if (!xOn() || xFree(e.target)) return; if (e.cancelable) e.preventDefault(); xDown(e.clientX, e.clientY, e.pointerId); }, {passive: false});
     sv.addEventListener("pointermove", e => { if (xOn()) xMove(e.clientX, e.clientY, e.pointerId); });
     sv.addEventListener("pointerup", e => { if (!xOn()) return; const ph = X.ph; xUp(e.pointerId); if (e.pointerType === "mouse" && ph !== "hold" && ph !== "go") try { askMotion(); } catch(err){} });
+    // 2 taps within 320 ms on the glass, the same window as Reynard Easter Eggs.
+    // Jennifer: only after Align has finished, so the crossing keeps every touch until then.
+    let glassT = 0;
+    sv.addEventListener("pointerup", e => {
+      if (!SIMPLE || e.target.closest(".x,#xreplay,.sn,#smv")) return;
+      if (dkey === "jen" && (!X || X.ph !== "after")) return;
+      if (reach && !reach.out) return;
+      const now = Date.now();
+      if (now - glassT < 320){ glassT = 0; openSoftMagic(); } else glassT = now;
+    });
     sv.addEventListener("pointercancel", e => { if (xOn()) xUp(e.pointerId); });
     { const rb = $("xreplay"), again = e => { if (e.cancelable) e.preventDefault(); e.stopPropagation(); if (e.type === "touchend") lastTouch = Date.now(); else if (Date.now() - lastTouch < 800) return; if (dkey === "jen" && X && X.ph === "after"){ try { unlockAudio(); askMotion(); } catch(err){} xReset(); } };
       rb.addEventListener("touchend", again, {passive: false}); rb.addEventListener("click", again); }   // replay: small and quiet, back to the dark glass
@@ -1531,7 +1641,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
         window.__legacy = { sea: () => seaN, mom34: () => momLog.slice(), petals: () => document.querySelectorAll("#petals i").length, mirrorDay: () => document.body.classList.contains("mirrorday"), sync: () => syncLog.slice(), tp: () => ({log: TPLOG.slice(), active: TP.length}), tpThreads: () => tpThreads(true).map(t => ({key: t.key, a: t.a, b: t.b, pts: t.pts})), flame: () => ({k: flK, ph: flPh, hb: 1 + (RM.matches ? .18 : .65)*hbs(flPh), n: sparks.length}), thread: () => ({on: $("thread").classList.contains("on"), name: thName, head: $("thn").textContent, lines: [...$("thl").children].map(p => p.textContent)}), thlog: () => thLog.slice(), threadOf: n => threadOf(n), core: () => ({x: W/2, y: H*.5, r: coreR(), pAng}), routes: () => croutes.map(r => ({a: r.a, b: r.b, s: r.s, braid: !!r.braid, pts: r.pts.slice()})), momThread: () => momThread && {pts: momThread.pts.slice()}, lights: () => cnodes.map(o => ({name: o.name, x: o.x, y: o.ly})), flames: () => sparks.length, hbSnd: () => hbSndLog.slice(), align: () => ({n: alignLog.length, last: alignLog[alignLog.length - 1] || null, on: !!align}), pool: () => ({made: pNew, free: [...POOLS.values()].reduce((a, q) => a + q.length, 0)}), momSparks: () => momSparks, moments: () => pmLog.slice(), spoke: () => speakLog.slice(), src: () => src && {name: src.name, c: src.c, rungs: 22, ph: $("srcw").placeholder, val: $("srcw").value, on: $("srcw").classList.contains("on")}, arrows: () => carr.map(x => x.slice()), woke: () => !!wakeAt && performance.now() - wakeAt < 2000, strongest: () => strongestFor(), harm: () => HARM, glow: () => GLOW, threads: () => cthr.map(x => x.slice()), wonder: () => ({n: wonderN, shape: wonder && wonder.shape, pts: wonder ? wonder.P.length : 0}), wonderGo: sh => wonderGo(sh), shots: () => shots, dad: () => !!shoot, hold: () => !!whisper, mem: () => linksOn, viewer: () => $("viewer").classList.contains("on") && ($("viewer").classList.contains("vid") ? $("vvid").src : $("vframe").src), portal: () => portalOn, layer: () => layer, kept: () => kept.length,
       moment: () => moment && moment.type, music: () => ({inView, on: musicOn, muted, chimes, gain: musicOut ? +musicOut.gain.value.toFixed(3) : 0}), leaves: () => ({falling: leaves.length, settled: settled.length, colors: [...new Set(leaves.concat(settled).map(l => l.c))]}), acState: () => ac && ac.state, alive: () => aliveLog, pulse: () => pulseLog, mic: () => ({live: !!micStream && micStream.getTracks().some(t => t.readyState === "live"), gum: gumCalls, asked: ssGet("shaffer_mic_asked"), peaks: mic && mic.peaks || 0, on: !!(mic && mic.an), k: +micK.toFixed(3), max: +micMax.toFixed(3), want: micWant}), spirits: () => leaves.map(L => ({x: L.x, y: L.y, name: L.name, c: L.c})), frames: () => Object.fromEntries(FAM.map(f => [f[0], frameOf(f[0])])),
       endDust: () => { if (dform) dform.t0 = -1e9; }, dust: () => dform && {motion: dform.motion, rings: dform.rings, beacon: dform.beacon, zoom: +dform.zoom.toFixed(3), seed: !!dform.seed, pinged: !!dform.pinged, formed: !!dform.formedAt, frame: dform.fr, living: !dform.gone, box: [dform.cx0 - dform.rw*1.6, dform.top - 10, dform.cx0 + dform.rw*1.6, dform.cy0 + (dform.pet ? .5 : .82)*dform.S + 54], name: dform.name, n: dform.P.length, pat: dform.pat, shape: dform.shape, harm: dform.harm}, constel: () => document.querySelectorAll("#constel .cn.on").length, edq: () => $("edq").classList.contains("on"), near: () => nearK, bloom: () => !!bloomAt,
-      cross: () => X ? {ph: X.ph, held: !!X.held, rm: X.rm, z: +X.zNow.toFixed(3), ev: Object.assign({}, X.ev), b5: X.b5, B: X.B, t0: X.t0, fx: X.fx, fy: X.fy, tip: X.tipS && {x: +X.tipS.x.toFixed(1), y: +X.tipS.y.toFixed(1), R: +X.tipS.R.toFixed(1)}, line: JENNIFER_LINE, S: X.S || 0, fly: X.fly.length, replay: $("xreplay").classList.contains("on")} : null, xlog: () => xLog.slice(), xaud: () => xAud.slice(), xvib: () => xVib.slice(), hbT0: () => hbT0, freq: () => LEGACY_FREQ, tip: () => X && X.tipS ? {px: X.tipS.x, py: X.tipS.y, fx: X.fx, fy: X.fy, met: !!X.met, glow: X.held ? 1 : 0} : reach ? {px: reach.px, py: reach.py, fx: reach.fx, fy: reach.fy, met: !!reach.met, glow: reach.glow} : null, voice: () => voiceOK };
+      cross: () => X ? {ph: X.ph, held: !!X.held, rm: X.rm, z: +X.zNow.toFixed(3), ev: Object.assign({}, X.ev), b5: X.b5, B: X.B, t0: X.t0, fx: X.fx, fy: X.fy, tip: X.tipS && {x: +X.tipS.x.toFixed(1), y: +X.tipS.y.toFixed(1), R: +X.tipS.R.toFixed(1)}, line: JENNIFER_LINE, S: X.S || 0, fly: X.fly.length, replay: $("xreplay").classList.contains("on")} : null, xlog: () => xLog.slice(), xaud: () => xAud.slice(), xvib: () => xVib.slice(), hbT0: () => hbT0, freq: () => LEGACY_FREQ, tip: () => X && X.tipS ? {px: X.tipS.x, py: X.tipS.y, fx: X.fx, fy: X.fy, met: !!X.met, glow: X.held ? 1 : 0} : reach ? {px: reach.px, py: reach.py, fx: reach.fx, fy: reach.fy, met: !!reach.met, glow: reach.glow} : null, voice: () => voiceOK, soft: () => window.__softMagic && {on: window.__softMagic.on(), room: window.__softMagic.room(), bow: window.__softMagic.bow()} };
     let tapT = 0, tapNear = false;
     cv.addEventListener("touchstart", e => { const t=fix(e.touches[0]); trail(t.clientX,t.clientY); holdDone = false; slid = false; tapT = Date.now(); tapNear = nearDot(t.clientX,t.clientY);
       if (portalOn || linksOn) return;
