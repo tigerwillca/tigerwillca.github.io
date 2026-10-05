@@ -7,10 +7,14 @@
 <title>Soft7</title>
 <style>
 *{box-sizing:border-box}
-html,body{margin:0;min-height:100vh;background:#07050f;color:#F6DFA0;font-family:system-ui,sans-serif}
+html,body{margin:0;min-height:100vh;background:#03020a;color:#F6DFA0;font-family:system-ui,sans-serif}
 .bg,.poster{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
 .poster{background:#07050f url("/assets/soft7-bg-poster.jpg") 50% 40%/cover no-repeat}
-.veil{position:fixed;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(7,5,15,.78),rgba(7,5,15,.42) 40%,rgba(7,5,15,.82))}
+.veil{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse 70% 45% at 50% 18%,rgba(110,60,200,.14),transparent 70%),linear-gradient(180deg,rgba(3,2,10,.2),rgba(3,2,10,.55))}
+#sky{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.portal{position:relative;width:min(74vw,340px);aspect-ratio:4/5;margin:0 auto 1.4rem;flex:none}
+.portal canvas{display:block;width:100%;height:100%;-webkit-mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 82%,transparent 100%);mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 82%,transparent 100%)}
+@media (max-height:640px){.portal{width:min(60vw,260px)}}
 #trail,#dot{position:fixed;left:0;top:0;z-index:4;pointer-events:none}
 #dot{width:14px;height:14px;border-radius:50%;opacity:0;background:radial-gradient(circle,#fff 0%,#E6B85C 35%,rgba(255,122,42,0) 72%);box-shadow:0 0 12px rgba(255,122,42,.85)}
 main{position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:4.5rem 1.25rem 3rem}
@@ -54,15 +58,13 @@ body:has(.site-tabs) a.tune{top:calc(44px + .75rem)}
 <nav class="site-tabs" aria-label="Site">
 <a href="/">Family</a><span aria-hidden="true">·</span><a href="/watch/">Watch</a><span aria-hidden="true">·</span><a href="/soft7/" aria-current="page">Soft7</a>
 </nav>
-<div class="poster" aria-hidden="true"></div>
-<video class="bg" id="bg" autoplay muted loop playsinline webkit-playsinline preload="metadata" poster="/assets/soft7-bg-poster.jpg" aria-hidden="true">
-<source src="/assets/soft7-bg-loop-v4b.mp4" type="video/mp4"/>
-</video>
+<canvas id="sky" aria-hidden="true"></canvas>
 <div class="veil" aria-hidden="true"></div>
 <canvas id="trail" aria-hidden="true"></canvas>
 <div id="dot" aria-hidden="true"></div>
 <a class="tune" href="/door/">Tune in. Three. Six. Nine.</a>
 <main>
+<div class="portal" role="img" aria-label="A slow violet portal with a soft 7 gently coming through"><canvas id="portal"></canvas></div>
 <h1>Soft7 is the first door.</h1>
 <p class="line">Seven cards on Robinhood Chain. One phoenix rising.</p>
 <p class="cap">Touch the signal. Enter.</p>
@@ -140,6 +142,79 @@ b.addEventListener('click',function(){try{
   [[55,.5],[110,.3],[165,.14]].forEach(function(p){var o=ac.createOscillator(),v=ac.createGain();o.type='sine';o.frequency.value=p[0];v.gain.value=p[1];o.connect(v);v.connect(g);o.start();});}
  if(ac.state==='suspended')ac.resume();on=!on;var t=ac.currentTime;g.gain.cancelScheduledValues(t);g.gain.setValueAtTime(g.gain.value,t);g.gain.linearRampToValueAtTime(on?.06:0,t+(on?1.5:.8));
  b.classList.toggle('on',on);b.setAttribute('aria-pressed',on?'true':'false');}catch(e){}});})();
+</script>
+<script>
+/* Soft7 portal hero: slow violet portal, a soft 7 breathing through it. ~10s cycles, no flashing. */
+(function(){
+  var still=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
+  var TAU=6.2832, dpr=Math.min(window.devicePixelRatio||1,2);
+  /* background sky: slow drifting stars */
+  var sky=document.getElementById('sky'), sx=sky&&sky.getContext&&sky.getContext('2d'), SW=0, SH=0, stars=[];
+  function sizeSky(){ if(!sx) return; SW=innerWidth; SH=innerHeight; sky.width=SW*dpr; sky.height=SH*dpr; sx.setTransform(dpr,0,0,dpr,0,0);
+    stars=[]; var n=Math.round(Math.min(260,SW*SH/5200)); for(var i=0;i<n;i++) stars.push({x:Math.random()*SW,y:Math.random()*SH,z:Math.random()*1.3+.25,t:Math.random()*TAU,v:Math.random()<.35}); }
+  function drawSky(n){ if(!sx) return; sx.fillStyle='#03020a'; sx.fillRect(0,0,SW,SH);
+    for(var i=0;i<stars.length;i++){ var s=stars[i]; if(!still){ s.y-=s.z*.05; if(s.y<-2) s.y=SH+2; }
+      var a=.22+.28*(.5+.5*Math.sin(n/5000+s.t));
+      sx.fillStyle=s.v?'rgba(200,170,255,'+a+')':'rgba(255,240,222,'+a+')'; sx.beginPath(); sx.arc(s.x,s.y,s.z,0,TAU); sx.fill(); } }
+  /* portal */
+  var pc=document.getElementById('portal'), px=pc&&pc.getContext&&pc.getContext('2d'), W=0, H=0, motes=[];
+  function sizePortal(){ if(!px) return; var r=pc.getBoundingClientRect(); W=Math.max(1,r.width); H=Math.max(1,r.height);
+    pc.width=Math.round(W*dpr); pc.height=Math.round(H*dpr); px.setTransform(dpr,0,0,dpr,0,0);
+    motes=[]; for(var i=0;i<46;i++) motes.push(newMote(true)); }
+  function newMote(any){ return {a:Math.random()*TAU,r:any?Math.random():1,s:.00004+Math.random()*.00006,z:.6+Math.random()*1.4,t:Math.random()*TAU}; }
+  function drawPortal(n){ if(!px) return;
+    var cx=W/2, cy=H*.52, rx=W*.40, ry=H*.42;
+    var b=.5+.5*Math.sin(n/10000*TAU);            /* main breath, 10 s */
+    var b2=.5+.5*Math.sin(n/12000*TAU+1.3);       /* slower drift, 12 s */
+    px.clearRect(0,0,W,H);
+    /* outer aura, strongest above the opening */
+    var au=px.createRadialGradient(cx,cy-ry*.55,0,cx,cy-ry*.55,Math.min(W*.5,cy+ry*.0));
+    au.addColorStop(0,'rgba(150,95,255,'+(.26+.08*b)+')'); au.addColorStop(.5,'rgba(90,40,190,'+(.08+.04*b)+')'); au.addColorStop(1,'rgba(3,2,10,0)');
+    px.fillStyle=au; px.fillRect(0,0,W,H);
+    /* the opening */
+    px.save(); px.beginPath(); px.ellipse(cx,cy,rx,ry,0,0,TAU); px.clip();
+    var inn=px.createLinearGradient(0,cy-ry,0,cy+ry);
+    inn.addColorStop(0,'rgba(176,128,255,'+(.80+.12*b)+')'); inn.addColorStop(.18,'rgba(110,56,214,.78)');
+    inn.addColorStop(.42,'rgba(40,16,96,.95)'); inn.addColorStop(.68,'#0d0724'); inn.addColorStop(1,'#03020a');
+    px.fillStyle=inn; px.fillRect(cx-rx,cy-ry,rx*2,ry*2);
+    /* soft light pooling at the top */
+    var top=px.createRadialGradient(cx,cy-ry*1.05,0,cx,cy-ry*1.05,ry*1.1);
+    top.addColorStop(0,'rgba(235,215,255,'+(.40+.14*b)+')'); top.addColorStop(.5,'rgba(160,110,255,.18)'); top.addColorStop(1,'rgba(160,110,255,0)');
+    px.fillStyle=top; px.fillRect(cx-rx,cy-ry,rx*2,ry*2);
+    /* slow depth rings drifting inward */
+    px.lineWidth=1;
+    for(var k=0;k<4;k++){ var f=((n/11000)+k/4)%1, q=1-f; /* 1 -> 0 */
+      px.strokeStyle='rgba(200,170,255,'+(.10*Math.sin(Math.PI*q))+')';
+      px.beginPath(); px.ellipse(cx,cy-ry*.12*(1-q),rx*q*.96,ry*q*.96,0,0,TAU); px.stroke(); }
+    /* motes rising softly toward the top light */
+    for(var i=0;i<motes.length;i++){ var m=motes[i];
+      if(!still){ m.r-=m.s*16; if(m.r<=0){ motes[i]=newMote(false); continue; } }
+      var mx=cx+Math.cos(m.a)*rx*m.r*.95, my=cy+Math.sin(m.a)*ry*m.r*.95-ry*.25*(1-m.r);
+      var ma=.55*Math.sin(Math.PI*m.r)*(.6+.4*Math.sin(n/4000+m.t));
+      px.fillStyle='rgba(230,215,255,'+ma+')'; px.beginPath(); px.arc(mx,my,m.z*(.5+.6*m.r),0,TAU); px.fill(); }
+    /* the 7, coming through */
+    var sc=.86+.16*b, fs=ry*1.05*sc, y7=cy+ry*.06-ry*.05*b+ry*.02*(b2-.5);
+    px.textAlign='center'; px.textBaseline='middle'; px.font='400 '+fs.toFixed(1)+'px Georgia,"Times New Roman",serif';
+    px.shadowColor='rgba(190,150,255,'+(.55+.25*b)+')'; px.shadowBlur=18+22*b;
+    px.fillStyle='rgba(246,238,255,'+(.62+.30*b)+')'; px.fillText('7',cx,y7);
+    px.shadowBlur=0;
+    /* veil low in the opening so the 7 seems to rise out of the dark */
+    var low=px.createLinearGradient(0,cy+ry*.15,0,cy+ry);
+    low.addColorStop(0,'rgba(3,2,10,0)'); low.addColorStop(1,'rgba(3,2,10,'+(.85-.15*b)+')');
+    px.fillStyle=low; px.fillRect(cx-rx,cy-ry,rx*2,ry*2);
+    px.restore();
+    /* rim: brighter along the top edge, fading round the sides */
+    var rim=px.createLinearGradient(0,cy-ry,0,cy+ry);
+    rim.addColorStop(0,'rgba(225,200,255,'+(.85+.1*b)+')'); rim.addColorStop(.45,'rgba(140,90,240,.35)'); rim.addColorStop(1,'rgba(80,40,160,.05)');
+    px.save(); px.strokeStyle=rim; px.lineWidth=1.6; px.shadowColor='rgba(170,120,255,.9)'; px.shadowBlur=14+10*b;
+    px.beginPath(); px.ellipse(cx,cy,rx,ry,0,0,TAU); px.stroke(); px.restore(); }
+  function resize(){ sizeSky(); sizePortal(); if(still) paint(5000); }
+  function paint(n){ drawSky(n); drawPortal(n); }
+  function loop(n){ paint(n); requestAnimationFrame(loop); }
+  addEventListener('resize',resize); resize();
+  if(still){ paint(5000); if(document.fonts&&document.fonts.ready) document.fonts.ready.then(function(){ paint(5000); }); }
+  else requestAnimationFrame(loop);
+})();
 </script>
 </body>
 </html>
