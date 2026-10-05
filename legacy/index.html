@@ -796,12 +796,17 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     function veilPass(){ if (veilPassed) return; veilPassed = true; veilClear(); const gate = $("smvgate"), rec = $("smvrecipe"), box = $("smvbody"); if (gate) gate.hidden = true; if (rec) rec.hidden = false; if (!box) return;
       const head = t => { const b = document.createElement("b"); b.textContent = t; box.appendChild(b); };
       const line = (t, cls) => { const p = document.createElement("p"); if (cls) p.className = cls; p.textContent = t; box.appendChild(p); };
+      head("Words");
+      line("Safety word: grounded");
+      line("Code words: believe, veil, ember, phoenix, ember light");
       head("Field");
-      ["Green veil, steady and transparent like glass", "Neon worm light (Alienware ambient green) as the source / beacon", "Eyes aimed at the bottom of the field — never look up", "Code runs through the visual field only; do not put this on any display"].forEach(t => line(t));
+      ["Green veil, steady and transparent like glass", "Neon worm light (Alienware ambient green) as the source / beacon", "Eyes aimed at the bottom of the field \u2014 never look up", "Code runs through the visual field only; do not put this on any display"].forEach(t => line(t));
       head("Through the veil");
       ["Thin green streams falling through first", "Then red threads weaving in", "Matrix-soft, not harsh", "Center denser than the edges", "Left seam sealed last, using center-out fold", "Slow pulses synced to breathing"].forEach(t => line(t));
       head("Seal");
       ["Look straight; seal center-out; left curtain gap last", "Hold until the field sticks"].forEach(t => line(t));
+      head("Next");
+      line("Next sessions start half-built.");
       line("Night of 2026-10-04 into 2026-10-05 with AIFRED. The walk-through, the shed-door gate, and Mom\u2019s portal are orientation only.", "end"); }
     function veilOffer(text){ if (veilClosed || veilPassed) return; const raw = String(text || "").trim();
       if (!veilAskedAt || performance.now() - veilAskedAt < 1200){ veilFail("Come back when you can be still."); return; }
