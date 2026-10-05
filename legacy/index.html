@@ -281,12 +281,14 @@
   /* Merlin's door: a small private care card. Hidden on every other door, and while the gate is up. */
   #mcare{display:none}
   html.door-merlin #mcare{display:flex;flex-direction:column;gap:8px;position:fixed;z-index:4;left:max(10px,env(safe-area-inset-left));right:max(10px,env(safe-area-inset-right));bottom:calc(env(safe-area-inset-bottom) + 32px);max-height:min(44vh,340px);overflow:auto;box-sizing:border-box;padding:12px 12px 10px;border-radius:18px;border:1px solid rgba(233,200,140,.38);background:rgba(12,9,16,.9);color:#f6edd8;box-shadow:0 0 22px rgba(255,196,120,.12)}
-  html.door-merlin #mcare.tuck{max-height:none;overflow:hidden}
+  html.door-merlin #mcare.tuck{max-height:none;overflow:hidden;padding:8px 10px}
   html.door-merlin #mcare.tuck .mcbody{display:none}
+  html.door-merlin #mcare:not(.tuck) #mcmini{display:none}
   html:has(#gate:not(.gone)) #mcare,body.pon #mcare,body.mon #mcare,body.inview #mcare{display:none!important}
-  html.door-merlin #hint{bottom:calc(env(safe-area-inset-bottom) + min(44vh,340px) + 40px);letter-spacing:.06em;text-transform:none}
+  html.door-merlin #hint{bottom:calc(env(safe-area-inset-bottom) + 78px);letter-spacing:.06em;text-transform:none}
   #mcare .mctop{display:flex;align-items:center;justify-content:space-between;gap:8px}
-  #mcare .mctop b{font-weight:400;letter-spacing:.16em;text-transform:uppercase;font-size:11px;color:rgba(233,200,140,.92)}
+  #mcare .mctop b{font-weight:400;letter-spacing:.16em;text-transform:uppercase;font-size:11px;color:rgba(233,200,140,.92);white-space:nowrap}
+  #mcmini{flex:1;min-width:0;text-align:right;font:italic 13px Georgia,serif;color:rgba(246,237,216,.82);white-space:nowrap}
   #mcare button{font:15px/1.2 Georgia,serif;color:#f6edd8;background:rgba(255,236,210,.06);border:1px solid rgba(233,200,140,.28);border-radius:14px;min-height:44px;padding:8px 10px;cursor:pointer}
   #mcare button:disabled{opacity:.38}
   #mcare #mcsig{background:rgba(255,214,160,.14);border-color:rgba(255,206,140,.55)}
@@ -441,8 +443,8 @@ This is our stamp.<br><b id="dad">Dad</b></div>
 <div id="toast" role="status"></div>
 <canvas id="tpcv" aria-hidden="true"></canvas><canvas id="alivecv" aria-hidden="true"></canvas><div id="lpulse" aria-hidden="true"></div><button id="mic" aria-label="Listen: let the lights answer your voice" aria-pressed="false"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 9v2M7.3 7v6M10.6 5v10M13.9 7.5v5M17 9v2"/></svg></button>
 <div id="alfred">At your service &middot; Alfred, butler to the House of Shaffer</div>
-<aside id="mcare" aria-label="Merlin care">
-  <div class="mctop"><b>Merlin&rsquo;s care</b><button type="button" id="mctog" aria-expanded="true">Tuck</button></div>
+<aside id="mcare" class="tuck" aria-label="Merlin care">
+  <div class="mctop"><b>Merlin&rsquo;s care</b><span id="mcmini"></span><button type="button" id="mctog" aria-expanded="false">Open</button></div>
   <div class="mcbody">
     <p id="mcstat"></p>
     <div class="mcrow"><button type="button" id="mcsig">Soft Signal</button></div>
@@ -620,11 +622,13 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       return base; }
     let care = loadCare(), sigUntil = 0, sigNodes = [], sigGen = 0;
     const saveCare = () => { try { localStorage.setItem(MCK, JSON.stringify(care)); } catch(e){} };
+    try { if (JSON.stringify(JSON.parse(localStorage.getItem(MCK) || "null")) !== JSON.stringify(care)) saveCare(); } catch(e){ saveCare(); }
     function ensureDay(){ const day = dayKey(); if (care.day === day) return; const streak = care.streak; care = blankCare(day); care.streak = streak; saveCare(); }
     function say(t){ const n = $("mcnote"); if (n && t) n.dataset.say = t; }
     function stopSoftSignal(){ sigGen++; sigUntil = 0; for (const o of sigNodes){ try { o.stop(); } catch(e){} } sigNodes = []; }
     function renderCare(){ ensureDay(); const c = care, st = $("mcstat"), note = $("mcnote"), close = $("mcclose"); if (!st) return;
       st.textContent = "Bushes " + c.trips + " of 6\u20138 \u00b7 Outside " + c.outs + " \u00b7 Streak " + c.streak + " of 3";
+      const mini = $("mcmini"); if (mini) mini.textContent = c.trips + " bushes \u00b7 streak " + c.streak;
       $("mcwait").disabled = !!c.waiting; $("mcdone").disabled = !c.waiting; $("mcsig").disabled = !!c.waiting || performance.now() < sigUntil;
       close.disabled = c.closed === c.day; close.textContent = c.closed === c.day ? "Day closed" : (c.accidents ? "Close the day" : "Mark clean day");
       const said = note.dataset.say || "";
