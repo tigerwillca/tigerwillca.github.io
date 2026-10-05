@@ -282,26 +282,33 @@
   /* Soft Magic: its own quiet room. Not a Soft7 page, and not a William-only vault. */
   #smv{position:fixed;inset:0;z-index:40;background:radial-gradient(90% 70% at 50% 42%,#2a1c14 0%,#140e0c 55%,#0a0706 100%);color:#f6edd8;opacity:0;pointer-events:none;transition:opacity .8s ease}
   #smv.on{opacity:1;pointer-events:auto}
-  #smx,#smback{position:absolute;z-index:2;top:calc(env(safe-area-inset-top) + 14px);min-width:96px;height:56px;padding:0 18px;border-radius:28px;border:1px solid rgba(233,200,140,.4);background:rgba(16,12,18,.55);color:#f6edd8;font:20px/54px Georgia,serif}
-  #smx{right:16px} #smback{left:16px}
-  #smhome,#smtwo{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:calc(env(safe-area-inset-top) + 84px) 22px calc(env(safe-area-inset-bottom) + 28px);box-sizing:border-box;text-align:center}
-  #smhome[hidden],#smtwo[hidden]{display:none!important}
+  #smx,#smback,#smhback{position:absolute;z-index:2;top:calc(env(safe-area-inset-top) + 14px);min-width:96px;height:56px;padding:0 18px;border-radius:28px;border:1px solid rgba(233,200,140,.4);background:rgba(16,12,18,.55);color:#f6edd8;font:20px/54px Georgia,serif}
+  #smx{right:16px} #smback,#smhback{left:16px}
+  #smhome,#smtwo,#smember{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:safe center;padding:calc(env(safe-area-inset-top) + 84px) 22px calc(env(safe-area-inset-bottom) + 28px);box-sizing:border-box;text-align:center}
+  #smhome{overflow-y:auto}
+  #smhome[hidden],#smtwo[hidden],#smember[hidden]{display:none!important}
   #smv h2{margin:0 0 8px;font-weight:400;font-size:clamp(28px,8vw,40px);letter-spacing:.04em}
-  .smlead,.smwho,#smcopy,.smnote{margin:0;font:italic 18px/1.45 Georgia,serif;color:rgba(246,237,216,.84);max-width:28rem}
-  .smwho{margin-bottom:18px} #smcopy{margin-top:22px}
+  .smlead,.smwho,#smcopy,#smhcopy,.smnote{margin:0;font:italic 18px/1.45 Georgia,serif;color:rgba(246,237,216,.84);max-width:28rem}
+  .smwho{margin-bottom:18px} #smcopy,#smhcopy{margin-top:22px}
   .smnote{margin-top:12px;font-size:15px;color:rgba(246,237,216,.58)}
   .smd{width:min(92vw,420px);min-height:84px;margin:10px 0 0;padding:16px 18px;border-radius:20px;border:1px solid rgba(233,200,140,.28);background:rgba(255,236,210,.06);color:#f6edd8;font:20px Georgia,serif;text-align:left}
   button.smd{cursor:pointer}
   .smd b{display:block;font-weight:400;font-size:26px}
   .smd span{display:block;margin-top:4px;font:italic 16px Georgia,serif;color:rgba(246,237,216,.72)}
   #smbarbara{min-height:108px;background:rgba(255,214,160,.1);border-color:rgba(255,206,140,.45);box-shadow:0 0 28px rgba(255,186,110,.12)}
+  #smharbor{display:none;min-height:96px;background:rgba(160,52,18,.14);border-color:rgba(255,150,80,.42);box-shadow:0 0 22px rgba(160,50,16,.16)}
+  html.door-jen #smharbor{display:block}
   .smd.wait{opacity:.72} .smd.film{min-height:68px;opacity:.82} .smd.film b{font-size:20px}
   .smlights{display:flex;gap:28px;margin-top:8px}
   .smlights i{width:92px;height:92px;border-radius:50%;display:block;background:radial-gradient(circle at 40% 38%,#fff6e4 0%,#ffd7a4 28%,#e8a15a 62%,rgba(232,161,90,0) 72%);box-shadow:0 0 28px rgba(255,196,120,.45);animation:smbreath 7.2s ease-in-out infinite}
   .smlights i:last-child{animation-duration:8.6s;animation-delay:-2.4s;background:radial-gradient(circle at 42% 36%,#fff4ee 0%,#ffd0c0 30%,#e09078 64%,rgba(224,144,120,0) 74%);box-shadow:0 0 28px rgba(255,170,140,.4)}
   @keyframes smbreath{0%,100%{opacity:.55;transform:scale(.92)}50%{opacity:1;transform:scale(1)}}
   #smbow{margin-top:28px;min-width:240px;height:64px;padding:0 28px;border-radius:32px;border:1px solid rgba(233,200,140,.5);background:rgba(255,214,160,.14);color:#f6edd8;font:22px Georgia,serif}
-  @media (prefers-reduced-motion:reduce){.smlights i{animation:none;opacity:.9}#smv{transition-duration:.2s}}
+  .smhold{position:relative;width:220px;height:180px;margin:18px 0 6px}
+  .smhold .ambient{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 50% 56%,rgba(255,244,224,.4) 0%,rgba(255,214,160,.14) 40%,rgba(255,196,120,0) 72%)}
+  .smhold .ember{position:absolute;left:50%;top:60%;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;background:radial-gradient(circle at 42% 40%,#ffe6c2 0%,#ff9a3c 24%,#c2410c 58%,rgba(90,18,4,0) 74%);box-shadow:0 0 16px rgba(255,110,30,.4);animation:smember 10s ease-in-out infinite}
+  @keyframes smember{0%,100%{opacity:.76;transform:scale(.97)}50%{opacity:.9;transform:scale(1)}}
+  @media (prefers-reduced-motion:reduce){.smlights i,.smhold .ember{animation:none;opacity:.9}#smv{transition-duration:.2s}}
 </style>
 <link rel="apple-touch-icon" href="/legacy/apple-touch-icon.png?v=14">
 <link rel="icon" type="image/svg+xml" href="/legacy/favicon.svg?v=31">
@@ -353,6 +360,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
   <div id="smhome">
     <h2>Soft Magic</h2>
     <p class="smlead">A quiet room. Warm light.</p>
+    <button type="button" class="smd" id="smharbor"><b>Harbor</b><span>The light that stays.</span></button>
     <button type="button" class="smd" id="smbarbara"><b>Barbara</b><span>Two Lights. Sit with her.</span></button>
     <div class="smd wait"><b>John</b><span>Not yet. His light is waiting.</span></div>
     <div class="smd wait"><b>A friend from Italy</b><span>Not yet. A son visits often.</span></div>
@@ -366,6 +374,12 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     <p id="smcopy"></p>
     <button type="button" id="smbow" aria-pressed="false">Quiet sound</button>
     <p class="smnote">Soft, for the room. Nothing to answer.</p>
+  </div>
+  <div id="smember" hidden>
+    <button type="button" id="smhback">Back</button>
+    <h2>Harbor</h2>
+    <div class="smhold" aria-hidden="true"><i class="ambient"></i><i class="ember"></i></div>
+    <p id="smhcopy">You opened the door. This light stays because you did.</p>
   </div>
 </div>
 <div id="welcome" class=""></div>
@@ -705,18 +719,20 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       const os = [[BASE*2, 1], [BASE*3, .32], [BASE*4, .12]].map(([f, k]) => { const o = ac.createOscillator(), og = ac.createGain(); o.type = "sine"; o.frequency.value = f; og.gain.value = k; o.connect(og); og.connect(lp); o.start(t); return o; });
       const lfo = ac.createOscillator(), lg = ac.createGain(); lfo.frequency.value = .07; lg.gain.value = .005; lfo.connect(lg); lg.connect(g.gain); lfo.start(t); os.push(lfo);
       bow = {g, os}; const b = $("smbow"); b.textContent = "Stop"; b.setAttribute("aria-pressed", "true"); } catch(e){} }
-    function showTwo(on){ $("smhome").hidden = !!on; $("smtwo").hidden = !on; }
+    function showTwo(on){ $("smhome").hidden = !!on; $("smtwo").hidden = !on; const h = $("smember"); if (h) h.hidden = true; }
     function openSoftMagic(){ stopBow(); showTwo(false); const v = $("smv"); v.classList.add("on"); v.setAttribute("aria-hidden", "false"); }
     function closeSoftMagic(){ stopBow(); showTwo(false); const v = $("smv"); v.classList.remove("on"); v.setAttribute("aria-hidden", "true"); }
     function openTwoLights(){ showTwo(true); $("smcopy").textContent = dkey === "jen"
       ? "This is for you and Barbara. Two lights in one room. Stay with her. Nothing to remember. Nothing to get right."
       : "Barbara and Jennifer. Two lights in one room. Stay if you like. Nothing to remember. Nothing to get right."; }
+    function harborPulse(){ if (matchMedia("(prefers-reduced-motion: reduce)").matches) return; try { if (navigator.vibrate) navigator.vibrate(8); else tick(); } catch(e){} }
+    function openHarbor(){ if (dkey !== "jen") return; stopBow(); $("smhome").hidden = true; $("smtwo").hidden = true; $("smember").hidden = false; harborPulse(); }
     function playFamilyFilm(){ closeSoftMagic(); buzz(); startVid("/legacy/legacy.mp4"); $("vtitle").textContent = "A family film"; setTimeout(showViewer, 380); }
     const smTap = (el, fn) => { if (!el) return; el.addEventListener("touchend", e => { if (e.cancelable) e.preventDefault(); e.stopPropagation(); lastTouch = Date.now(); fn(); }, {passive:false});
       el.addEventListener("click", e => { e.preventDefault(); e.stopPropagation(); if (Date.now() - lastTouch < 800) return; fn(); }); };
-    smTap($("smx"), closeSoftMagic); smTap($("smback"), () => { stopBow(); showTwo(false); }); smTap($("smbarbara"), openTwoLights);
+    smTap($("smx"), closeSoftMagic); smTap($("smback"), () => { stopBow(); showTwo(false); }); smTap($("smhback"), () => showTwo(false)); smTap($("smbarbara"), openTwoLights); smTap($("smharbor"), openHarbor);
     smTap($("smbow"), () => { if (bow) stopBow(); else startBow(); }); smTap($("smfilm"), playFamilyFilm);
-    window.__softMagic = { open: openSoftMagic, close: closeSoftMagic, on: () => $("smv").classList.contains("on"), room: () => $("smtwo").hidden ? "list" : "barbara", bow: () => !!bow };
+    window.__softMagic = { open: openSoftMagic, close: closeSoftMagic, on: () => $("smv").classList.contains("on"), room: () => { const h = $("smember"); return h && !h.hidden ? "harbor" : $("smtwo").hidden ? "list" : "barbara"; }, bow: () => !!bow };
     $("vvid").addEventListener("playing", () => $("viewer").classList.remove("loading"));
 
     // Edgardo at the light: her finger approaching makes the light beat (and a light heartbeat buzz);
