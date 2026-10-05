@@ -327,17 +327,22 @@
   #smvbody p{margin:0 0 8px;font:italic 17px/1.45 Georgia,serif;color:rgba(246,237,216,.88)}
   #smvbody p.end{margin-top:18px;font-size:15px;color:rgba(246,237,216,.6)}
   @media (prefers-reduced-motion:reduce){.smlights i,.smhold .ember,#smvheart .glass{animation:none;opacity:.9}#smvheart.holding .glass{transition:none;transform:none}#smv{transition-duration:.2s}}
-  /* Secret chat hover for Jennifer, William, and Billy only. The Soft7 phoenix sits on this spot; nothing else on the page moves. */
-  #phxspot{display:none;position:fixed;z-index:4;left:calc(env(safe-area-inset-left) + 10px);top:46%;width:72px;height:72px;margin-top:-36px;border-radius:50%;place-items:center;cursor:pointer;border:1px solid rgba(255,200,120,.35);box-shadow:0 0 28px rgba(255,140,40,.28),inset 0 0 18px rgba(255,180,80,.1);background:rgba(0,0,0,.28);padding:0;transition:transform .35s,box-shadow .35s,border-color .35s}
-  html.door-will #phxspot,html.door-jen #phxspot,html.door-billy #phxspot{display:grid}
-  #phxspot:hover,#phxspot:focus-visible,#phxspot.on{transform:scale(1.08);border-color:rgba(255,220,140,.85);box-shadow:0 0 48px rgba(255,150,40,.55),inset 0 0 24px rgba(255,200,100,.18);outline:none}
-  #phxspot img{width:68%;height:auto;filter:drop-shadow(0 0 12px rgba(255,160,40,.85));pointer-events:none}
-  #phxchat{position:fixed;left:50%;top:50%;transform:translate(-50%,-46%) scale(.96);width:min(92vw,380px);padding:22px 22px 18px;border-radius:16px;background:rgba(10,8,16,.92);border:1px solid rgba(233,200,140,.45);box-shadow:0 0 40px rgba(255,160,60,.25);opacity:0;pointer-events:none;transition:opacity .45s,transform .45s;z-index:7}
-  #phxchat.on{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1)}
-  #phxchat h1{margin:0 0 6px;font:normal 12px Georgia,serif;letter-spacing:.32em;text-transform:uppercase;color:#e9c88c}
-  #phxchat .who{margin:0 0 14px;font:italic 15px/1.4 Georgia,serif;color:#ffe9c2}
-  #phxchat .line{margin:0 0 8px;font:15px/1.45 Georgia,serif;color:#f3e7cc}
-  #phxchat .x{position:absolute;top:6px;right:8px;width:40px;height:40px;border:0;background:none;color:#efe6d2;font-size:26px;cursor:pointer}
+  /* Family phoenix stamp. Only when this load asked for ?d=will, ?d=jen, or ?d=billy. A remembered door does not turn it on. Dominates the door. Stuck open. No hover, no fade. */
+  html.phx{--phx:min(86vw,calc(100dvh - 210px),560px)}
+  #phxspot{display:none;position:fixed;z-index:27;left:50%;top:calc(50vh - var(--phx,280px)/2 - 48px);width:var(--phx,min(86vw,560px));height:var(--phx,min(86vw,560px));transform:translateX(-50%);margin:0;padding:0;border:0;border-radius:50%;background:#000;overflow:hidden;cursor:pointer;box-shadow:0 0 0 5px #fff1c2,0 0 0 12px #ff6a00,0 0 0 16px #2a0900,0 0 28px 8px #ff7a18;-webkit-tap-highlight-color:transparent}
+  html.phx #phxspot{display:block;opacity:1;visibility:visible}
+  #phxspot:focus-visible{outline:3px solid #fff6df;outline-offset:6px}
+  #phxspot img{width:100%;height:100%;object-fit:cover;display:block;border-radius:50%;pointer-events:none}
+  #phxchat{position:fixed;z-index:27;left:50%;top:calc(50vh - var(--phx,280px)/2 - 48px + var(--phx,280px) + 10px);transform:translateX(-50%);width:min(94vw,560px);box-sizing:border-box;padding:14px 44px 14px 18px;border-radius:16px;background:#070504;border:3px solid #ffb040;box-shadow:0 0 0 2px #ff6a00;text-align:center;visibility:hidden;opacity:0;pointer-events:none}
+  html.phx #phxchat{visibility:visible;opacity:1;pointer-events:auto}
+  html.phx #phxchat.closed{visibility:hidden;opacity:0;pointer-events:none}
+  body:has(#gate:not(.gone)) #phxspot,body:has(#gate:not(.gone)) #phxchat{visibility:hidden!important;opacity:0!important;pointer-events:none!important}
+  #viewer.on ~ #phxspot,#viewer.on ~ #phxchat{visibility:hidden!important}
+  #phxchat h1{margin:6px 0 0;font:normal 12px Georgia,serif;letter-spacing:.28em;text-transform:uppercase;color:#ffb040}
+  #phxchat .who{margin:4px 0 0;font:italic 16px/1.3 Georgia,serif;color:#ffe0b0}
+  #phxchat .line{margin:2px 0 0;font:18px/1.3 Georgia,serif;color:#f6edd8}
+  #phxchat .stuck{margin:0;font:600 clamp(36px,9vw,64px)/1.05 Georgia,serif;color:#fffaf3;letter-spacing:-.01em}
+  #phxchat .x{position:absolute;top:2px;right:4px;width:44px;height:44px;border:0;background:none;color:#fff6e4;font-size:32px;cursor:pointer}
 </style>
 <link rel="apple-touch-icon" href="/legacy/apple-touch-icon.png?v=14">
 <link rel="icon" type="image/svg+xml" href="/legacy/favicon.svg?v=31">
@@ -430,12 +435,12 @@ This is our stamp.<br><b id="dad">Dad</b></div>
   </div>
 </div>
 <div id="welcome" class=""></div>
-<button id="phxspot" type="button" aria-label="Open family secret chat" title="Phoenix"><img src="/legacy/phoenix-icon.png" width="64" height="64" alt="Phoenix"></button>
+<button id="phxspot" type="button" aria-label="Phoenix" title="Phoenix"><img src="/legacy/phoenix-icon.png?v=2" width="512" height="512" alt="Phoenix"></button>
 <div id="phxchat" role="dialog" aria-live="polite" aria-label="Family secret chat" aria-hidden="true">
   <button class="x" id="phxthx" type="button" aria-label="Close">&times;</button>
-  <h1>Secret chat</h1>
+  <p class="line stuck">Just us three.</p>
   <p class="who">William · Jennifer · Billy</p>
-  <p class="line">Just us three.</p>
+  <h1>Secret chat</h1>
   <p class="line">The phoenix holds the door.</p>
 </div>
 <div id="hint" style="opacity:0"></div>
@@ -586,17 +591,17 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     $("membtn").textContent = "Memories";
     const h3 = document.querySelector("#sigv > h3"); if (h3) h3.textContent = "";
   }
-  // Secret chat: the Soft7 phoenix hover, only on Jennifer's, William's, and Billy's doors.
-  if (door && (dkey === "will" || dkey === "jen" || dkey === "billy")){
-    const phxSpot = $("phxspot"), phxChat = $("phxchat");
-    const openPhx = () => { phxSpot.classList.add("on"); phxChat.classList.add("on"); phxChat.setAttribute("aria-hidden", "false"); };
-    const closePhx = () => { phxSpot.classList.remove("on"); phxChat.classList.remove("on"); phxChat.setAttribute("aria-hidden", "true"); };
-    phxSpot.addEventListener("mouseenter", openPhx);
-    phxSpot.addEventListener("focus", openPhx);
-    phxSpot.addEventListener("click", e => { e.stopPropagation(); openPhx(); });
-    phxSpot.addEventListener("touchend", e => { if (e.cancelable) e.preventDefault(); e.stopPropagation(); openPhx(); }, {passive:false});
+  // Stamp only for an explicit family door in the URL. localStorage may restore a door later; that must not reveal the stamp.
+  const phxOn = asked === "will" || asked === "jen" || asked === "billy";
+  if (phxOn) document.documentElement.classList.add("phx");
+  if (phxOn){
+    const phxChat = $("phxchat");
+    const showPhx = () => { phxChat.classList.remove("closed"); phxChat.setAttribute("aria-hidden", "false"); };
+    const closePhx = () => { phxChat.classList.add("closed"); phxChat.setAttribute("aria-hidden", "true"); };
+    showPhx();
+    $("phxspot").addEventListener("click", e => { e.stopPropagation(); showPhx(); });
     $("phxthx").addEventListener("click", e => { e.stopPropagation(); closePhx(); });
-    document.addEventListener("keydown", e => { if (e.key === "Escape") closePhx(); });
+    document.addEventListener("keydown", e => { if (e.key === "Escape" && !phxChat.classList.contains("closed")) closePhx(); });
   }
   logVisit(door ? door.name + "'s door" : "Someone");
   // a one-time whisper on the very first visit; it fades and never returns on this device
