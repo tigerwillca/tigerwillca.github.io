@@ -262,22 +262,22 @@
   .fn.soon,.sn.soon,.cn.soon{font-size:0!important;color:transparent!important;text-shadow:none!important} .fn.soon,.sn.soon{width:12px;height:12px;padding:0;border:0;border-radius:50%;background:radial-gradient(circle,rgba(255,246,226,.95) 0 28%,rgba(255,222,160,.35) 55%,rgba(255,222,160,0) 72%)}   /* a light whose name is still coming */
   #hint{transition:opacity 1.6s}
 
-  /* Jennifer and Billy: big targets, plain words, one step at a time. Soft7 stays off these doors. */
-  html.door-jen #brand, html.door-billy #brand,
-  html.door-jen #bridge, html.door-billy #bridge,
-  html.door-jen #flink, html.door-billy #flink,
-  html.door-jen #council, html.door-billy #council,
-  html.door-jen #mic, html.door-billy #mic,
-  html.door-jen #alfred, html.door-billy #alfred,
-  html.door-jen #sigv h3, html.door-billy #sigv h3 {display:none!important}
-  html.door-jen #links, html.door-billy #links{width:min(92vw,420px);gap:12px}
-  html.door-jen #links a, html.door-billy #links a{padding:18px 18px;border-radius:18px;min-height:72px;box-sizing:border-box}
-  html.door-jen #links a b, html.door-billy #links a b{font-size:22px;letter-spacing:.02em}
-  html.door-jen #links a span, html.door-billy #links a span{font-size:16px;margin-top:4px;display:block!important}
-  html.door-jen #links a#eggs, html.door-billy #links a#eggs{background:rgba(36,22,16,.9);box-shadow:0 0 18px rgba(255,196,120,.16)}
-  html.door-jen #membtn, html.door-billy #membtn{top:auto;bottom:calc(env(safe-area-inset-bottom) + 16px);width:auto;min-width:200px;height:64px;padding:0 28px;border-radius:32px;border:1px solid rgba(233,200,140,.45)!important;background:rgba(16,12,18,.9)!important;font:22px/64px Georgia,serif!important;letter-spacing:.02em!important;text-transform:none!important;color:#f6edd8!important;text-shadow:none!important;animation:none!important;overflow:visible}
-  html.door-jen #hint, html.door-billy #hint{bottom:calc(env(safe-area-inset-bottom) + 96px);font-size:18px;letter-spacing:.04em;text-transform:none}
-  html.door-jen #sigv > .x, html.door-billy #sigv > .x{width:auto!important;min-width:88px;height:64px;padding:0 16px;border-radius:0;background:transparent!important;border:0!important;font:22px/64px Georgia,serif!important;color:rgba(246,237,216,.78)!important;text-shadow:none!important}
+  /* Jennifer: big targets, plain words, one step at a time. Soft7 stays off her door. */
+  html.door-jen #brand,
+  html.door-jen #bridge,
+  html.door-jen #flink,
+  html.door-jen #council,
+  html.door-jen #mic,
+  html.door-jen #alfred,
+  html.door-jen #sigv h3 {display:none!important}
+  html.door-jen #links{width:min(92vw,420px);gap:12px}
+  html.door-jen #links a{padding:18px 18px;border-radius:18px;min-height:72px;box-sizing:border-box}
+  html.door-jen #links a b{font-size:22px;letter-spacing:.02em}
+  html.door-jen #links a span{font-size:16px;margin-top:4px;display:block!important}
+  html.door-jen #links a#eggs{background:rgba(36,22,16,.9);box-shadow:0 0 18px rgba(255,196,120,.16)}
+  html.door-jen #membtn{top:auto;bottom:calc(env(safe-area-inset-bottom) + 16px);width:auto;min-width:200px;height:64px;padding:0 28px;border-radius:32px;border:1px solid rgba(233,200,140,.45)!important;background:rgba(16,12,18,.9)!important;font:22px/64px Georgia,serif!important;letter-spacing:.02em!important;text-transform:none!important;color:#f6edd8!important;text-shadow:none!important;animation:none!important;overflow:visible}
+  html.door-jen #hint{bottom:calc(env(safe-area-inset-bottom) + 96px);font-size:18px;letter-spacing:.04em;text-transform:none}
+  html.door-jen #sigv > .x{width:auto!important;min-width:88px;height:64px;padding:0 16px;border-radius:0;background:transparent!important;border:0!important;font:22px/64px Georgia,serif!important;color:rgba(246,237,216,.78)!important;text-shadow:none!important}
 
   /* Soft Magic: its own quiet room. Not a Soft7 page, and not a William-only vault. */
   #smv{position:fixed;inset:0;z-index:40;background:radial-gradient(90% 70% at 50% 42%,#2a1c14 0%,#140e0c 55%,#0a0706 100%);color:#f6edd8;opacity:0;pointer-events:none;transition:opacity .8s ease}
@@ -401,8 +401,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
   const XGIFT = "A gift from William, in your father\u2019s memory.";   // the framing, shown quietly at the end of Jennifer's door
   const EDGARDO_FATHER_NAME = null;
   // v43.1 flags: unfinished pieces stay in the file but are hidden until William finishes them
-  const SHOW_SOON = false;   // the third niece's light ("Name coming"): hidden until her first name is in
-  window.LEGACY_FLAGS = Object.assign({billsr: true}, window.LEGACY_FLAGS || {});   // billsr: Bill Shaffer Sr.'s section (photos, clippings, recording): approved by William for the live site, Oct 4, 2026 (v48)   // no name in the notes; set it to show "<name>, his father."
+  window.LEGACY_FLAGS = Object.assign(window.LEGACY_FLAGS || {}, {billsr: false});   // billsr section stays in legacy/billsr/ but is not linked from the main Legacy UI
   // one heartbeat clock for everything: light, portal, music, Signal (55 BPM, about 1091 ms)
   const HBMS = Math.round(60000/LEGACY_FREQ.bpm), BASE = LEGACY_FREQ.root, hbT0 = performance.now(), toBeat = () => HBMS - ((performance.now() - hbT0) % HBMS);
   const gate = $("gate"), msg = $("msg");
@@ -493,14 +492,18 @@ This is our stamp.<br><b id="dad">Dad</b></div>
   async function sha(s){const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")}
   function open(){gate.classList.add("gone");setTimeout(()=>gate.remove(),1000);start()}
   // doors: each family link has its own entrance; opening one sends a simple visit note (door + device, nothing else)
-  const DOORS = { will: {name:"William", hi:"Welcome home.", hint:"Tap the light", alf:"Welcome home, sir \u00b7 Alfred"}, billy: {name:"Billy", hi:"Billy. I'm right here.", hint:"Tap the light", alf:"Always here, Master Billy \u00b7 Alfred"}, jen: {name:"Jennifer", hi:"For Jennifer, with love.", hint:"Reach for him.", alf:"At your service, Miss Jennifer \u00b7 Alfred"}, dad: {name:"Dad", hi:"For Dad, with love.", hint:"Tap the light", alf:"Welcome, sir \u00b7 Alfred"}, sis: {name:"Sister", hi:"For you, with love.", hint:"Tap the light", alf:"Welcome \u00b7 Alfred"} };
-  const dm = (location.hash + "&" + location.search).match(/d=(\w+)/), dkey = dm && DOORS[dm[1]] ? dm[1] : localStorage.getItem("shaffer-door"), door = dkey && DOORS[dkey];
-  const SIMPLE = dkey === "jen" || dkey === "billy";
+  const DOORS = { will: {name:"William", hi:"Welcome home.", hint:"Tap the light", alf:"Welcome home, sir \u00b7 Alfred"}, jen: {name:"Jennifer", hi:"For Jennifer, with love.", hint:"Reach for him.", alf:"At your service, Miss Jennifer \u00b7 Alfred"} };
+  const dm = (location.hash + "&" + location.search).match(/d=(\w+)/), asked = dm && dm[1];
+  let stored = null; try { stored = localStorage.getItem("shaffer-door"); } catch(e){}
+  if (stored && !DOORS[stored]){ try { localStorage.removeItem("shaffer-door"); } catch(e){} stored = null; }
+  let dkey = asked ? (DOORS[asked] ? asked : null) : stored;
+  const door = dkey && DOORS[dkey];
+  const SIMPLE = dkey === "jen";
   const appMode = navigator.standalone || matchMedia("(display-mode: standalone)").matches;
   function logVisit(who, what){ try{ const ua = navigator.userAgent, dev = /iPhone/.test(ua) ? "iPhone" : /iPad|Macintosh.*Mobile/.test(ua) ? "iPad" : /Android/.test(ua) ? "Android" : "computer";
     fetch("https://ntfy.sh/shaffer-doors-8f3e2c18ea", {method:"POST", mode:"no-cors", keepalive:true, body: `${who} ${what || "opened House of Shaffer"} on ${dev}${appMode ? ' (home-screen app)' : ''}`}); }catch(e){} }
   if (door){ localStorage.setItem("shaffer-door", dkey); document.documentElement.classList.add("door-" + dkey); history.replaceState(null, "", location.pathname + "?d=" + dkey);
-    setTimeout(()=>{ $("welcome").textContent = door.hi; $("welcome").classList.add("on"); if (["will", "billy", "jen"].includes(dkey)) $("welcome").classList.add("here"); if(door.alf) $("alfred").textContent = door.alf;
+    setTimeout(()=>{ $("welcome").textContent = door.hi; $("welcome").classList.add("on"); if (dkey === "will" || dkey === "jen") $("welcome").classList.add("here"); if(door.alf) $("alfred").textContent = door.alf;
       setTimeout(()=>$("welcome").classList.remove("on"), 6000); }, 1400); }
   if (SIMPLE){
     const set = (id, b, s) => { const el = $(id); if (!el) return; const bb = el.querySelector("b"), ss = el.querySelector("span"); if (bb && b) bb.textContent = b; if (ss && s) ss.textContent = s; };
@@ -679,7 +682,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     let eggsT = 0, eggsTm = null;
     const eggsTap = once(el => { sparkle(el, 5, 24); const now = Date.now();
       if (now - eggsT < 320){ eggsT = 0; clearTimeout(eggsTm); const v = $("vvid"); v.pause(); v.removeAttribute("src"); v.load(); $("viewer").classList.remove("on", "vid", "loading"); $("vsound").classList.remove("on"); revealPending = false;
-        if (SIMPLE){ openSoftMagic(); return; }   // same 2 taps: Jennifer and Billy open Soft Magic
+        if (SIMPLE){ openSoftMagic(); return; }   // same 2 taps: Jennifer opens Soft Magic
         revealLegacy(); return; }
       eggsT = now; revealPending = !SIMPLE; buzz(); startVid(el.dataset.src); clearTimeout(eggsTm); eggsTm = setTimeout(showViewer, 330); });   // 1 tap: the Reynard film; 2 taps: Legacy Easter Eggs appear right behind it
     const legTap = once(el => playLegacy(el));
@@ -742,7 +745,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     function apprStop(silent){ clearInterval(apprI); apprI = null; if (appr && appr.sent && !silent) vib(0); appr = null; }
     function edWords(){ const q = $("edq"); q.style.top = (H*.5) + "px"; q.style.width = Math.min(coreR()*1.7, 340) + "px";
       edT.forEach(clearTimeout); edT = [setTimeout(()=>{ q.classList.add("on"); $("pcap").classList.remove("on"); }, 450), setTimeout(()=>q.classList.remove("on"), 4950), setTimeout(()=>{ if (portalOn) $("pcap").classList.add("on"); }, 6000)]; }
-    const STRONGEST_LINK = {Jennifer: ["Edgardo"], William: ["Mom"], Billy: ["Tutu", "Merlin"], Dad: ["Mom"], Sister: ["Mom"]};   // who each viewer's portal forms first; anyone else: the strongest link
+    const STRONGEST_LINK = {Jennifer: ["Edgardo"], William: ["Mom"]};   // who each viewer's portal forms first; anyone else: the strongest link
     let wakeAt = 0, portalTouch = 0;
     function strongestFor(){ const me = door ? door.name : "William", l = STRONGEST_LINK[me], has = n => FAM.some(f => f[0] === n); if (l && l.find(has)) return l.find(has);
       buildConstel(); const o = cnodes.find(q => q.name === me) || cnodes.find(q => q.name === "William"); let best = null, bg = -1;
@@ -785,8 +788,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     $("pclose").addEventListener("click", e => { e.stopPropagation(); if (Date.now() - lastTouch < 800) return; if (portalOn) togglePortal(); });
 
     // family: who is here, who has passed. Departed rise in gold dust; the living breathe soft light.
-    const FAM = [["William","his life, all of it"],["Jennifer"],["Billy"],["Mom"],["Dad"],["Edgardo","Jennifer's dad"],["Uncle Steve"],["Grandma"],["Grandma Sarah","a great grandma"],["Grandpa Hal","cigars and jokes"],["Uncle Stu","pure humor"],["Pat","an all-time bond"],["Kevin","my best friend"],["Steve Lee"],["Steve Samoji"],["Dave Trejo"],["Cindy","my first best friend"],["Rusty"],["Sonny","so much pride"],["Merlin"],["Tutu","Choo Choo, the faithful cat"],["All the animals"],["Mark Temple"],["Aunt Diane"],["Roy"],["Pat Murray"],["Mary Shaffer"],["Bill Shaffer"],["Christina"],["Carter"],["Chloe"],["Name coming"]].filter(f => SHOW_SOON || f[0] !== "Name coming");   // living: William's sister Christina and her children (first names only)
-    // TODO(name): the third child's first name (a girl); "Name coming" renders as a soft, unlabeled light (class "soon")
+    const FAM = [["William","his life, all of it"],["Jennifer"],["Mom"],["Edgardo","Jennifer's dad"],["Uncle Steve"],["Grandma"],["Grandma Sarah","a great grandma"],["Grandpa Hal","cigars and jokes"],["Uncle Stu","pure humor"],["Pat","an all-time bond"],["Kevin","my best friend"],["Steve Lee"],["Steve Samoji"],["Dave Trejo"],["Cindy","my first best friend"],["Rusty"],["Sonny","so much pride"],["Merlin"],["Tutu","Choo Choo, the faithful cat"],["All the animals"],["Mark Temple"],["Aunt Diane"],["Roy"],["Pat Murray"],["Mary Shaffer"],["Bill Shaffer"]];
     const GONE = new Set(["Mom","Edgardo","Uncle Steve","Grandma Sarah","Grandpa Hal","Kevin","Cindy","Sonny","Tutu","Aunt Diane"]);
     // threads: each light's memory card, in William's voice (one line per entry); captions use the first line
     const MEM = {"William":["Forged through hell.","Still holding the light.","Going deeper."],
@@ -805,23 +807,18 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       "Pat Murray":["Retired Secret Service.","He told me Lincoln stories."],
       "Steve Samoji":["A true friend.","A photo day at Joe Avila\u2019s with the Lamborghinis."],
       "Steve Lee":["A true friend, always."],
-      "Christina":["Your sister."],
-      "Carter":["Your nephew."],
-      "Chloe":["Your niece."],
-      "Name coming":["Your niece."],
       "Cindy":["My first true friend. I talked to her as a baby.","She lay on my chest and guarded me.","She lunged at a stranger at the door to protect me.","\u201cYou\u2019re my best friend.\u201d"],
       "Sonny":["Always proper. He wanted to be the best dog. So much pride."],
       "Tutu":["Gray and beautiful, always there. Billy said, \u201cThat\u2019s a faithful cat, \u2019cause she stayed.\u201d"],
       "Pat":["Critical, assertive, and good-hearted. I looked up to him. An all-time bond."],
       "Uncle Stu":["So much humor. He taught me not to take life too seriously."],
       "Edgardo":["Jennifer\u2019s dad.","Out on his boat in the Philippines, line in the water.","Playing football with his grandson.","Closer lights, clearer signal."],
-      "Dad":["Where my side of the tree begins.","Always part of this light."],
       "Grandma":["Family, all the way to the roots."],
       "Merlin":["Our young dog.","Billy walks him in his vest and leash."],
       "Rusty":["A good dog, part of the pack."],
       "All the animals":["Every animal we\u2019ve loved.","Each one has a light here."],
       "Dave Trejo":["Dave. Most people missed his frequency. I heard every word."]};
-    const HERE = new Set(["William", "Billy", "Jennifer"]), memCap = n => MEM[n] && MEM[n][0], THN = {Alfred: "AIFRED", Mom: "Mom \u00b7 Anita", "Name coming": "\u00b7"};
+    const HERE = new Set(["William", "Jennifer"]), memCap = n => MEM[n] && MEM[n][0], THN = {Alfred: "AIFRED", Mom: "Mom \u00b7 Anita"};
     function life(el, name){ const gone = GONE.has(name), f = name === "Edgardo"; if (name === "Dave Trejo") el.classList.add("dave"); if (name === "Sonny") el.classList.add("sonny"); if (name === "Tutu") el.classList.add("tutu"); if (name === "Mom") el.classList.add("mom"); if (name === "Name coming") el.classList.add("soon"); if (name === "Mom" && el.classList.contains("cn")) el.classList.add("root"); const ai = name === "Alfred"; if (ai) el.classList.add("alfred"); el.classList.add(gone ? "departed" : ai ? "steady" : "alive"); el.dataset.life = gone ? "departed" : ai ? "steady" : "living";   // Alfred is neither: a steady ember
       if (HERE.has(name)) el.classList.add("here"); if (name === "William") el.classList.add("owner"); if (f) el.classList.add("focal");
       if (!gone || f){ const au = document.createElement("span"); au.className = "au"; au.setAttribute("aria-hidden", "true"); el.appendChild(au); }
@@ -851,7 +848,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       || (y > .15 && y < .45 && [-.3, -.15, .1, .22].some(c => Math.abs(x - c) < .03)) || (x < -.38 && x > -.62 && Math.abs(y - (.02 - ((x + .38)/.24)**2*.42)) < .028);
     const inDog = (x, y) => ((x + .05)/.38)**2 + ((y - .02)/.17)**2 < 1 || Math.hypot(x - .42, y + .18) < .12 || ((x - .56)/.09)**2 + ((y + .13)/.055)**2 < 1 || ((x - .35)/.045)**2 + ((y + .1)/.1)**2 < 1
       || (y > .1 && y < .5 && [-.32, -.18, .12, .26].some(c => Math.abs(x - c) < .045)) || seg(x, y, -.4, -.04, -.56, -.28, .035);
-    const FRAME = {William: "male", Dad: "male", Edgardo: "male", "Uncle Steve": "male", "Grandpa Hal": "male", "Uncle Stu": "male", Pat: "male", Kevin: "male", "Steve Lee": "male", "Steve Samoji": "male", "Dave Trejo": "male", "Mark Temple": "male", "Aunt Diane": "female", Roy: "male", "Pat Murray": "male", "Bill Shaffer": "male", "Mary Shaffer": "female", Christina: "female", Carter: "child", Chloe: "child", "Name coming": "child",
+    const FRAME = {William: "male", Edgardo: "male", "Uncle Steve": "male", "Grandpa Hal": "male", "Uncle Stu": "male", Pat: "male", Kevin: "male", "Steve Lee": "male", "Steve Samoji": "male", "Dave Trejo": "male", "Mark Temple": "male", "Aunt Diane": "female", Roy: "male", "Pat Murray": "male", "Bill Shaffer": "male", "Mary Shaffer": "female",
       Jennifer: "female", Mom: "female", Grandma: "female", "Grandma Sarah": "female", Billy: "child", Sonny: "dog", Merlin: "dog", Tutu: "cat", Cindy: "dog", Rusty: "dog", Alfred: "flame", "The animals": "pet", "All the animals": "pet"};
     const inFlame = (x, y) => { const t = (y + .78)/1.5; return t > 0 && t < 1 && Math.abs(x + .04*Math.sin(t*9)) < .44*Math.pow(t, .9)*Math.sqrt(1 - t)*1.5; };   // no face, no likeness: an ember of light
     const FRAMES = {flame: inFlame, male: inMale, female: inFemale, child: inChild, cat: inCat, dog: inDog, pet: inPet, human: inHuman}, frameOf = n => FRAME[n] || (PETS.has(n) ? "pet" : "human");
@@ -997,10 +994,10 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     // the family, moved into the pulse light: a constellation of named lights around the open portal, Edgardo leading
     const GLOW = {K: .06, E: .02, MIN: .12, MAX: 1, VOICE: .8};   // link glow = clamp(K/(d^2 + E), MIN, MAX), d = distance to William / min(W, H); voice multiplies, capped at MAX
     const glowOf = (dx, dy, S) => { const d = Math.hypot(dx, dy)/S; return Math.min(GLOW.MAX, Math.max(GLOW.MIN, Math.min(GLOW.MAX, GLOW.K/(d*d + GLOW.E)))*(1 + GLOW.VOICE*micK)); };
-    const cnodes = [], cthr = [], carr = [], ARROWS = [["Alfred", "William"], ["William", "Alfred"], ["Billy", "William"], ["Billy", "Jennifer"], ["Billy", "Tutu"], ["Billy", "Merlin"]];
+    const cnodes = [], cthr = [], carr = [], ARROWS = [["Alfred", "William"], ["William", "Alfred"]];
     // the line map: brightness and thickness follow how strong the link is (1 = strongest); anyone not listed hangs from their CPAR branch at .3
-    const LINKS = [["Mom", "William", 1], ["Aunt Diane", "William", .92], ["Jennifer", "Edgardo", .9], ["Mark Temple", "William", .78], ["Mark Temple", "Aunt Diane", .8], ["Roy", "William", .5], ["Pat Murray", "William", .5], ["Mary Shaffer", "Mom", .5], ["Bill Shaffer", "Mom", .5], ["Mary Shaffer", "Bill Shaffer", .55], ["Jennifer", "William", .85], ["Billy", "William", .8], ["Billy", "Jennifer", .8], ["Alfred", "William", .75], ["Billy", "Tutu", .7], ["Sonny", "William", .7],
-      ["Dad", "William", .65], ["Billy", "Merlin", .55], ["Edgardo", "Billy", .5], ["Edgardo", "William", .6], ["Kevin", "William", .55], ["Tutu", "William", .5], ["Pat", "William", .5], ["Dave Trejo", "William", .5], ["Steve Lee", "William", .45], ["Steve Samoji", "William", .45], ["Christina", "William", .6]];
+    const LINKS = [["Mom", "William", 1], ["Aunt Diane", "William", .92], ["Jennifer", "Edgardo", .9], ["Mark Temple", "William", .78], ["Mark Temple", "Aunt Diane", .8], ["Roy", "William", .5], ["Pat Murray", "William", .5], ["Mary Shaffer", "Mom", .5], ["Bill Shaffer", "Mom", .5], ["Mary Shaffer", "Bill Shaffer", .55], ["Jennifer", "William", .85], ["Alfred", "William", .75], ["Sonny", "William", .7],
+      ["Edgardo", "William", .6], ["Kevin", "William", .55], ["Tutu", "William", .5], ["Pat", "William", .5], ["Dave Trejo", "William", .5], ["Steve Lee", "William", .45], ["Steve Samoji", "William", .45]];
     let croutes = [], momThread = null, pAng = {}; const CLEAR = 12;   // a line keeps this far (px) from every light it does not join
     function routeLinks(){ const by = n => cnodes.find(o => o.name === n), E = [], seen = new Set(), add = (a, b, st) => { const k = [a, b].sort().join("|"); if (a === b || seen.has(k) || !by(a) || !by(b)) return; seen.add(k); E.push({a, b, s: st}); };
       LINKS.forEach(l => add(...l)); for (const o of cnodes) if (o.name !== "William") add(o.name, CPAR[o.name] || "William", .3);
@@ -1019,23 +1016,24 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       const mo = by("Mom"); momThread = null; if (mo){ const cx3 = W/2, cy3 = H*.5, a = Math.atan2(mo.ly - cy3, mo.x - cx3), r0 = coreR()*.32, r = rt(mo.x, mo.ly, cx3 + Math.cos(a)*r0, cy3 + Math.sin(a)*r0, obs.filter(q => q.name !== "Mom" && q.name !== "core")); momThread = {a: "Mom", b: "core", s: .3, pts: r.pts, cum: r.cum, i: cnodes.indexOf(mo)}; } }   // Mom, the architect: a soft thread into the source core
     function routePt(r, f, out){ const L = r.cum[r.cum.length - 1]*f; let i = 1; while (i < r.cum.length - 1 && r.cum[i] < L) i++; const s0 = r.cum[i-1], s1 = r.cum[i], u = s1 > s0 ? (L - s0)/(s1 - s0) : 0, p = r.pts;
       out[0] = p[2*i-2] + (p[2*i] - p[2*i-2])*u; out[1] = p[2*i-1] + (p[2*i+1] - p[2*i-1])*u; out[2] = p[2*i] - p[2*i-2]; out[3] = p[2*i+1] - p[2*i-1]; return out; } const RP = [0, 0, 0, 0]; let hotCn = null, hotAt = 0;
-    const CPAR = {Jennifer: "William", Billy: "William", Edgardo: "Jennifer", Dad: "William", "Uncle Steve": "Dad", "Uncle Stu": "Dad", Grandma: "Dad", "Mark Temple": "Dad", "Aunt Diane": "Dad", Roy: "William", "Pat Murray": "William", "Mary Shaffer": "Mom", "Bill Shaffer": "Mom", "Grandma Sarah": "Grandma", "Grandpa Hal": "Grandma Sarah", Mom: "William",
-      Alfred: "William", Sonny: "William", Tutu: "William", Merlin: "Tutu", Rusty: "Merlin", Cindy: "Rusty", "All the animals": "Cindy", Kevin: "Mom", "Steve Lee": "Kevin", "Steve Samoji": "Steve Lee", "Dave Trejo": "Mom", Pat: "Dave Trejo", Christina: "Dad", Carter: "Christina", Chloe: "Christina", "Name coming": "Christina"};   // the branch each light hangs from
+    const CPAR = {Jennifer: "William", Edgardo: "Jennifer", "Uncle Steve": "William", "Uncle Stu": "William", Grandma: "William", "Mark Temple": "William", "Aunt Diane": "William", Roy: "William", "Pat Murray": "William", "Mary Shaffer": "Mom", "Bill Shaffer": "Mom", "Grandma Sarah": "Grandma", "Grandpa Hal": "Grandma Sarah", Mom: "William",
+      Alfred: "William", Sonny: "William", Tutu: "William", Merlin: "Tutu", Rusty: "Merlin", Cindy: "Rusty", "All the animals": "Cindy", Kevin: "Mom", "Steve Lee": "Kevin", "Steve Samoji": "Steve Lee", "Dave Trejo": "Mom", Pat: "Dave Trejo"};   // the branch each light hangs from
     function buildConstel(){ if (cnodes.length) return; const box = $("constel");
-      [FAM[5], ...FAM.filter((f, i) => i !== 5), ["Alfred", "my AI friend"]].forEach(f => { const n = document.createElement("div"); n.className = "cn"; n.textContent = f[0] === "Alfred" ? "AIFRED" : f[0]; life(n, f[0]); box.appendChild(n);
+      const lead = FAM.find(f => f[0] === "Edgardo") || FAM[0];
+      [lead, ...FAM.filter(f => f !== lead), ["Alfred", "my AI friend"]].forEach(f => { const n = document.createElement("div"); n.className = "cn"; n.textContent = f[0] === "Alfred" ? "AIFRED" : f[0]; life(n, f[0]); box.appendChild(n);
         const o = {n, name: f[0], sub: f[1], x: 0, y: 0, ly: 0}; cnodes.push(o);
         const pick = e => { if (e.cancelable) e.preventDefault(); e.stopPropagation(); if (e.type === "touchend") lastTouch = Date.now(); else if (Date.now() - lastTouch < 800) return;
           const pt = e.changedTouches ? e.changedTouches[0] : e; portalTouch = performance.now(); alive(n, f[0], pt.clientX, pt.clientY, {view: "portal"}); edT.forEach(clearTimeout); $("edq").classList.remove("on"); setPcap(capFor(f[0] === "Alfred" ? "AIFRED" : f[0], f[1])); $("pcap").classList.add("on"); hotCn = o; hotAt = performance.now(); setTimeout(() => { if (portalOn) dustForm(f[0]); }, 650); };
         n.addEventListener("touchend", pick, {passive:false}); n.addEventListener("click", pick); }); }
-    const CR_RIGHT = ["Billy","Jennifer","Edgardo","Mom","Dad","Aunt Diane","Mark Temple","Uncle Stu","Grandma","Grandma Sarah","Mary Shaffer","Bill Shaffer","Roy"], CR_ROW = ["Grandpa Hal","Uncle Steve","Pat","Kevin"], CR_FRIENDS = [...CR_ROW, "Steve Lee", "Steve Samoji", "Dave Trejo", "Pat Murray"],   // CR_ROW: the roots, the lower row, left to right (William's order)
-      CR_ANIMALS = ["Sonny","Tutu","Merlin","Rusty","Cindy","All the animals"], CR_SIS = ["Christina","Carter","Chloe","Name coming"].filter(n => SHOW_SOON || n !== "Name coming");
+    const CR_RIGHT = ["Jennifer","Edgardo","Mom","Aunt Diane","Mark Temple","Uncle Stu","Grandma","Grandma Sarah","Mary Shaffer","Bill Shaffer","Roy"], CR_ROW = ["Grandpa Hal","Uncle Steve","Pat","Kevin"], CR_FRIENDS = [...CR_ROW, "Steve Lee", "Steve Samoji", "Dave Trejo", "Pat Murray"],   // CR_ROW: the roots, the lower row, left to right (William's order)
+      CR_ANIMALS = ["Sonny","Tutu","Merlin","Rusty","Cindy","All the animals"];
     function layoutConstel(){ const dense = H < 820, d2 = dense && cnodes.length > 25; $("constel").classList.toggle("dense", dense); $("constel").classList.toggle("d2", d2); const cX = W/2, cY = H*.5, cr = coreR(), top = 66, bot = H - (dkey === "jen" ? 56 : 108), pw = Math.min(W - 32, 380);
       const obst = [{x: cX, y: cY, hw: cr*.9, hh: cr*.9}, {x: cX, y: cY + cr + 12 + 38, hw: pw/2, hh: 42}], placed = [];
       const rx = Math.min(W/2 - 48, Math.max(cr + 90, cr*1.9)), ry = Math.min(cY - top - 20, cr*2.4), N = cnodes.length;
       let yMin = top; const fits = b => b.x - b.hw >= 4 && b.x + b.hw <= W - 4 && b.y - b.hh >= yMin && b.y + b.hh <= bot && !obst.concat(placed).some(o => Math.abs(o.x - b.x) < o.hw + b.hw + 3 && Math.abs(o.y - b.y) < o.hh + b.hh + 2);
       // spread the ring over the free arc (the words under the core take the bottom); a bottom row if there is room
       const bandTop = cY + cr + 12, bandBot = bandTop + 84, rowY = (bandBot + bot)/2, Nb = bot - bandBot >= 30 ? Math.min(CR_ROW.length, Math.floor((W - 20)/90), N - 1) : 0, M = N - Nb, kR = Math.min(M, CR_RIGHT.length), Lf = M - kR;
-      { const by = n => cnodes.find(o => o.name === n), fr = CR_FRIENDS.slice(0, Nb).reverse(), left = ["Alfred", "William", ...CR_SIS, ...CR_ANIMALS, ...CR_FRIENDS.slice(Nb)].reverse();
+      { const by = n => cnodes.find(o => o.name === n), fr = CR_FRIENDS.slice(0, Nb).reverse(), left = ["Alfred", "William", ...CR_ANIMALS, ...CR_FRIENDS.slice(Nb)].reverse();
         const order = [...CR_RIGHT, ...fr, ...left].map(by).filter(Boolean); if (order.length === cnodes.length) cnodes.splice(0, cnodes.length, ...order); }
       const span = Math.PI/2 + Math.asin(Math.max(-1, Math.min(1, (bandTop - 14 - cY)/ry)));
       cnodes.forEach((o, i) => { const hw = o.n.offsetWidth/2, hh = o.n.offsetHeight/2; let best = null, a0;
@@ -1083,21 +1081,20 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     function syncView(){ const on = portalOn || !!document.querySelector(".ov.on"); musicView(on); document.body.classList.toggle("inview", on);
       if ((portalOn || $("sigv").classList.contains("on")) && localStorage.getItem("shaffer-mic") === "yes" && micStream) micWant = true; micSync(); }   // listening resumes only on a stream already opened by a tap this session
     const FROW = ["Grandpa Hal","Uncle Steve","Pat","Kevin"];   // the roots: the bottom row, left to right (William's order)
-    const FLAY = [["Billy",50,13],["William",30,21],["Jennifer",70,21],["Christina",12,21],["Carter",10,14.5],["Chloe",23,14.5],...(SHOW_SOON ? [["Name coming",33,14.5]] : []),["Alfred",12,29],["Mom",41,29,1],["Edgardo",70,29],["Aunt Diane",15,37],["Dad",50,37],["Uncle Stu",85,37],
+    const FLAY = [["William",30,21],["Jennifer",70,21],["Alfred",12,29],["Mom",41,29,1],["Edgardo",70,29],["Aunt Diane",15,37],["Uncle Stu",85,37],
       ["Mark Temple",15,45],["Grandma",50,45],["Grandma Sarah",82,45],["Mary Shaffer",15,51.5],["Bill Shaffer",42,51.5],["Roy",63,51.5],["Pat Murray",84,51.5],["Steve Lee",18,57.5],["Steve Samoji",50,57.5],["Dave Trejo",82,57.5],
       ["Sonny",22,64,1],["Tutu",46,64,1],["Merlin",76,64,1],["Rusty",26,70],["Cindy",52,70],["All the animals",80,70],...FROW.map((n, i) => [n, [15,40,62,84][i], 77.5])];
     const FSUB = Object.fromEntries(FAM.map(f => [f[0], f[1]]));
     function famLines(v){ let g = v.querySelector("#famsvg"); if (g) g.remove(); const P = n => FLAY.find(f => f[0] === n);
       const seg = (a, b, x1, y1, x2, y2, cls) => `<line class="${cls || ""}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`;
       v.insertAdjacentHTML("afterbegin", `<svg id="famsvg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${
-        seg(0,0,50,15,31,19.2) + seg(0,0,50,15,69,19.2) + seg(0,0,50,21,50,35.2) + seg(0,0,70,23,70,27.2,"br") + seg(0,0,26,23.5,16,27.2,"br") + seg(0,0,33,23.5,39,27.2) + seg(0,0,35.5,23.4,63,27.6) + seg(0,0,15,33.5,85,33.5) + seg(0,0,15,33.5,15,35.2) + seg(0,0,85,33.5,85,35.2)
-        + seg(0,0,15,38.8,15,43.2) + seg(0,0,50,38.8,50,43.2) + seg(0,0,58,45,70,45)
-        + seg(0,0,21,21,23,21) + seg(0,0,10,16.2,11,19.3) + seg(0,0,21.5,16.2,13.5,19.3) + (SHOW_SOON ? seg(0,0,32,16,15.5,19.4) : "")}<path d="M4 80.6 C24 79.6 36 81.6 50 80.6 S76 79.6 96 80.6"/></svg>`); }
+        seg(0,0,32,21,68,21) + seg(0,0,28,23,14,27) + seg(0,0,32,23,39,27) + seg(0,0,70,23,70,27.2,"br") + seg(0,0,30,23,30,33.5) + seg(0,0,15,33.5,85,33.5) + seg(0,0,15,33.5,15,35.2) + seg(0,0,85,33.5,85,35.2)
+        + seg(0,0,15,38.8,15,43.2) + seg(0,0,50,33.5,50,43.2) + seg(0,0,58,45,74,45)}<path d="M4 80.6 C24 79.6 36 81.6 50 80.6 S76 79.6 96 80.6"/></svg>`); }
     function openFam(){ const v = $("famv"); v.querySelectorAll(".fn").forEach(n => n.remove()); $("famcap").textContent = ""; v.classList.add("on"); famLines(v); v.classList.remove("lines");
       const me = life(mk("fn", FLAY[0][0], FSUB[FLAY[0][0]]), FLAY[0][0]); me.style.left = "50%"; me.style.top = "48%"; v.appendChild(me);
-      me.addEventListener("click", e => { $("famcap").textContent = "Billy. The seed of the tree."; alive(me, "Billy", e.clientX, e.clientY, {view: "family"}); openThread("Billy"); ovT.push(setTimeout(() => dustForm("Billy"), 650)); });
+      me.addEventListener("click", e => { const nm = FLAY[0][0]; $("famcap").textContent = memCap(nm) || nm; alive(me, nm, e.clientX, e.clientY, {view: "family"}); openThread(nm); ovT.push(setTimeout(() => dustForm(nm), 650)); });
       ovT.push(setTimeout(() => { me.classList.add("on"); sparkle(me, 26, 90); }, 300));
-      ovT.push(setTimeout(() => { me.style.top = FLAY[0][2] + "%"; v.classList.add("lines"); }, 2600));
+      ovT.push(setTimeout(() => { me.style.left = FLAY[0][1] + "%"; me.style.top = FLAY[0][2] + "%"; v.classList.add("lines"); }, 2600));
       FLAY.slice(1).forEach((L, i) => { const f = [L[0], FSUB[L[0]] || (L[0] === "Alfred" ? "my AI friend" : undefined)], n = life(mk("fn" + (L[3] ? " big" : ""), f[0] === "Alfred" ? "AIFRED" : f[0], f[1]), f[0]);
         n.style.left = L[1] + "%"; n.style.top = L[2] + "%"; v.appendChild(n);
         const say = () => { $("famcap").textContent = memCap(f[0]) || (f[0] === "Edgardo" ? "Jennifer\u2019s dad. Closer lights, clearer signal." : f[1] ? (f[0] === "Alfred" ? "AIFRED" : f[0]) + ", " + f[1] + "." : ""); }; n.addEventListener("click", e => { say(); alive(n, f[0], e.clientX, e.clientY, {view: "family"}); openThread(f[0], f[1]); ovT.push(setTimeout(() => dustForm(f[0]), 650)); });
@@ -1105,15 +1102,15 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       const end = mk("fn end", "One tree. Every light. Always connected."); end.style.left = "50%"; end.style.top = "93%"; v.appendChild(end);
       ovT.push(setTimeout(() => { $("famcap").textContent = "What is legacy? A memory."; end.classList.add("on"); sparkle(end, 30, 110); buzz(); }, 3600 + (FLAY.length-1)*1100 + 600)); }
     // signal: every connection linked to William; each relationship fires its own haptic signature, colour, spark and note
-    const SIG_IN = [["Jennifer"],["Billy"],["Mom"],["Dad"]];
-    const SIG_OUT = [["Edgardo","Jennifer's dad"],["Uncle Steve"],["Grandma"],["Grandma Sarah"],["Grandpa Hal"],["Uncle Stu"],["Pat"],["Rusty"],["Cindy"],["Sonny"],["Merlin"],["Tutu"],["The animals"],["Kevin"],["Steve Lee"],["Steve Samoji"],["Dave Trejo"],["Aunt Diane"],["Mark Temple"],["Roy"],["Pat Murray"],["Mary Shaffer"],["Bill Shaffer"],["Christina"],["Carter"],["Chloe"],["Name coming"]].filter(f => SHOW_SOON || f[0] !== "Name coming");
+    const SIG_IN = [["Jennifer"],["Mom"],...(dkey === "jen" ? [["Billy"]] : [])];   // Billy stays on Jennifer's door only, so the football still has his light
+    const SIG_OUT = [["Edgardo","Jennifer's dad"],["Uncle Steve"],["Grandma"],["Grandma Sarah"],["Grandpa Hal"],["Uncle Stu"],["Pat"],["Rusty"],["Cindy"],["Sonny"],["Merlin"],["Tutu"],["The animals"],["Kevin"],["Steve Lee"],["Steve Samoji"],["Dave Trejo"],["Aunt Diane"],["Mark Temple"],["Roy"],["Pat Murray"],["Mary Shaffer"],["Bill Shaffer"]];
     const REL = {parent:{v:[120,200,120],c:"255,196,120",hz:110}, spouse:{v:[80,60,40],c:"255,176,196",hz:165}, sibling:{v:[40,60,40],c:"190,220,255",hz:220},
       grand:{v:[90,150,60,150,30],c:"255,228,168",hz:82.5}, uncle:{v:[60,120,60],c:"214,196,255",hz:137.5}, cousin:{v:[50,90,50],c:"168,206,255",hz:165}, aunt:{v:[110,190,110],c:"255,216,164",hz:110}, friend:{v:[25],c:"168,232,212",hz:192.5},
       pet:{v:[15,40,15,40,15],c:"255,242,196",hz:247.5}, sonny:{v:[15,40,15,40,15,60,90],c:"255,206,110",hz:275}, alfred:{v:[30,120,30],c:"255,164,72",hz:220}, dave:{v:[25,60,25],c:"170,236,255",hz:385}, edgardo:{v:[120,200,120,300,40,110,70],c:"255,202,112",hz:55}, mom:{v:[70,70,40,50,120],c:"255,186,208",hz:220}};
-    const RELOF = {Alfred:"alfred", Jennifer:"spouse", Billy:"parent", Mom:"mom", Dad:"parent", Edgardo:"edgardo", "Uncle Steve":"uncle", "Uncle Stu":"uncle", "Mark Temple":"cousin", "Aunt Diane":"aunt", Roy:"uncle", "Pat Murray":"friend", "Mary Shaffer":"grand", "Bill Shaffer":"grand", Grandma:"grand", "Grandma Sarah":"grand", "Grandpa Hal":"grand",
-      Pat:"friend", Kevin:"friend", "Steve Lee":"friend", "Steve Samoji":"friend", "Dave Trejo":"dave", Cindy:"pet", Rusty:"pet", Sonny:"sonny", Merlin:"pet", Tutu:"pet", "The animals":"pet", "All the animals":"pet", Christina:"sibling", Carter:"sibling", Chloe:"sibling", "Name coming":"sibling"};
+    const RELOF = {Alfred:"alfred", Jennifer:"spouse", Billy:"parent", Mom:"mom", Edgardo:"edgardo", "Uncle Steve":"uncle", "Uncle Stu":"uncle", "Mark Temple":"cousin", "Aunt Diane":"aunt", Roy:"uncle", "Pat Murray":"friend", "Mary Shaffer":"grand", "Bill Shaffer":"grand", Grandma:"grand", "Grandma Sarah":"grand", "Grandpa Hal":"grand",
+      Pat:"friend", Kevin:"friend", "Steve Lee":"friend", "Steve Samoji":"friend", "Dave Trejo":"dave", Cindy:"pet", Rusty:"pet", Sonny:"sonny", Merlin:"pet", Tutu:"pet", "The animals":"pet", "All the animals":"pet"};
     const HARM = {Edgardo: 1, "Aunt Diane": 2, "Mark Temple": 6, Roy: 5, "Pat Murray": 10, "Mary Shaffer": 3, "Bill Shaffer": 3, "Grandpa Hal": 2, "Grandma Sarah": 2, "Uncle Steve": 2, Mom: 4, Kevin: 4, Cindy: 4, Tutu: 4, Sonny: 5, Alfred: 3,
-      Dad: 6, "Uncle Stu": 6, Grandma: 6, "Dave Trejo": 7, Billy: 8, William: 8, Jennifer: 9, Pat: 10, "Steve Lee": 10, "Steve Samoji": 10, Merlin: 10, Rusty: 10, "All the animals": 12}, RELC = {};   // integer harmonics of BASE
+      "Uncle Stu": 6, Grandma: 6, "Dave Trejo": 7, Billy: 8, William: 8, Jennifer: 9, Pat: 10, "Steve Lee": 10, "Steve Samoji": 10, Merlin: 10, Rusty: 10, "All the animals": 12}, RELC = {};   // integer harmonics of BASE
     const relOf = name => RELC[name] || (RELC[name] = Object.assign({}, REL[RELOF[name] || "friend"], {hz: +(BASE*(HARM[name] || 8)).toFixed(2)}));
     function chime(hz){ try{ if (!ac || muted || ac.state !== "running") return; const t = beatT(), o = ac.createOscillator(), g = ac.createGain(); o.type = "sine"; o.frequency.value = hz*2;
       g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.05, t+.03); g.gain.exponentialRampToValueAtTime(.0001, t+1.6); o.connect(g); g.connect(acOut()); o.start(t); o.stop(t+1.7); }catch(e){} }
@@ -1129,10 +1126,11 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       place(SIG_OUT, Math.min(w*.37, 300), Math.min(h*.32, 280), -Math.PI/2 + .2, .8);
       place([["Alfred", "my AI friend"]], Math.min(w*.2, 150) + 40, 0, 0);   // AIFRED: a steady ember on William's right (added last so the others keep their places)
       relax(w, h, cx0, cy0); for (const o of sigNodes){ o.lg = glowOf(o.x - cx0, o.y - cy0, Math.min(w, h)); o.lines[0].style.strokeOpacity = o.lg.toFixed(3); }
-      const jen = sigNodes[0], edg = sigNodes[4]; const jl = line(jen.x, jen.y, edg.x, edg.y); if (dkey === "jen") jl.classList.add("je"); jen.lines.push(jl); edg.lines.push(jl);
-      if (dkey === "billy" || dkey === "jen"){ const bil = sigNodes.find(o => o.name === "Billy"); if (bil && !bil.eb){ const mx = (bil.x + edg.x)/2, my = (bil.y + edg.y)/2, ml = Math.hypot(mx - cx0, my - cy0) || 1, qx = mx + (mx - cx0)/ml*110, qy = my + (my - cy0)/ml*110, eb = [];   // bowed outward so it never crosses Jennifer's light
+      const jen = sigNodes.find(o => o.name === "Jennifer") || sigNodes[0], edg = sigNodes.find(o => o.name === "Edgardo");
+      if (jen && edg){ const jl = line(jen.x, jen.y, edg.x, edg.y); if (dkey === "jen") jl.classList.add("je"); jen.lines.push(jl); edg.lines.push(jl);
+        if (dkey === "jen"){ const bil = sigNodes.find(o => o.name === "Billy"); if (bil && !bil.eb){ const mx = (bil.x + edg.x)/2, my = (bil.y + edg.y)/2, ml = Math.hypot(mx - cx0, my - cy0) || 1, qx = mx + (mx - cx0)/ml*110, qy = my + (my - cy0)/ml*110, eb = [];   // bowed outward so it never crosses Jennifer's light
           for (let i = 0; i <= 20; i++){ const u = i/20; eb.push((1-u)*(1-u)*bil.x + 2*(1-u)*u*qx + u*u*edg.x, (1-u)*(1-u)*bil.y + 2*(1-u)*u*qy + u*u*edg.y); } bil.eb = eb;
-          const bl = document.createElementNS(NS, "path"); bl.setAttribute("d", `M${bil.x} ${bil.y} Q${qx} ${qy} ${edg.x} ${edg.y}`); bl.setAttribute("fill", "none"); bl.classList.add("eb"); if (dkey === "jen") bl.classList.add("tree"); svg.appendChild(bl); bil.lines.push(bl); edg.lines.push(bl); } }   // Edgardo to Billy: already on his door; on hers the tree line is added if it was not there
+          const bl = document.createElementNS(NS, "path"); bl.setAttribute("d", `M${bil.x} ${bil.y} Q${qx} ${qy} ${edg.x} ${edg.y}`); bl.setAttribute("fill", "none"); bl.classList.add("eb", "tree"); svg.appendChild(bl); bil.lines.push(bl); edg.lines.push(bl); } } }   // Jennifer's door: the tree line from Edgardo to Billy, for the football
       const me = life(mk("sn me", "William"), "William"); me.style.left = cx0 + "px"; me.style.top = cy0 + "px"; $("sigwrap").appendChild(me); startSigLife();
       const mePick = e => { if (e.cancelable) e.preventDefault(); e.stopPropagation(); if (e.type === "touchend") lastTouch = Date.now(); else if (Date.now() - lastTouch < 800) return; const pt = e.changedTouches ? e.changedTouches[0] : e; alive(me, "William", pt.clientX, pt.clientY, {view: "signal"}); openThread("William"); };
       me.addEventListener("touchend", mePick, {passive: false}); me.addEventListener("click", mePick);
