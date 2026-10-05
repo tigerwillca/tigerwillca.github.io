@@ -116,7 +116,7 @@
   #note::before{content:"";position:absolute;z-index:-1;left:2vw;right:2vw;top:-18px;bottom:-18px;background:radial-gradient(closest-side,rgba(4,3,9,.78),rgba(4,3,9,.55) 60%,rgba(4,3,9,0));pointer-events:none}
   #note.dim{opacity:0;transition:opacity .6s} #note.dim #dad{pointer-events:none}
   #title,#brand{transition:opacity .6s}
-  body.pon #title,body.pon #brand,body.mon #title,body.mon #brand,body.pon #hint,body.pon #welcome,body.pon #membtn{opacity:0!important;pointer-events:none!important}
+  body.pon #title,body.pon #brand,body.mon #title,body.mon #brand,body.pon #hint,body.pon #welcome,body.pon #membtn,body.pon #phxspot,body.mon #phxspot,body.pon #phxchat,body.mon #phxchat{opacity:0!important;pointer-events:none!important}
   body.pon #dotbtn{pointer-events:none}
   #membtn{position:fixed;left:50%;top:calc(72% + 44px);transform:translateX(-50%);z-index:3;padding:8px 20px;border-radius:20px;border:1px solid rgba(233,200,140,.5);background:rgba(12,9,16,.66);color:rgba(243,222,170,.95);font:13px Georgia,serif;letter-spacing:.22em;text-transform:uppercase;white-space:nowrap;transition:opacity .6s;animation:pill 6.546s ease-in-out infinite;-webkit-tap-highlight-color:transparent;cursor:pointer}
   @keyframes pill{0%,100%{box-shadow:0 0 10px rgba(233,200,140,.14)}50%{box-shadow:0 0 22px rgba(233,200,140,.4)}}
@@ -327,6 +327,17 @@
   #smvbody p{margin:0 0 8px;font:italic 17px/1.45 Georgia,serif;color:rgba(246,237,216,.88)}
   #smvbody p.end{margin-top:18px;font-size:15px;color:rgba(246,237,216,.6)}
   @media (prefers-reduced-motion:reduce){.smlights i,.smhold .ember,#smvheart .glass{animation:none;opacity:.9}#smvheart.holding .glass{transition:none;transform:none}#smv{transition-duration:.2s}}
+  /* Secret chat hover for Jennifer, William, and Billy only. The Soft7 phoenix sits on this spot; nothing else on the page moves. */
+  #phxspot{display:none;position:fixed;z-index:4;left:calc(env(safe-area-inset-left) + 10px);top:46%;width:72px;height:72px;margin-top:-36px;border-radius:50%;place-items:center;cursor:pointer;border:1px solid rgba(255,200,120,.35);box-shadow:0 0 28px rgba(255,140,40,.28),inset 0 0 18px rgba(255,180,80,.1);background:rgba(0,0,0,.28);padding:0;transition:transform .35s,box-shadow .35s,border-color .35s}
+  html.door-will #phxspot,html.door-jen #phxspot,html.door-billy #phxspot{display:grid}
+  #phxspot:hover,#phxspot:focus-visible,#phxspot.on{transform:scale(1.08);border-color:rgba(255,220,140,.85);box-shadow:0 0 48px rgba(255,150,40,.55),inset 0 0 24px rgba(255,200,100,.18);outline:none}
+  #phxspot img{width:68%;height:auto;filter:drop-shadow(0 0 12px rgba(255,160,40,.85));pointer-events:none}
+  #phxchat{position:fixed;left:50%;top:50%;transform:translate(-50%,-46%) scale(.96);width:min(92vw,380px);padding:22px 22px 18px;border-radius:16px;background:rgba(10,8,16,.92);border:1px solid rgba(233,200,140,.45);box-shadow:0 0 40px rgba(255,160,60,.25);opacity:0;pointer-events:none;transition:opacity .45s,transform .45s;z-index:7}
+  #phxchat.on{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1)}
+  #phxchat h1{margin:0 0 6px;font:normal 12px Georgia,serif;letter-spacing:.32em;text-transform:uppercase;color:#e9c88c}
+  #phxchat .who{margin:0 0 14px;font:italic 15px/1.4 Georgia,serif;color:#ffe9c2}
+  #phxchat .line{margin:0 0 8px;font:15px/1.45 Georgia,serif;color:#f3e7cc}
+  #phxchat .x{position:absolute;top:6px;right:8px;width:40px;height:40px;border:0;background:none;color:#efe6d2;font-size:26px;cursor:pointer}
 </style>
 <link rel="apple-touch-icon" href="/legacy/apple-touch-icon.png?v=14">
 <link rel="icon" type="image/svg+xml" href="/legacy/favicon.svg?v=31">
@@ -419,6 +430,14 @@ This is our stamp.<br><b id="dad">Dad</b></div>
   </div>
 </div>
 <div id="welcome" class=""></div>
+<button id="phxspot" type="button" aria-label="Open family secret chat" title="Phoenix"><img src="/legacy/phoenix-icon.png" width="64" height="64" alt="Phoenix"></button>
+<div id="phxchat" role="dialog" aria-live="polite" aria-label="Family secret chat" aria-hidden="true">
+  <button class="x" id="phxthx" type="button" aria-label="Close">&times;</button>
+  <h1>Secret chat</h1>
+  <p class="who">William · Jennifer · Billy</p>
+  <p class="line">Just us three.</p>
+  <p class="line">The phoenix holds the door.</p>
+</div>
 <div id="hint" style="opacity:0"></div>
 <div id="toast" role="status"></div>
 <canvas id="tpcv" aria-hidden="true"></canvas><canvas id="alivecv" aria-hidden="true"></canvas><div id="lpulse" aria-hidden="true"></div><button id="mic" aria-label="Listen: let the lights answer your voice" aria-pressed="false"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 9v2M7.3 7v6M10.6 5v10M13.9 7.5v5M17 9v2"/></svg></button>
@@ -566,6 +585,18 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     const sx = document.querySelector("#sigv > .x"); if (sx){ sx.textContent = "Done"; sx.setAttribute("aria-label", "Done"); }
     $("membtn").textContent = "Memories";
     const h3 = document.querySelector("#sigv > h3"); if (h3) h3.textContent = "";
+  }
+  // Secret chat: the Soft7 phoenix hover, only on Jennifer's, William's, and Billy's doors.
+  if (door && (dkey === "will" || dkey === "jen" || dkey === "billy")){
+    const phxSpot = $("phxspot"), phxChat = $("phxchat");
+    const openPhx = () => { phxSpot.classList.add("on"); phxChat.classList.add("on"); phxChat.setAttribute("aria-hidden", "false"); };
+    const closePhx = () => { phxSpot.classList.remove("on"); phxChat.classList.remove("on"); phxChat.setAttribute("aria-hidden", "true"); };
+    phxSpot.addEventListener("mouseenter", openPhx);
+    phxSpot.addEventListener("focus", openPhx);
+    phxSpot.addEventListener("click", e => { e.stopPropagation(); openPhx(); });
+    phxSpot.addEventListener("touchend", e => { if (e.cancelable) e.preventDefault(); e.stopPropagation(); openPhx(); }, {passive:false});
+    $("phxthx").addEventListener("click", e => { e.stopPropagation(); closePhx(); });
+    document.addEventListener("keydown", e => { if (e.key === "Escape") closePhx(); });
   }
   logVisit(door ? door.name + "'s door" : "Someone");
   // a one-time whisper on the very first visit; it fades and never returns on this device
