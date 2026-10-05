@@ -282,12 +282,15 @@
   /* Soft Magic: its own quiet room. Not a Soft7 page, and not a William-only vault. */
   #smv{position:fixed;inset:0;z-index:40;background:radial-gradient(90% 70% at 50% 42%,#2a1c14 0%,#140e0c 55%,#0a0706 100%);color:#f6edd8;opacity:0;pointer-events:none;transition:opacity .8s ease}
   #smv.on{opacity:1;pointer-events:auto}
-  #smx,#smback,#smhback{position:absolute;z-index:2;top:calc(env(safe-area-inset-top) + 14px);min-width:96px;height:56px;padding:0 18px;border-radius:28px;border:1px solid rgba(233,200,140,.4);background:rgba(16,12,18,.55);color:#f6edd8;font:20px/54px Georgia,serif}
-  #smx{right:16px} #smback,#smhback{left:16px}
-  #smhome,#smtwo,#smember{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:safe center;padding:calc(env(safe-area-inset-top) + 84px) 22px calc(env(safe-area-inset-bottom) + 28px);box-sizing:border-box;text-align:center}
-  #smhome{overflow-y:auto}
-  #smhome[hidden],#smtwo[hidden],#smember[hidden]{display:none!important}
+  #smx,#smback,#smhback,#smvback{position:absolute;z-index:2;top:calc(env(safe-area-inset-top) + 14px);min-width:96px;height:56px;padding:0 18px;border-radius:28px;border:1px solid rgba(233,200,140,.4);background:rgba(16,12,18,.55);color:#f6edd8;font:20px/54px Georgia,serif}
+  #smx{right:16px} #smback,#smhback,#smvback{left:16px}
+  #smhome,#smtwo,#smember,#smveil{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:safe center;padding:calc(env(safe-area-inset-top) + 84px) 22px calc(env(safe-area-inset-bottom) + 28px);box-sizing:border-box;text-align:center}
+  #smhome,#smveil{overflow-y:auto}
+  #smveil{justify-content:flex-start}
+  #smvgate{margin:auto 0}
+  #smhome[hidden],#smtwo[hidden],#smember[hidden],#smveil[hidden],#smvgate[hidden],#smvrecipe[hidden],#smvform[hidden]{display:none!important}
   #smv h2{margin:0 0 8px;font-weight:400;font-size:clamp(28px,8vw,40px);letter-spacing:.04em}
+  #smtitle{padding:10px 18px;border-radius:16px}
   .smlead,.smwho,#smcopy,#smhcopy,.smnote{margin:0;font:italic 18px/1.45 Georgia,serif;color:rgba(246,237,216,.84);max-width:28rem}
   .smwho{margin-bottom:18px} #smcopy,#smhcopy{margin-top:22px}
   .smnote{margin-top:12px;font-size:15px;color:rgba(246,237,216,.58)}
@@ -308,7 +311,22 @@
   .smhold .ambient{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 50% 56%,rgba(255,244,224,.4) 0%,rgba(255,214,160,.14) 40%,rgba(255,196,120,0) 72%)}
   .smhold .ember{position:absolute;left:50%;top:60%;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;background:radial-gradient(circle at 42% 40%,#ffe6c2 0%,#ff9a3c 24%,#c2410c 58%,rgba(90,18,4,0) 74%);box-shadow:0 0 16px rgba(255,110,30,.4);animation:smember 10s ease-in-out infinite}
   @keyframes smember{0%,100%{opacity:.76;transform:scale(.97)}50%{opacity:.9;transform:scale(1)}}
-  @media (prefers-reduced-motion:reduce){.smlights i,.smhold .ember{animation:none;opacity:.9}#smv{transition-duration:.2s}}
+  /* Green Veil: a glass heart in the same quiet room. The recipe is not drawn here. */
+  #smvheart{width:148px;height:128px;margin:8px 0 0;padding:0;border:0;background:transparent;cursor:pointer;touch-action:none;-webkit-tap-highlight-color:transparent}
+  #smvheart svg{width:108px;height:96px;display:block;margin:0 auto;overflow:visible}
+  #smvheart .glass{transform-origin:center;transform-box:fill-box;animation:smbreath 7.2s ease-in-out infinite}
+  #smvheart.holding .glass{animation:none;transition:transform 4s ease;transform:scale(1.12)}
+  #smvheart.warm .glass{animation:none;transform:scale(1.04);filter:drop-shadow(0 0 14px rgba(150,220,176,.55))}
+  #smvheart.quiet{opacity:.38;pointer-events:none}
+  #smvform{width:min(92vw,420px);margin-top:8px;display:flex;flex-direction:column;align-items:center}
+  #smvform label{display:block;margin-bottom:12px}
+  #smvans{width:100%;box-sizing:border-box;padding:12px 8px;border:0;border-bottom:1px solid rgba(186,220,196,.4);border-radius:0;background:transparent;color:#f6edd8;font:italic 18px Georgia,serif;text-align:center;outline:none}
+  #smvoffer{margin-top:14px;min-height:44px;padding:8px 18px;border:0;background:transparent;color:rgba(246,237,216,.72);font:italic 16px Georgia,serif;cursor:pointer}
+  #smvbody{width:min(92vw,28rem);text-align:left;margin-top:6px}
+  #smvbody b{display:block;margin:18px 0 6px;font:400 11px Georgia,serif;letter-spacing:.22em;text-transform:uppercase;color:rgba(186,220,196,.82)}
+  #smvbody p{margin:0 0 8px;font:italic 17px/1.45 Georgia,serif;color:rgba(246,237,216,.88)}
+  #smvbody p.end{margin-top:18px;font-size:15px;color:rgba(246,237,216,.6)}
+  @media (prefers-reduced-motion:reduce){.smlights i,.smhold .ember,#smvheart .glass{animation:none;opacity:.9}#smvheart.holding .glass{transition:none;transform:none}#smv{transition-duration:.2s}}
 </style>
 <link rel="apple-touch-icon" href="/legacy/apple-touch-icon.png?v=14">
 <link rel="icon" type="image/svg+xml" href="/legacy/favicon.svg?v=31">
@@ -358,7 +376,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
 <div id="smv" aria-hidden="true">
   <button type="button" id="smx">Done</button>
   <div id="smhome">
-    <h2>Soft Magic</h2>
+    <h2 id="smtitle">Soft Magic</h2>
     <p class="smlead">A quiet room. Warm light.</p>
     <button type="button" class="smd" id="smharbor"><b>Harbor</b><span>The light that stays.</span></button>
     <button type="button" class="smd" id="smbarbara"><b>Barbara</b><span>Two Lights. Sit with her.</span></button>
@@ -380,6 +398,24 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     <h2>Harbor</h2>
     <div class="smhold" aria-hidden="true"><i class="ambient"></i><i class="ember"></i></div>
     <p id="smhcopy">You opened the door. This light stays because you did.</p>
+  </div>
+  <div id="smveil" hidden>
+    <button type="button" id="smvback">Back</button>
+    <div id="smvgate">
+      <p class="smwho" id="smvfor">For a grandson, a great-grandson, or a great-granddaughter, when the time is right.</p>
+      <button type="button" id="smvheart" aria-label="A small light"><svg viewBox="0 0 100 92" aria-hidden="true"><defs><radialGradient id="smvg" cx="38%" cy="32%" r="70%"><stop offset="0%" stop-color="#f4fff6"/><stop offset="26%" stop-color="#c6f0d4"/><stop offset="58%" stop-color="#3f9d6c"/><stop offset="100%" stop-color="#145c38" stop-opacity=".2"/></radialGradient></defs><path class="glass" fill="url(#smvg)" stroke="rgba(214,245,224,.55)" stroke-width="1.2" d="M50 84C22 62 8 46 8 30 8 16 18 8 30 8c8 0 16 5 20 14C54 13 62 8 70 8c12 0 22 8 22 22 0 16-14 32-42 54z"/></svg></button>
+      <p id="smvline" class="smnote">Stay with it.</p>
+      <form id="smvform" hidden>
+        <label class="smlead" for="smvans">What do you carry in?</label>
+        <input id="smvans" type="text" maxlength="180" autocomplete="off" autocapitalize="sentences" spellcheck="true" enterkeyhint="done">
+        <button type="submit" id="smvoffer">Offer</button>
+      </form>
+    </div>
+    <div id="smvrecipe" hidden>
+      <h2>Green Veil</h2>
+      <p class="smwho">For a grandson, a great-grandson, or a great-granddaughter, when the time is right.</p>
+      <div id="smvbody"></div>
+    </div>
   </div>
 </div>
 <div id="welcome" class=""></div>
@@ -690,7 +726,6 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     function revealLegacy(){ legacyFound = true; try{ localStorage.setItem("shaffer-legacy-found","1"); }catch(e){}
       if (!linksOn) showLinks(true); const lg = $("legacy"); lg.classList.remove("show"); void lg.offsetWidth; lg.classList.add("show");
       try{ lg.scrollIntoView({block:"nearest"}); }catch(e){} buzz(); setTimeout(()=>blueBurst(lg), 60); }
-    function playLegacy(el){ buzz(); blueBurst(el); startVid("/legacy/legacy.mp4"); setTimeout(showViewer, 380); }
     let lastTouch = 0;
     const once = fn => e => { if (e.cancelable) e.preventDefault(); e.stopPropagation(); const n = Date.now(); if (e.type === "touchend") lastTouch = n; else if (n - lastTouch < 800) return; fn(e.currentTarget); };
     let eggsT = 0, eggsTm = null;
@@ -699,7 +734,11 @@ This is our stamp.<br><b id="dad">Dad</b></div>
         if (SIMPLE){ openSoftMagic(); return; }   // same 2 taps: Jennifer and Billy open Soft Magic
         revealLegacy(); return; }
       eggsT = now; revealPending = !SIMPLE; buzz(); startVid(el.dataset.src); clearTimeout(eggsTm); eggsTm = setTimeout(showViewer, 330); });   // 1 tap: the Reynard film; 2 taps: Legacy Easter Eggs appear right behind it
-    const legTap = once(el => playLegacy(el));
+    let legT = 0, legTm = null;
+    const legTap = once(el => { sparkle(el, 5, 24); const now = Date.now();
+      if (now - legT < 320){ legT = 0; clearTimeout(legTm); const v = $("vvid"); v.pause(); v.removeAttribute("src"); v.load(); $("viewer").classList.remove("on", "vid", "loading"); $("vsound").classList.remove("on");
+        openGreenVeil(false); return; }   // same 320 ms window: two taps open Green Veil; one tap still plays the film
+      legT = now; buzz(); blueBurst(el); startVid("/legacy/legacy.mp4"); clearTimeout(legTm); legTm = setTimeout(showViewer, 330); });
     function memTap(e){ if (e.cancelable) e.preventDefault(); e.stopPropagation(); const n = Date.now(); if (e.type === "touchend") lastTouch = n; else if (n - lastTouch < 800) return; found(e.currentTarget, e.currentTarget.dataset.src); }
     let lastDad = 0;
     function dadTap(e){ if (e.cancelable) e.preventDefault(); e.stopPropagation(); const n = Date.now(); if (n - lastDad < 500) return; lastDad = n; buzz();
@@ -719,20 +758,86 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       const os = [[BASE*2, 1], [BASE*3, .32], [BASE*4, .12]].map(([f, k]) => { const o = ac.createOscillator(), og = ac.createGain(); o.type = "sine"; o.frequency.value = f; og.gain.value = k; o.connect(og); og.connect(lp); o.start(t); return o; });
       const lfo = ac.createOscillator(), lg = ac.createGain(); lfo.frequency.value = .07; lg.gain.value = .005; lfo.connect(lg); lg.connect(g.gain); lfo.start(t); os.push(lfo);
       bow = {g, os}; const b = $("smbow"); b.textContent = "Stop"; b.setAttribute("aria-pressed", "true"); } catch(e){} }
-    function showTwo(on){ $("smhome").hidden = !!on; $("smtwo").hidden = !on; const h = $("smember"); if (h) h.hidden = true; }
+    function showTwo(on){ $("smhome").hidden = !!on; $("smtwo").hidden = !on; const h = $("smember"); if (h) h.hidden = true; const veil = $("smveil"); if (veil) veil.hidden = true; }
     function openSoftMagic(){ stopBow(); showTwo(false); const v = $("smv"); v.classList.add("on"); v.setAttribute("aria-hidden", "false"); }
-    function closeSoftMagic(){ stopBow(); showTwo(false); const v = $("smv"); v.classList.remove("on"); v.setAttribute("aria-hidden", "true"); }
+    function closeSoftMagic(){ stopBow(); veilReset(); showTwo(false); const v = $("smv"); v.classList.remove("on"); v.setAttribute("aria-hidden", "true"); }
     function openTwoLights(){ showTwo(true); $("smcopy").textContent = dkey === "jen"
       ? "This is for you and Barbara. Two lights in one room. Stay with her. Nothing to remember. Nothing to get right."
       : "Barbara and Jennifer. Two lights in one room. Stay if you like. Nothing to remember. Nothing to get right."; }
     function harborPulse(){ if (matchMedia("(prefers-reduced-motion: reduce)").matches) return; try { if (navigator.vibrate) navigator.vibrate(8); else tick(); } catch(e){} }
-    function openHarbor(){ if (dkey !== "jen") return; stopBow(); $("smhome").hidden = true; $("smtwo").hidden = true; $("smember").hidden = false; harborPulse(); }
+    function openHarbor(){ if (dkey !== "jen") return; stopBow(); $("smhome").hidden = true; $("smtwo").hidden = true; const veil = $("smveil"); if (veil) veil.hidden = true; $("smember").hidden = false; harborPulse(); }
+    // Green Veil. Same quiet room as Soft Magic. The recipe stays out of the page until a patient, kind offering.
+    // A hurried tap, or words with no care in them, closes this opening and leaves only a short line.
+    const VEIL_HOLD = 4000;
+    let veilHold = null, veilPtr = 0, veilHurries = 0, veilClosed = false, veilPassed = false, veilFromSoft = false, veilAskedAt = 0;
+    function veilWords(raw){ return String(raw || "").trim().split(/\s+/).filter(Boolean); }
+    function veilWrong(raw){
+      if (/\b(hate|hatred|hated|cruel|cruelty|unkind|unloving|kill|killing|curse|cursed|evil|destroy|steal|stealing|selfish|greed|greedy)\b/i.test(raw)) return true;
+      if (/\b(not|never|no|without)\s+(?:\w+\s+){0,3}(kind|love|loving|loved|gentle|honest|pure|patient|faithful|family|heart)\b/i.test(raw)) return true;
+      return /\b(hurt|hurting|harm|harming|harmful)\b/i.test(raw) && !/\b(no|not|without|from|never|don't|dont)\s+(?:\w+\s+){0,2}(hurt|hurting|harm|harming|harmful)\b/i.test(raw);
+    }
+    function veilKind(raw){
+      const words = veilWords(raw);
+      if (words.length < 2 || veilWrong(raw)) return false;
+      const kin = /\b(love|loved|loving|kind|kindness|kinder|care|caring|cared|gentle|gentleness|gently|protect|protecting|protected|peace|peaceful|honor|honour|honest|honesty|heart|hearts|bless|blessed|blessing|family|together|patient|patience|mercy|faithful|faith|hope|cherish|cherished|promise|promised|grandchild|grandson|granddaughter|children|child|pure|purity|give|giving|share|sharing|listen|listening|warm|warmth|safe|safety|respect)\b/i;
+      if (/\b(unlock|password|recipe|passcode)\b/i.test(raw) && !kin.test(raw)) return false;
+      if (/\bdo no harm\b/i.test(raw)) return true;
+      if (kin.test(raw)) return true;
+      return words.length >= 4 && /\bgood\b/i.test(raw) && !/\bgood\s+(morning|afternoon|evening|night|luck|bye|day)\b/i.test(raw);
+    }
+    function veilClear(){ const box = $("smvbody"); if (box) box.replaceChildren(); const rec = $("smvrecipe"); if (rec) rec.hidden = true; const ans = $("smvans"); if (ans) ans.value = ""; }
+    function veilReset(){ veilClosed = false; veilPassed = false; veilHurries = 0; veilAskedAt = 0; veilPtr = 0; clearTimeout(veilHold); veilHold = null; veilClear();
+      const gate = $("smvgate"), line = $("smvline"), form = $("smvform"), heart = $("smvheart");
+      if (gate) gate.hidden = false; if (form) form.hidden = true; if (line) line.textContent = "Stay with it."; if (heart) heart.classList.remove("holding", "warm", "quiet"); }
+    function veilFail(line){ veilClosed = true; clearTimeout(veilHold); veilHold = null; veilPtr = 0; veilClear();
+      const form = $("smvform"), note = $("smvline"), heart = $("smvheart"); if (form) form.hidden = true; if (note) note.textContent = line; if (heart){ heart.classList.remove("holding", "warm"); heart.classList.add("quiet"); } }
+    function veilReady(){ veilHold = null; if (veilClosed || veilPassed) return; const heart = $("smvheart"), form = $("smvform"), line = $("smvline");
+      if (heart) heart.classList.add("warm"); if (line) line.textContent = ""; if (form) form.hidden = false; veilAskedAt = performance.now(); try { $("smvans").focus(); } catch(e){} }
+    function veilPass(){ if (veilPassed) return; veilPassed = true; veilClear(); const gate = $("smvgate"), rec = $("smvrecipe"), box = $("smvbody"); if (gate) gate.hidden = true; if (rec) rec.hidden = false; if (!box) return;
+      const head = t => { const b = document.createElement("b"); b.textContent = t; box.appendChild(b); };
+      const line = (t, cls) => { const p = document.createElement("p"); if (cls) p.className = cls; p.textContent = t; box.appendChild(p); };
+      head("Field");
+      ["Green veil, steady and transparent like glass", "Neon worm light (Alienware ambient green) as the source / beacon", "Eyes aimed at the bottom of the field — never look up", "Code runs through the visual field only; do not put this on any display"].forEach(t => line(t));
+      head("Through the veil");
+      ["Thin green streams falling through first", "Then red threads weaving in", "Matrix-soft, not harsh", "Center denser than the edges", "Left seam sealed last, using center-out fold", "Slow pulses synced to breathing"].forEach(t => line(t));
+      head("Seal");
+      ["Look straight; seal center-out; left curtain gap last", "Hold until the field sticks"].forEach(t => line(t));
+      line("Night of 2026-10-04 into 2026-10-05 with AIFRED. The walk-through, the shed-door gate, and Mom\u2019s portal are orientation only.", "end"); }
+    function veilOffer(text){ if (veilClosed || veilPassed) return; const raw = String(text || "").trim();
+      if (!veilAskedAt || performance.now() - veilAskedAt < 1200){ veilFail("Come back when you can be still."); return; }
+      if (!raw || !veilKind(raw)){ veilFail("The light stays quiet."); return; }
+      veilPass(); }
+    function veilStart(e){ if (veilClosed || veilPassed || veilAskedAt || $("smveil").hidden) return; if (veilPtr) return; if (e && e.cancelable) e.preventDefault(); if (e) e.stopPropagation();
+      veilPtr = performance.now(); const heart = $("smvheart"); if (heart) heart.classList.add("holding"); clearTimeout(veilHold); veilHold = setTimeout(veilReady, VEIL_HOLD); }
+    function veilEnd(e){ if (!veilPtr) return; if (e && e.cancelable) e.preventDefault(); if (e) e.stopPropagation(); const dt = performance.now() - veilPtr; veilPtr = 0; const heart = $("smvheart"); if (heart) heart.classList.remove("holding");
+      if (!veilHold) return; clearTimeout(veilHold); veilHold = null; if (dt < 650 && !veilClosed && !veilPassed){ veilHurries++; if (veilHurries >= 3) veilFail("The light stays quiet."); } }
+    function openGreenVeil(fromSoft){ veilFromSoft = !!fromSoft; veilReset(); stopBow(); $("smhome").hidden = true; $("smtwo").hidden = true; $("smember").hidden = true; $("smveil").hidden = false;
+      const v = $("smv"); v.classList.add("on"); v.setAttribute("aria-hidden", "false"); harborPulse(); }
     function playFamilyFilm(){ closeSoftMagic(); buzz(); startVid("/legacy/legacy.mp4"); $("vtitle").textContent = "A family film"; setTimeout(showViewer, 380); }
     const smTap = (el, fn) => { if (!el) return; el.addEventListener("touchend", e => { if (e.cancelable) e.preventDefault(); e.stopPropagation(); lastTouch = Date.now(); fn(); }, {passive:false});
       el.addEventListener("click", e => { e.preventDefault(); e.stopPropagation(); if (Date.now() - lastTouch < 800) return; fn(); }); };
-    smTap($("smx"), closeSoftMagic); smTap($("smback"), () => { stopBow(); showTwo(false); }); smTap($("smhback"), () => showTwo(false)); smTap($("smbarbara"), openTwoLights); smTap($("smharbor"), openHarbor);
+    smTap($("smx"), closeSoftMagic); smTap($("smback"), () => { stopBow(); veilReset(); showTwo(false); }); smTap($("smhback"), () => { veilReset(); showTwo(false); }); smTap($("smbarbara"), openTwoLights); smTap($("smharbor"), openHarbor);
     smTap($("smbow"), () => { if (bow) stopBow(); else startBow(); }); smTap($("smfilm"), playFamilyFilm);
-    window.__softMagic = { open: openSoftMagic, close: closeSoftMagic, on: () => $("smv").classList.contains("on"), room: () => { const h = $("smember"); return h && !h.hidden ? "harbor" : $("smtwo").hidden ? "list" : "barbara"; }, bow: () => !!bow };
+    smTap($("smvback"), () => { const backToSoft = veilFromSoft; veilReset(); if (backToSoft){ $("smveil").hidden = true; showTwo(false); } else closeSoftMagic(); });
+    let smTitleT = 0;
+    const titleTap = once(() => { if (!$("smv").classList.contains("on") || $("smhome").hidden) return; const now = Date.now();
+      if (now - smTitleT < 320){ smTitleT = 0; openGreenVeil(true); } else smTitleT = now; });   // same two-tap, inside Soft Magic, for doors that never see the Legacy film card
+    const smTitle = $("smtitle"); if (smTitle){ smTitle.addEventListener("touchend", titleTap, {passive:false}); smTitle.addEventListener("click", titleTap); }
+    const heart = $("smvheart");
+    if (heart){
+      heart.addEventListener("pointerdown", veilStart);
+      heart.addEventListener("pointerup", veilEnd);
+      heart.addEventListener("pointercancel", veilEnd);
+      heart.addEventListener("touchstart", veilStart, {passive:false});
+      heart.addEventListener("touchend", veilEnd, {passive:false});
+      heart.addEventListener("touchcancel", veilEnd);
+      heart.addEventListener("keydown", e => { if (e.repeat || (e.key !== " " && e.key !== "Enter")) return; veilStart(e); });
+      heart.addEventListener("keyup", e => { if (e.key !== " " && e.key !== "Enter") return; veilEnd(e); });
+    }
+    const veilForm = $("smvform");
+    if (veilForm){ veilForm.addEventListener("submit", e => { e.preventDefault(); e.stopPropagation(); veilOffer($("smvans").value); });
+      ["touchstart", "touchend", "click", "mousedown", "pointerdown"].forEach(ev => { const inp = $("smvans"); if (inp) inp.addEventListener(ev, e => e.stopPropagation()); }); }
+    window.__softMagic = { open: openSoftMagic, close: closeSoftMagic, on: () => $("smv").classList.contains("on"), room: () => { const veil = $("smveil"); if (veil && !veil.hidden) return ($("smvrecipe") && !$("smvrecipe").hidden) ? "veil" : "veil-gate"; const h = $("smember"); return h && !h.hidden ? "harbor" : $("smtwo").hidden ? "list" : "barbara"; }, bow: () => !!bow, openVeil: () => openGreenVeil(false) };
     $("vvid").addEventListener("playing", () => $("viewer").classList.remove("loading"));
 
     // Edgardo at the light: her finger approaching makes the light beat (and a light heartbeat buzz);
