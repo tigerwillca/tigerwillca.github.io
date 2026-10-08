@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#120c16">
+<meta name="description" content="Fox Wizard 77 collection preview. Preview only. Not minting.">
+<title>Fox Wizard 77</title>
+<style>
+:root {
+  --ink: #120c16;
+  --cream: #f6efe2;
+  --muted: #d9cbb8;
+  --gold: #e4c98a;
+  --gold-deep: #a68445;
+  --line: rgba(228, 201, 138, 0.45);
+}
+html { color-scheme: dark; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  min-height: 100vh;
+  color: var(--cream);
+  font-family: Palatino, "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  background:
+    radial-gradient(ellipse 78% 46% at 50% -10%, rgba(92, 48, 132, 0.46), transparent 62%),
+    radial-gradient(ellipse 42% 32% at 100% 8%, rgba(98, 52, 24, 0.38), transparent 58%),
+    radial-gradient(ellipse 46% 40% at 0% 100%, rgba(28, 24, 78, 0.55), transparent 62%),
+    linear-gradient(180deg, #1a1220 0%, #120c16 42%, #0d0b12 100%);
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.22;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(228, 201, 138, 0.05), transparent 28%),
+    repeating-linear-gradient(0deg, transparent 0 3px, rgba(8, 6, 10, 0.18) 4px);
+}
+.wrap {
+  position: relative;
+  z-index: 1;
+  width: min(72rem, 100%);
+  margin: 0 auto;
+  padding: 2.4rem 1.25rem 3.5rem;
+}
+header { text-align: center; margin: 0 auto 1.6rem; max-width: 40rem; }
+h1 {
+  margin: 0;
+  font-weight: 500;
+  font-size: clamp(2.3rem, 7vw, 4.15rem);
+  line-height: 1.05;
+  letter-spacing: 0.03em;
+  color: #f8f1e4;
+  text-shadow: 0 0 22px rgba(228, 201, 138, 0.22);
+}
+.sub {
+  margin: 0.55rem 0 0;
+  color: #e7d7f2;
+  font-size: clamp(1.05rem, 2.6vw, 1.35rem);
+  font-style: italic;
+  letter-spacing: 0.04em;
+}
+.rule {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  margin: 0.95rem auto 0;
+  max-width: 16rem;
+  color: var(--gold);
+}
+.rule span {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-deep), var(--gold));
+}
+.rule span:last-child {
+  background: linear-gradient(90deg, var(--gold), var(--gold-deep), transparent);
+}
+.rule i { font-style: normal; font-size: 0.85rem; line-height: 1; }
+.notice {
+  display: inline-block;
+  margin: 1rem 0 0;
+  padding: 0.4rem 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(18, 12, 22, 0.55);
+  color: var(--cream);
+  font-size: 0.86rem;
+  letter-spacing: 0.06em;
+}
+.hint {
+  margin: 0.85rem 0 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9.4rem, 1fr));
+  gap: 1.2rem 0.9rem;
+  margin: 1.7rem 0 0;
+  padding: 0;
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.42rem;
+  color: inherit;
+  text-decoration: none;
+  text-align: center;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  border-radius: 4px;
+}
+.frame {
+  display: block;
+  padding: 0.38rem;
+  border-radius: 5px;
+  background:
+    linear-gradient(155deg, rgba(244, 226, 186, 0.55), rgba(92, 58, 28, 0.35) 42%, rgba(228, 201, 138, 0.28));
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.38);
+}
+.card img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 683 / 1024;
+  object-fit: cover;
+  background: #1a1424;
+  border-radius: 2px;
+}
+.num {
+  color: var(--gold);
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+}
+.card:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 4px;
+}
+@media (hover: hover) {
+  .card:hover .frame {
+    box-shadow: 0 0 0 1px rgba(228, 201, 138, 0.75), 0 14px 30px rgba(0, 0, 0, 0.48);
+  }
+}
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0.75rem 1rem;
+  background: rgba(8, 6, 12, 0.94);
+}
+.lightbox[hidden] { display: none; }
+.lb-figure {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.lb-figure img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(92vw, calc((100vh - 8.75rem) * 683 / 1024));
+  max-height: calc(100vh - 8.75rem);
+  max-width: min(92vw, calc((100dvh - 8.75rem) * 683 / 1024));
+  max-height: calc(100dvh - 8.75rem);
+  background: #140e18;
+  border: 1px solid rgba(228, 201, 138, 0.5);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.55);
+}
+.lb-figure img.is-loading { opacity: 0.28; }
+.lb-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem 0.6rem;
+  width: min(36rem, 100%);
+}
+.lb-cap {
+  margin: 0;
+  min-width: 9.5rem;
+  color: var(--gold);
+  font-size: 0.95rem;
+  letter-spacing: 0.12em;
+  text-align: center;
+}
+.lb-bar button {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0.45rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(22, 16, 28, 0.85);
+  color: var(--cream);
+  font: 0.92rem Palatino, "Palatino Linotype", Georgia, serif;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+.lb-bar button:hover,
+.lb-bar button:focus-visible {
+  border-color: var(--gold);
+  color: #fff8ea;
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+.lb-keys {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+html.lb-open,
+html.lb-open body { overflow: hidden; }
+@media (max-width: 640px) {
+  .wrap { padding: 1.6rem 0.8rem 2.4rem; }
+  .gallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.85rem 0.55rem;
+  }
+  .frame { padding: 0.28rem; }
+  .num { font-size: 0.74rem; letter-spacing: 0.14em; }
+  .lb-keys { display: none; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .lightbox { animation: rise 0.16s ease; }
+}
+@keyframes rise {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lb-figure img.is-loading { opacity: 1; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Fox Wizard 77</h1>
+    <p class="sub">Collection preview</p>
+    <div class="rule" aria-hidden="true"><span></span><i>✦</i><span></span></div>
+    <p class="notice">Preview only. Not minting.</p>
+    <p class="hint">Seventy-seven cards, in order. Select a card to see it larger.</p>
+  </header>
+  <main>
+    <div class="gallery" id="gallery">
+      <a class="card" href="cards/001.jpg">
+        <span class="frame"><img src="cards/001.jpg" alt="Card 001" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#001</span>
+      </a>
+      <a class="card" href="cards/002.jpg">
+        <span class="frame"><img src="cards/002.jpg" alt="Card 002" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#002</span>
+      </a>
+      <a class="card" href="cards/003.jpg">
+        <span class="frame"><img src="cards/003.jpg" alt="Card 003" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#003</span>
+      </a>
+      <a class="card" href="cards/004.jpg">
+        <span class="frame"><img src="cards/004.jpg" alt="Card 004" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#004</span>
+      </a>
+      <a class="card" href="cards/005.jpg">
+        <span class="frame"><img src="cards/005.jpg" alt="Card 005" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#005</span>
+      </a>
+      <a class="card" href="cards/006.jpg">
+        <span class="frame"><img src="cards/006.jpg" alt="Card 006" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#006</span>
+      </a>
+      <a class="card" href="cards/007.jpg">
+        <span class="frame"><img src="cards/007.jpg" alt="Card 007" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#007</span>
+      </a>
+      <a class="card" href="cards/008.jpg">
+        <span class="frame"><img src="cards/008.jpg" alt="Card 008" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#008</span>
+      </a>
+      <a class="card" href="cards/009.jpg">
+        <span class="frame"><img src="cards/009.jpg" alt="Card 009" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#009</span>
+      </a>
+      <a class="card" href="cards/010.jpg">
+        <span class="frame"><img src="cards/010.jpg" alt="Card 010" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#010</span>
+      </a>
+      <a class="card" href="cards/011.jpg">
+        <span class="frame"><img src="cards/011.jpg" alt="Card 011" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#011</span>
+      </a>
+      <a class="card" href="cards/012.jpg">
+        <span class="frame"><img src="cards/012.jpg" alt="Card 012" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#012</span>
+      </a>
+      <a class="card" href="cards/013.jpg">
+        <span class="frame"><img src="cards/013.jpg" alt="Card 013" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#013</span>
+      </a>
+      <a class="card" href="cards/014.jpg">
+        <span class="frame"><img src="cards/014.jpg" alt="Card 014" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#014</span>
+      </a>
+      <a class="card" href="cards/015.jpg">
+        <span class="frame"><img src="cards/015.jpg" alt="Card 015" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#015</span>
+      </a>
+      <a class="card" href="cards/016.jpg">
+        <span class="frame"><img src="cards/016.jpg" alt="Card 016" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#016</span>
+      </a>
+      <a class="card" href="cards/017.jpg">
+        <span class="frame"><img src="cards/017.jpg" alt="Card 017" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#017</span>
+      </a>
+      <a class="card" href="cards/018.jpg">
+        <span class="frame"><img src="cards/018.jpg" alt="Card 018" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#018</span>
+      </a>
+      <a class="card" href="cards/019.jpg">
+        <span class="frame"><img src="cards/019.jpg" alt="Card 019" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#019</span>
+      </a>
+      <a class="card" href="cards/020.jpg">
+        <span class="frame"><img src="cards/020.jpg" alt="Card 020" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#020</span>
+      </a>
+      <a class="card" href="cards/021.jpg">
+        <span class="frame"><img src="cards/021.jpg" alt="Card 021" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#021</span>
+      </a>
+      <a class="card" href="cards/022.jpg">
+        <span class="frame"><img src="cards/022.jpg" alt="Card 022" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#022</span>
+      </a>
+      <a class="card" href="cards/023.jpg">
+        <span class="frame"><img src="cards/023.jpg" alt="Card 023" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#023</span>
+      </a>
+      <a class="card" href="cards/024.jpg">
+        <span class="frame"><img src="cards/024.jpg" alt="Card 024" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#024</span>
+      </a>
+      <a class="card" href="cards/025.jpg">
+        <span class="frame"><img src="cards/025.jpg" alt="Card 025" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#025</span>
+      </a>
+      <a class="card" href="cards/026.jpg">
+        <span class="frame"><img src="cards/026.jpg" alt="Card 026" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#026</span>
+      </a>
+      <a class="card" href="cards/027.jpg">
+        <span class="frame"><img src="cards/027.jpg" alt="Card 027" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#027</span>
+      </a>
+      <a class="card" href="cards/028.jpg">
+        <span class="frame"><img src="cards/028.jpg" alt="Card 028" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#028</span>
+      </a>
+      <a class="card" href="cards/029.jpg">
+        <span class="frame"><img src="cards/029.jpg" alt="Card 029" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#029</span>
+      </a>
+      <a class="card" href="cards/030.jpg">
+        <span class="frame"><img src="cards/030.jpg" alt="Card 030" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#030</span>
+      </a>
+      <a class="card" href="cards/031.jpg">
+        <span class="frame"><img src="cards/031.jpg" alt="Card 031" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#031</span>
+      </a>
+      <a class="card" href="cards/032.jpg">
+        <span class="frame"><img src="cards/032.jpg" alt="Card 032" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#032</span>
+      </a>
+      <a class="card" href="cards/033.jpg">
+        <span class="frame"><img src="cards/033.jpg" alt="Card 033" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#033</span>
+      </a>
+      <a class="card" href="cards/034.jpg">
+        <span class="frame"><img src="cards/034.jpg" alt="Card 034" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#034</span>
+      </a>
+      <a class="card" href="cards/035.jpg">
+        <span class="frame"><img src="cards/035.jpg" alt="Card 035" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#035</span>
+      </a>
+      <a class="card" href="cards/036.jpg">
+        <span class="frame"><img src="cards/036.jpg" alt="Card 036" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#036</span>
+      </a>
+      <a class="card" href="cards/037.jpg">
+        <span class="frame"><img src="cards/037.jpg" alt="Card 037" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#037</span>
+      </a>
+      <a class="card" href="cards/038.jpg">
+        <span class="frame"><img src="cards/038.jpg" alt="Card 038" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#038</span>
+      </a>
+      <a class="card" href="cards/039.jpg">
+        <span class="frame"><img src="cards/039.jpg" alt="Card 039" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#039</span>
+      </a>
+      <a class="card" href="cards/040.jpg">
+        <span class="frame"><img src="cards/040.jpg" alt="Card 040" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#040</span>
+      </a>
+      <a class="card" href="cards/041.jpg">
+        <span class="frame"><img src="cards/041.jpg" alt="Card 041" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#041</span>
+      </a>
+      <a class="card" href="cards/042.jpg">
+        <span class="frame"><img src="cards/042.jpg" alt="Card 042" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#042</span>
+      </a>
+      <a class="card" href="cards/043.jpg">
+        <span class="frame"><img src="cards/043.jpg" alt="Card 043" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#043</span>
+      </a>
+      <a class="card" href="cards/044.jpg">
+        <span class="frame"><img src="cards/044.jpg" alt="Card 044" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#044</span>
+      </a>
+      <a class="card" href="cards/045.jpg">
+        <span class="frame"><img src="cards/045.jpg" alt="Card 045" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#045</span>
+      </a>
+      <a class="card" href="cards/046.jpg">
+        <span class="frame"><img src="cards/046.jpg" alt="Card 046" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#046</span>
+      </a>
+      <a class="card" href="cards/047.jpg">
+        <span class="frame"><img src="cards/047.jpg" alt="Card 047" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#047</span>
+      </a>
+      <a class="card" href="cards/048.jpg">
+        <span class="frame"><img src="cards/048.jpg" alt="Card 048" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#048</span>
+      </a>
+      <a class="card" href="cards/049.jpg">
+        <span class="frame"><img src="cards/049.jpg" alt="Card 049" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#049</span>
+      </a>
+      <a class="card" href="cards/050.jpg">
+        <span class="frame"><img src="cards/050.jpg" alt="Card 050" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#050</span>
+      </a>
+      <a class="card" href="cards/051.jpg">
+        <span class="frame"><img src="cards/051.jpg" alt="Card 051" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#051</span>
+      </a>
+      <a class="card" href="cards/052.jpg">
+        <span class="frame"><img src="cards/052.jpg" alt="Card 052" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#052</span>
+      </a>
+      <a class="card" href="cards/053.jpg">
+        <span class="frame"><img src="cards/053.jpg" alt="Card 053" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#053</span>
+      </a>
+      <a class="card" href="cards/054.jpg">
+        <span class="frame"><img src="cards/054.jpg" alt="Card 054" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#054</span>
+      </a>
+      <a class="card" href="cards/055.jpg">
+        <span class="frame"><img src="cards/055.jpg" alt="Card 055" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#055</span>
+      </a>
+      <a class="card" href="cards/056.jpg">
+        <span class="frame"><img src="cards/056.jpg" alt="Card 056" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#056</span>
+      </a>
+      <a class="card" href="cards/057.jpg">
+        <span class="frame"><img src="cards/057.jpg" alt="Card 057" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#057</span>
+      </a>
+      <a class="card" href="cards/058.jpg">
+        <span class="frame"><img src="cards/058.jpg" alt="Card 058" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#058</span>
+      </a>
+      <a class="card" href="cards/059.jpg">
+        <span class="frame"><img src="cards/059.jpg" alt="Card 059" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#059</span>
+      </a>
+      <a class="card" href="cards/060.jpg">
+        <span class="frame"><img src="cards/060.jpg" alt="Card 060" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#060</span>
+      </a>
+      <a class="card" href="cards/061.jpg">
+        <span class="frame"><img src="cards/061.jpg" alt="Card 061" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#061</span>
+      </a>
+      <a class="card" href="cards/062.jpg">
+        <span class="frame"><img src="cards/062.jpg" alt="Card 062" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#062</span>
+      </a>
+      <a class="card" href="cards/063.jpg">
+        <span class="frame"><img src="cards/063.jpg" alt="Card 063" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#063</span>
+      </a>
+      <a class="card" href="cards/064.jpg">
+        <span class="frame"><img src="cards/064.jpg" alt="Card 064" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#064</span>
+      </a>
+      <a class="card" href="cards/065.jpg">
+        <span class="frame"><img src="cards/065.jpg" alt="Card 065" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#065</span>
+      </a>
+      <a class="card" href="cards/066.jpg">
+        <span class="frame"><img src="cards/066.jpg" alt="Card 066" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#066</span>
+      </a>
+      <a class="card" href="cards/067.jpg">
+        <span class="frame"><img src="cards/067.jpg" alt="Card 067" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#067</span>
+      </a>
+      <a class="card" href="cards/068.jpg">
+        <span class="frame"><img src="cards/068.jpg" alt="Card 068" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#068</span>
+      </a>
+      <a class="card" href="cards/069.jpg">
+        <span class="frame"><img src="cards/069.jpg" alt="Card 069" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#069</span>
+      </a>
+      <a class="card" href="cards/070.jpg">
+        <span class="frame"><img src="cards/070.jpg" alt="Card 070" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#070</span>
+      </a>
+      <a class="card" href="cards/071.jpg">
+        <span class="frame"><img src="cards/071.jpg" alt="Card 071" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#071</span>
+      </a>
+      <a class="card" href="cards/072.jpg">
+        <span class="frame"><img src="cards/072.jpg" alt="Card 072" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#072</span>
+      </a>
+      <a class="card" href="cards/073.jpg">
+        <span class="frame"><img src="cards/073.jpg" alt="Card 073" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#073</span>
+      </a>
+      <a class="card" href="cards/074.jpg">
+        <span class="frame"><img src="cards/074.jpg" alt="Card 074" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#074</span>
+      </a>
+      <a class="card" href="cards/075.jpg">
+        <span class="frame"><img src="cards/075.jpg" alt="Card 075" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#075</span>
+      </a>
+      <a class="card" href="cards/076.jpg">
+        <span class="frame"><img src="cards/076.jpg" alt="Card 076" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#076</span>
+      </a>
+      <a class="card" href="cards/077.jpg">
+        <span class="frame"><img src="cards/077.jpg" alt="Card 077" width="683" height="1024" loading="lazy" decoding="async"></span>
+        <span class="num" aria-hidden="true">#077</span>
+      </a>
+    </div>
+  </main>
+</div>
+<div id="lightbox" class="lightbox" hidden role="dialog" aria-modal="true" aria-labelledby="lb-cap">
+  <figure class="lb-figure">
+    <img id="lb-img" alt="" width="683" height="1024">
+  </figure>
+  <div class="lb-bar">
+    <button type="button" class="lb-prev">Previous</button>
+    <p class="lb-cap" id="lb-cap" aria-live="polite">#001</p>
+    <button type="button" class="lb-next">Next</button>
+    <button type="button" class="lb-close">Close</button>
+  </div>
+  <p class="lb-keys">Left and right arrows move. Escape closes.</p>
+</div>
+<script>
+(function () {
+  var cards = Array.prototype.slice.call(document.querySelectorAll(".card"));
+  var box = document.getElementById("lightbox");
+  var img = document.getElementById("lb-img");
+  var cap = document.getElementById("lb-cap");
+  var main = document.querySelector("main");
+  var header = document.querySelector("header");
+  var index = 0;
+  var lastFocus = null;
+  var touchX = 0;
+  var touchY = 0;
+
+  function pad(n) {
+    return String(n).padStart(3, "0");
+  }
+
+  function srcAt(i) {
+    var node = cards[i].querySelector("img");
+    return node.getAttribute("src");
+  }
+
+  function preload(i) {
+    var n = (i + cards.length) % cards.length;
+    var pre = new Image();
+    pre.src = srcAt(n);
+  }
+
+  function show(i) {
+    index = (i + cards.length) % cards.length;
+    var num = pad(index + 1);
+    img.classList.add("is-loading");
+    img.onload = function () { img.classList.remove("is-loading"); };
+    img.alt = "Card " + num;
+    img.src = srcAt(index);
+    if (img.complete && img.naturalWidth) img.classList.remove("is-loading");
+    cap.textContent = "#" + num + " · " + (index + 1) + " of 77";
+    preload(index + 1);
+    preload(index - 1);
+  }
+
+  function openAt(i) {
+    lastFocus = document.activeElement;
+    show(i);
+    box.hidden = false;
+    document.documentElement.classList.add("lb-open");
+    if (main) main.inert = true;
+    if (header) header.inert = true;
+    box.querySelector(".lb-close").focus();
+  }
+
+  function close() {
+    box.hidden = true;
+    document.documentElement.classList.remove("lb-open");
+    if (main) main.inert = false;
+    if (header) header.inert = false;
+    img.removeAttribute("src");
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+
+  cards.forEach(function (card, i) {
+    card.addEventListener("click", function (event) {
+      event.preventDefault();
+      openAt(i);
+    });
+  });
+
+  box.querySelector(".lb-close").addEventListener("click", close);
+  box.querySelector(".lb-prev").addEventListener("click", function () { show(index - 1); });
+  box.querySelector(".lb-next").addEventListener("click", function () { show(index + 1); });
+  box.addEventListener("click", function (event) {
+    if (event.target === box) close();
+  });
+
+  document.addEventListener("keydown", function (event) {
+    if (box.hidden) return;
+    if (event.key === "Escape") {
+      event.preventDefault();
+      close();
+    } else if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      show(index - 1);
+    } else if (event.key === "ArrowRight") {
+      event.preventDefault();
+      show(index + 1);
+    } else if (event.key === "Tab") {
+      var buttons = box.querySelectorAll("button");
+      var first = buttons[0];
+      var last = buttons[buttons.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+  });
+
+  box.addEventListener("touchstart", function (event) {
+    if (!event.changedTouches[0]) return;
+    touchX = event.changedTouches[0].clientX;
+    touchY = event.changedTouches[0].clientY;
+  }, { passive: true });
+
+  box.addEventListener("touchend", function (event) {
+    if (box.hidden || !event.changedTouches[0]) return;
+    var dx = event.changedTouches[0].clientX - touchX;
+    var dy = event.changedTouches[0].clientY - touchY;
+    if (Math.abs(dx) < 48 || Math.abs(dx) < Math.abs(dy)) return;
+    if (dx < 0) show(index + 1);
+    else show(index - 1);
+  }, { passive: true });
+})();
+</script>
+</body>
+</html>
