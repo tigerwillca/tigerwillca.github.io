@@ -12,9 +12,11 @@ small{color:#aaa}
 </style></head><body>
 <h1>Soft7 card text fix</h1>
 <p>One signature. It changes only the card description on all 7 cards. Art, traits and owners stay the same.</p>
-<div class="box"><small>Each card description will end:</small><br>
-<span class="old">…a 7.5% creator fee; 1.5% of the sale price is paid quarterly on-chain to holders of Soft7 tokens 1-7.</span><br>
-<span class="new">…Secondary sales pay a 7.5% creator fee.</span></div>
+<div class="box"><small>Each card description changes from:</small><br>
+<span class="old">…SoftReynard7 card from The Seventh Gate. Art slot…</span><br>
+<small>to:</small><br>
+<span class="new">…SoftReynard7 card. Art slot…</span><br>
+<small>Kept as is:</small> <span class="new">1.5% of the sale price is paid quarterly on-chain to holders of Soft7 tokens 1-7.</span></div>
 <div class="box"><div class="gate" id="gate">LOCKED. No wallet connected.</div>
 <button id="bc">1. Connect wallet</button><div class="s" id="sc"></div></div>
 <div class="box"><b>2. Sign the fix</b> <small>Wallet 0xe53b…677a only. Gas is tiny.</small>
@@ -25,8 +27,8 @@ small{color:#aaa}
 <script>
 const OWNER="0xe53bdb2118585d5b2cd06a117d3a036afa70677a",CHAIN="0x1237",CHAIN_ID=4663;
 const CONTRACT="0x73D7b2611509C14078e16f572bE5aC7D91879DC2";
-const BASE="https://cdn.jsdelivr.net/gh/tigerwillca/reynard-soft7-sepolia@f50e3f61579c2dcb357ac4b4c977dfe270cd823a/meta/";
-const CALLDATA="0x55f804b30000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000006c68747470733a2f2f63646e2e6a7364656c6976722e6e65742f67682f746967657277696c6c63612f7265796e6172642d736f6674372d7365706f6c696140663530653366363135373963326463623335376163346234633937376466653237306364383233612f6d6574612f0000000000000000000000000000000000000000"; // setBaseURI(string), reviewed by Cursor
+const BASE="https://cdn.jsdelivr.net/gh/tigerwillca/reynard-soft7-sepolia@2ff296fe7d0291a8199a7c796010f8f6392a3592/meta/";
+const CALLDATA="0x55f804b30000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000006c68747470733a2f2f63646e2e6a7364656c6976722e6e65742f67682f746967657277696c6c63612f7265796e6172642d736f6674372d7365706f6c696140326666323936666537643032393161383139396137633739363031306638663633393261333539322f6d6574612f0000000000000000000000000000000000000000"; // setBaseURI(string), reviewed by Cursor
 function hx(n){return BigInt(n).toString(16).padStart(64,"0");}
 function encStr(s){const b=new TextEncoder().encode(s);let h="";for(const x of b)h+=x.toString(16).padStart(2,"0");return hx(b.length)+h.padEnd(Math.ceil(h.length/64)*64,"0");}
 function decStr(r){const b=r.slice(2);const off=parseInt(b.slice(0,64),16)*2;const len=parseInt(b.slice(off,off+64),16);const hex=b.slice(off+64,off+64+len*2);return new TextDecoder().decode(Uint8Array.from((hex.match(/../g)||[]).map(x=>parseInt(x,16))));}
