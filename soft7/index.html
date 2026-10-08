@@ -6,10 +6,23 @@
 <meta name="theme-color" content="#0b0812">
 <title>Soft7 · Seven cards on Robinhood Chain</title>
 <meta name="description" content="Soft7: seven cards on Robinhood Chain. Built for Billy, and for the people. Bring 'em out, make 'em believe.">
+<link rel="canonical" href="https://tigerwillca.github.io/soft7/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://tigerwillca.github.io/soft7/">
 <meta property="og:title" content="Soft7 · Seven cards on Robinhood Chain">
 <meta property="og:description" content="Built for Billy, and for the people. Bring 'em out, make 'em believe.">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/tigerwillca/reynard-soft7-sepolia@ae7d304699989b945bfe8c0f4225f3a7fc952f83/images/039.jpg">
+<meta property="og:image" content="https://tigerwillca.github.io/soft7/og.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Soft7. Bring 'em out, make 'em believe.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Soft7 · Seven cards on Robinhood Chain">
+<meta name="twitter:description" content="Built for Billy, and for the people. Bring 'em out, make 'em believe.">
+<meta name="twitter:image" content="https://tigerwillca.github.io/soft7/og.jpg">
+<meta name="twitter:image:alt" content="Soft7. Bring 'em out, make 'em believe.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%230b0812'/%3E%3Ctext x='32' y='43' font-size='30' text-anchor='middle' fill='%23F3C96B' font-family='Georgia'%3E7%3C/text%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="/soft7/apple-touch-icon.png" sizes="180x180">
 <style>
 :root{--bg:#0b0812;--ink:#f4ead6;--gold:#f3c96b;--amber:#ff9a3c;--violet:#a77bff;--mute:#b6a98f;--card:#16101f}
 *{box-sizing:border-box}
@@ -63,15 +76,19 @@ h2{margin:3rem 0 .3rem;text-align:center;font:600 clamp(1.4rem,5vw,1.9rem)/1.2 G
 .card::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;border-radius:16px;box-shadow:inset 0 0 0 1px rgba(243,201,107,.0);transition:box-shadow .45s}
 .card[data-sp="Tiger"]{--hue:255,154,60}
 .card[data-sp="Fox"]{--hue:167,123,255}
-.card:hover,.card:focus-visible,.card.open{transform:translateY(-6px);box-shadow:0 18px 40px rgba(0,0,0,.55),0 0 34px rgba(var(--hue),.45)}
-.card:hover::after,.card:focus-visible::after,.card.open::after{box-shadow:inset 0 0 0 1px rgba(var(--hue),.7)}
-.card:hover img,.card.open img{transform:scale(1.06);filter:saturate(1.12) brightness(.8)}
+.card:hover,.card:focus-within,.card.open{transform:translateY(-6px);box-shadow:0 18px 40px rgba(0,0,0,.55),0 0 34px rgba(var(--hue),.45)}
+.card:hover::after,.card:focus-within::after,.card.open::after{box-shadow:inset 0 0 0 1px rgba(var(--hue),.7)}
+.card:hover img,.card:focus-within img,.card.open img{transform:scale(1.06);filter:saturate(1.12) brightness(.8)}
+.card-hit{display:block;width:100%;height:100%;margin:0;padding:0;border:0;background:transparent;color:inherit;font:inherit;cursor:pointer;appearance:none;-webkit-appearance:none;-webkit-tap-highlight-color:transparent}
+.card-hit:focus{outline:none}
 .num{position:absolute;top:.6rem;left:.6rem;z-index:3;padding:.2rem .55rem;border-radius:999px;background:rgba(11,8,18,.7);font:600 .78rem/1.3 ui-monospace,Menlo,monospace;color:var(--gold)}
-.ok{position:absolute;top:.6rem;right:.6rem;z-index:3;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:.72rem;background:rgba(11,8,18,.7);color:#7dff9a;opacity:0;transition:opacity .5s}
+.ok{position:absolute;top:.6rem;right:.6rem;z-index:3;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:.72rem;line-height:1;background:rgba(11,8,18,.7);color:#7dff9a;opacity:0;transition:opacity .5s}
 .ok.on{opacity:1}
 .info{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:2.4rem .8rem .8rem;background:linear-gradient(180deg,transparent,rgba(11,8,18,.92) 45%);
  transform:translateY(62%);transition:transform .5s cubic-bezier(.2,.7,.2,1)}
-.card:hover .info,.card:focus-visible .info,.card.open .info{transform:none}
+.card:hover .info,.card:focus-within .info,.card.open .info{transform:none}
+.info a{color:var(--gold);text-decoration:underline;text-underline-offset:2px}
+.info a:focus-visible{outline:1px solid var(--gold);outline-offset:2px;border-radius:3px}
 .info h3{margin:0;font:600 1rem/1.2 Georgia,serif}
 .info dl{margin:.55rem 0 0;display:grid;grid-template-columns:auto 1fr;gap:.15rem .6rem;font-size:.78rem}
 .info dt{color:var(--mute)}
@@ -96,7 +113,7 @@ footer code{font-size:.75rem;color:var(--ink);word-break:break-all}
   <p class="believe"><span>Bring 'em out,</span> <span>make 'em believe.</span></p>
   <div class="purpose">
    <p><b>Built for Billy, and for the people.</b> Not for me.</p>
-   <small>Seven cards in six wallets, out in the open where anyone can check them.</small>
+   <small id="spread">Seven cards in six wallets, out in the open where anyone can check them.</small>
   </div>
   <div class="live" aria-live="polite">
    <span class="pill"><i class="dot" id="dot"></i><span id="stat-state">connecting…</span></span>
@@ -109,6 +126,23 @@ footer code{font-size:.75rem;color:var(--ink);word-break:break-all}
  <h2>The seven</h2>
  <p class="hint">Hover or tap a card to see who holds it.</p>
  <section class="grid" id="grid"></section>
+ <noscript>
+  <style>
+  .ns .card{opacity:1;transform:none;cursor:default;aspect-ratio:auto;overflow:visible}
+  .ns .card img{height:auto;aspect-ratio:2/3;filter:none;transform:none}
+  .ns .info{position:static;transform:none;background:transparent;padding:.75rem .2rem .2rem}
+  .ns .card::before,.ns .card::after{display:none}
+  </style>
+  <section class="grid ns" aria-label="The seven cards">
+   <figure class="card" data-sp="Tiger"><img src="img/033.webp" alt="Soft7 #1, a tiger in a robe, art 033" width="439" height="660" decoding="async"><span class="num">#1</span><figcaption class="info"><h3>Soft7 #1 · Tiger</h3><dl><dt>Art</dt><dd>033</dd><dt>Held by</dt><dd><a href="https://robinhoodchain.blockscout.com/address/0x7c440909184ff4b45d96175ecccde4bd21901ab1">0x7c44…1ab1</a></dd><dt>Item</dt><dd><a href="https://opensea.io/item/robinhood/0x73d7b2611509c14078e16f572be5ac7d91879dc2/1">OpenSea ↗</a></dd><dt>Full art</dt><dd><a href="https://cdn.jsdelivr.net/gh/tigerwillca/reynard-soft7-sepolia@ae7d304699989b945bfe8c0f4225f3a7fc952f83/images/033.jpg">open ↗</a></dd></dl></figcaption></figure>
+   <figure class="card" data-sp="Fox"><img src="img/034.webp" alt="Soft7 #2, a fox in a robe, art 034" width="439" height="660" decoding="async"><span class="num">#2</span><figcaption class="info"><h3>Soft7 #2 · Fox</h3><dl><dt>Art</dt><dd>034</dd><dt>Held by</dt><dd><a href="https://robinhoodchain.blockscout.com/address/0xd84e69fa5a0975da11edc9a9721cf893f7784bc6">0xd84e…4bc6</a></dd><dt>Item</dt><dd><a href="https://opensea.io/item/robinhood/0x73d7b2611509c14078e16f572be5ac7d91879dc2/2">OpenSea ↗</a></dd><dt>Full art</dt><dd><a href="https://cdn.jsdelivr.net/gh/tigerwillca/reynard-soft7-sepolia@ae7d304699989b945bfe8c0f4225f3a7fc952f83/images/034.jpg">open ↗</a></dd></dl></figcaption></figure>
+   <figure class="card" data-sp="Tiger"><img src="img/035.webp" alt="Soft7 #3, a tiger in a robe, art 035" width="439" height="660" decoding="async"><span class="num">#3</span><figcaption class="info"><h3>Soft7 #3 · Tiger</h3><dl><dt>Art</dt><dd>035</dd><dt>Held by</dt><dd><a href="https://robinhoodchain.blockscout.com/address/0x49c1408183749be16d3373a001ffb217b8e599d6">0x49c1…99d6</a></dd><dt>Item</dt><dd><a href="https://opensea.io/item/robinhood/0x73d7b2611509c14078e16f572be5ac7d91879dc2/3">OpenSea ↗</a></dd><dt>Full art</dt><dd><a href="https://cdn.jsdelivr.net/gh/tigerwillca/reynard-soft7-sepolia@ae7d304699989b945bfe8c0f4225f3a7fc952f83/images/035.jpg">open ↗</a></dd></dl></figcaption></figure>
+   <figure class="card" data-sp="Fox"><img src="img/036.webp" alt="Soft7 #4, a fox in a robe, art 036" width="439" height="660" decoding="async"><span class="num">#4</span><figcaption class="info"><h3>Soft7 #4 · Fox</h3><dl><dt>Art</dt><dd>036</dd><dt>Held by</dt><dd><a href="https://robinhoodchain.blockscout.com/address/0xd8da6bf26964af9d7eed9e03e53415d37aa96045">0xd8da…6045</a></dd><dt>Item</dt><dd><a href="https://opensea.io/item/robinhood/0x73d7b2611509c14078e16f572be5ac7d91879dc2/4">OpenSea ↗</a></dd><dt>Full art</dt><dd><a href="https://cdn.jsdelivr.net/gh/tigerwillca/reynard-soft7-sepolia@ae7d304699989b945bfe8c0f4225f3a7fc952f83/images/036.jpg">open ↗</a></dd></dl></figcaption></figure>
+   <figure class="card" data-sp="Tiger"><img src="img/037.webp" alt="Soft7 #5, a tiger in a robe, art 037" width="439" height="660" decoding="async"><span class="num">#5</span><figcaption class="info"><h3>Soft7 #5 · Tiger</h3><dl><dt>Art</dt><dd>037</dd><dt>Held by</dt><dd><a href="https://robinhoodchain.blockscout.com/address/0x8d00cae604984076a09218b854686549663fb427">0x8d00…b427</a></dd><dt>Item</dt><dd><a href="https://opensea.io/item/robinhood/0x73d7b2611509c14078e16f572be5ac7d91879dc2/5">OpenSea ↗</a></dd><dt>Full art</dt><dd><a href="https://cdn.jsdelivr.net/gh/tigerwillca/reynard-soft7-sepolia@ae7d304699989b945bfe8c0f4225f3a7fc952f83/images/037.jpg">open ↗</a></dd></dl></figcaption></figure>
+   <figure class="card" data-sp="Fox"><img src="img/038.webp" alt="Soft7 #6, a fox in a robe, art 038" width="439" height="660" decoding="async"><span class="num">#6</span><figcaption class="info"><h3>Soft7 #6 · Fox</h3><dl><dt>Art</dt><dd>038</dd><dt>Held by</dt><dd><a href="https://robinhoodchain.blockscout.com/address/0x76443f52feb3561aaa71a01300602eb0b052bd45">0x7644…bd45</a></dd><dt>Item</dt><dd><a href="https://opensea.io/item/robinhood/0x73d7b2611509c14078e16f572be5ac7d91879dc2/6">OpenSea ↗</a></dd><dt>Full art</dt><dd><a href="https://cdn.jsdelivr.net/gh/tigerwillca/reynard-soft7-sepolia@ae7d304699989b945bfe8c0f4225f3a7fc952f83/images/038.jpg">open ↗</a></dd></dl></figcaption></figure>
+   <figure class="card" data-sp="Tiger"><img src="img/039.webp" alt="Soft7 #7, a tiger in a robe, art 039" width="439" height="660" decoding="async"><span class="num">#7</span><figcaption class="info"><h3>Soft7 #7 · Tiger</h3><dl><dt>Art</dt><dd>039</dd><dt>Held by</dt><dd><a href="https://robinhoodchain.blockscout.com/address/0x7c440909184ff4b45d96175ecccde4bd21901ab1">0x7c44…1ab1</a></dd><dt>Item</dt><dd><a href="https://opensea.io/item/robinhood/0x73d7b2611509c14078e16f572be5ac7d91879dc2/7">OpenSea ↗</a></dd><dt>Full art</dt><dd><a href="https://cdn.jsdelivr.net/gh/tigerwillca/reynard-soft7-sepolia@ae7d304699989b945bfe8c0f4225f3a7fc952f83/images/039.jpg">open ↗</a></dd></dl></figcaption></figure>
+  </section>
+ </noscript>
 
  <nav class="links">
   <a class="btn" href="https://opensea.io/collection/reynard-soft7" target="_blank" rel="noopener">See them on OpenSea</a>
@@ -135,40 +169,103 @@ const CARDS=[
  {id:5,art:"037",sp:"Tiger",owner:"0x8d00cae604984076a09218b854686549663fb427"},
  {id:6,art:"038",sp:"Fox",owner:"0x76443f52feb3561aaa71a01300602eb0b052bd45"},
  {id:7,art:"039",sp:"Tiger",owner:"0x7c440909184ff4b45d96175ecccde4bd21901ab1"}];
+const OS="https://opensea.io/item/robinhood/0x73d7b2611509c14078e16f572be5ac7d91879dc2/";
+const BS="https://robinhoodchain.blockscout.com/address/";
+const WORDS=["zero","one","two","three","four","five","six","seven","eight","nine","ten","eleven","twelve"];
 const short=a=>a.slice(0,6)+"…"+a.slice(-4);
+const countWord=n=>(Number.isInteger(n)&&n>=0&&n<WORDS.length)?WORDS[n]:String(n);
+function spreadLine(cards,holders){
+ const c=countWord(cards), h=countWord(holders);
+ return c.charAt(0).toUpperCase()+c.slice(1)+" "+(cards===1?"card":"cards")+" in "+h+" "+(holders===1?"wallet":"wallets")+", out in the open where anyone can check them.";
+}
 const grid=document.getElementById("grid");
+function setOpen(card,open){
+ card.classList.toggle("open",open);
+ const btn=card.querySelector(".card-hit");
+ if(btn) btn.setAttribute("aria-expanded",open?"true":"false");
+}
+function toggleCard(card){
+ const will=!card.classList.contains("open");
+ grid.querySelectorAll(".card.open").forEach(x=>setOpen(x,false));
+ if(will) setOpen(card,true);
+}
 CARDS.forEach((c,i)=>{
  const f=document.createElement("figure");
- f.className="card";f.tabIndex=0;f.dataset.sp=c.sp;f.style.setProperty("--i",i);
- f.innerHTML=`<img src="img/${c.art}.webp" alt="Soft7 #${c.id}, a ${c.sp.toLowerCase()} in a robe, art ${c.art}" width="439" height="660" ${i>3?'loading="lazy"':''} decoding="async">
- <span class="num">#${c.id}</span><span class="ok" title="Image matches on-chain metadata">✓</span>
- <figcaption class="info"><h3>Soft7 #${c.id} · ${c.sp==="Fox"?"Fox":"Tiger"}</h3>
- <dl><dt>Art</dt><dd>${c.art}</dd><dt>Holder</dt><dd id="own-${c.id}">${short(c.owner)}</dd>
- <dt>Full art</dt><dd><a href="${IMG}${c.art}.jpg" target="_blank" rel="noopener" style="color:var(--gold)">open ↗</a></dd></dl></figcaption>`;
- f.addEventListener("click",e=>{if(e.target.closest("a"))return;const o=f.classList.contains("open");document.querySelectorAll(".card.open").forEach(x=>x.classList.remove("open"));if(!o)f.classList.add("open")});
+ f.className="card";f.dataset.sp=c.sp;f.style.setProperty("--i",i);
+ f.innerHTML=`<button type="button" class="card-hit" aria-expanded="false" aria-label="Soft7 #${c.id}, ${c.sp.toLowerCase()}. Show who holds it."><img src="img/${c.art}.webp" alt="Soft7 #${c.id}, a ${c.sp.toLowerCase()} in a robe, art ${c.art}" width="439" height="660" ${i>3?'loading="lazy"':''} decoding="async"><span class="num">#${c.id}</span><span class="ok" title="Image matches on-chain metadata">✓</span></button>
+ <figcaption class="info"><h3>Soft7 #${c.id} · ${c.sp}</h3>
+ <dl><dt>Art</dt><dd>${c.art}</dd><dt>Held by</dt><dd><a id="own-${c.id}" href="${BS}${c.owner}" target="_blank" rel="noopener">${short(c.owner)}</a></dd>
+ <dt>Item</dt><dd><a href="${OS}${c.id}" target="_blank" rel="noopener">OpenSea ↗</a></dd>
+ <dt>Full art</dt><dd><a href="${IMG}${c.art}.jpg" target="_blank" rel="noopener">open ↗</a></dd></dl></figcaption>`;
+ f.querySelector(".card-hit").addEventListener("keydown",e=>{
+  if(e.key!=="Enter"&&e.key!==" ") return;
+  e.preventDefault();
+  toggleCard(f);
+ });
+ f.addEventListener("click",e=>{
+  if(e.target.closest("a")) return;
+  if(e.target.closest(".card-hit")&&e.detail===0) return;
+  toggleCard(f);
+ });
  grid.appendChild(f);
 });
 const io="IntersectionObserver" in window?new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){const d=+e.target.style.getPropertyValue("--i");setTimeout(()=>e.target.classList.add("in"),(d%4)*110);io.unobserve(e.target)}}),{threshold:.12}):null;
-document.querySelectorAll(".card").forEach(c=>io?io.observe(c):c.classList.add("in"));
+grid.querySelectorAll(".card").forEach(c=>io?io.observe(c):c.classList.add("in"));
 
 // ---- live, read-only chain reads ----
 let rid=0;
-async function rpc(method,params){const r=await fetch(RPC,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({jsonrpc:"2.0",id:++rid,method,params})});const j=await r.json();if(j.error)throw new Error(j.error.message);return j.result}
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+async function rpc(method,params){
+ const body=JSON.stringify({jsonrpc:"2.0",id:++rid,method,params});
+ let lastErr;
+ for(let attempt=0;attempt<2;attempt++){
+  const ctrl=new AbortController();
+  const timer=setTimeout(()=>ctrl.abort(),6000);
+  try{
+   const r=await fetch(RPC,{method:"POST",headers:{"content-type":"application/json"},body,signal:ctrl.signal});
+   if(r.status===408||r.status===429||r.status>=500){const err=new Error("rpc "+r.status);err.retry=true;throw err}
+   if(!r.ok) throw new Error("rpc "+r.status);
+   let j;try{j=await r.json()}catch(e){const err=new Error("rpc bad json");err.retry=true;throw err}
+   if(j.error) throw new Error(j.error.message||"rpc error");
+   return j.result;
+  }catch(e){
+   lastErr=e;
+   const retryable=!!(e&&(e.retry||e.name==="AbortError"||e.name==="TypeError"));
+   if(attempt===0&&retryable){await sleep(800);continue}
+   throw lastErr;
+  }finally{clearTimeout(timer)}
+ }
+ throw lastErr;
+}
 const call=data=>rpc("eth_call",[{to:C,data},"latest"]);
 const u256=n=>n.toString(16).padStart(64,"0");
 function decStr(h){h=h.slice(2);const off=parseInt(h.slice(0,64),16)*2;const len=parseInt(h.slice(off,off+64),16);const hex=h.slice(off+64,off+64+len*2);return decodeURIComponent(hex.replace(/../g,"%$&"))}
 const setTxt=(id,v)=>{const el=document.getElementById(id);if(el&&el.textContent!==String(v)){el.textContent=v;el.classList.remove("bump");void el.offsetWidth;el.classList.add("bump")}};
-async function tick(){try{setTxt("stat-block",parseInt(await rpc("eth_blockNumber",[]),16).toLocaleString());ok(true)}catch(e){ok(false)}}
+let ticking=false;
+async function tick(){
+ if(ticking) return;
+ ticking=true;
+ try{setTxt("stat-block",parseInt(await rpc("eth_blockNumber",[]),16).toLocaleString());ok(true)}
+ catch(e){ok(false)}
+ finally{ticking=false}
+}
 function ok(on){document.getElementById("dot").className="dot"+(on?" on":"");document.getElementById("stat-state").textContent=on?"live on-chain":"offline · showing last check"}
 async function load(){
  try{
   const sup=parseInt(await call("0x18160ddd"),16);setTxt("stat-supply",sup);
   const owners=await Promise.all(CARDS.map(c=>call("0x6352211e"+u256(c.id)).then(r=>"0x"+r.slice(-40))));
-  owners.forEach((o,i)=>setTxt("own-"+CARDS[i].id,short(o)));
-  setTxt("stat-holders",new Set(owners).size);ok(true);
+  owners.forEach((o,i)=>{
+   const el=document.getElementById("own-"+CARDS[i].id);
+   if(el) el.setAttribute("href",BS+o);
+   setTxt("own-"+CARDS[i].id,short(o));
+  });
+  const holders=new Set(owners).size;
+  setTxt("stat-holders",holders);
+  if(Number.isFinite(sup)&&Number.isFinite(holders)){const line=document.getElementById("spread");if(line) line.textContent=spreadLine(sup,holders)}
+  ok(true);
   // verify each image against the token's on-chain metadata
   CARDS.forEach(async(c,i)=>{try{const uri=decStr(await call("0xc87b56dd"+u256(c.id)));const m=await (await fetch(uri)).json();
-   if(m.image&&m.image.endsWith("/"+c.art+".jpg"))document.querySelectorAll(".card .ok")[i].classList.add("on")}catch(e){}});
+   if(m.image&&m.image.endsWith("/"+c.art+".jpg"))grid.querySelectorAll(".ok")[i].classList.add("on")}catch(e){}});
  }catch(e){ok(false)}
  tick();setInterval(()=>{if(!document.hidden)tick()},12000);
 }
