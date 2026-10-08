@@ -96,6 +96,150 @@ h1 {
   margin: 0.85rem 0 0;
   color: var(--muted);
   font-size: 0.95rem;
+  line-height: 1.45;
+}
+.scarcity {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.55rem 0.6rem;
+  margin: 1.15rem auto 0;
+  padding: 0;
+  max-width: 52rem;
+  list-style: none;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.42rem;
+  margin: 0;
+  padding: 0.38rem 0.75rem 0.38rem 0.55rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(18, 12, 22, 0.55);
+  color: var(--cream);
+  font-size: 0.92rem;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+}
+.dot {
+  width: 0.72rem;
+  height: 0.72rem;
+  border-radius: 50%;
+  flex: none;
+}
+.dot.bone {
+  background: #E8E0D0;
+  box-shadow: 0 0 0 1.5px #e4c98a;
+}
+.dot.white-gold { background: #E8D5A3; }
+.dot.indigo { background: #2B3A8C; box-shadow: 0 0 0 1px rgba(232, 224, 208, 0.45); }
+.dot.amethyst { background: #9B59B6; }
+.dot.amber { background: #D4A017; }
+.chip .count {
+  color: var(--gold);
+  font-weight: 600;
+}
+.quiet {
+  margin: 0.75rem 0 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  letter-spacing: 0.03em;
+  line-height: 1.45;
+  text-align: center;
+}
+.badge {
+  max-width: 36rem;
+  margin: 1.25rem auto 0;
+  padding: 0.95rem 1.1rem 1.05rem;
+  text-align: center;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(58, 36, 88, 0.38), rgba(18, 12, 22, 0.5));
+}
+.badge h2 {
+  margin: 0;
+  color: var(--gold);
+  font-weight: 500;
+  font-size: clamp(1.2rem, 3.2vw, 1.55rem);
+  letter-spacing: 0.03em;
+}
+.badge p {
+  margin: 0.5rem 0 0;
+  color: var(--cream);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+.block {
+  max-width: 40rem;
+  margin: 2.8rem auto 0;
+}
+.block h2 {
+  margin: 0;
+  text-align: center;
+  color: #f8f1e4;
+  font-weight: 500;
+  font-size: clamp(1.65rem, 4.2vw, 2.2rem);
+  letter-spacing: 0.03em;
+}
+.block .rule { margin-top: 0.75rem; }
+.lede {
+  margin: 1rem 0 0;
+  text-align: center;
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+.block h3 {
+  margin: 1.35rem 0 0;
+  color: var(--gold);
+  font-weight: 500;
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
+  text-align: center;
+}
+.levels,
+.plans {
+  margin: 0.85rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.levels li,
+.plans li {
+  margin: 0;
+  padding: 0.72rem 0;
+  border-top: 1px solid rgba(228, 201, 138, 0.22);
+  line-height: 1.45;
+}
+.levels li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+}
+.levels .dot { margin-top: 0.28rem; }
+.plans li {
+  padding-left: 0.15rem;
+}
+.plans li::before {
+  content: "✦";
+  margin-right: 0.45rem;
+  color: var(--gold);
+}
+.chapters {
+  margin: 1rem 0 0;
+  padding: 0 0 0 1.35rem;
+}
+.chapters li {
+  margin: 0.85rem 0 0;
+  padding: 0;
+  line-height: 1.5;
+}
+.chapters li::marker {
+  color: var(--gold);
+  font-weight: 600;
+}
+.here {
+  color: var(--gold);
+  font-style: italic;
 }
 .gallery {
   display: grid;
@@ -233,6 +377,11 @@ html.lb-open body { overflow: hidden; }
   .frame { padding: 0.28rem; }
   .num { font-size: 0.74rem; letter-spacing: 0.14em; }
   .lb-keys { display: none; }
+  .chip { font-size: 0.86rem; padding: 0.36rem 0.65rem 0.36rem 0.5rem; }
+  .badge { padding: 0.85rem 0.85rem 0.95rem; }
+  .badge p, .lede { font-size: 0.98rem; }
+  .block { margin-top: 2.2rem; }
+  .chapters { padding-left: 1.2rem; }
 }
 @media (prefers-reduced-motion: no-preference) {
   .lightbox { animation: rise 0.16s ease; }
@@ -253,9 +402,21 @@ html.lb-open body { overflow: hidden; }
     <p class="sub">Collection preview</p>
     <div class="rule" aria-hidden="true"><span></span><i>✦</i><span></span></div>
     <p class="notice">Preview only. Not minting.</p>
-    <p class="hint">Seventy-seven cards, in order. Select a card to see it larger.</p>
+    <p class="hint">Seventy-seven one-of-one wizards. Only 77, ever. Select a card to see it larger.</p>
   </header>
   <main>
+    <ul class="scarcity" aria-label="Wizard levels">
+      <li class="chip"><span class="dot bone" aria-hidden="true"></span><span class="count">1</span> Source</li>
+      <li class="chip"><span class="dot white-gold" aria-hidden="true"></span><span class="count">6</span> Crown Circle</li>
+      <li class="chip"><span class="dot indigo" aria-hidden="true"></span><span class="count">23</span> Indigo</li>
+      <li class="chip"><span class="dot amethyst" aria-hidden="true"></span><span class="count">23</span> Purple Mask</li>
+      <li class="chip"><span class="dot amber" aria-hidden="true"></span><span class="count">24</span> Yellow</li>
+    </ul>
+    <p class="quiet">77 total. No duplicates. No second edition.</p>
+    <section class="badge">
+      <h2>Wear your wizard.</h2>
+      <p>Every card is one fox or tiger wizard that exists once. Its eyes carry its chakra color, its amulet marks its circle, and it is made to be worn as your profile picture.</p>
+    </section>
     <div class="gallery" id="gallery">
       <a class="card" href="cards/001.jpg?v=2">
         <span class="frame"><img src="cards/001.jpg?v=2" alt="Card 001" width="683" height="1024" loading="lazy" decoding="async"></span>
@@ -566,6 +727,39 @@ html.lb-open body { overflow: hidden; }
         <span class="num" aria-hidden="true">#077</span>
       </a>
     </div>
+    <section class="block" aria-labelledby="circle-title">
+      <h2 id="circle-title">The Circle</h2>
+      <div class="rule" aria-hidden="true"><span></span><i>✦</i><span></span></div>
+      <p class="lede">Holding a wizard makes you a member. Your card's level and circle travel with it, so the Circle always knows where you stand.</p>
+      <ul class="levels">
+        <li><span class="dot amber" aria-hidden="true"></span><span><strong>Yellow</strong> (amber eyes) · 24 wizards</span></li>
+        <li><span class="dot amethyst" aria-hidden="true"></span><span><strong>Purple Mask</strong> (amethyst eyes) · 23 wizards</span></li>
+        <li><span class="dot indigo" aria-hidden="true"></span><span><strong>Indigo</strong> (indigo eyes, the intuition level) · 23 wizards: the highest level a wizard can reach</span></li>
+        <li><span class="dot white-gold" aria-hidden="true"></span><span><strong>Crown Circle</strong> · 6 cards, one for each archangel: Metatron, Michael, Gabriel, Raphael, Uriel, Sandalphon. Assigned, never earned.</span></li>
+        <li><span class="dot bone" aria-hidden="true"></span><span><strong>Source</strong> · 1 card. The radiant point within a circle. Assigned, never earned.</span></li>
+      </ul>
+      <h3>What members can look forward to (planned):</h3>
+      <ul class="plans">
+        <li>A members-only space for holders.</li>
+        <li>Level-ups: wizards can rise from Yellow to Purple Mask to Indigo. Same wizard, new eyes, potion and amulet.</li>
+        <li>Soft7's story, chapter by chapter, with members reading first.</li>
+        <li>Art for members: wallpapers, amulet studies and full-size card files.</li>
+        <li>First look at new art before it is shown anywhere else.</li>
+      </ul>
+      <p class="quiet">Membership is about the art, the story and the people in it. Nothing here is a promise of money, value or returns.</p>
+    </section>
+    <section class="block" aria-labelledby="road-title">
+      <h2 id="road-title">The road ahead</h2>
+      <div class="rule" aria-hidden="true"><span></span><i>✦</i><span></span></div>
+      <ol class="chapters">
+        <li><strong>Chapter One: The Wizards.</strong> All 77 cards shown in full. <em class="here">(You are here.)</em></li>
+        <li><strong>Chapter Two: The Amulets.</strong> Each circle's amulet revealed, from the two-circle mark to Metatron's Cube.</li>
+        <li><strong>Chapter Three: The Potion.</strong> The order every wizard follows: potion, amulet, eyes, belt.</li>
+        <li><strong>Chapter Four: The Climb.</strong> First level-ups from Yellow toward Indigo.</li>
+        <li><strong>Chapter Five: The Crown.</strong> The six archangel cards and the Source card shown in full.</li>
+      </ol>
+      <p class="quiet">Chapters arrive when they are ready. No dates until they are certain.</p>
+    </section>
   </main>
 </div>
 <div id="lightbox" class="lightbox" hidden role="dialog" aria-modal="true" aria-labelledby="lb-cap">
