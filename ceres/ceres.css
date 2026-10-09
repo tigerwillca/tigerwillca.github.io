@@ -1,0 +1,324 @@
+:root {
+  --bg: #07080c;
+  --ink: #f4f5f7;
+  --muted: #b7bcc4;
+  --line: rgba(255, 255, 255, 0.14);
+  --accent: #ccff00;
+  --tile: #14181f;
+  --card: #101318;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(ellipse 80% 40% at 50% -10%, rgba(255, 255, 255, 0.06), transparent 55%),
+    var(--bg);
+  color: var(--ink);
+  font: 17px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+}
+
+img { max-width: 100%; }
+
+a { color: inherit; }
+
+.skip {
+  position: absolute;
+  left: 12px;
+  top: -48px;
+  z-index: 30;
+  padding: 10px 14px;
+  background: var(--accent);
+  color: #14180a;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.skip:focus { top: 8px; }
+
+.bar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 12px;
+  padding: max(6px, env(safe-area-inset-top)) 16px 6px;
+  background: rgba(7, 8, 12, 0.92);
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(16px);
+}
+
+.mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  color: var(--ink);
+  font-weight: 650;
+  letter-spacing: -0.03em;
+  text-decoration: none;
+}
+
+.mark span[aria-hidden="true"] { font-size: 1rem; line-height: 1; }
+
+.nav { display: flex; flex-wrap: wrap; }
+
+.nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 10px;
+  color: var(--muted);
+  font-size: 0.95rem;
+  text-decoration: none;
+}
+
+.nav a[aria-current="page"] { color: var(--accent); }
+
+.nav a:focus-visible,
+.mark:focus-visible,
+.tile:focus-visible,
+.close:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.wrap {
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+  padding-bottom: max(40px, env(safe-area-inset-bottom));
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 16px;
+  align-items: center;
+  padding: 28px 0 8px;
+}
+
+.logo {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.16);
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(2rem, 6vw, 3.25rem);
+  font-weight: 640;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+}
+
+.lede, .sheet p { margin: 8px 0 0; color: var(--muted); }
+
+.lede { max-width: 36rem; }
+
+.grid {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 10px;
+  margin: 28px 0 0;
+  padding: 0;
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  scroll-margin-top: 76px;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.frame {
+  display: block;
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+  border-radius: 12px;
+  background: var(--tile);
+}
+
+.frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.tile.is-drop .frame { box-shadow: inset 0 0 0 1px var(--accent); }
+
+.num {
+  display: block;
+  color: var(--muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+}
+
+.name {
+  display: block;
+  font-size: 0.92rem;
+  line-height: 1.3;
+}
+
+.drop {
+  display: block;
+  color: var(--accent);
+  font-size: 0.75rem;
+  line-height: 1.3;
+}
+
+.note {
+  margin: 18px 0 0;
+  color: var(--muted);
+}
+
+.sheet { width: min(40rem, calc(100% - 32px)); padding-top: 36px; }
+
+.sheet h1 { margin-bottom: 8px; }
+
+.symbol {
+  margin: 10px 0 0;
+  color: var(--accent);
+  font-size: 0.95rem;
+  letter-spacing: 0.16em;
+}
+
+.facts { margin: 28px 0 0; padding: 0; }
+
+.facts div {
+  display: grid;
+  grid-template-columns: 7.5rem 1fr;
+  gap: 12px;
+  padding: 14px 0;
+  border-top: 1px solid var(--line);
+}
+
+.facts dt { margin: 0; color: var(--muted); }
+.facts dd { margin: 0; }
+
+.soon {
+  margin: 28px 0 0;
+  color: var(--accent);
+  font-size: 1.25rem;
+  font-weight: 650;
+}
+
+.more {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-top: 8px;
+  color: var(--ink);
+}
+
+.swatch { color: var(--accent); font-weight: 650; }
+
+.stage { margin: 22px 0 0; }
+
+video {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 16px;
+  background: #000;
+}
+
+figcaption {
+  margin-top: 16px;
+  font-size: 1.2rem;
+  line-height: 1.45;
+  color: var(--ink);
+}
+
+#viewer {
+  width: min(960px, calc(100vw - 24px));
+  max-height: calc(100vh - 24px);
+  max-height: calc(100dvh - 24px);
+  margin: auto;
+  padding: 12px;
+  border: 0;
+  border-radius: 16px;
+  background: var(--card);
+  color: var(--ink);
+}
+
+#viewer::backdrop { background: rgba(0, 0, 0, 0.78); }
+
+.viewer-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+#viewer-cap { margin: 0; font-size: 1rem; }
+
+.close {
+  min-height: 44px;
+  margin: 0;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+#viewer img {
+  display: block;
+  width: 100%;
+  max-height: min(72vh, 720px);
+  height: auto;
+  object-fit: contain;
+  object-position: center;
+  border-radius: 10px;
+  background: #07080c;
+}
+
+@media (min-width: 640px) {
+  .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px 14px; }
+}
+
+@media (min-width: 960px) {
+  .grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+}
+
+@media (min-width: 1200px) {
+  .grid { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .frame img { transition: transform 0.45s ease; }
+  .tile:hover .frame img { transform: scale(1.03); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .frame img { transition: none; }
+  #viewer, #viewer::backdrop { animation: none; }
+}

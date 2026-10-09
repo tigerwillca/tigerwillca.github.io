@@ -1,0 +1,625 @@
+[
+  {
+    "number": 1,
+    "name": "Ceres \u00b7 Tiger",
+    "image": "assets/001.jpg",
+    "link": "",
+    "drop": "Ceres: Soft7",
+    "width": 600,
+    "height": 338
+  },
+  {
+    "number": 2,
+    "name": "Ceres \u00b7 Fox",
+    "image": "assets/002.jpg",
+    "link": "",
+    "drop": "Ceres: Soft7",
+    "width": 600,
+    "height": 338
+  },
+  {
+    "number": 3,
+    "name": "Ceres \u00b7 Black Tiger",
+    "image": "assets/003.jpg",
+    "link": "",
+    "drop": "Ceres: Soft7",
+    "width": 600,
+    "height": 338
+  },
+  {
+    "number": 4,
+    "name": "Ceres \u00b7 Black Fox",
+    "image": "assets/004.jpg",
+    "link": "",
+    "drop": "Ceres: Soft7",
+    "width": 600,
+    "height": 338
+  },
+  {
+    "number": 5,
+    "name": "Ceres \u00b7 White Tiger",
+    "image": "assets/005.jpg",
+    "link": "",
+    "drop": "Ceres: Soft7",
+    "width": 600,
+    "height": 338
+  },
+  {
+    "number": 6,
+    "name": "Ceres \u00b7 Silver Fox",
+    "image": "assets/006.jpg",
+    "link": "",
+    "drop": "Ceres: Soft7",
+    "width": 600,
+    "height": 338
+  },
+  {
+    "number": 7,
+    "name": "Ceres \u00b7 Phoenix",
+    "image": "assets/007.jpg",
+    "link": "",
+    "drop": "Ceres: Soft7",
+    "width": 600,
+    "height": 338
+  },
+  {
+    "number": 8,
+    "name": "Fox Wizard #008",
+    "image": "assets/008.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 9,
+    "name": "Fox Wizard #009",
+    "image": "assets/009.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 10,
+    "name": "Fox Wizard #010",
+    "image": "assets/010.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 11,
+    "name": "Fox Wizard #011",
+    "image": "assets/011.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 12,
+    "name": "Fox Wizard #012",
+    "image": "assets/012.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 13,
+    "name": "Fox Wizard #013",
+    "image": "assets/013.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 14,
+    "name": "Fox Wizard #014",
+    "image": "assets/014.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 15,
+    "name": "Fox Wizard #015",
+    "image": "assets/015.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 16,
+    "name": "Fox Wizard #016",
+    "image": "assets/016.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 17,
+    "name": "Fox Wizard #017",
+    "image": "assets/017.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 18,
+    "name": "Fox Wizard #018",
+    "image": "assets/018.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 19,
+    "name": "Fox Wizard #019",
+    "image": "assets/019.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 20,
+    "name": "Fox Wizard #020",
+    "image": "assets/020.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 21,
+    "name": "Fox Wizard #021",
+    "image": "assets/021.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 22,
+    "name": "Fox Wizard #022",
+    "image": "assets/022.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 23,
+    "name": "Fox Wizard #023",
+    "image": "assets/023.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 24,
+    "name": "Fox Wizard #024",
+    "image": "assets/024.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 25,
+    "name": "Fox Wizard #025",
+    "image": "assets/025.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 26,
+    "name": "Fox Wizard #026",
+    "image": "assets/026.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 27,
+    "name": "Fox Wizard #027",
+    "image": "assets/027.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 28,
+    "name": "Fox Wizard #028",
+    "image": "assets/028.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 29,
+    "name": "Fox Wizard #029",
+    "image": "assets/029.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 30,
+    "name": "Fox Wizard #030",
+    "image": "assets/030.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 31,
+    "name": "Fox Wizard #031",
+    "image": "assets/031.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 32,
+    "name": "Fox Wizard #032",
+    "image": "assets/032.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 33,
+    "name": "Fox Wizard #033",
+    "image": "assets/033.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 34,
+    "name": "Fox Wizard #034",
+    "image": "assets/034.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 35,
+    "name": "Fox Wizard #035",
+    "image": "assets/035.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 36,
+    "name": "Fox Wizard #036",
+    "image": "assets/036.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 37,
+    "name": "Fox Wizard #037",
+    "image": "assets/037.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 38,
+    "name": "Fox Wizard #038",
+    "image": "assets/038.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 39,
+    "name": "Fox Wizard #039",
+    "image": "assets/039.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 40,
+    "name": "Fox Wizard #040",
+    "image": "assets/040.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 41,
+    "name": "Fox Wizard #041",
+    "image": "assets/041.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 42,
+    "name": "Fox Wizard #042",
+    "image": "assets/042.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 43,
+    "name": "Fox Wizard #043",
+    "image": "assets/043.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 44,
+    "name": "Fox Wizard #044",
+    "image": "assets/044.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 45,
+    "name": "Fox Wizard #045",
+    "image": "assets/045.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 46,
+    "name": "Fox Wizard #046",
+    "image": "assets/046.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 47,
+    "name": "Fox Wizard #047",
+    "image": "assets/047.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 48,
+    "name": "Fox Wizard #048",
+    "image": "assets/048.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 49,
+    "name": "Fox Wizard #049",
+    "image": "assets/049.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 50,
+    "name": "Fox Wizard #050",
+    "image": "assets/050.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 51,
+    "name": "Fox Wizard #051",
+    "image": "assets/051.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 52,
+    "name": "Fox Wizard #052",
+    "image": "assets/052.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 53,
+    "name": "Fox Wizard #053",
+    "image": "assets/053.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 54,
+    "name": "Fox Wizard #054",
+    "image": "assets/054.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 55,
+    "name": "Fox Wizard #055",
+    "image": "assets/055.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 56,
+    "name": "Fox Wizard #056",
+    "image": "assets/056.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 57,
+    "name": "Fox Wizard #057",
+    "image": "assets/057.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 58,
+    "name": "Fox Wizard #058",
+    "image": "assets/058.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 59,
+    "name": "Fox Wizard #059",
+    "image": "assets/059.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 60,
+    "name": "Fox Wizard #060",
+    "image": "assets/060.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 61,
+    "name": "Fox Wizard #061",
+    "image": "assets/061.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 62,
+    "name": "Fox Wizard #062",
+    "image": "assets/062.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 63,
+    "name": "Fox Wizard #063",
+    "image": "assets/063.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 64,
+    "name": "Fox Wizard #064",
+    "image": "assets/064.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 65,
+    "name": "Fox Wizard #065",
+    "image": "assets/065.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 66,
+    "name": "Fox Wizard #066",
+    "image": "assets/066.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 67,
+    "name": "Fox Wizard #067",
+    "image": "assets/067.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 68,
+    "name": "Fox Wizard #068",
+    "image": "assets/068.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 69,
+    "name": "Fox Wizard #069",
+    "image": "assets/069.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 70,
+    "name": "Fox Wizard #070",
+    "image": "assets/070.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 71,
+    "name": "Fox Wizard #071",
+    "image": "assets/071.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 72,
+    "name": "Fox Wizard #072",
+    "image": "assets/072.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 73,
+    "name": "Fox Wizard #073",
+    "image": "assets/073.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 74,
+    "name": "Fox Wizard #074",
+    "image": "assets/074.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 75,
+    "name": "Fox Wizard #075",
+    "image": "assets/075.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 76,
+    "name": "Fox Wizard #076",
+    "image": "assets/076.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  },
+  {
+    "number": 77,
+    "name": "Fox Wizard #077",
+    "image": "assets/077.jpg",
+    "link": "",
+    "width": 600,
+    "height": 900
+  }
+]
