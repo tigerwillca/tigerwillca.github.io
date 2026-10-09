@@ -1,0 +1,8 @@
+{
+  "name": "Ceres: Soft7",
+  "description": "Ceres: Soft7. Seven pieces, $77 each, one per wallet, open for 48 hours. For CCFF00 holders: seven squares or one cube gets you on the list. Numbers matter here. Square 42 belongs with cube 42, and Ceres honors matching pairs.",
+  "image": "https://tigerwillca.github.io/ceres/meta/images/ceres-logo.jpg",
+  "external_link": "https://tigerwillca.github.io/ceres/",
+  "seller_fee_basis_points": 750,
+  "fee_recipient": "0xe53bdb2118585d5B2cD06a117d3A036AFA70677a"
+}

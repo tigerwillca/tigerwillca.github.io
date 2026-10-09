@@ -1,0 +1,6 @@
+{
+ "root": "0x34fdf985d5d08c183cf05782375eccff36aa8445822d26e9d869c751d416ea86",
+ "count": 712,
+ "leafEncoding": "keccak256(abi.encodePacked(address))",
+ "tree": "sorted pairs, odd node promoted (OpenZeppelin MerkleProof)"
+}

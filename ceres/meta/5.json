@@ -1,0 +1,24 @@
+{
+  "name": "Ceres: Soft7 #5 · White Tiger",
+  "description": "One of seven painted wanderers from Ceres, out past the belt. White Tiger, hooded, carrying a forged-silver Metatron oval and its own potion. Allowlist piece on Robinhood Chain, one of seven.",
+  "image": "https://tigerwillca.github.io/ceres/meta/images/ceres-05-white-tiger.jpg",
+  "external_url": "https://tigerwillca.github.io/ceres/",
+  "attributes": [
+    {
+      "trait_type": "Species",
+      "value": "Tiger"
+    },
+    {
+      "trait_type": "Coat",
+      "value": "White Tiger"
+    },
+    {
+      "trait_type": "Amulet",
+      "value": "Metatron Oval"
+    },
+    {
+      "trait_type": "Set",
+      "value": "Ceres: Soft7"
+    }
+  ]
+}

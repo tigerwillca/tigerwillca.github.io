@@ -1,0 +1,24 @@
+{
+  "name": "Ceres: Soft7 #1 · Tiger",
+  "description": "One of seven painted wanderers from Ceres, out past the belt. Tiger, hooded, carrying a forged-silver Metatron oval and its own potion. Allowlist piece on Robinhood Chain, one of seven.",
+  "image": "https://tigerwillca.github.io/ceres/meta/images/ceres-01-tiger.jpg",
+  "external_url": "https://tigerwillca.github.io/ceres/",
+  "attributes": [
+    {
+      "trait_type": "Species",
+      "value": "Tiger"
+    },
+    {
+      "trait_type": "Coat",
+      "value": "Tiger"
+    },
+    {
+      "trait_type": "Amulet",
+      "value": "Metatron Oval"
+    },
+    {
+      "trait_type": "Set",
+      "value": "Ceres: Soft7"
+    }
+  ]
+}
