@@ -1,5 +1,5 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
-<meta name="ceres7-deploy-build" content="202610091415">
+<meta name="ceres7-deploy-build" content="202610091425">
 <link rel="icon" href="data:,"><title>Ceres: Soft7 · deploy</title>
 <style>
 body{background:#0b0b10;color:#eee;font:19px/1.5 system-ui,sans-serif;margin:0;padding:20px 14px;text-align:center;letter-spacing:.01em}
@@ -17,16 +17,17 @@ input.typed,input.f{width:100%;box-sizing:border-box;font-size:18px;padding:10px
 input.typed{text-transform:uppercase;font-size:20px}
 .done{background:#0f2a17;border:1px solid #2e9b4f;color:#b9f5c8;border-radius:10px;padding:10px 12px;margin-top:10px;font-size:17px}
 .warn{background:#2a200b;border:1px solid #a7832e;color:#ffe2a3;border-radius:10px;padding:10px 12px;margin-top:10px;font-size:16px}
+.gate.mid{background:#2a200b;border-color:#a7832e;color:#ffe2a3}
 .tag{display:inline-block;background:#7a6a3a;color:#111;font-weight:700;border-radius:6px;padding:1px 8px;font-size:15px}
 .row{display:flex;gap:8px}.row button{margin-top:8px}
 a{color:#ffd27a}
 </style></head><body>
 <h2>Ceres: Soft7</h2>
-<p>Deploy page · Robinhood Chain (4663)<br><small>CERES7-DEPLOY-PAGE · build 202610091415 · your own contract, signed by you</small></p>
+<p>Deploy page · Robinhood Chain (4663)<br><small>CERES7-DEPLOY-PAGE · build 202610091425 · your own contract, signed by you</small></p>
 
-<div id="gate" class="gate">LOCKED. Tap "Connect wallet". Only wallet 0xe53b…677a on Robinhood Chain (4663) can use this page.</div>
+<div id="gate" class="gate">LOCKED. Tap a connect button. Any wallet on Robinhood Chain (4663) can pay for "Deploy via factory"; Sign 2, price and withdraw need 0xe53b…677a.</div>
 <div class="box">
-<button id="bc">Connect wallet</button>
+<button id="bc">Injected wallet (MetaMask / browser extension)</button>
 <button class="alt" id="bwc">Connect with WalletConnect (QR for Robinhood Wallet)</button>
 <details id="wcd" style="margin-top:10px"><summary><small>WalletConnect project ID (preset)</small></summary>
 <input class="f" id="wcid" placeholder="Reown / WalletConnect project ID (32 hex chars)" autocomplete="off">
@@ -52,7 +53,8 @@ a{color:#ffd27a}
 <input class="typed" id="w1" placeholder="type DEPLOY" autocomplete="off" disabled>
 <button id="y1f" disabled>Deploy via factory (for Robinhood Wallet)</button>
 <button class="alt" id="y1fb" disabled>Factory refused? Try again with fixed gas (same factory deploy)</button>
-<small>Recommended for Robinhood Wallet: a normal transaction to the standard CREATE2 factory 0x4e59…956C (no contract-creation transaction). The new contract address is shown above before you sign.</small>
+<div class="warn"><b>Any wallet can pay the deploy gas; owner is always 0xe53b…677a.</b> "Deploy via factory" works from any wallet on Robinhood Chain (4663): Robinhood Wallet, MetaMask or another browser wallet. It costs about 0.00005 ETH gas. The contract hard-codes the owner, and the page checks owner = 0xe53b…677a after it lands.</div>
+<small>Factory = a normal transaction to the standard CREATE2 factory 0x4e59…956C (no contract-creation transaction). The new contract address is shown above before you sign.</small>
 <button id="y1" disabled>Sign 1 · Deploy Ceres: Soft7 (direct)</button>
 <button class="alt" id="y1b" disabled>Wallet refused? Try again with fixed gas (same deploy)</button>
 <div class="s" id="s1"></div></div>
@@ -152,17 +154,19 @@ $("bc").onclick=async()=>{try{const eth=await waitInjected();if(!eth)throw new E
 $("bwc").onclick=async()=>{try{await useProvider(await connectWC());}catch(e){$("sc").textContent="";showErr("WalletConnect failed: "+(e.message||e));refresh();}};
 window.addEventListener("error",e=>showErr("Page error: "+(e.message||e)));window.addEventListener("unhandledrejection",e=>showErr("Page error: "+((e.reason&&e.reason.message)||e.reason)));
 // ---- gate ----
-async function readGate(){if(!P)return {ok:false,msg:"LOCKED. No wallet connected. Tap \"Connect wallet\"."};
+async function readGate(){if(!P)return {ok:false,msg:"LOCKED. No wallet connected. Tap a connect button."};
  const accs=await withTimeout(P.request({method:"eth_accounts"}),15000,"eth_accounts");const a=(accs&&accs[0]||"").toLowerCase();const c=chainNum(await withTimeout(P.request({method:"eth_chainId"}),15000,"eth_chainId"));
- if(!a)return {ok:false,msg:"LOCKED. No wallet connected. Tap \"Connect wallet\"."};
- if(a!==OWNER)return {ok:false,msg:"LOCKED. Wrong wallet: "+short(a)+". Switch to 0xe53b…677a."};
+ if(!a)return {ok:false,msg:"LOCKED. No wallet connected. Tap a connect button."};
  if(c!==CHAIN_ID)return {ok:false,msg:"LOCKED. Wrong network ("+c+"). Switch to Robinhood Chain (4663)."+(P._isWC?" WalletConnect session chains: "+(wcChains(P).join(", ")||"none")+".":"")};
- return {ok:true,a,msg:"READY. Wallet 0xe53b…677a on Robinhood Chain (4663)."};}
-async function refresh(){let g;try{g=await readGate();}catch(e){g={ok:false,msg:"LOCKED. "+(e.message||e)};showErr("Wallet read failed: "+(e.message||e));}status();gateOK=g.ok;$("gate").textContent=g.msg;$("gate").className="gate"+(g.ok?" ok":"");locks();return g;}
+ if(a!==OWNER)return {ok:false,chainOk:true,a,msg:"CONNECTED: "+short(a)+" on Robinhood Chain (4663), not the owner wallet. This wallet CAN pay the gas for \"Deploy via factory\" (owner is always 0xe53b…677a). Sign 2, price and withdraw need 0xe53b…677a."};
+ return {ok:true,chainOk:true,a,msg:"READY. Wallet 0xe53b…677a on Robinhood Chain (4663)."};}
+async function refresh(){let g;try{g=await readGate();}catch(e){g={ok:false,msg:"LOCKED. "+(e.message||e)};showErr("Wallet read failed: "+(e.message||e));}status();gateOK=g.ok;chainOK=!!(g.ok||g.chainOk);$("gate").textContent=g.msg;$("gate").className="gate"+(g.ok?" ok":chainOK?" mid":"");locks();return g;}
 const cur=()=>{const r=document.querySelector("input[name=cur]:checked");return r?r.value:null;};
 const WORD={1:"DEPLOY",2:"OPEN"};
+let chainOK=false;
+function armedF(){return chainOK&&!busy&&$("k1").checked&&$("w1").value.trim().toUpperCase()==="DEPLOY";}
 function armed(n){return gateOK&&!busy&&$("k"+n).checked&&$("w"+n).value.trim().toUpperCase()===WORD[n];}
-function locks(){const can1=gateOK&&!busy&&!deployed&&!!cur();$("k1").disabled=!can1;$("w1").disabled=!can1;$("y1").disabled=!(can1&&armed(1));$("y1b").disabled=$("y1").disabled;$("y1f").disabled=$("y1").disabled;$("y1fb").disabled=$("y1").disabled;
+function locks(){const can1=chainOK&&!busy&&!deployed&&!!cur();$("k1").disabled=!can1;$("w1").disabled=!can1;$("y1").disabled=!(can1&&gateOK&&armed(1));$("y1b").disabled=$("y1").disabled;$("y1f").disabled=!(can1&&armedF());$("y1fb").disabled=$("y1f").disabled;
  const can2=gateOK&&!busy&&info&&info.start===0n;$("k2").disabled=!can2;$("w2").disabled=!can2;$("y2").disabled=!(can2&&armed(2));
  $("y4").disabled=!(gateOK&&!busy&&info&&info.start===0n);$("y5").disabled=!(gateOK&&!busy&&info);}
 for(const n of [1,2]){$("k"+n).onchange=locks;$("w"+n).oninput=locks;}
@@ -194,7 +198,7 @@ async function markDeployed(a){deployed=a;$("ca").value=a;info=await loadInfo(a)
 async function boot(){try{const a=localStorage.getItem("ceres7addr")||await findDeployed();if(a){const nm=await rc(a,"name").catch(()=>null);if(nm==="Ceres: Soft7")await markDeployed(a);}}catch(e){$("s6").textContent="Read: "+(e.message||e);}}
 // ---- send helpers ----
 async function waitTx(h,out){for(let i=0;i<180;i++){let r=null;try{r=await rpc("eth_getTransactionReceipt",[h]);}catch(_){}if(r){if(r.status!=="0x1")throw new Error("Transaction failed on chain: "+h);return r;}out("Waiting for the block… tx "+h);await new Promise(z=>setTimeout(z,2000));}throw new Error("Still pending. Tx "+h);}
-async function send(n,tx,out){const g=await refresh();if(!g.ok||(n&&!armed(n)))throw new Error("Locked. Check the wallet, the network and the confirm box.");busy=true;locks();
+async function send(n,tx,out,anyWallet){const g=await refresh();if(anyWallet?!(g.chainOk&&armedF()):(!g.ok||(n&&!armed(n))))throw new Error("Locked. Check the wallet, the network and the confirm box.");busy=true;locks();
  try{out("Confirm in your wallet…");return await P.request({method:"eth_sendTransaction",params:[{from:g.a,...tx}]});}finally{busy=false;if(n){$("k"+n).checked=false;$("w"+n).value="";}locks();}}
 async function deploy(fixed){const out=t=>$("s1").textContent=t;try{if(deployed||await findDeployed())throw new Error("Already deployed. Do not deploy again.");
   const {o,data}=ctorArgs();const tx={data,value:"0x0"};if(fixed)tx.gas="0x30d400";// 3,200,000 (estimate ~2.59M)
@@ -207,7 +211,7 @@ async function deployFactory(fixed){const out=t=>$("s1").textContent=t;try{if(de
   const fc=await rpc("eth_getCode",[FACTORY,"latest"]);if(!fc||fc.length<10)throw new Error("Factory 0x4e59…956C not found on this chain.");
   if((await rpc("eth_getCode",[addr,"latest"])).length>2)throw new Error("Something already exists at "+addr+". Tap Check contract.");
   const tx={to:FACTORY,data:SALT+initCode(c).slice(2),value:"0x0"};if(fixed)tx.gas="0x3d0900";// 4,000,000 (estimate ~2.7M)
-  out("New contract will be: "+addr);const h=await send(1,tx,out);out("Signed. tx "+h+"\nNew contract will be: "+addr);await waitTx(h,out);
+  out("New contract will be: "+addr);const h=await send(1,tx,out,true);out("Signed. tx "+h+"\nNew contract will be: "+addr);await waitTx(h,out);
   if((await rpc("eth_getCode",[addr,"latest"])).length<=2)throw new Error("Tx landed but no contract at "+addr+". Tx "+h);
   localStorage.setItem("ceres7addr",addr);await markDeployed(addr);
   const ok=info.owner.toLowerCase()===OWNER&&info.price===o.price&&info.tok.toLowerCase()===o.token.toLowerCase()&&info.root===CTOR.root;
