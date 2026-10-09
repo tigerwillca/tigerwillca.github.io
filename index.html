@@ -30,6 +30,16 @@ footer{margin:0;padding:28px 20px 32px;text-align:center;color:#ffb070;font-size
 .site-tabs span{padding:0 3px;color:#ffb070;opacity:.75;pointer-events:none}
 .site-tabs a:focus-visible{outline:1px solid rgba(255,176,112,.8);outline-offset:2px;border-radius:6px}
 body:has(.site-tabs) a.tune{top:calc(44px + .75rem)}
+.globe{width:min(52vw,200px);aspect-ratio:1;margin:22px auto 0;border-radius:50%;display:grid;place-items:center;position:relative;text-decoration:none;color:#F6DFA0;background:radial-gradient(circle at 32% 28%,rgba(246,223,160,.7),transparent 26%),radial-gradient(circle at 50% 55%,#24143f 0%,#07050f 72%);box-shadow:0 0 36px rgba(155,109,255,.4),inset 0 0 24px rgba(255,122,42,.28);overflow:hidden;touch-action:manipulation;-webkit-tap-highlight-color:transparent;cursor:pointer}
+.globe i,.globe b{pointer-events:none}
+.globe i{position:absolute;inset:7%;border-radius:50%;background:repeating-linear-gradient(90deg,transparent 0 14px,rgba(230,184,92,.45) 14px 15px),repeating-linear-gradient(0deg,transparent 0 14px,rgba(204,255,0,.22) 14px 15px);-webkit-mask:radial-gradient(circle,#000 62%,transparent 72%);mask:radial-gradient(circle,#000 62%,transparent 72%)}
+.globe b{position:relative;z-index:1;font:.78rem ui-monospace,Menlo,monospace;font-weight:600;letter-spacing:.22em;text-transform:uppercase}
+.globe:hover,.globe:active{box-shadow:0 0 28px rgba(255,122,42,.75),0 0 64px rgba(155,109,255,.55)}
+.globe:focus-visible{outline:2px solid #F6DFA0;outline-offset:4px;box-shadow:0 0 28px rgba(255,122,42,.75),0 0 64px rgba(155,109,255,.55)}
+.globe.zoom{transform:scale(1.18);transition:transform .45s ease}
+@media (prefers-reduced-motion:no-preference){.globe i{animation:spin 22s linear infinite}}
+@media (prefers-reduced-motion:reduce){.globe.zoom{transform:none;transition:none}}
+@keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
@@ -41,6 +51,7 @@ body:has(.site-tabs) a.tune{top:calc(44px + .75rem)}
 <h1>Family</h1>
 <p class="line">Made for you, with love.</p>
 <p class="line">Every thread leads back to signal.</p>
+<a class="globe" id="globe" href="/ceres/"><i aria-hidden="true"></i><b>Ceres</b></a>
 <a class="go" href="/watch/">Watch together</a>
 <a class="pulse" href="/pulse-light/">
 <h2>Pulse. Connect with the ones we love.</h2>
@@ -50,5 +61,19 @@ body:has(.site-tabs) a.tune{top:calc(44px + .75rem)}
 </div>
 </main>
 <footer>We don't die. We just transfer. ✦</footer>
+<script>
+(function(){
+  var globe=document.getElementById('globe');
+  if(!globe) return;
+  addEventListener('pageshow',function(){ globe.classList.remove('zoom'); });
+  globe.addEventListener('click',function(ev){
+    if(ev.button!==0||ev.metaKey||ev.ctrlKey||ev.shiftKey||ev.altKey) return;
+    if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    ev.preventDefault();
+    globe.classList.add('zoom');
+    setTimeout(function(){ location.href='/ceres/'; }, 480);
+  });
+})();
+</script>
 </body>
 </html>

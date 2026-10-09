@@ -25,7 +25,9 @@ h1{margin:0;font-weight:500;font-size:clamp(2rem,7vw,3.6rem);letter-spacing:-.03
 .globe{width:min(52vw,200px);aspect-ratio:1;margin:.4rem auto 0;border-radius:50%;display:grid;place-items:center;position:relative;text-decoration:none;color:#F6DFA0;background:radial-gradient(circle at 32% 28%,rgba(246,223,160,.7),transparent 26%),radial-gradient(circle at 50% 55%,#24143f 0%,#07050f 72%);box-shadow:0 0 36px rgba(155,109,255,.4),inset 0 0 24px rgba(255,122,42,.28);overflow:hidden;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .globe i{position:absolute;inset:7%;border-radius:50%;background:repeating-linear-gradient(90deg,transparent 0 14px,rgba(230,184,92,.45) 14px 15px),repeating-linear-gradient(0deg,transparent 0 14px,rgba(204,255,0,.22) 14px 15px);-webkit-mask:radial-gradient(circle,#000 62%,transparent 72%);mask:radial-gradient(circle,#000 62%,transparent 72%)}
 .globe b{position:relative;z-index:1;font:.78rem ui-monospace,Menlo,monospace;font-weight:600;letter-spacing:.22em;text-transform:uppercase}
-.globe:hover,.globe:focus-visible,.globe:active{box-shadow:0 0 28px rgba(255,122,42,.75),0 0 64px rgba(155,109,255,.55);outline:none}
+.globe i,.globe b{pointer-events:none}
+.globe:hover,.globe:active{box-shadow:0 0 28px rgba(255,122,42,.75),0 0 64px rgba(155,109,255,.55)}
+.globe:focus-visible{outline:2px solid #F6DFA0;outline-offset:4px;box-shadow:0 0 28px rgba(255,122,42,.75),0 0 64px rgba(155,109,255,.55)}
 .globe.zoom{transform:scale(1.18);transition:transform .45s ease}
 .hots{display:flex;justify-content:center;gap:.7rem;margin:1.15rem 0 0;padding:0;flex-wrap:wrap}
 .hots a{min-width:2.75rem;min-height:2.75rem;padding:.7rem .85rem;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;color:#140c08;background:radial-gradient(circle at 35% 30%,#fff,#E6B85C 42%,#ff7a2a);box-shadow:0 0 16px rgba(255,122,42,.85);font:.74rem ui-monospace,Menlo,monospace;font-weight:700;letter-spacing:.04em;touch-action:manipulation}
@@ -69,7 +71,7 @@ body:has(.site-tabs) a.tune{top:calc(44px + .75rem)}
 <h1>Soft7 is the first door.</h1>
 <p class="line">Seven cards on Robinhood Chain. One phoenix rising.</p>
 <p class="cap">Touch the signal. Enter.</p>
-<a class="globe" id="globe" href="/phoenix/"><i aria-hidden="true"></i><b>Enter</b></a>
+<a class="globe" id="globe" href="/ceres/"><i aria-hidden="true"></i><b>Enter</b></a>
 <nav class="hots" aria-label="Signals">
 <a href="/phoenix/">Enter</a>
 <a href="https://opensea.io/collection/reynard-soft7" target="_blank" rel="noopener noreferrer">OpenSea</a>
@@ -86,11 +88,13 @@ body:has(.site-tabs) a.tune{top:calc(44px + .75rem)}
   if(v){ v.muted=true; v.defaultMuted=true; v.playsInline=true; v.setAttribute('muted',''); v.setAttribute('playsinline',''); }
   var globe=document.getElementById('globe');
   if(globe){
+    addEventListener('pageshow',function(){ globe.classList.remove('zoom'); });
     globe.addEventListener('click',function(ev){
+      if(ev.button!==0||ev.metaKey||ev.ctrlKey||ev.shiftKey||ev.altKey) return;
       if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches) return;
       ev.preventDefault();
       globe.classList.add('zoom');
-      setTimeout(function(){ location.href='/phoenix/'; }, 480);
+      setTimeout(function(){ location.href='/ceres/'; }, 480);
     });
   }
   if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches) return;
