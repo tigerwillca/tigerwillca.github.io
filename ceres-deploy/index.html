@@ -1,5 +1,5 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
-<meta name="ceres7-deploy-build" content="202610091130">
+<meta name="ceres7-deploy-build" content="202610091225">
 <title>Ceres: Soft7 · deploy</title>
 <style>
 body{background:#0b0b10;color:#eee;font:19px/1.5 system-ui,sans-serif;margin:0;padding:20px 14px;text-align:center;letter-spacing:.01em}
@@ -22,13 +22,13 @@ input.typed{text-transform:uppercase;font-size:20px}
 a{color:#ffd27a}
 </style></head><body>
 <h2>Ceres: Soft7</h2>
-<p>Deploy page · Robinhood Chain (4663)<br><small>CERES7-DEPLOY-PAGE · build 202610091130 · your own contract, signed by you</small></p>
+<p>Deploy page · Robinhood Chain (4663)<br><small>CERES7-DEPLOY-PAGE · build 202610091225 · your own contract, signed by you</small></p>
 
 <div id="gate" class="gate">LOCKED. Tap "Connect wallet". Only wallet 0xe53b…677a on Robinhood Chain (4663) can use this page.</div>
 <div class="box">
 <button id="bc">Connect wallet</button>
 <button class="alt" id="bwc">Connect with WalletConnect (QR for Robinhood Wallet)</button>
-<details id="wcd" style="margin-top:10px"><summary><small>WalletConnect project ID (needed once for the QR)</small></summary>
+<details id="wcd" style="margin-top:10px"><summary><small>WalletConnect project ID (preset)</small></summary>
 <input class="f" id="wcid" placeholder="Reown / WalletConnect project ID (32 hex chars)" autocomplete="off">
 <small>Free at cloud.reown.com. It is a public app ID, not a password or key. Saved only in this browser.</small></details>
 <div class="s" id="sc"></div></div>
@@ -41,9 +41,9 @@ a{color:#ffd27a}
 <li>Mint stays CLOSED. Nobody can mint until you sign Signature 2.</li>
 <li>Mint money stays in the contract. Only you can withdraw it, and it goes only to you.</li>
 <li>Royalty 7.5% to 0xe53b…677a. Costs only gas (about 0.00006 ETH). It sends no ETH.</li></ul></div>
-<p style="margin:14px 0 4px"><b>Pick the currency</b> <small>(required; there is no default)</small></p>
+<p style="margin:14px 0 4px"><b>Pick the currency</b> <small>(preset to ETH per William, Oct 9; read the table below before signing)</small></p>
 <label class="opt"><input type="radio" name="cur" value="usdc"> <b>77 USDC</b> (bridged USDC on Robinhood Chain)<br><small>Token 0x80e0e24718dbFcad49ECAA6F1e6C89A190586cA8 · 6 decimals · Ethereum USDC bridged by the official Robinhood Chain gateway. Not Circle-issued native USDC. Buyers must hold this token on Robinhood Chain and sign an approve first.</small></label>
-<label class="opt"><input type="radio" name="cur" value="eth"> <b>0.031 ETH</b> (about $77)<br><small>Native ETH, the same coin buyers pay gas with. One signature to mint. ETH price used: $2,486 (Coinbase spot, Fri Oct 9 11:15 AM PT). You can change the price before Signature 2 if ETH moves.</small></label>
+<label class="opt"><input type="radio" name="cur" value="eth" checked> <b>0.031 ETH</b> (about $77)<br><small>Native ETH, the same coin buyers pay gas with. One signature to mint. ETH price used: $2,486 (Coinbase spot, Fri Oct 9 11:15 AM PT). You can change the price before Signature 2 if ETH moves.</small></label>
 <table id="t1"></table>
 <div class="s" id="pre1"></div>
 <label class="ck"><input type="checkbox" id="k1" disabled> I read this. I want to deploy now.</label>
@@ -102,7 +102,8 @@ let injected=window.ethereum||null;
 window.addEventListener("eip6963:announceProvider",e=>{if(!injected||/robinhood/i.test((e.detail.info||{}).name||""))injected=e.detail.provider;});
 window.dispatchEvent(new Event("eip6963:requestProvider"));
 const waitInjected=()=>new Promise(r=>{if(injected)return r(injected);let n=0;const t=setInterval(()=>{window.dispatchEvent(new Event("eip6963:requestProvider"));if(injected||++n>10){clearInterval(t);r(injected);}},200);});
-$("wcid").value=localStorage.getItem("ceres7wcid")||new URLSearchParams(location.search).get("wc")||"";
+const WC_PROJECT_ID="576399d578860d0f7fa9c0d27503f6a9"; // William's public Reown/WalletConnect project ID
+$("wcid").value=new URLSearchParams(location.search).get("wc")||WC_PROJECT_ID;
 async function connectWC(){const id=$("wcid").value.trim();if(!/^[0-9a-f]{32}$/i.test(id)){$("wcd").open=true;throw new Error("Paste a WalletConnect project ID first (box above), then tap again. Or open this page inside the Robinhood Wallet app's browser and tap \"Connect wallet\".");}
  localStorage.setItem("ceres7wcid",id);$("sc").textContent="Loading WalletConnect…";
  const m=await import("https://esm.sh/@walletconnect/ethereum-provider@2.17.0");
