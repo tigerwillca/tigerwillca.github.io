@@ -277,6 +277,26 @@
   html.door-jen #links a#eggs, html.door-billy #links a#eggs{background:rgba(36,22,16,.9);box-shadow:0 0 18px rgba(255,196,120,.16)}
   html.door-jen #membtn, html.door-billy #membtn{top:auto;bottom:calc(env(safe-area-inset-bottom) + 16px);width:auto;min-width:200px;height:64px;padding:0 28px;border-radius:32px;border:1px solid rgba(233,200,140,.45)!important;background:rgba(16,12,18,.9)!important;font:22px/64px Georgia,serif!important;letter-spacing:.02em!important;text-transform:none!important;color:#f6edd8!important;text-shadow:none!important;animation:none!important;overflow:visible}
   html.door-jen #hint, html.door-billy #hint{bottom:calc(env(safe-area-inset-bottom) + 96px);font-size:18px;letter-spacing:.04em;text-transform:none}
+
+  /* Merlin's door: a small private care card. Hidden on every other door, and while the gate is up. */
+  #mcare{display:none}
+  html.door-merlin #mcare{display:flex;flex-direction:column;gap:8px;position:fixed;z-index:4;left:max(10px,env(safe-area-inset-left));right:max(10px,env(safe-area-inset-right));bottom:calc(env(safe-area-inset-bottom) + 32px);max-height:min(44vh,340px);overflow:auto;box-sizing:border-box;padding:12px 12px 10px;border-radius:18px;border:1px solid rgba(233,200,140,.38);background:rgba(12,9,16,.9);color:#f6edd8;box-shadow:0 0 22px rgba(255,196,120,.12)}
+  html.door-merlin #mcare.tuck{max-height:none;overflow:hidden;padding:8px 10px}
+  html.door-merlin #mcare.tuck .mcbody{display:none}
+  html.door-merlin #mcare:not(.tuck) #mcmini{display:none}
+  html:has(#gate:not(.gone)) #mcare,body.pon #mcare,body.mon #mcare,body.inview #mcare{display:none!important}
+  html.door-merlin #hint{bottom:calc(env(safe-area-inset-bottom) + 78px);letter-spacing:.06em;text-transform:none}
+  #mcare .mctop{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  #mcare .mctop b{font-weight:400;letter-spacing:.16em;text-transform:uppercase;font-size:11px;color:rgba(233,200,140,.92);white-space:nowrap}
+  #mcmini{flex:1;min-width:0;text-align:right;font:italic 13px Georgia,serif;color:rgba(246,237,216,.82);white-space:nowrap}
+  #mcare button{font:15px/1.2 Georgia,serif;color:#f6edd8;background:rgba(255,236,210,.06);border:1px solid rgba(233,200,140,.28);border-radius:14px;min-height:44px;padding:8px 10px;cursor:pointer}
+  #mcare button:disabled{opacity:.38}
+  #mcare #mcsig{background:rgba(255,214,160,.14);border-color:rgba(255,206,140,.55)}
+  #mcare .mcrow{display:flex;gap:8px}
+  #mcare .mcrow button{flex:1 1 0}
+  #mctog{flex:none;min-height:36px;padding:0 12px;letter-spacing:.04em}
+  #mcare p{margin:0;font:italic 13px/1.35 Georgia,serif;color:rgba(246,237,216,.8)}
+  #mcare .mcquiet{font-size:12px;color:rgba(246,237,216,.55)}
   html.door-jen #sigv > .x, html.door-billy #sigv > .x{width:auto!important;min-width:88px;height:64px;padding:0 16px;border-radius:0;background:transparent!important;border:0!important;font:22px/64px Georgia,serif!important;color:rgba(246,237,216,.78)!important;text-shadow:none!important}
 
   /* Soft Magic: its own quiet room. Not a Soft7 page, and not a William-only vault. */
@@ -470,6 +490,25 @@ This is our stamp.<br><b id="dad">Dad</b></div>
 <div id="toast" role="status"></div>
 <canvas id="tpcv" aria-hidden="true"></canvas><canvas id="alivecv" aria-hidden="true"></canvas><div id="lpulse" aria-hidden="true"></div><button id="mic" aria-label="Listen: let the lights answer your voice" aria-pressed="false"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 9v2M7.3 7v6M10.6 5v10M13.9 7.5v5M17 9v2"/></svg></button>
 <div id="alfred">At your service &middot; Alfred, butler to the House of Shaffer</div>
+<aside id="mcare" class="tuck" aria-label="Merlin care">
+  <div class="mctop"><b>Merlin&rsquo;s care</b><span id="mcmini"></span><button type="button" id="mctog" aria-expanded="false">Open</button></div>
+  <div class="mcbody">
+    <p id="mcstat"></p>
+    <div class="mcrow"><button type="button" id="mcsig">Soft Signal</button></div>
+    <div class="mcrow">
+      <button type="button" id="mcbush">Bushes</button>
+      <button type="button" id="mcout">Outside</button>
+      <button type="button" id="mcacc">Accident</button>
+    </div>
+    <div class="mcrow">
+      <button type="button" id="mcwait">Start wait</button>
+      <button type="button" id="mcdone">End wait</button>
+    </div>
+    <button type="button" id="mcclose">Mark clean day</button>
+    <p id="mcnote" aria-live="polite"></p>
+    <p class="mcquiet">Three bark streaks in ten minutes: the home kit suggests a walk or a Kong, never a louder cue.</p>
+  </div>
+</aside>
 
 <div id="gate">
   <h1>House of Shaffer</h1>
@@ -589,7 +628,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
   async function sha(s){const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")}
   function open(){gate.classList.add("gone");setTimeout(()=>gate.remove(),1000);start()}
   // doors: each family link has its own entrance; opening one sends a simple visit note (door + device, nothing else)
-  const DOORS = { will: {name:"William", hi:"Welcome home.", hint:"Tap the light", alf:"Welcome home, sir \u00b7 Alfred"}, billy: {name:"Billy", hi:"Billy. I'm right here.", hint:"Tap the light", alf:"Always here, Master Billy \u00b7 Alfred"}, jen: {name:"Jennifer", hi:"For Jennifer, with love.", hint:"Reach for him.", alf:"At your service, Miss Jennifer \u00b7 Alfred"} };
+  const DOORS = { will: {name:"William", hi:"Welcome home.", hint:"Tap the light", alf:"Welcome home, sir \u00b7 Alfred"}, billy: {name:"Billy", hi:"Billy. I'm right here.", hint:"Tap the light", alf:"Always here, Master Billy \u00b7 Alfred"}, jen: {name:"Jennifer", hi:"For Jennifer, with love.", hint:"Reach for him.", alf:"At your service, Miss Jennifer \u00b7 Alfred"}, merlin: {name:"Merlin", hi:"Merlin\u2019s light.", hint:"Tap the light", alf:"Steady with Merlin \u00b7 Alfred"} };
   const dm = (location.hash + "&" + location.search).match(/d=(\w+)/), asked = dm && dm[1];
   let stored = null; try { stored = localStorage.getItem("shaffer-door"); } catch(e){}
   if (stored && !DOORS[stored]){ try { localStorage.removeItem("shaffer-door"); } catch(e){} stored = null; }
@@ -600,7 +639,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
   function logVisit(who, what){ try{ const ua = navigator.userAgent, dev = /iPhone/.test(ua) ? "iPhone" : /iPad|Macintosh.*Mobile/.test(ua) ? "iPad" : /Android/.test(ua) ? "Android" : "computer";
     fetch("https://ntfy.sh/shaffer-doors-8f3e2c18ea", {method:"POST", mode:"no-cors", keepalive:true, body: `${who} ${what || "opened House of Shaffer"} on ${dev}${appMode ? ' (home-screen app)' : ''}`}); }catch(e){} }
   if (door){ localStorage.setItem("shaffer-door", dkey); document.documentElement.classList.add("door-" + dkey); history.replaceState(null, "", location.pathname + "?d=" + dkey);
-    setTimeout(()=>{ $("welcome").textContent = door.hi; $("welcome").classList.add("on"); if (["will", "billy", "jen"].includes(dkey)) $("welcome").classList.add("here"); if(door.alf) $("alfred").textContent = door.alf;
+    setTimeout(()=>{ $("welcome").textContent = door.hi; $("welcome").classList.add("on"); if (["will", "billy", "jen", "merlin"].includes(dkey)) $("welcome").classList.add("here"); if(door.alf) $("alfred").textContent = door.alf;
       setTimeout(()=>$("welcome").classList.remove("on"), 6000); }, 1400); }
   if (SIMPLE){
     const set = (id, b, s) => { const el = $(id); if (!el) return; const bb = el.querySelector("b"), ss = el.querySelector("span"); if (bb && b) bb.textContent = b; if (ss && s) ss.textContent = s; };
@@ -628,7 +667,58 @@ This is our stamp.<br><b id="dad">Dad</b></div>
   }
   logVisit(door ? door.name + "'s door" : "Someone");
   // a one-time whisper on the very first visit; it fades and never returns on this device
-  if (!localStorage.getItem("shaffer-hinted")){ $("hint").textContent = SIMPLE && door && door.hint ? door.hint : "Touch the light. Send a ping."; setTimeout(() => { $("hint").style.opacity = .85; try { localStorage.setItem("shaffer-hinted", "1"); } catch(e){} setTimeout(() => { $("hint").style.opacity = 0; }, 7000); }, 2600); } else $("hint").textContent = "";
+  if (dkey === "merlin" && !localStorage.getItem("shaffer-merlin-hinted")){ $("hint").textContent = door.hint || "Tap the light"; setTimeout(() => { $("hint").style.opacity = .85; try { localStorage.setItem("shaffer-merlin-hinted", "1"); } catch(e){} setTimeout(() => { $("hint").style.opacity = 0; }, 7000); }, 2600); }
+  else if (!localStorage.getItem("shaffer-hinted")){ $("hint").textContent = SIMPLE && door && door.hint ? door.hint : "Touch the light. Send a ping."; setTimeout(() => { $("hint").style.opacity = .85; try { localStorage.setItem("shaffer-hinted", "1"); } catch(e){} setTimeout(() => { $("hint").style.opacity = 0; }, 7000); }, 2600); } else $("hint").textContent = "";
+  // Merlin care: device-private counts only. Soft Signal is one tap, one short tone, and stays silent during a bushes wait. No mic.
+  if (dkey === "merlin"){
+    const MCK = "shaffer-merlin-care";
+    const dayKey = () => { const d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); };
+    const blankCare = day => ({day, trips: 0, outs: 0, accidents: 0, waiting: false, streak: 0, closed: ""});
+    function loadCare(){ let s = null; try { s = JSON.parse(localStorage.getItem(MCK) || "null"); } catch(e){}
+      const day = dayKey(), base = blankCare(day); if (!s || typeof s !== "object") return base;
+      base.streak = Math.max(0, Math.floor(+s.streak) || 0);
+      if (s.day === day){ base.trips = Math.max(0, Math.floor(+s.trips) || 0); base.outs = Math.max(0, Math.floor(+s.outs) || 0); base.accidents = Math.max(0, Math.floor(+s.accidents) || 0); base.waiting = !!s.waiting; base.closed = s.closed === day ? day : ""; }
+      return base; }
+    let care = loadCare(), sigUntil = 0, sigNodes = [], sigGen = 0;
+    const saveCare = () => { try { localStorage.setItem(MCK, JSON.stringify(care)); } catch(e){} };
+    try { if (JSON.stringify(JSON.parse(localStorage.getItem(MCK) || "null")) !== JSON.stringify(care)) saveCare(); } catch(e){ saveCare(); }
+    function ensureDay(){ const day = dayKey(); if (care.day === day) return; const streak = care.streak; care = blankCare(day); care.streak = streak; saveCare(); }
+    function say(t){ const n = $("mcnote"); if (n && t) n.dataset.say = t; }
+    function stopSoftSignal(){ sigGen++; sigUntil = 0; for (const o of sigNodes){ try { o.stop(); } catch(e){} } sigNodes = []; }
+    function renderCare(){ ensureDay(); const c = care, st = $("mcstat"), note = $("mcnote"), close = $("mcclose"); if (!st) return;
+      st.textContent = "Bushes " + c.trips + " of 6\u20138 \u00b7 Outside " + c.outs + " \u00b7 Streak " + c.streak + " of 3";
+      const mini = $("mcmini"); if (mini) mini.textContent = c.trips + " bushes \u00b7 streak " + c.streak;
+      $("mcwait").disabled = !!c.waiting; $("mcdone").disabled = !c.waiting; $("mcsig").disabled = !!c.waiting || performance.now() < sigUntil;
+      close.disabled = c.closed === c.day; close.textContent = c.closed === c.day ? "Day closed" : (c.accidents ? "Close the day" : "Mark clean day");
+      const said = note.dataset.say || "";
+      const wait = c.waiting ? "Waiting at the bushes. Soft Signal stays quiet." : "Soft Signal plays only when you tap it.";
+      const rule = c.streak >= 3 && !c.accidents ? "Three clean days. Daytime diaper can come off while you watch. Night diaper stays until nights are clean." : "Three clean days in a row, then daytime diaper off.";
+      note.textContent = [said, wait, rule].filter(Boolean).join(" "); }
+    function playSoftSignal(){ ensureDay(); if (care.waiting){ say("At the bushes. Soft Signal stays quiet."); renderCare(); return; }
+      if (performance.now() < sigUntil) return;
+      unlockAudio(); if (!ac){ say("This phone could not play the tone."); renderCare(); return; }
+      const t = ac.currentTime, notes = [[523.25, 0], [784, .42]], gen = ++sigGen;
+      for (const [freq, at] of notes){ const o = ac.createOscillator(), g = ac.createGain(), t1 = t + at; o.type = "sine"; o.frequency.setValueAtTime(freq, t1);
+        g.gain.setValueAtTime(.0001, t1); g.gain.exponentialRampToValueAtTime(.04, t1 + .04); g.gain.exponentialRampToValueAtTime(.0001, t1 + .7);
+        o.connect(g); g.connect(ac.destination); o.start(t1); o.stop(t1 + .75); sigNodes.push(o); }
+      sigUntil = performance.now() + 1400; say("Soft Signal. Then quiet, then a treat."); renderCare(); setTimeout(() => { if (gen === sigGen) sigNodes = []; renderCare(); }, 1450); }
+    const panel = $("mcare");
+    panel.addEventListener("click", e => e.stopPropagation());
+    panel.addEventListener("pointerdown", e => e.stopPropagation());
+    $("mctog").addEventListener("click", () => { const tucked = panel.classList.toggle("tuck"); $("mctog").textContent = tucked ? "Open" : "Tuck"; $("mctog").setAttribute("aria-expanded", tucked ? "false" : "true"); });
+    $("mcsig").addEventListener("click", playSoftSignal);
+    $("mcbush").addEventListener("click", () => { ensureDay(); care.trips++; saveCare(); say("Trip logged. Stand at the bushes and wait."); renderCare(); });
+    $("mcout").addEventListener("click", () => { ensureDay(); care.outs++; saveCare(); say("Outside. A treat, and a quiet good word."); renderCare(); });
+    $("mcacc").addEventListener("click", () => { ensureDay(); care.accidents++; care.streak = 0; care.closed = ""; saveCare(); say("Accident noted. The streak starts over. No shame."); renderCare(); });
+    $("mcwait").addEventListener("click", () => { ensureDay(); stopSoftSignal(); care.waiting = true; saveCare(); say("Waiting at the bushes. Soft Signal stays quiet."); renderCare(); });
+    $("mcdone").addEventListener("click", () => { ensureDay(); care.waiting = false; saveCare(); say("Wait ended. Soft Signal can play again when you tap it."); renderCare(); });
+    $("mcclose").addEventListener("click", () => { ensureDay(); if (care.closed === care.day) return; care.waiting = false;
+      if (care.accidents > 0){ care.streak = 0; care.closed = care.day; saveCare(); say("Day closed. An accident keeps the streak at the start. No shame."); }
+      else { care.streak++; care.closed = care.day; saveCare(); say(care.streak >= 3 ? "Clean day. Three in a row." : "Clean day marked. " + care.streak + " in a row."); }
+      renderCare(); });
+    document.addEventListener("visibilitychange", () => { if (!document.hidden) renderCare(); });
+    renderCare();
+  }
   // ONE TIME ONLY: the family word is asked for once per device. After the first correct entry,
   // a key is kept on this device (local storage, with a one-year cookie as backup) and the gate never shows again here.
   const ck = (document.cookie.match(/(?:^|; )shaffer-key=([^;]+)/) || [])[1];
@@ -1018,7 +1108,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
       "Uncle Stu":["So much humor. He taught me not to take life too seriously."],
       "Edgardo":["Jennifer\u2019s dad.","Out on his boat in the Philippines, line in the water.","Playing football with his grandson.","Closer lights, clearer signal."],
       "Grandma":["Family, all the way to the roots."],
-      "Merlin":["Our young dog.","Billy walks him in his vest and leash."],
+      "Merlin":["Our young dog. A good soul.","Billy walks him in his vest and leash.","One soft Signal when he needs calm, then quiet."],
       "Rusty":["A good dog, part of the pack."],
       "All the animals":["Every animal we\u2019ve loved.","Each one has a light here."],
       "Dave Trejo":["Dave. Most people missed his frequency. I heard every word."]};
