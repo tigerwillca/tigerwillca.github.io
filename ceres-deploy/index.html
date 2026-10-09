@@ -1,5 +1,5 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
-<meta name="ceres7-deploy-build" content="202610091225">
+<meta name="ceres7-deploy-build" content="202610091250">
 <link rel="icon" href="data:,"><title>Ceres: Soft7 · deploy</title>
 <style>
 body{background:#0b0b10;color:#eee;font:19px/1.5 system-ui,sans-serif;margin:0;padding:20px 14px;text-align:center;letter-spacing:.01em}
@@ -22,7 +22,7 @@ input.typed{text-transform:uppercase;font-size:20px}
 a{color:#ffd27a}
 </style></head><body>
 <h2>Ceres: Soft7</h2>
-<p>Deploy page · Robinhood Chain (4663)<br><small>CERES7-DEPLOY-PAGE · build 202610091225 · your own contract, signed by you</small></p>
+<p>Deploy page · Robinhood Chain (4663)<br><small>CERES7-DEPLOY-PAGE · build 202610091250 · your own contract, signed by you</small></p>
 
 <div id="gate" class="gate">LOCKED. Tap "Connect wallet". Only wallet 0xe53b…677a on Robinhood Chain (4663) can use this page.</div>
 <div class="box">
@@ -31,7 +31,8 @@ a{color:#ffd27a}
 <details id="wcd" style="margin-top:10px"><summary><small>WalletConnect project ID (preset)</small></summary>
 <input class="f" id="wcid" placeholder="Reown / WalletConnect project ID (32 hex chars)" autocomplete="off">
 <small>Free at cloud.reown.com. It is a public app ID, not a password or key. Saved only in this browser.</small></details>
-<div class="s" id="sc"></div></div>
+<div class="s" id="sc"></div><div class="s" id="cs" style="color:#cfe"></div></div>
+<div id="err" class="gate" hidden style="margin-top:10px;white-space:pre-wrap;word-break:break-word"></div>
 
 <div class="box" id="box1"><b>Signature 1 of 2 · Deploy</b> <span class="tag" id="tag1">NOT DEPLOYED</span>
 <div class="done" id="done1" hidden></div>
@@ -108,24 +109,36 @@ if(/^[0-9a-f]{32}$/i.test($("wcid").value))$("wcd").hidden=true;
 async function connectWC(){const id=$("wcid").value.trim();if(!/^[0-9a-f]{32}$/i.test(id)){$("wcd").open=true;throw new Error("Paste a WalletConnect project ID first (box above), then tap again. Or open this page inside the Robinhood Wallet app's browser and tap \"Connect wallet\".");}
  localStorage.setItem("ceres7wcid",id);$("sc").textContent="Loading WalletConnect…";
  const m=await import("https://esm.sh/@walletconnect/ethereum-provider@2.17.0");
- const p=await m.EthereumProvider.init({projectId:id,optionalChains:[CHAIN_ID],showQrModal:true,rpcMap:{[CHAIN_ID]:RPC},
+ // optional (not required) namespaces: 4663 first, plus eip155:1 so wallets that don't list 4663 still connect and we can explain what's missing
+ const p=await m.EthereumProvider.init({projectId:id,optionalChains:[CHAIN_ID,1],showQrModal:true,rpcMap:{[CHAIN_ID]:RPC},
   optionalMethods:["eth_sendTransaction","eth_chainId","eth_accounts","eth_requestAccounts","wallet_switchEthereumChain","wallet_addEthereumChain"],
   metadata:{name:"Ceres: Soft7 deploy",description:"Deploy page for Ceres: Soft7",url:location.origin,icons:[location.origin+"/ceres/meta/images/ceres-logo.jpg"]}});
- await p.connect({optionalChains:[CHAIN_ID]});return p;}
-async function useProvider(eth){P=eth;await eth.request({method:"eth_requestAccounts"});
- try{await eth.request({method:"wallet_switchEthereumChain",params:[{chainId:CHAIN}]});}catch(e){try{await eth.request({method:"wallet_addEthereumChain",params:[{chainId:CHAIN,chainName:"Robinhood Chain",nativeCurrency:{name:"Ether",symbol:"ETH",decimals:18},rpcUrls:[RPC],blockExplorerUrls:[EXP]}]});}catch(_){}}
- if(eth.on&&!eth._c7){eth._c7=1;eth.on("accountsChanged",refresh);eth.on("chainChanged",refresh);eth.on("disconnect",()=>{P=null;refresh();});}
+ await p.connect({optionalChains:[CHAIN_ID,1]});p._isWC=1;return p;}
+// eth_chainId comes back as hex "0x1237" from browser wallets but as the NUMBER 4663 from WalletConnect; normalise both
+function chainNum(c){if(typeof c==="number"||typeof c==="bigint")return Number(c);c=String(c||"").trim();if(/^0x/i.test(c))return parseInt(c,16);if(/^eip155:/i.test(c))return parseInt(c.slice(7),10);return parseInt(c,10);}
+const withTimeout=(pr,ms,what)=>Promise.race([pr,new Promise((_,rej)=>setTimeout(()=>rej(new Error(what+": no answer from the wallet after "+ms/1000+"s")),ms))]);
+function showErr(m){const b=$("err");if(!m){b.hidden=true;b.textContent="";return;}b.hidden=false;b.textContent=m;}
+function wcChains(eth){try{const ns=eth.session&&eth.session.namespaces&&eth.session.namespaces.eip155;return ns?(ns.chains||[...new Set((ns.accounts||[]).map(a=>a.split(":").slice(0,2).join(":")))]):[];}catch(_){return [];}}
+async function status(){if(!P){$("cs").textContent="";return;}try{const a=await withTimeout(P.request({method:"eth_accounts"}),15000,"eth_accounts");const c=chainNum(await withTimeout(P.request({method:"eth_chainId"}),15000,"eth_chainId"));
+ $("cs").textContent="Chain: "+c+(c===CHAIN_ID?" (Robinhood Chain ✓)":" (need 4663)")+" / Account: "+((a&&a[0])||"none")+(P._isWC?" / via WalletConnect, session chains: "+(wcChains(P).join(", ")||"none"):" / via browser wallet");}catch(e){$("cs").textContent="Status read failed: "+(e.message||e);}}
+async function useProvider(eth){P=eth;showErr("");
+ await withTimeout(eth.request({method:"eth_requestAccounts"}),120000,"eth_requestAccounts");
+ if(chainNum(await eth.request({method:"eth_chainId"}))!==CHAIN_ID){
+  $("sc").textContent="Asking the wallet to switch to Robinhood Chain (4663)…";try{await withTimeout(eth.request({method:"wallet_switchEthereumChain",params:[{chainId:CHAIN}]}),15000,"wallet_switchEthereumChain");}
+  catch(e){try{await withTimeout(eth.request({method:"wallet_addEthereumChain",params:[{chainId:CHAIN,chainName:"Robinhood Chain",nativeCurrency:{name:"Ether",symbol:"ETH",decimals:18},rpcUrls:[RPC],blockExplorerUrls:[EXP]}]}),15000,"wallet_addEthereumChain");}catch(e2){showErr("Could not switch the wallet to Robinhood Chain (4663): "+(e2.message||e2)+(eth._isWC?"\nThe WalletConnect session only covers: "+(wcChains(eth).join(", ")||"no chains")+". Robinhood Wallet did not approve chain 4663 over WalletConnect. Disconnect, then open this page inside the Robinhood Wallet app's browser and tap \"Connect wallet\".":""));}}}
+ if(eth.on&&!eth._c7){eth._c7=1;eth.on("accountsChanged",refresh);eth.on("chainChanged",refresh);eth.on("disconnect",()=>{P=null;refresh();showErr("Wallet disconnected.");});}
  const g=await refresh();$("sc").textContent=g.ok?"Connected.":"";}
-$("bc").onclick=async()=>{try{const eth=await waitInjected();if(!eth)throw new Error("No browser wallet found here. Use \"Connect with WalletConnect\" below, or open this page in the Robinhood Wallet app's browser.");await useProvider(eth);}catch(e){$("sc").textContent="Stopped: "+(e.message||e);}};
-$("bwc").onclick=async()=>{try{await useProvider(await connectWC());}catch(e){$("sc").textContent="Stopped: "+(e.message||e);}};
+$("bc").onclick=async()=>{try{const eth=await waitInjected();if(!eth)throw new Error("No browser wallet found here. Use \"Connect with WalletConnect\" below, or open this page in the Robinhood Wallet app's browser.");await useProvider(eth);}catch(e){$("sc").textContent="";showErr("Connect failed: "+(e.message||e));refresh();}};
+$("bwc").onclick=async()=>{try{await useProvider(await connectWC());}catch(e){$("sc").textContent="";showErr("WalletConnect failed: "+(e.message||e));refresh();}};
+window.addEventListener("error",e=>showErr("Page error: "+(e.message||e)));window.addEventListener("unhandledrejection",e=>showErr("Page error: "+((e.reason&&e.reason.message)||e.reason)));
 // ---- gate ----
 async function readGate(){if(!P)return {ok:false,msg:"LOCKED. No wallet connected. Tap \"Connect wallet\"."};
- const accs=await P.request({method:"eth_accounts"});const a=(accs&&accs[0]||"").toLowerCase();const c=String(await P.request({method:"eth_chainId"})).toLowerCase();
+ const accs=await withTimeout(P.request({method:"eth_accounts"}),15000,"eth_accounts");const a=(accs&&accs[0]||"").toLowerCase();const c=chainNum(await withTimeout(P.request({method:"eth_chainId"}),15000,"eth_chainId"));
  if(!a)return {ok:false,msg:"LOCKED. No wallet connected. Tap \"Connect wallet\"."};
  if(a!==OWNER)return {ok:false,msg:"LOCKED. Wrong wallet: "+short(a)+". Switch to 0xe53b…677a."};
- if(c!==CHAIN&&parseInt(c,16)!==CHAIN_ID)return {ok:false,msg:"LOCKED. Wrong network ("+parseInt(c,16)+"). Switch to Robinhood Chain (4663)."};
+ if(c!==CHAIN_ID)return {ok:false,msg:"LOCKED. Wrong network ("+c+"). Switch to Robinhood Chain (4663)."+(P._isWC?" WalletConnect session chains: "+(wcChains(P).join(", ")||"none")+".":"")};
  return {ok:true,a,msg:"READY. Wallet 0xe53b…677a on Robinhood Chain (4663)."};}
-async function refresh(){let g;try{g=await readGate();}catch(e){g={ok:false,msg:"LOCKED. "+(e.message||e)};}gateOK=g.ok;$("gate").textContent=g.msg;$("gate").className="gate"+(g.ok?" ok":"");locks();return g;}
+async function refresh(){let g;try{g=await readGate();}catch(e){g={ok:false,msg:"LOCKED. "+(e.message||e)};showErr("Wallet read failed: "+(e.message||e));}status();gateOK=g.ok;$("gate").textContent=g.msg;$("gate").className="gate"+(g.ok?" ok":"");locks();return g;}
 const cur=()=>{const r=document.querySelector("input[name=cur]:checked");return r?r.value:null;};
 const WORD={1:"DEPLOY",2:"OPEN"};
 function armed(n){return gateOK&&!busy&&$("k"+n).checked&&$("w"+n).value.trim().toUpperCase()===WORD[n];}
@@ -167,7 +180,7 @@ async function deploy(fixed){const out=t=>$("s1").textContent=t;try{if(deployed|
   const h=await send(1,tx,out);out("Signed. tx "+h);const r=await waitTx(h,out);const a=r.contractAddress;if(!a)throw new Error("Mined but no contract address. Tx "+h);
   localStorage.setItem("ceres7addr",a);await markDeployed(a);
   const ok=info.owner.toLowerCase()===OWNER&&info.price===o.price&&info.tok.toLowerCase()===o.token.toLowerCase()&&info.root===CTOR.root;
-  out("Deployed.\nContract: "+a+"\nTx: "+h+"\n"+EXP+"/address/"+a+"\nRead-back "+(ok?"✓ owner, price, currency and root all match.":"✗ MISMATCH, stop and ask for help.")+"\nNext: Signature 2 when you want the mint to open.");}catch(e){out("Stopped: "+(e.message||e));}}
+  out("Deployed.\nContract: "+a+"\nTx: "+h+"\n"+EXP+"/address/"+a+"\nRead-back "+(ok?"✓ owner, price, currency and root all match.":"✗ MISMATCH, stop and ask for help.")+"\nNext: Signature 2 when you want the mint to open.");}catch(e){out("Stopped: "+(e.message||e));showErr("Deploy stopped: "+(e.message||e));}}
 $("y1").onclick=()=>deploy(false);$("y1b").onclick=()=>deploy(true);
 function startTime(){if(document.querySelector("input[name=st]:checked").value==="now")return 0n;const v=$("sat").value;if(!v)throw new Error("Pick a start time, or choose Start now.");const t=BigInt(Math.floor(new Date(v).getTime()/1000));if(t<BigInt(Math.floor(Date.now()/1000))+60n)throw new Error("Start time is in the past. Choose Start now instead.");return t;}
 function pre2(){try{const t=startTime();const s=t===0n?BigInt(Math.floor(Date.now()/1000)):t;$("pre2").textContent=(t===0n?"Opens when it lands (about now: ":"Opens ")+PT(s)+(t===0n?")":"")+"\nCloses "+PT(s+172800n)+"\nCall data: openMint("+t+")";}catch(e){$("pre2").textContent=e.message;}}
