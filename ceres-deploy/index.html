@@ -1,5 +1,5 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
-<meta name="ceres7-deploy-build" content="202610091425">
+<meta name="ceres7-deploy-build" content="202610091445">
 <link rel="icon" href="data:,"><title>Ceres: Soft7 · deploy</title>
 <style>
 body{background:#0b0b10;color:#eee;font:19px/1.5 system-ui,sans-serif;margin:0;padding:20px 14px;text-align:center;letter-spacing:.01em}
@@ -18,16 +18,21 @@ input.typed{text-transform:uppercase;font-size:20px}
 .done{background:#0f2a17;border:1px solid #2e9b4f;color:#b9f5c8;border-radius:10px;padding:10px 12px;margin-top:10px;font-size:17px}
 .warn{background:#2a200b;border:1px solid #a7832e;color:#ffe2a3;border-radius:10px;padding:10px 12px;margin-top:10px;font-size:16px}
 .gate.mid{background:#2a200b;border-color:#a7832e;color:#ffe2a3}
+button.locked{opacity:.35}
 .tag{display:inline-block;background:#7a6a3a;color:#111;font-weight:700;border-radius:6px;padding:1px 8px;font-size:15px}
 .row{display:flex;gap:8px}.row button{margin-top:8px}
 a{color:#ffd27a}
 </style></head><body>
 <h2>Ceres: Soft7</h2>
-<p>Deploy page · Robinhood Chain (4663)<br><small>CERES7-DEPLOY-PAGE · build 202610091425 · your own contract, signed by you</small></p>
+<p>Deploy page · Robinhood Chain (4663)<br><small>CERES7-DEPLOY-PAGE · build 202610091445 · your own contract, signed by you</small></p>
 
+<div id="ver" style="max-width:520px;margin:0 auto 10px;padding:8px 12px;border-radius:10px;background:#1b1b26;border:1px solid #555;font-size:15px">Page version <b>202610091445</b> (PR #59) · <span id="verck">checking for newer…</span></div>
+<div class="box" style="border:2px solid #4a7bd0;background:#0e1424"><b>Best with Robinhood Wallet:</b> open this page <b>inside</b> Robinhood Wallet. In the app tap <b>Web3 (globe icon)</b>, type <b>tigerwillca.github.io/ceres-deploy</b>, then tap <b>Robinhood Wallet in-app / MetaMask</b> below. Or scan the WalletConnect QR from a computer.</div>
+<div id="step" class="box" style="border:3px solid #e0a526;font-size:20px;text-align:center"><b>Step 1 of 3:</b> connect your wallet (buttons just below).</div>
+<div id="pend" class="box" hidden style="border:3px solid #ff9f1a;background:#2a1a05;font-size:20px;text-align:center"></div>
 <div id="gate" class="gate">LOCKED. Tap a connect button. Any wallet on Robinhood Chain (4663) can pay for "Deploy via factory"; Sign 2, price and withdraw need 0xe53b…677a.</div>
 <div class="box">
-<button id="bc">Injected wallet (MetaMask / browser extension)</button>
+<button id="bc">Robinhood Wallet in-app / MetaMask (injected)</button>
 <button class="alt" id="bwc">Connect with WalletConnect (QR for Robinhood Wallet)</button>
 <details id="wcd" style="margin-top:10px"><summary><small>WalletConnect project ID (preset)</small></summary>
 <input class="f" id="wcid" placeholder="Reown / WalletConnect project ID (32 hex chars)" autocomplete="off">
@@ -199,7 +204,11 @@ async function boot(){try{const a=localStorage.getItem("ceres7addr")||await find
 // ---- send helpers ----
 async function waitTx(h,out){for(let i=0;i<180;i++){let r=null;try{r=await rpc("eth_getTransactionReceipt",[h]);}catch(_){}if(r){if(r.status!=="0x1")throw new Error("Transaction failed on chain: "+h);return r;}out("Waiting for the block… tx "+h);await new Promise(z=>setTimeout(z,2000));}throw new Error("Still pending. Tx "+h);}
 async function send(n,tx,out,anyWallet){const g=await refresh();if(anyWallet?!(g.chainOk&&armedF()):(!g.ok||(n&&!armed(n))))throw new Error("Locked. Check the wallet, the network and the confirm box.");busy=true;locks();
- try{out("Confirm in your wallet…");return await P.request({method:"eth_sendTransaction",params:[{from:g.a,...tx}]});}finally{busy=false;if(n){$("k"+n).checked=false;$("w"+n).value="";}locks();}}
+ const pend=$("pend");pend.hidden=false;pend.innerHTML="<b>Request sent to your wallet.</b><br>Open "+(P._isWC?"Robinhood Wallet on your phone":"your wallet")+" now and tap <b>Confirm</b>.<br><small>Waiting… 0 s</small>";pend.scrollIntoView({behavior:"smooth",block:"center"});
+ const t0=Date.now();const tick=setInterval(()=>{const s=Math.round((Date.now()-t0)/1000);pend.innerHTML="<b>Request sent to your wallet.</b><br>Open "+(P._isWC?"Robinhood Wallet on your phone":"your wallet")+" now and tap <b>Confirm</b>.<br><small>Waiting… "+s+" s</small>"+(s>=60?"<br><span style='color:#ffb3b3'>No answer after 60 s. In Robinhood Wallet look for a pending request (Dapp connections). If there is none, tap <b>Copy diagnostics</b> (top) and send it, then try the in-app browser route (blue box at the top).</span>":"");},1000);
+ try{out("Confirm in your wallet…");const h=await P.request({method:"eth_sendTransaction",params:[{from:g.a,...tx}]});pend.innerHTML="<b>Signed ✓</b> Waiting for the block…";return h;}
+ catch(e){pend.innerHTML="<b style='color:#ffb3b3'>The wallet answered with an error:</b><br>"+String((e&&e.message)||e).replace(/</g,"&lt;")+"<br><small>Tap Copy diagnostics and send it.</small>";throw e;}
+ finally{clearInterval(tick);busy=false;if(n){$("k"+n).checked=false;$("w"+n).value="";}locks();}}
 async function deploy(fixed){const out=t=>$("s1").textContent=t;try{if(deployed||await findDeployed())throw new Error("Already deployed. Do not deploy again.");
   const {o,data}=ctorArgs();const tx={data,value:"0x0"};if(fixed)tx.gas="0x30d400";// 3,200,000 (estimate ~2.59M)
   const h=await send(1,tx,out);out("Signed. tx "+h);const r=await waitTx(h,out);const a=r.contractAddress;if(!a)throw new Error("Mined but no contract address. Tx "+h);
@@ -230,5 +239,19 @@ $("y5").onclick=async()=>{const out=t=>$("s5").textContent=t;try{const a=await o
 $("b6").onclick=async()=>{const out=t=>$("s6").textContent=t;try{const a=$("ca").value.trim()||await findDeployed();if(!a)throw new Error("Not deployed yet.");const i=await loadInfo(a);
   const bal=i.o.sym==="ETH"?BigInt(await rpc("eth_getBalance",[a,"latest"])):await rc(i.tok,"balanceOf",[a],ERC20);
   out("contract "+a+"\nname "+await rc(a,"name")+" / "+await rc(a,"symbol")+"\nowner "+i.owner+(i.owner.toLowerCase()===OWNER?" ✓":" ✗")+"\nprice "+fmt(i.price,i.o)+" · currency "+(i.tok===OPTS.eth.token?"native ETH":i.tok)+"\nmerkle root "+i.root+(i.root===CTOR.root?" ✓":" ✗")+"\nminted "+i.minted+" / "+await rc(a,"MAX_SUPPLY")+" · per wallet "+await rc(a,"MAX_PER_WALLET")+"\nwindow "+(i.start===0n?"not opened":PT(i.start)+" → "+PT(i.end))+"\nmoney in contract "+fmt(bal,i.o));}catch(e){out("Stopped: "+(e.message||e));}};
+function stepUI(){const s=$("step");if(deployed&&info&&info.start!==0n){s.innerHTML="<b>All done ✓</b> Contract deployed and mint window set.";return;}
+ if(deployed){s.innerHTML=gateOK?"<b>Step 3 of 3:</b> scroll to <b>Signature 2</b>, tick the box, type <b>OPEN</b>, tap <b>Sign 2 · Open 48-hour mint</b>. <button class=alt onclick=\"document.getElementById('box2').scrollIntoView({behavior:'smooth'})\">Take me there</button>":"<b>Step 3 of 3:</b> contract is deployed ✓. Connect <b>0xe53b…677a</b> (Robinhood Wallet) to open the mint.";return;}
+ if(!chainOK){s.innerHTML="<b>Step 1 of 3:</b> connect your wallet (buttons just below).";return;}
+ const ok=$("k1").checked,typed=$("w1").value.trim().toUpperCase()==="DEPLOY";
+ s.innerHTML="<b>Step 2 of 3: deploy</b><br>"+(ok?"✓":"☐")+" tick <i>I read this. I want to deploy now.</i><br>"+(typed?"✓":"☐")+" type <b>DEPLOY</b><br>"+(ok&&typed?"✓ now tap <b>Deploy via factory</b>":"☐ then tap <b>Deploy via factory</b>")+"<br><button class=alt onclick=\"document.getElementById('k1').scrollIntoView({behavior:'smooth',block:'center'})\">Take me there</button>";}
+const _locks=locks;locks=function(){_locks();for(const id of ["y1f","y1fb","y1","y1b","y2"]){const el=$(id);const d=el.disabled;el.disabled=false;el.classList.toggle("locked",d);el.dataset.locked=d?"1":"";}stepUI();};
+document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("button[data-locked='1']");if(!b)return;e.preventDefault();e.stopImmediatePropagation();
+ let why=!P?"Connect a wallet first (Step 1).":!chainOK?"Your wallet is not on Robinhood Chain (4663).":deployed&&/y1/.test(b.id)?"Already deployed. Do not deploy again.":(b.id==="y2"||b.id==="y1"||b.id==="y1b")&&!gateOK?"This button needs wallet 0xe53b…677a.":"First tick the box and type the word in the box above the button.";
+ showErr("Not yet: "+why);$("err").scrollIntoView({behavior:"smooth",block:"center"});},true);
+for(const id of ["k1","w1","k2","w2"]){$(id).addEventListener("input",locks);$(id).addEventListener("change",locks);}
+(async()=>{try{const r=await fetch(location.pathname+"?v="+Date.now(),{cache:"no-store"});const h=await r.text();const m=h.match(/ceres7-deploy-build" content="(\d+)"/);const mine=document.querySelector("meta[name=ceres7-deploy-build]").content;
+ if(m&&m[1]!==mine){$("ver").style.background="#3a1010";$("verck").innerHTML="<b>OLD VERSION. A newer page ("+m[1]+") exists.</b> <a href='"+location.pathname+"?v="+m[1]+"'>Tap to load it</a>";}else $("verck").textContent="latest ✓";}catch(_){$("verck").textContent="could not check";}})();
+const _mk=markDeployed;markDeployed=async a=>{await _mk(a);stepUI();};
+const _up=useProvider;useProvider=async eth=>{await _up(eth);if(chainOK&&!deployed)setTimeout(()=>$("k1").scrollIntoView({behavior:"smooth",block:"center"}),400);stepUI();};
 boot();waitInjected().then(eth=>{if(eth&&!P){eth.request({method:"eth_accounts"}).then(a=>{if(a&&a.length)useProvider(eth).catch(()=>{});}).catch(()=>{});}});
 </script></body></html>
