@@ -1,0 +1,83 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#07080c"><meta name="description" content="Ceres: Soft7 allowlist mint. Seven pieces, one per wallet, 48 hours, on Robinhood Chain.">
+<title>Mint · Ceres: Soft7</title>
+<style>
+body{background:#07080c;color:#eee;font:18px/1.5 system-ui,sans-serif;margin:0;padding:20px 14px;text-align:center}
+.box{max-width:480px;margin:16px auto;padding:16px;border:1px solid #2a2d36;border-radius:14px;text-align:left}
+h1{margin:.2em 0 0;font-size:30px}.sym{color:#9aa;margin:0 0 8px;letter-spacing:.2em}
+button{display:block;margin:12px auto 0;width:100%;font-size:21px;padding:16px 12px;border-radius:14px;border:0;background:#e0a526;color:#111;font-weight:700;cursor:pointer}
+button.alt{background:#262833;color:#eee;font-size:16px;padding:11px}button:disabled{opacity:.3;cursor:not-allowed}
+.st{font-size:20px;font-weight:700;text-align:center}.s{margin-top:10px;white-space:pre-wrap;word-break:break-all;font-size:15px;color:#ffd27a}
+.ok{color:#b9f5c8}.no{color:#ffb3b3}small{color:#9aa}a{color:#ffd27a}input{width:100%;box-sizing:border-box;font-size:15px;padding:9px;margin-top:6px;border-radius:8px;border:1px solid #444;background:#12131a;color:#eee}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;max-width:480px;margin:10px auto}.grid img{width:100%;border-radius:6px}
+</style></head><body>
+<h1>Ceres: Soft7</h1><p class="sym">CERES7</p>
+<div class="grid" id="grid"></div>
+<div class="box"><div class="st" id="st">Checking the chain…</div><div class="s" id="facts" style="text-align:center;color:#ccc"></div></div>
+<div class="box">
+<button id="bc">Connect wallet</button>
+<button class="alt" id="bwc">WalletConnect (QR)</button>
+<details id="wcd"><summary><small>WalletConnect project ID</small></summary><input id="wcid" placeholder="project ID" autocomplete="off"></details>
+<div class="s" id="sc"></div>
+<div id="elig" class="st" style="margin-top:10px"></div>
+<button id="ba" hidden disabled>Approve</button>
+<button id="bm" disabled>Mint 1</button>
+<div class="s" id="sm"></div></div>
+<p><small>Allowlist only · 1 per wallet · 7 pieces · Robinhood Chain (4663). <a href="/ceres/allowlist/root.json">Allowlist root</a> · <a href="/ceres/">Ceres</a></small></p>
+<script src="/ceres-deploy/ethers.umd.min.js"></script>
+<script>
+const OWNER="0xe53bdb2118585d5b2cd06a117d3a036afa70677a",CHAIN="0x1237",CHAIN_ID=4663,RPC="https://rpc.mainnet.chain.robinhood.com",EXP="https://robinhoodchain.blockscout.com",NONCE_FLOOR=3088;
+const ZERO="0x0000000000000000000000000000000000000000";
+const IF=new ethers.Interface(["function name() view returns (string)","function owner() view returns (address)","function paymentToken() view returns (address)","function price() view returns (uint256)","function merkleRoot() view returns (bytes32)","function totalMinted() view returns (uint256)","function mintStart() view returns (uint256)","function mintEnd() view returns (uint256)","function mintedBy(address) view returns (uint256)","function mint(bytes32[]) payable"]);
+const ERC20=new ethers.Interface(["function symbol() view returns (string)","function decimals() view returns (uint8)","function balanceOf(address) view returns (uint256)","function allowance(address,address) view returns (uint256)","function approve(address,uint256) returns (bool)"]);
+const $=i=>document.getElementById(i),short=a=>a?a.slice(0,6)+"…"+a.slice(-4):"";
+const PT=t=>new Date(Number(t)*1000).toLocaleString("en-US",{timeZone:"America/Los_Angeles",weekday:"short",month:"short",day:"numeric",hour:"numeric",minute:"2-digit"})+" PT";
+const IMGS=["01-tiger","02-fox","03-black-tiger","04-black-fox","05-white-tiger","06-silver-fox","07-golden-tiger"];
+$("grid").innerHTML=IMGS.map(n=>"<img loading=lazy alt='' src='/ceres/meta/images/ceres-"+n+".jpg'>").join("");
+async function rpc(method,params){for(let i=0;i<4;i++){try{const r=await fetch(RPC,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({jsonrpc:"2.0",id:1,method,params})});if(r.status===429){await new Promise(z=>setTimeout(z,800*(i+1)));continue;}const j=await r.json();if(j.error)throw new Error(j.error.message||"read failed");return j.result;}catch(e){if(i===3)throw e;await new Promise(z=>setTimeout(z,600));}}}
+async function rc(to,fn,args=[],iface=IF){return iface.decodeFunctionResult(fn,await rpc("eth_call",[{to,data:iface.encodeFunctionData(fn,args)},"latest"]))[0];}
+let CA=null,S=null,P=null,ME=null,PROOFS=null,busy=false;
+async function findCA(){const q=new URLSearchParams(location.search).get("c");const cands=[];if(q)cands.push(q);
+ const nonce=parseInt(await rpc("eth_getTransactionCount",[OWNER,"latest"]),16);for(let n=NONCE_FLOOR;n<nonce&&n<NONCE_FLOOR+120;n++)cands.push(ethers.getCreateAddress({from:OWNER,nonce:n}));
+ for(const a of cands){try{const code=await rpc("eth_getCode",[a,"latest"]);if(code&&code.length>2&&await rc(a,"name")==="Ceres: Soft7"&&(await rc(a,"owner")).toLowerCase()===OWNER)return a;}catch(_){}}return null;}
+async function state(){const tok=await rc(CA,"paymentToken");let sym="ETH",dec=18;if(tok!==ZERO){sym=await rc(tok,"symbol",[],ERC20);dec=Number(await rc(tok,"decimals",[],ERC20));}
+ return {tok,sym,dec,price:await rc(CA,"price"),minted:await rc(CA,"totalMinted"),start:await rc(CA,"mintStart"),end:await rc(CA,"mintEnd"),now:BigInt(Math.floor(Date.now()/1000))};}
+const priceTxt=()=>ethers.formatUnits(S.price,S.dec)+" "+S.sym;
+function live(){return S&&S.start!==0n&&S.now>=S.start&&S.now<S.end&&S.minted<7n;}
+async function render(){try{if(!CA)CA=await findCA();if(!CA){$("st").textContent="Mint opens soon";$("facts").textContent="7 pieces · 1 per wallet · 48 hours · allowlist only";return;}
+  S=await state();let st;if(S.start===0n)st="Mint opens soon";else if(S.minted>=7n)st="Sold out · 7 / 7";else if(S.now<S.start)st="Opens "+PT(S.start);else if(S.now>=S.end)st="Mint closed";else st="Mint is open · "+S.minted+" / 7 minted";
+  $("st").textContent=st;$("facts").innerHTML=priceTxt()+" each · 1 per wallet · "+(S.start===0n?"48 hours once open":"closes "+PT(S.end))+"<br><small>Contract <a target=_blank href='"+EXP+"/address/"+CA+"'>"+short(CA)+"</a></small>";
+  await eligibility();}catch(e){$("st").textContent="Could not read the chain. Refresh in a moment.";}}
+let injected=window.ethereum||null;window.addEventListener("eip6963:announceProvider",e=>{if(!injected||/robinhood/i.test((e.detail.info||{}).name||""))injected=e.detail.provider;});window.dispatchEvent(new Event("eip6963:requestProvider"));
+const waitInjected=()=>new Promise(r=>{if(injected)return r(injected);let n=0;const t=setInterval(()=>{window.dispatchEvent(new Event("eip6963:requestProvider"));if(injected||++n>10){clearInterval(t);r(injected);}},200);});
+$("wcid").value=localStorage.getItem("ceres7wcid")||new URLSearchParams(location.search).get("wc")||"";
+async function connectWC(){const id=$("wcid").value.trim();if(!/^[0-9a-f]{32}$/i.test(id)){$("wcd").open=true;throw new Error("WalletConnect needs a project ID. Easier: open this page inside your wallet app's browser and tap Connect wallet.");}
+ localStorage.setItem("ceres7wcid",id);const m=await import("https://esm.sh/@walletconnect/ethereum-provider@2.17.0");
+ const p=await m.EthereumProvider.init({projectId:id,optionalChains:[CHAIN_ID],showQrModal:true,rpcMap:{[CHAIN_ID]:RPC},metadata:{name:"Ceres: Soft7",description:"Ceres: Soft7 allowlist mint",url:location.origin,icons:[location.origin+"/ceres/meta/images/ceres-logo.jpg"]}});await p.connect({optionalChains:[CHAIN_ID]});return p;}
+async function useProvider(eth){P=eth;const accs=await eth.request({method:"eth_requestAccounts"});ME=(accs[0]||"").toLowerCase();
+ try{await eth.request({method:"wallet_switchEthereumChain",params:[{chainId:CHAIN}]});}catch(e){try{await eth.request({method:"wallet_addEthereumChain",params:[{chainId:CHAIN,chainName:"Robinhood Chain",nativeCurrency:{name:"Ether",symbol:"ETH",decimals:18},rpcUrls:[RPC],blockExplorerUrls:[EXP]}]});}catch(_){}}
+ if(eth.on&&!eth._c7){eth._c7=1;eth.on("accountsChanged",a=>{ME=(a[0]||"").toLowerCase();render();});eth.on("chainChanged",render);}
+ $("sc").textContent="Connected "+short(ME);render();}
+$("bc").onclick=async()=>{try{const e=await waitInjected();if(!e)throw new Error("No wallet found. Open this page in your wallet app's browser (Robinhood Wallet → Browser).");await useProvider(e);}catch(e){$("sc").textContent=e.message||e;}};
+$("bwc").onclick=async()=>{try{await useProvider(await connectWC());}catch(e){$("sc").textContent=e.message||e;}};
+async function proofFor(a){if(!PROOFS)PROOFS=await (await fetch("/ceres/allowlist/proofs.json")).json();return PROOFS.proofs[a]||null;}
+async function eligibility(){const E=$("elig");$("bm").disabled=true;$("ba").hidden=true;if(!ME){E.textContent="";$("bm").textContent="Mint 1";return;}
+ const pr=await proofFor(ME);if(!pr){E.innerHTML="<span class=no>"+short(ME)+" is not on the allowlist.</span>";return;}
+ if(!CA||!S){E.innerHTML="<span class=ok>✓ "+short(ME)+" is on the allowlist.</span> Mint opens soon.";return;}
+ if(await rc(CA,"mintedBy",[ME])>0n){E.innerHTML="<span class=ok>✓ You already minted your Ceres piece.</span>";return;}
+ E.innerHTML="<span class=ok>✓ "+short(ME)+" is on the allowlist.</span>"+(live()?"":"<br><small>Minting is not open right now.</small>");
+ $("bm").textContent="Mint 1 · "+priceTxt();if(!live())return;
+ if(S.tok!==ZERO){const al=await rc(S.tok,"allowance",[ME,CA],ERC20);const bal=await rc(S.tok,"balanceOf",[ME],ERC20);if(bal<S.price){E.innerHTML+="<br><small class=no>You need "+priceTxt()+" on Robinhood Chain to mint.</small>";return;}
+  if(al<S.price){$("ba").hidden=false;$("ba").textContent="Approve "+priceTxt();$("ba").disabled=busy;return;}}
+ else{const bal=BigInt(await rpc("eth_getBalance",[ME,"latest"]));if(bal<S.price){E.innerHTML+="<br><small class=no>You need "+priceTxt()+" plus a little gas.</small>";return;}}
+ $("bm").disabled=busy;}
+async function waitTx(h,out){for(let i=0;i<180;i++){let r=null;try{r=await rpc("eth_getTransactionReceipt",[h]);}catch(_){}if(r){if(r.status!=="0x1")throw new Error("Transaction failed: "+h);return r;}out("Waiting for the block…");await new Promise(z=>setTimeout(z,2000));}throw new Error("Still pending: "+h);}
+async function chainOK(){const c=String(await P.request({method:"eth_chainId"}));if(parseInt(c,16)!==CHAIN_ID)throw new Error("Switch your wallet to Robinhood Chain (4663).");}
+$("ba").onclick=async()=>{const out=t=>$("sm").textContent=t;try{busy=true;$("ba").disabled=true;await chainOK();out("Confirm the approval in your wallet…");
+  const h=await P.request({method:"eth_sendTransaction",params:[{from:ME,to:S.tok,data:ERC20.encodeFunctionData("approve",[CA,S.price]),value:"0x0"}]});await waitTx(h,out);out("Approved. Now tap Mint.");}catch(e){out("Stopped: "+(e.message||e));}finally{busy=false;render();}};
+$("bm").onclick=async()=>{const out=t=>$("sm").textContent=t;try{busy=true;$("bm").disabled=true;await chainOK();S=await state();if(!live())throw new Error("Minting is not open right now.");const pr=await proofFor(ME);
+  out("Confirm the mint in your wallet…");const h=await P.request({method:"eth_sendTransaction",params:[{from:ME,to:CA,data:IF.encodeFunctionData("mint",[pr]),value:S.tok===ZERO?"0x"+S.price.toString(16):"0x0"}]});
+  await waitTx(h,out);out("Minted! Welcome to Ceres.\n"+EXP+"/tx/"+h);}catch(e){out("Stopped: "+(e.message||e));}finally{busy=false;render();}};
+render();setInterval(render,30000);
+waitInjected().then(e=>{if(e)e.request({method:"eth_accounts"}).then(a=>{if(a&&a.length)useProvider(e).catch(()=>{});}).catch(()=>{});});
+</script></body></html>
