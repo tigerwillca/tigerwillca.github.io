@@ -1,0 +1,21 @@
+{
+  "formatVersion": 1,
+  "passTypeIdentifier": "${PASS_TYPE_ID}",
+  "teamIdentifier": "${APPLE_TEAM_ID}",
+  "serialNumber": "${SERIAL}",
+  "organizationName": "Ceres",
+  "description": "Ceres pass",
+  "logoText": "Ceres",
+  "foregroundColor": "rgb(246,223,160)",
+  "backgroundColor": "rgb(7,8,12)",
+  "labelColor": "rgb(204,255,0)",
+  "generic": {
+    "primaryFields": [{ "key": "name", "label": "HOLDER", "value": "${NAME}" }],
+    "secondaryFields": [{ "key": "collection", "label": "COLLECTION", "value": "Ceres" }],
+    "backFields": [
+      { "key": "what", "label": "What is this?", "value": "Your pass into Ceres. No seed phrase, no app. Tap the link to return to the gate." },
+      { "key": "link", "label": "Gate", "value": "${GATE_URL}" }
+    ]
+  },
+  "barcodes": [{ "format": "PKBarcodeFormatQR", "message": "${GATE_URL}", "messageEncoding": "iso-8859-1" }]
+}
