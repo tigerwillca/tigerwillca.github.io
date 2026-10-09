@@ -93,10 +93,36 @@ contract CeresSoft7Test is Test {
         assertTrue(c.supportsInterface(0x2a55205a)); // ERC2981
         assertTrue(c.supportsInterface(0x49064906)); // ERC4906
     }
-    function test_OnlyOwnerWalletCanDeploy() public {
+    function test_OwnerIsAlways677A_EvenFromOtherDeployer() public {
         vm.prank(address(0xBEEF));
-        vm.expectRevert(CeresSoft7.NotOwnerWallet.selector);
-        new CeresSoft7(address(0), ETH_PRICE, root8, BASE, CURI);
+        CeresSoft7 c = new CeresSoft7(address(0), ETH_PRICE, root8, BASE, CURI);
+        assertEq(c.owner(), OWNER);
+        vm.prank(address(0xBEEF));
+        vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, address(0xBEEF)));
+        c.withdraw();
+    }
+    function test_DeployViaCreate2ProxyOwnerIs677A() public {
+        address F = 0x4e59b44847b379578588920cA78FbF26c0B4956C;
+        // Arachnid deterministic deployment proxy runtime code
+        vm.etch(F, hex"7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe03601600081602082378035828234f58015156039578182fd5b8082525050506014600cf3");
+        bytes32 salt = keccak256("Ceres: Soft7 v1");
+        bytes memory init = abi.encodePacked(type(CeresSoft7).creationCode, abi.encode(address(0), ETH_PRICE, root8, BASE, CURI));
+        address predicted = address(uint160(uint256(keccak256(abi.encodePacked(bytes1(0xff), F, salt, keccak256(init))))));
+        vm.prank(OWNER);
+        (bool ok, bytes memory ret) = F.call(abi.encodePacked(salt, init));
+        assertTrue(ok);
+        assertEq(address(bytes20(ret)), predicted);
+        CeresSoft7 c = CeresSoft7(predicted);
+        assertEq(c.owner(), OWNER);
+        assertEq(c.name(), "Ceres: Soft7");
+        assertEq(c.price(), ETH_PRICE);
+        vm.prank(OWNER);
+        c.openMint(0);
+        _mintEth(c, 0);
+        uint256 b = OWNER.balance;
+        vm.prank(OWNER);
+        c.withdraw();
+        assertEq(OWNER.balance - b, ETH_PRICE);
     }
     function test_RejectZeroPriceZeroRootEoaToken() public {
         vm.startPrank(OWNER);

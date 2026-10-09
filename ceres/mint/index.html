@@ -37,7 +37,7 @@ $("grid").innerHTML=IMGS.map(n=>"<img loading=lazy alt='' src='/ceres/meta/image
 async function rpc(method,params){for(let i=0;i<4;i++){try{const r=await fetch(RPC,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({jsonrpc:"2.0",id:1,method,params})});if(r.status===429){await new Promise(z=>setTimeout(z,800*(i+1)));continue;}const j=await r.json();if(j.error)throw new Error(j.error.message||"read failed");return j.result;}catch(e){if(i===3)throw e;await new Promise(z=>setTimeout(z,600));}}}
 async function rc(to,fn,args=[],iface=IF){return iface.decodeFunctionResult(fn,await rpc("eth_call",[{to,data:iface.encodeFunctionData(fn,args)},"latest"]))[0];}
 let CA=null,S=null,P=null,ME=null,PROOFS=null,busy=false;
-async function findCA(){const q=new URLSearchParams(location.search).get("c");const cands=[];if(q)cands.push(q);
+async function findCA(){const q=new URLSearchParams(location.search).get("c");const cands=[];if(q)cands.push(q);cands.push("0x019014285A560Ba0591eaF914303496313C76169","0x5BE941b4818429DFB07316cd34Bfba4DcE1AFf6E"); // CREATE2 factory deploy addresses (ETH, USDC)
  const nonce=parseInt(await rpc("eth_getTransactionCount",[OWNER,"latest"]),16);for(let n=NONCE_FLOOR;n<nonce&&n<NONCE_FLOOR+120;n++)cands.push(ethers.getCreateAddress({from:OWNER,nonce:n}));
  for(const a of cands){try{const code=await rpc("eth_getCode",[a,"latest"]);if(code&&code.length>2&&await rc(a,"name")==="Ceres: Soft7"&&(await rc(a,"owner")).toLowerCase()===OWNER)return a;}catch(_){}}return null;}
 async function state(){const tok=await rc(CA,"paymentToken");let sym="ETH",dec=18;if(tok!==ZERO){sym=await rc(tok,"symbol",[],ERC20);dec=Number(await rc(tok,"decimals",[],ERC20));}
