@@ -168,7 +168,16 @@ h1 {
   object-position: center;
 }
 
-.tile.is-drop .frame { box-shadow: inset 0 0 0 1px var(--accent); }
+.tile.is-drop .frame {
+  aspect-ratio: 16 / 9;
+  background: #07080c;
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+.tile.is-drop .frame img {
+  object-fit: contain;
+  object-position: center;
+}
 
 .num {
   display: block;
@@ -316,6 +325,7 @@ figcaption {
 @media (prefers-reduced-motion: no-preference) {
   .frame img { transition: transform 0.45s ease; }
   .tile:hover .frame img { transform: scale(1.03); }
+  .tile.is-drop:hover .frame img { transform: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {

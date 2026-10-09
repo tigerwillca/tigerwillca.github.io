@@ -5,8 +5,8 @@
     "image": "assets/001.jpg",
     "link": "",
     "drop": "Ceres: Soft7",
-    "width": 600,
-    "height": 338
+    "width": 640,
+    "height": 360
   },
   {
     "number": 2,
@@ -14,8 +14,8 @@
     "image": "assets/002.jpg",
     "link": "",
     "drop": "Ceres: Soft7",
-    "width": 600,
-    "height": 338
+    "width": 640,
+    "height": 360
   },
   {
     "number": 3,
@@ -23,8 +23,8 @@
     "image": "assets/003.jpg",
     "link": "",
     "drop": "Ceres: Soft7",
-    "width": 600,
-    "height": 338
+    "width": 640,
+    "height": 360
   },
   {
     "number": 4,
@@ -32,8 +32,8 @@
     "image": "assets/004.jpg",
     "link": "",
     "drop": "Ceres: Soft7",
-    "width": 600,
-    "height": 338
+    "width": 640,
+    "height": 360
   },
   {
     "number": 5,
@@ -41,8 +41,8 @@
     "image": "assets/005.jpg",
     "link": "",
     "drop": "Ceres: Soft7",
-    "width": 600,
-    "height": 338
+    "width": 640,
+    "height": 360
   },
   {
     "number": 6,
@@ -50,17 +50,17 @@
     "image": "assets/006.jpg",
     "link": "",
     "drop": "Ceres: Soft7",
-    "width": 600,
-    "height": 338
+    "width": 640,
+    "height": 360
   },
   {
     "number": 7,
-    "name": "Ceres \u00b7 Phoenix",
+    "name": "Ceres \u00b7 Golden Tiger",
     "image": "assets/007.jpg",
     "link": "",
     "drop": "Ceres: Soft7",
-    "width": 600,
-    "height": 338
+    "width": 640,
+    "height": 360
   },
   {
     "number": 8,
