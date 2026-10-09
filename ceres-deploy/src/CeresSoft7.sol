@@ -15,8 +15,9 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
  * @notice Seven pieces on Robinhood Chain (4663). Allowlist only (Merkle root), one per wallet,
  *         one 48-hour mint window that the owner opens once.
  *
- *  - Owner is hard-wired to 0xe53b…677a, and only that wallet can deploy (constructor check),
- *    so the contract is William's own. No factory, no proxy, no upgrade.
+ *  - Owner is hard-wired to 0xe53b…677a in the constructor (never msg.sender), so the contract is
+ *    William's own whether it is created directly or through the CREATE2 deployment proxy
+ *    0x4e59b44847b379578588920cA78FbF26c0B4956C. No proxy pattern, no upgrade.
  *  - MAX_SUPPLY 7 (token ids 1..7), MAX_PER_WALLET 1, MINT_WINDOW 48 hours. All constants.
  *  - Currency is a constructor param: paymentToken == address(0) means native ETH (msg.value),
  *    otherwise an ERC-20 pulled with transferFrom (buyer approves first). It can never change.
@@ -52,7 +53,6 @@ contract CeresSoft7 is ERC721, ERC2981, Ownable, ReentrancyGuard {
     string private _baseTokenURI;
     string private _contractURI;
 
-    error NotOwnerWallet();
     error BadParam();
     error AlreadyOpened();
     error MintNotActive();
@@ -82,7 +82,6 @@ contract CeresSoft7 is ERC721, ERC2981, Ownable, ReentrancyGuard {
         string memory baseURI_,
         string memory contractURI_
     ) ERC721("Ceres: Soft7", "CERES7") Ownable(OWNER_WALLET) {
-        if (msg.sender != OWNER_WALLET) revert NotOwnerWallet();
         if (price_ == 0 || merkleRoot_ == bytes32(0)) revert BadParam();
         if (paymentToken_ != address(0) && paymentToken_.code.length == 0) revert BadParam();
         paymentToken = paymentToken_;
