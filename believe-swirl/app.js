@@ -11,6 +11,12 @@
   var SHARE_TEXT = "A minute of warm light, and one kind line for today.";
   var LOOK_KEY = "believe-swirl-look";
   var INSTALL_KEY = "believe-swirl-install-hint";
+  var WORDS_KEY = "believe-swirl-words";
+  var CHIME_KEY = "believe-swirl-chime";
+  var BDAY_KEY = "believe-swirl-birthday";
+  var CHIME_SRC = "sounds/open.m4a";
+  var WORD_MAX = 60;
+  var WORD_LEN = 240;
   var BG = "#0b0916";
 
   // One warm line per day. Plain, kind words. No questions, nothing to do.
@@ -91,6 +97,12 @@
       c0: "#e15a32", c1: "#ffb066", c2: "#ffd0a4", hot: "#ffb080", deep: "#c44828", core: "#ffe0c4", accent: "#ffcc66" }
   ];
 
+  // Not part of the style cycle. Shown only on her birthday, or with ?preview=birthday.
+  var BIRTHDAY = {
+    id: "birthday", name: "Birthday", arms: 5, twist: 4.4, spin: 0.06, jitter: 0.85, size: 1.18,
+    c0: "#e8a05a", c1: "#ffd7a4", c2: "#f2a0b4", hot: "#ffd0b4", deep: "#c47870", core: "#fff3e2", accent: "#ffb4c8"
+  };
+
   var TOTAL = 60;
   var INHALE = 4, EXHALE = 6, CYCLE = INHALE + EXHALE;
   var SPECK_COUNT = 220;
@@ -147,8 +159,7 @@
     }
     return "#" + ch(0) + ch(1) + ch(2);
   }
-  for (var li = 0; li < LOOKS.length; li++) {
-    var L = LOOKS[li];
+  function decorateLook(L) {
     L.bgV = hexRgb(BG);
     L.c0V = hexRgb(L.c0);
     L.c1V = hexRgb(L.c1);
@@ -158,11 +169,83 @@
     L.coreV = hexRgb(L.core);
     L.accentV = hexRgb(L.accent);
   }
+  for (var li = 0; li < LOOKS.length; li++) decorateLook(LOOKS[li]);
+  decorateLook(BIRTHDAY);
 
-  function todaysLine() {
+  function dayNum() {
     var d = new Date();
-    var dayNum = Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 86400000);
-    return LINES[((dayNum * 37) % LINES.length + LINES.length) % LINES.length];
+    return Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 86400000);
+  }
+  function builtInLine() {
+    var n = dayNum();
+    return LINES[((n * 37) % LINES.length + LINES.length) % LINES.length];
+  }
+  function queryIs(name, value) {
+    var s = String(location.search || "");
+    if (s.charAt(0) === "?") s = s.slice(1);
+    if (!s) return false;
+    var parts = s.split("&");
+    for (var i = 0; i < parts.length; i++) {
+      var kv = parts[i].split("=");
+      var k = "";
+      var v = "";
+      try { k = decodeURIComponent(kv[0] || ""); } catch (e) { k = kv[0] || ""; }
+      try { v = decodeURIComponent(kv[1] || ""); } catch (e2) { v = kv[1] || ""; }
+      if (k === name && v === value) return true;
+    }
+    return false;
+  }
+  function previewBirthday() { return queryIs("preview", "birthday"); }
+  function readBirthday() {
+    var raw = "";
+    try { raw = localStorage.getItem(BDAY_KEY) || ""; } catch (e) { return null; }
+    var m = /^(\d{1,2})-(\d{1,2})$/.exec(raw);
+    if (!m) return null;
+    var month = parseInt(m[1], 10);
+    var day = parseInt(m[2], 10);
+    if (month < 1 || month > 12 || day < 1 || day > 31) return null;
+    return { month: month, day: day };
+  }
+  function isLeap(y) { return (y % 4 === 0 && y % 100 !== 0) || (y % 400 === 0); }
+  function birthdayOn() {
+    if (previewBirthday()) return true;
+    var b = readBirthday();
+    if (!b) return false;
+    var now = new Date();
+    var month = now.getMonth() + 1;
+    var day = now.getDate();
+    if (b.month === 2 && b.day === 29 && !isLeap(now.getFullYear())) {
+      return month === 2 && day === 28;
+    }
+    return month === b.month && day === b.day;
+  }
+  function readWords() {
+    try {
+      var raw = localStorage.getItem(WORDS_KEY);
+      if (!raw) return [];
+      var data = JSON.parse(raw);
+      if (!data || !data.length) return [];
+      var out = [];
+      for (var i = 0; i < data.length && out.length < WORD_MAX; i++) {
+        var s = String(data[i] == null ? "" : data[i]).replace(/^\s+|\s+$/g, "");
+        if (s) out.push(s.slice(0, WORD_LEN));
+      }
+      return out;
+    } catch (e) { return []; }
+  }
+  function todaysLine() {
+    if (birthdayOn()) return "Happy Birthday, Jennifer";
+    var mine = readWords();
+    if (mine.length) {
+      var n = dayNum();
+      var i = ((n % mine.length) + mine.length) % mine.length;
+      return mine[i];
+    }
+    return builtInLine();
+  }
+  function currentLook() { return birthdayOn() ? BIRTHDAY : LOOKS[lookIndex]; }
+  function chimeOn() {
+    try { return localStorage.getItem(CHIME_KEY) !== "0"; } catch (e) { return true; }
   }
   function ease(x) { return 0.5 - 0.5 * Math.cos(Math.PI * x); }
   function breathAt(t) {
@@ -184,6 +267,20 @@
       SPECKS[o + 3] = 1.2 + rnd() * 2.6 * (1 - t * 0.6);
       SPECKS[o + 4] = rnd();
       SPECKS[o + 5] = rnd() * 6.28;
+    }
+  })();
+
+  var SPARK_COUNT = 48;
+  var SPARKS = new Float32Array(SPARK_COUNT * 4);
+  (function () {
+    var s = 11;
+    function rnd() { s = (s * 16807) % 2147483647; return (s - 1) / 2147483646; }
+    for (var i = 0; i < SPARK_COUNT; i++) {
+      var o = i * 4;
+      SPARKS[o] = rnd();
+      SPARKS[o + 1] = rnd();
+      SPARKS[o + 2] = rnd() * 6.2831853;
+      SPARKS[o + 3] = 5 + rnd() * 8;
     }
   })();
 
@@ -293,6 +390,49 @@
     "void main() { gl_Position = vec4(aPos, 0.0, 1.0); }"
   ].join("\n");
 
+  var SPARK_VERT = [
+    "precision highp float;",
+    "attribute float aX;",
+    "attribute float aY;",
+    "attribute float aPhase;",
+    "attribute float aSize;",
+    "uniform float uTime;",
+    "uniform float uStill;",
+    "uniform float uDim;",
+    "uniform float uDpr;",
+    "uniform float uMaxPoint;",
+    "varying float vTw;",
+    "varying float vHue;",
+    "void main() {",
+    "  float t = uStill > 0.5 ? 0.0 : uTime;",
+    "  float drift = mod(aY + t * 0.045, 1.0);",
+    "  float sway = aX + 0.04 * sin(t * 0.65 + aPhase);",
+    "  float nx = (sway - 0.5) * 1.25;",
+    "  float ny = (drift - 0.36) * 1.5;",
+    "  gl_Position = vec4(nx, ny, 0.0, 1.0);",
+    "  vTw = uStill > 0.5 ? 0.8 : (0.35 + 0.65 * abs(sin(t * 1.6 + aPhase)));",
+    "  vHue = aPhase * 0.15915494;",
+    "  gl_PointSize = clamp(aSize * uDpr * (0.85 + 0.4 * vTw), 2.0, uMaxPoint);",
+    "}"
+  ].join("\n");
+
+  var SPARK_FRAG = [
+    "precision mediump float;",
+    "varying float vTw;",
+    "varying float vHue;",
+    "uniform float uDim;",
+    "uniform vec3 uGold;",
+    "uniform vec3 uRose;",
+    "void main() {",
+    "  float d = length(gl_PointCoord - vec2(0.5)) * 2.0;",
+    "  float fall = clamp(1.0 - d, 0.0, 1.0);",
+    "  fall = pow(fall, 1.2);",
+    "  vec3 col = mix(uGold, uRose, clamp(vHue, 0.0, 1.0));",
+    "  float a = fall * vTw * uDim;",
+    "  gl_FragColor = vec4(col * a, a);",
+    "}"
+  ].join("\n");
+
   function glAttrs() {
     return {
       alpha: false,
@@ -362,6 +502,7 @@
     if (!gl) return null;
     var bgProg = makeProgram(gl, QUAD_VERT, BG_FRAG, ["aPos"]);
     var ptProg = makeProgram(gl, PT_VERT, PT_FRAG, ["aIndex", "aT", "aJitter", "aSize", "aHue", "aTw"]);
+    var sparkProg = makeProgram(gl, SPARK_VERT, SPARK_FRAG, ["aX", "aY", "aPhase", "aSize"]);
     if (!bgProg || !ptProg) return null;
 
     var quad = gl.createBuffer();
@@ -374,6 +515,20 @@
     var points = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, points);
     gl.bufferData(gl.ARRAY_BUFFER, SPECKS, gl.STATIC_DRAW);
+
+    var sparks = null;
+    var sp = null;
+    if (sparkProg) {
+      sparks = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, sparks);
+      gl.bufferData(gl.ARRAY_BUFFER, SPARKS, gl.STATIC_DRAW);
+      sp = {
+        uTime: loc(sparkProg, "uTime"), uStill: loc(sparkProg, "uStill"),
+        uDim: loc(sparkProg, "uDim"), uDpr: loc(sparkProg, "uDpr"),
+        uMaxPoint: loc(sparkProg, "uMaxPoint"), uGold: loc(sparkProg, "uGold"),
+        uRose: loc(sparkProg, "uRose")
+      };
+    }
 
     function loc(prog, name) { return gl.getUniformLocation(prog, name); }
     var bg = {
@@ -454,6 +609,24 @@
         u3(pt.uC1, look.c1V);
         u3(pt.uC2, look.c2V);
         gl.drawArrays(gl.POINTS, 0, SPECK_COUNT);
+
+        if (s.birthday && sparkProg && sparks) {
+          gl.useProgram(sparkProg);
+          gl.bindBuffer(gl.ARRAY_BUFFER, sparks);
+          for (var p = 0; p < 4; p++) {
+            gl.enableVertexAttribArray(p);
+            gl.vertexAttribPointer(p, 1, gl.FLOAT, false, 16, p * 4);
+          }
+          for (var q = 4; q < 6; q++) gl.disableVertexAttribArray(q);
+          gl.uniform1f(sp.uTime, s.time);
+          gl.uniform1f(sp.uStill, s.still);
+          gl.uniform1f(sp.uDim, s.dim);
+          gl.uniform1f(sp.uDpr, s.dpr);
+          gl.uniform1f(sp.uMaxPoint, maxPoint);
+          gl.uniform3f(sp.uGold, 1.0, 0.82, 0.45);
+          gl.uniform3f(sp.uRose, 0.98, 0.55, 0.68);
+          gl.drawArrays(gl.POINTS, 0, SPARK_COUNT);
+        }
       }
     };
   }
@@ -478,6 +651,8 @@
   function create2D(target) {
     var ctx = target.getContext("2d", { alpha: false });
     var sprites = { id: "", list: [], accent: null };
+    var sparkGold = softSprite("#ffd7a4", 64);
+    var sparkRose = softSprite("#f2a0b4", 64);
     function ensure(look) {
       if (sprites.id === look.id) return;
       sprites.id = look.id;
@@ -542,6 +717,22 @@
         var my = cy - Math.sin(ma) * mr;
         ctx.globalAlpha = 0.7 * dim;
         ctx.drawImage(sprites.accent, mx - 7, my - 7, 14, 14);
+        if (s.birthday) {
+          var st = s.still ? 0 : s.time;
+          for (var k = 0; k < SPARK_COUNT; k++) {
+            var so = k * 4;
+            var drift = (SPARKS[so + 1] + st * 0.045) % 1;
+            var sway = SPARKS[so] + 0.04 * Math.sin(st * 0.65 + SPARKS[so + 2]);
+            var nx = (sway - 0.5) * 1.25;
+            var ny = (drift - 0.36) * 1.5;
+            var sx = cx + nx * (w / 2);
+            var sy = cy - ny * (h / 2);
+            var twinkle = s.still ? 0.8 : (0.35 + 0.65 * Math.abs(Math.sin(st * 1.6 + SPARKS[so + 2])));
+            var rad = SPARKS[so + 3] * (0.85 + 0.4 * twinkle) * 0.55;
+            ctx.globalAlpha = twinkle * dim;
+            ctx.drawImage((SPARKS[so + 2] / 6.2831853) < 0.5 ? sparkGold : sparkRose, sx - rad, sy - rad, rad * 2, rad * 2);
+          }
+        }
         ctx.globalCompositeOperation = "source-over";
         ctx.globalAlpha = 1;
         var vg = ctx.createRadialGradient(cx, cy, base * 0.35, cx, cy, Math.max(w, h) * 0.72);
@@ -581,10 +772,12 @@
     try { localStorage.setItem(LOOK_KEY, LOOKS[lookIndex].id); } catch (e) {}
   }
   function applyLook(announce) {
-    var look = LOOKS[lookIndex];
+    var look = birthdayOn() ? BIRTHDAY : LOOKS[lookIndex];
     swatchEl.style.background = look.c1;
     swatchEl.style.boxShadow = "0 0 8px " + look.c1;
-    var label = "Swirl style: " + look.name + ". Tap to change.";
+    var label = birthdayOn()
+      ? "Birthday swirl today."
+      : "Swirl style: " + look.name + ". Tap to change.";
     lookBtn.setAttribute("aria-label", label);
     lookBtn.title = look.name;
     if (announce) {
@@ -628,14 +821,16 @@
     if (!begun) {
       var idle = (now - opened) / 1000;
       if (!still || dirty) {
+        var idleLook = currentLook();
         renderer.paint({
           time: still ? 8 : idle,
           breath: still ? 0.55 : (0.42 + 0.12 * Math.sin(idle * 0.8)),
           dim: 1,
-          spin: still ? 0.35 : idle * LOOKS[lookIndex].spin * 0.7,
+          spin: still ? 0.35 : idle * idleLook.spin * 0.7,
           still: still ? 1 : 0,
           dpr: view.dpr,
-          look: LOOKS[lookIndex]
+          look: idleLook,
+          birthday: birthdayOn() ? 1 : 0
         });
         if (still) dirty = false;
       }
@@ -658,14 +853,16 @@
       showEnd();
     }
     if (!still || dirty) {
+      var liveLook = currentLook();
       renderer.paint({
         time: still ? 8 : t,
         breath: breath,
         dim: dim,
-        spin: still ? 0.35 : t * LOOKS[lookIndex].spin,
+        spin: still ? 0.35 : t * liveLook.spin,
         still: still ? 1 : 0,
         dpr: view.dpr,
-        look: LOOKS[lookIndex]
+        look: liveLook,
+        birthday: birthdayOn() ? 1 : 0
       });
       if (still) dirty = false;
     }
@@ -788,7 +985,22 @@
     copyLink();
   }
 
+  var chimeEl = null;
+  function playChime() {
+    if (!chimeOn()) return;
+    try {
+      if (!chimeEl) {
+        chimeEl = new Audio(CHIME_SRC);
+        chimeEl.preload = "auto";
+        chimeEl.volume = 0.55;
+      }
+      try { chimeEl.currentTime = 0; } catch (err) {}
+      var pending = chimeEl.play();
+      if (pending && pending.catch) pending.catch(function () {});
+    } catch (e) {}
+  }
   function replay() {
+    var opening = !begun || revealed;
     begun = true;
     document.body.classList.remove("waiting");
     start = performance.now();
@@ -799,6 +1011,7 @@
     dirty = true;
     ensureLoop();
     update(start);
+    if (opening) playChime();
   }
   function beginIfNeeded() {
     if (!begun) replay();
@@ -806,11 +1019,22 @@
   function isControl(node) {
     return !!(node && node.closest && node.closest("button, a"));
   }
+  function isField(node) {
+    return !!(node && node.closest && node.closest("textarea, input, select, #sheet"));
+  }
 
   lookBtn.addEventListener("click", function (e) {
     e.stopPropagation();
     e.preventDefault();
     beginIfNeeded();
+    if (birthdayOn()) {
+      lookLiveEl.textContent = "Birthday";
+      lookNameEl.textContent = "Birthday";
+      lookNameEl.classList.add("show");
+      if (nameTimer) clearTimeout(nameTimer);
+      nameTimer = setTimeout(function () { lookNameEl.classList.remove("show"); }, 1700);
+      return;
+    }
     lookIndex = (lookIndex + 1) % LOOKS.length;
     saveLook();
     applyLook(true);
@@ -841,13 +1065,13 @@
   }
 
   document.addEventListener("click", function (e) {
-    if (isControl(e.target)) return;
+    if (isControl(e.target) || isField(e.target)) return;
     if (!begun) beginIfNeeded();
     else replay();
   });
   document.addEventListener("keydown", function (e) {
     if (e.key !== " " && e.key !== "Enter") return;
-    if (isControl(e.target)) return;
+    if (isControl(e.target) || isField(e.target)) return;
     e.preventDefault();
     if (!begun) beginIfNeeded();
     else replay();
@@ -869,6 +1093,12 @@
 
   lookIndex = readLook();
   applyLook(false);
+  if (birthdayOn()) {
+    lookNameEl.textContent = "Birthday";
+    lookNameEl.classList.add("show");
+    if (nameTimer) clearTimeout(nameTimer);
+    nameTimer = setTimeout(function () { lookNameEl.classList.remove("show"); }, 2200);
+  }
   if ("inert" in actionsEl) actionsEl.inert = true;
   fit();
   opened = performance.now();
@@ -968,6 +1198,243 @@
     window.addEventListener("appinstalled", function () { hideInstall(true); });
   })();
 
+  (function setupHome() {
+    var wordsBtn = document.getElementById("words");
+    var sheet = document.getElementById("sheet");
+    var closeBtn = document.getElementById("sheet-close");
+    var listEl = document.getElementById("word-list");
+    var addBtn = document.getElementById("word-add");
+    var chimeBtn = document.getElementById("chime");
+    var exportBtn = document.getElementById("word-export");
+    var backupEl = document.getElementById("word-backup");
+    var importEl = document.getElementById("word-import");
+    var importBtn = document.getElementById("word-import-btn");
+    var note = document.getElementById("sheet-note");
+    var previewNote = document.getElementById("preview-note");
+    var monthEl = document.getElementById("bday-month");
+    var dayEl = document.getElementById("bday-day");
+    if (!wordsBtn || !sheet || !listEl) return;
+
+    var draft = readWords();
+    if (previewNote && previewBirthday()) previewNote.hidden = false;
+
+    function sheetNote(text) { if (note) note.textContent = text || ""; }
+    function cleanDraft() {
+      var out = [];
+      for (var i = 0; i < draft.length && out.length < WORD_MAX; i++) {
+        var s = String(draft[i] == null ? "" : draft[i]).replace(/^\s+|\s+$/g, "");
+        if (s) out.push(s.slice(0, WORD_LEN));
+      }
+      return out;
+    }
+    function persistDraft() {
+      try { localStorage.setItem(WORDS_KEY, JSON.stringify(cleanDraft())); } catch (e) {}
+      if (backupEl) backupEl.value = cleanDraft().join("\n");
+      if (revealed) lineEl.textContent = todaysLine();
+    }
+    function renderWords() {
+      while (listEl.firstChild) listEl.removeChild(listEl.firstChild);
+      if (!draft.length) {
+        var empty = document.createElement("p");
+        empty.className = "sheet-lead";
+        empty.id = "word-empty";
+        empty.textContent = "None yet. Until you add one, a built-in line shows each day.";
+        listEl.appendChild(empty);
+      }
+      for (var i = 0; i < draft.length; i++) listEl.appendChild(wordRow(i));
+      if (backupEl) backupEl.value = cleanDraft().join("\n");
+    }
+    function wordRow(i) {
+      var row = document.createElement("div");
+      row.className = "word-row";
+      var ta = document.createElement("textarea");
+      ta.rows = 2;
+      ta.maxLength = WORD_LEN;
+      ta.setAttribute("aria-label", "Line " + (i + 1));
+      ta.value = draft[i];
+      ta.addEventListener("input", function () {
+        draft[i] = ta.value.slice(0, WORD_LEN);
+        persistDraft();
+      });
+      var actions = document.createElement("div");
+      actions.className = "word-actions";
+      actions.appendChild(moveButton("Up", i, -1));
+      actions.appendChild(moveButton("Down", i, 1));
+      var remove = document.createElement("button");
+      remove.type = "button";
+      remove.textContent = "Remove";
+      remove.setAttribute("aria-label", "Remove line " + (i + 1));
+      remove.addEventListener("click", function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+        draft.splice(i, 1);
+        persistDraft();
+        renderWords();
+        sheetNote("Removed.");
+      });
+      actions.appendChild(remove);
+      row.appendChild(ta);
+      row.appendChild(actions);
+      return row;
+    }
+    function moveButton(label, i, dir) {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.textContent = label;
+      var dest = i + dir;
+      var stuck = dest < 0 || dest >= draft.length;
+      btn.disabled = stuck;
+      btn.setAttribute("aria-label", label + " line " + (i + 1));
+      btn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+        if (dest < 0 || dest >= draft.length) return;
+        var tmp = draft[i];
+        draft[i] = draft[dest];
+        draft[dest] = tmp;
+        persistDraft();
+        renderWords();
+      });
+      return btn;
+    }
+    function setBehind(on) {
+      var kids = document.body.children;
+      for (var i = 0; i < kids.length; i++) {
+        if (kids[i] === sheet) continue;
+        if ("inert" in kids[i]) kids[i].inert = on;
+      }
+    }
+    function openSheet() {
+      sheet.hidden = false;
+      setBehind(true);
+      renderWords();
+      syncChime();
+      if (closeBtn) closeBtn.focus();
+    }
+    function closeSheet() {
+      setBehind(false);
+      sheet.hidden = true;
+      wordsBtn.focus();
+    }
+    function syncChime() {
+      if (!chimeBtn) return;
+      var on = chimeOn();
+      chimeBtn.setAttribute("aria-pressed", on ? "true" : "false");
+      chimeBtn.textContent = on ? "Opening sound is on" : "Opening sound is off";
+    }
+    function setChime(on) {
+      try { localStorage.setItem(CHIME_KEY, on ? "1" : "0"); } catch (e) {}
+      syncChime();
+    }
+    function fillDays(month, keep) {
+      var max = 31;
+      if (month >= 1 && month <= 12) max = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month - 1];
+      var current = keep || "";
+      while (dayEl.firstChild) dayEl.removeChild(dayEl.firstChild);
+      var blank = document.createElement("option");
+      blank.value = "";
+      blank.textContent = "Not set";
+      dayEl.appendChild(blank);
+      for (var d = 1; d <= max; d++) {
+        var opt = document.createElement("option");
+        opt.value = String(d);
+        opt.textContent = String(d);
+        dayEl.appendChild(opt);
+      }
+      dayEl.value = current && parseInt(current, 10) <= max ? String(parseInt(current, 10)) : "";
+    }
+    function saveBirthdayFromPickers() {
+      var month = parseInt(monthEl.value, 10);
+      var day = parseInt(dayEl.value, 10);
+      try {
+        if (!month || !day) localStorage.removeItem(BDAY_KEY);
+        else localStorage.setItem(BDAY_KEY, month + "-" + day);
+      } catch (e) {}
+      applyLook(false);
+      dirty = true;
+      if (revealed) lineEl.textContent = todaysLine();
+      ensureLoop();
+      update(performance.now());
+    }
+    function loadBirthdayPickers() {
+      var b = readBirthday();
+      monthEl.value = b ? String(b.month) : "";
+      fillDays(b ? b.month : 0, b ? String(b.day) : "");
+    }
+
+    wordsBtn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      e.preventDefault();
+      openSheet();
+    });
+    if (closeBtn) closeBtn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      e.preventDefault();
+      closeSheet();
+    });
+    sheet.addEventListener("click", function (e) { e.stopPropagation(); });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && !sheet.hidden) {
+        e.preventDefault();
+        closeSheet();
+      }
+    });
+    if (addBtn) addBtn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      e.preventDefault();
+      if (draft.length >= WORD_MAX) {
+        sheetNote("That's as many lines as this phone can keep.");
+        return;
+      }
+      draft.push("");
+      renderWords();
+      var areas = listEl.querySelectorAll("textarea");
+      if (areas.length) areas[areas.length - 1].focus();
+    });
+    if (chimeBtn) chimeBtn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      e.preventDefault();
+      setChime(!chimeOn());
+    });
+    if (exportBtn) exportBtn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      e.preventDefault();
+      var text = cleanDraft().join("\n");
+      if (!text) { sheetNote("No words to copy yet."); return; }
+      function ok() { sheetNote("Copied. They also sit in the box below, if you want to select them."); }
+      function fail() { sheetNote("Select the words in the box below and copy them."); }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(ok, function () { legacyCopy(text, ok, fail); });
+      } else legacyCopy(text, ok, fail);
+    });
+    if (importBtn) importBtn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      e.preventDefault();
+      var next = [];
+      var rows = String(importEl && importEl.value || "").split(/\r?\n/);
+      for (var i = 0; i < rows.length && next.length < WORD_MAX; i++) {
+        var s = rows[i].replace(/^\s+|\s+$/g, "");
+        if (s) next.push(s.slice(0, WORD_LEN));
+      }
+      if (!next.length) { sheetNote("Paste one line or more, then replace."); return; }
+      draft = next;
+      persistDraft();
+      renderWords();
+      if (importEl) importEl.value = "";
+      sheetNote("Saved " + next.length + (next.length === 1 ? " line" : " lines") + " on this phone.");
+    });
+    if (monthEl && dayEl) {
+      loadBirthdayPickers();
+      monthEl.addEventListener("change", function () {
+        fillDays(parseInt(monthEl.value, 10) || 0, dayEl.value);
+        saveBirthdayFromPickers();
+      });
+      dayEl.addEventListener("change", saveBirthdayFromPickers);
+    }
+    syncChime();
+    renderWords();
+  })();
+
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", function () {
       var opts = { scope: "/believe-swirl/" };
@@ -986,6 +1453,9 @@
     engine: renderer.kind,
     looks: LOOKS.length,
     tip: supportHref,
-    glError: glError
+    glError: glError,
+    words: readWords,
+    birthday: birthdayOn,
+    chime: chimeOn
   };
 })();

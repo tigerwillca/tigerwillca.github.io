@@ -61,7 +61,7 @@
     outline: 2px solid #f3e6d4;
     outline-offset: 3px;
   }
-  #look, #tone {
+  #look, #tone, #words {
     position: fixed;
     top: calc(14px + env(safe-area-inset-top));
     width: 48px;
@@ -75,7 +75,12 @@
   }
   #look { left: calc(14px + env(safe-area-inset-left)); }
   #tone { right: calc(14px + env(safe-area-inset-right)); font-size: 20px; }
-  #look:active, #tone:active, #share:active, #install-dismiss:active, #install-android:active { transform: scale(0.97); }
+  #words {
+    top: calc(72px + env(safe-area-inset-top));
+    right: calc(14px + env(safe-area-inset-right));
+  }
+  #words svg { display: block; width: 22px; height: 22px; margin: 0 auto; }
+  #look:active, #tone:active, #words:active, #share:active, #install-dismiss:active, #install-android:active { transform: scale(0.97); }
   #swatch {
     display: block;
     width: 18px;
@@ -257,6 +262,111 @@
   body.waiting.install-open #cue { bottom: calc(var(--install-space, 168px) + 8px + env(safe-area-inset-bottom)); }
   body.install-open #hint { bottom: calc(var(--install-space, 168px) + env(safe-area-inset-bottom)); }
   body.install-open #actions { bottom: calc(var(--install-space, 168px) + 36px + env(safe-area-inset-bottom)); }
+  #sheet {
+    position: fixed;
+    inset: 0;
+    z-index: 8;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    background: rgba(11, 9, 22, 0.82);
+    padding: calc(16px + env(safe-area-inset-top)) 16px calc(28px + env(safe-area-inset-bottom));
+    box-sizing: border-box;
+  }
+  #sheet[hidden] { display: none; }
+  #sheet-card {
+    max-width: 34rem;
+    margin: 0 auto;
+    background: #14111f;
+    border: 1px solid rgba(243, 217, 176, 0.38);
+    border-radius: 20px;
+    padding: 18px 16px 22px;
+    color: #f6eadc;
+    -webkit-user-select: text;
+    user-select: text;
+  }
+  #sheet-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 0 0 8px;
+  }
+  #sheet-title {
+    margin: 0;
+    font-size: 1.7rem;
+    font-weight: normal;
+    letter-spacing: 0.01em;
+  }
+  #sheet h3 {
+    margin: 22px 0 8px;
+    font-size: 1.3rem;
+    font-weight: normal;
+  }
+  .sheet-lead {
+    margin: 0 0 14px;
+    font-size: 1.125rem;
+    line-height: 1.45;
+    color: #ead9c2;
+  }
+  #sheet-close, #word-add, #chime, #word-export, #word-import-btn, .word-actions button {
+    font-size: 1.0625rem;
+    color: #f6eadc;
+    background: rgba(255, 220, 170, 0.08);
+    border: 1px solid rgba(243, 217, 176, 0.4);
+    border-radius: 999px;
+    min-height: 48px;
+    min-width: 48px;
+    padding: 10px 16px;
+  }
+  #sheet-close { flex: 0 0 auto; }
+  #word-add, #chime, #word-export, #word-import-btn { width: 100%; margin: 0 0 10px; }
+  #chime[aria-pressed="false"] { background: transparent; }
+  .word-row { margin: 0 0 16px; }
+  .word-row textarea, #word-import, #word-backup {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0 0 8px;
+    font: inherit;
+    font-size: 1.25rem;
+    line-height: 1.4;
+    color: #fff6e8;
+    background: rgba(255, 244, 230, 0.06);
+    border: 1px solid rgba(243, 217, 176, 0.4);
+    border-radius: 14px;
+    padding: 12px 14px;
+    min-height: 4.6rem;
+    resize: vertical;
+    -webkit-user-select: text;
+    user-select: text;
+  }
+  #word-backup { min-height: 3.4rem; }
+  .word-actions { display: flex; gap: 8px; }
+  .word-actions button { flex: 1; }
+  .word-actions button:disabled { opacity: 0.38; }
+  .sheet-field { display: block; margin: 0 0 12px; font-size: 1.05rem; color: #ead9c2; }
+  #bday-month, #bday-day {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 6px;
+    min-height: 48px;
+    font: inherit;
+    font-size: 1.25rem;
+    color: #fff6e8;
+    background: #1c1828;
+    border: 1px solid rgba(243, 217, 176, 0.4);
+    border-radius: 14px;
+    padding: 8px 12px;
+  }
+  #sheet-note {
+    min-height: 1.4em;
+    margin: 8px 0 0;
+    font-size: 1.05rem;
+    color: #f6eadc;
+  }
+  #preview-note { color: #ffd7a4; }
   #noscript {
     position: fixed;
     left: 10vw;
@@ -285,7 +395,7 @@
   }
   @media (prefers-reduced-motion: reduce) {
     #cue, #line, #hint, #actions, #note, #look-name { transition: none; }
-    #look:active, #tone:active, #share:active, #install-dismiss:active, #install-android:active { transform: none; }
+    #look:active, #tone:active, #words:active, #share:active, #install-dismiss:active, #install-android:active { transform: none; }
   }
 </style>
 <script src="app.js" defer></script>
@@ -297,6 +407,9 @@
 </button>
 <p id="look-name" aria-hidden="true"></p>
 <button id="tone" type="button" aria-pressed="false" aria-label="Soft tone (off)" title="Soft tone">&#9835;</button>
+<button id="words" type="button" aria-label="My words">
+  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" d="M14.1 4.4 19.6 9.9 8.8 20.7H3.3v-5.5L14.1 4.4z"/><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" d="M12.2 6.3 17.7 11.8"/></svg>
+</button>
 <div id="cue" aria-live="polite">tap anywhere</div>
 <div id="line" role="status" aria-hidden="true"></div>
 <div id="actions" aria-hidden="true">
@@ -309,6 +422,52 @@
   <button id="install-android" type="button" hidden>Add to Home Screen</button>
   <button id="install-dismiss" type="button">Not now</button>
 </aside>
+<div id="sheet" hidden>
+  <div id="sheet-card" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+    <div id="sheet-head">
+      <h2 id="sheet-title">My words</h2>
+      <button id="sheet-close" type="button">Done</button>
+    </div>
+    <p id="preview-note" class="sheet-lead" hidden>Birthday preview is on.</p>
+    <p class="sheet-lead">Write the lines you want to see. One shows each day, then the next, until they start again. They stay on this phone.</p>
+    <div id="word-list"></div>
+    <button id="word-add" type="button">Add a line</button>
+    <h3>Opening sound</h3>
+    <p class="sheet-lead">A soft chime when a minute begins.</p>
+    <button id="chime" type="button" aria-pressed="true">Opening sound is on</button>
+    <h3>Your birthday</h3>
+    <p class="sheet-lead">The month and day stay on this phone. That day, the swirl turns golden and rose.</p>
+    <label class="sheet-field">Month
+      <select id="bday-month">
+        <option value="">Not set</option>
+        <option value="1">January</option>
+        <option value="2">February</option>
+        <option value="3">March</option>
+        <option value="4">April</option>
+        <option value="5">May</option>
+        <option value="6">June</option>
+        <option value="7">July</option>
+        <option value="8">August</option>
+        <option value="9">September</option>
+        <option value="10">October</option>
+        <option value="11">November</option>
+        <option value="12">December</option>
+      </select>
+    </label>
+    <label class="sheet-field">Day
+      <select id="bday-day"><option value="">Not set</option></select>
+    </label>
+    <h3>A copy</h3>
+    <p class="sheet-lead">Copy these words somewhere safe, or paste a copy back into this phone.</p>
+    <button id="word-export" type="button">Copy my words</button>
+    <label class="sheet-field" for="word-backup">Your words, one on each line</label>
+    <textarea id="word-backup" readonly></textarea>
+    <label class="sheet-field" for="word-import">Paste words here</label>
+    <textarea id="word-import"></textarea>
+    <button id="word-import-btn" type="button">Replace with pasted words</button>
+    <p id="sheet-note" role="status"></p>
+  </div>
+</div>
 <p id="look-live" class="sr" aria-live="polite"></p>
 <noscript><p id="noscript">A minute of warm light needs JavaScript turned on. This page still doesn’t track you.</p></noscript>
 </body>

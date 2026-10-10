@@ -1,7 +1,7 @@
 // Believe Swirl — offline cache. Only touches caches named "bswirl-*".
 // Bump CACHE whenever a precached file changes (including after pasting TIP_URL
 // in app.js). Activate deletes older bswirl-* caches so an installed copy updates.
-var CACHE = "bswirl-v3";
+var CACHE = "bswirl-v4";
 var FILES = [
   "./",
   "index.html",
@@ -10,7 +10,8 @@ var FILES = [
   "icon-180.png",
   "icon-192.png",
   "icon-512.png",
-  "icon-512-maskable.png"
+  "icon-512-maskable.png",
+  "sounds/open.m4a"
 ];
 
 function freshPut(cache, path, res) {
