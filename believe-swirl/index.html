@@ -16,6 +16,19 @@
 <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+<link rel="apple-touch-startup-image" media="(orientation: portrait) and (device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3)" href="splash/1320x2868.png">
+<link rel="apple-touch-startup-image" media="(orientation: portrait) and (device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3)" href="splash/1206x2622.png">
+<link rel="apple-touch-startup-image" media="(orientation: portrait) and (device-width: 420px) and (device-height: 912px) and (-webkit-device-pixel-ratio: 3)" href="splash/1260x2736.png">
+<link rel="apple-touch-startup-image" media="(orientation: portrait) and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)" href="splash/1290x2796.png">
+<link rel="apple-touch-startup-image" media="(orientation: portrait) and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)" href="splash/1179x2556.png">
+<link rel="apple-touch-startup-image" media="(orientation: portrait) and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)" href="splash/1170x2532.png">
+<link rel="apple-touch-startup-image" media="(orientation: portrait) and (device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3)" href="splash/1284x2778.png">
+<link rel="apple-touch-startup-image" media="(orientation: portrait) and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" href="splash/1125x2436.png">
+<link rel="apple-touch-startup-image" media="(orientation: portrait) and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)" href="splash/1242x2688.png">
+<link rel="apple-touch-startup-image" media="(orientation: portrait) and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)" href="splash/828x1792.png">
+<link rel="apple-touch-startup-image" media="(orientation: portrait) and (device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3)" href="splash/1242x2208.png">
+<link rel="apple-touch-startup-image" media="(orientation: portrait) and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" href="splash/750x1334.png">
+<link rel="apple-touch-startup-image" media="(orientation: portrait) and (device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" href="splash/640x1136.png">
 <style>
   html, body {
     margin: 0;
@@ -41,18 +54,19 @@
     height: 100%;
     display: block;
     touch-action: none;
+    background: #0b0916;
   }
   button, a { font-family: inherit; cursor: pointer; touch-action: manipulation; }
   button:focus-visible, a:focus-visible {
     outline: 2px solid #f3e6d4;
     outline-offset: 3px;
   }
-  #look, #tone {
+  #look, #tone, #words {
     position: fixed;
     top: calc(14px + env(safe-area-inset-top));
-    width: 44px;
-    height: 44px;
-    border-radius: 22px;
+    width: 48px;
+    height: 48px;
+    border-radius: 24px;
     border: 1px solid rgba(243, 217, 176, 0.32);
     background: rgba(11, 9, 22, 0.55);
     color: #f3e6d4;
@@ -60,12 +74,17 @@
     z-index: 3;
   }
   #look { left: calc(14px + env(safe-area-inset-left)); }
-  #tone { right: calc(14px + env(safe-area-inset-right)); font-size: 18px; }
-  #look:active, #tone:active, #share:active { transform: scale(0.97); }
+  #tone { right: calc(14px + env(safe-area-inset-right)); font-size: 20px; }
+  #words {
+    top: calc(72px + env(safe-area-inset-top));
+    right: calc(14px + env(safe-area-inset-right));
+  }
+  #words svg { display: block; width: 22px; height: 22px; margin: 0 auto; }
+  #look:active, #tone:active, #words:active, #share:active, #install-dismiss:active, #install-android:active { transform: scale(0.97); }
   #swatch {
     display: block;
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
     margin: 0 auto;
     border-radius: 50%;
     background: #ffdc82;
@@ -73,11 +92,11 @@
   }
   #look-name {
     position: fixed;
-    top: calc(24px + env(safe-area-inset-top));
-    left: calc(66px + env(safe-area-inset-left));
+    top: calc(26px + env(safe-area-inset-top));
+    left: calc(72px + env(safe-area-inset-left));
     z-index: 3;
     margin: 0;
-    font-size: 0.95rem;
+    font-size: 1.05rem;
     letter-spacing: 0.04em;
     color: #f6eadc;
     opacity: 0;
@@ -88,19 +107,26 @@
   #look-name.show { opacity: 1; }
   #cue {
     position: fixed;
-    left: 0;
-    right: 0;
+    left: 6vw;
+    right: 6vw;
     bottom: calc(16vh + env(safe-area-inset-bottom));
     z-index: 2;
     text-align: center;
-    font-size: 1.05rem;
-    letter-spacing: 0.18em;
+    font-size: 1.2rem;
+    letter-spacing: 0.12em;
     text-transform: lowercase;
     color: #f6e4cc;
     opacity: 0;
     transition: opacity 1.2s ease;
     pointer-events: none;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.65);
+  }
+  body.waiting #cue {
+    font-size: 1.45rem;
+    letter-spacing: 0.02em;
+    text-transform: none;
+    opacity: 1;
+    bottom: calc(14vh + env(safe-area-inset-bottom));
   }
   #line {
     position: fixed;
@@ -110,7 +136,7 @@
     transform: translateY(-50%);
     z-index: 2;
     text-align: center;
-    font-size: clamp(1.5rem, 6.2vw, 2.35rem);
+    font-size: clamp(1.55rem, 6.4vw, 2.4rem);
     line-height: 1.35;
     color: #fff6e8;
     opacity: 0;
@@ -142,26 +168,27 @@
     opacity: 1;
     pointer-events: auto;
   }
-  #share {
-    font-size: 1rem;
+  #share, #install-android, #install-dismiss {
+    font-size: 1.0625rem;
     color: #f6eadc;
     background: rgba(11, 9, 22, 0.45);
     border: 1px solid rgba(243, 217, 176, 0.4);
     border-radius: 999px;
-    min-height: 44px;
-    padding: 8px 22px;
-    letter-spacing: 0.03em;
+    min-height: 48px;
+    min-width: 48px;
+    padding: 10px 22px;
+    letter-spacing: 0.02em;
   }
   #support {
     color: #ead9c2;
-    font-size: 0.95rem;
-    line-height: 1.3;
+    font-size: 1.05rem;
+    line-height: 1.35;
     text-decoration: underline;
     text-decoration-thickness: 1px;
     text-decoration-color: rgba(234, 217, 194, 0.55);
     text-underline-offset: 0.28em;
-    min-height: 44px;
-    padding: 10px 14px;
+    min-height: 48px;
+    padding: 12px 16px;
     display: inline-flex;
     align-items: center;
   }
@@ -172,7 +199,7 @@
     bottom: 100%;
     margin: 0 0 6px;
     text-align: center;
-    font-size: 0.95rem;
+    font-size: 1.05rem;
     color: #f6eadc;
     opacity: 0;
     pointer-events: none;
@@ -187,8 +214,8 @@
     bottom: calc(4.5vh + env(safe-area-inset-bottom));
     z-index: 2;
     text-align: center;
-    font-size: 0.95rem;
-    letter-spacing: 0.08em;
+    font-size: 1.05rem;
+    letter-spacing: 0.04em;
     color: #e4d0b4;
     opacity: 0;
     transition: opacity 2.4s ease 1.2s;
@@ -196,13 +223,157 @@
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.75);
   }
   #hint.show { opacity: 1; }
+  #install {
+    position: fixed;
+    left: max(12px, env(safe-area-inset-left));
+    right: max(12px, env(safe-area-inset-right));
+    bottom: calc(10px + env(safe-area-inset-bottom));
+    z-index: 5;
+    margin: 0 auto;
+    max-width: 28rem;
+    padding: 16px 16px 12px;
+    border-radius: 18px;
+    border: 1px solid rgba(243, 217, 176, 0.38);
+    background: rgba(11, 9, 22, 0.94);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    color: #f6eadc;
+  }
+  #install[hidden] { display: none; }
+  #install-copy {
+    margin: 0 0 12px;
+    font-size: 1.125rem;
+    line-height: 1.45;
+    text-align: left;
+  }
+  #install-copy svg {
+    display: inline-block;
+    width: 1.15em;
+    height: 1.15em;
+    vertical-align: -0.28em;
+  }
+  #install-android, #install-dismiss { width: 100%; }
+  #install-android { background: rgba(255, 220, 170, 0.12); }
+  #install-dismiss {
+    background: transparent;
+    border-color: transparent;
+    color: #ead9c2;
+  }
+  body.install-open #cue,
+  body.waiting.install-open #cue { bottom: calc(var(--install-space, 168px) + 8px + env(safe-area-inset-bottom)); }
+  body.install-open #hint { bottom: calc(var(--install-space, 168px) + env(safe-area-inset-bottom)); }
+  body.install-open #actions { bottom: calc(var(--install-space, 168px) + 36px + env(safe-area-inset-bottom)); }
+  #sheet {
+    position: fixed;
+    inset: 0;
+    z-index: 8;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    background: rgba(11, 9, 22, 0.82);
+    padding: calc(16px + env(safe-area-inset-top)) 16px calc(28px + env(safe-area-inset-bottom));
+    box-sizing: border-box;
+  }
+  #sheet[hidden] { display: none; }
+  #sheet-card {
+    max-width: 34rem;
+    margin: 0 auto;
+    background: #14111f;
+    border: 1px solid rgba(243, 217, 176, 0.38);
+    border-radius: 20px;
+    padding: 18px 16px 22px;
+    color: #f6eadc;
+    -webkit-user-select: text;
+    user-select: text;
+  }
+  #sheet-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 0 0 8px;
+  }
+  #sheet-title {
+    margin: 0;
+    font-size: 1.7rem;
+    font-weight: normal;
+    letter-spacing: 0.01em;
+  }
+  #sheet h3 {
+    margin: 22px 0 8px;
+    font-size: 1.3rem;
+    font-weight: normal;
+  }
+  .sheet-lead {
+    margin: 0 0 14px;
+    font-size: 1.125rem;
+    line-height: 1.45;
+    color: #ead9c2;
+  }
+  #sheet-close, #word-add, #chime, #word-export, #word-import-btn, .word-actions button {
+    font-size: 1.0625rem;
+    color: #f6eadc;
+    background: rgba(255, 220, 170, 0.08);
+    border: 1px solid rgba(243, 217, 176, 0.4);
+    border-radius: 999px;
+    min-height: 48px;
+    min-width: 48px;
+    padding: 10px 16px;
+  }
+  #sheet-close { flex: 0 0 auto; }
+  #word-add, #chime, #word-export, #word-import-btn { width: 100%; margin: 0 0 10px; }
+  #chime[aria-pressed="false"] { background: transparent; }
+  .word-row { margin: 0 0 16px; }
+  .word-row textarea, #word-import, #word-backup {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0 0 8px;
+    font: inherit;
+    font-size: 1.25rem;
+    line-height: 1.4;
+    color: #fff6e8;
+    background: rgba(255, 244, 230, 0.06);
+    border: 1px solid rgba(243, 217, 176, 0.4);
+    border-radius: 14px;
+    padding: 12px 14px;
+    min-height: 4.6rem;
+    resize: vertical;
+    -webkit-user-select: text;
+    user-select: text;
+  }
+  #word-backup { min-height: 3.4rem; }
+  .word-actions { display: flex; gap: 8px; }
+  .word-actions button { flex: 1; }
+  .word-actions button:disabled { opacity: 0.38; }
+  .sheet-field { display: block; margin: 0 0 12px; font-size: 1.05rem; color: #ead9c2; }
+  #bday-month, #bday-day {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 6px;
+    min-height: 48px;
+    font: inherit;
+    font-size: 1.25rem;
+    color: #fff6e8;
+    background: #1c1828;
+    border: 1px solid rgba(243, 217, 176, 0.4);
+    border-radius: 14px;
+    padding: 8px 12px;
+  }
+  #sheet-note {
+    min-height: 1.4em;
+    margin: 8px 0 0;
+    font-size: 1.05rem;
+    color: #f6eadc;
+  }
+  #preview-note { color: #ffd7a4; }
   #noscript {
     position: fixed;
     left: 10vw;
     right: 10vw;
     top: 42%;
     text-align: center;
-    font-size: 1.2rem;
+    font-size: 1.25rem;
     line-height: 1.45;
     color: #f6eadc;
   }
@@ -218,31 +389,86 @@
     border: 0;
   }
   @media (max-height: 680px) {
-    #line { top: 40%; font-size: clamp(1.3rem, 5.6vw, 1.9rem); }
-    #actions { bottom: calc(14vh + env(safe-area-inset-bottom)); }
+    #line { top: 38%; font-size: clamp(1.35rem, 5.6vw, 1.9rem); }
+    #actions { bottom: calc(18vh + env(safe-area-inset-bottom)); }
+    body.waiting #cue { font-size: 1.25rem; }
   }
   @media (prefers-reduced-motion: reduce) {
     #cue, #line, #hint, #actions, #note, #look-name { transition: none; }
-    #look:active, #tone:active, #share:active { transform: none; }
+    #look:active, #tone:active, #words:active, #share:active, #install-dismiss:active, #install-android:active { transform: none; }
   }
 </style>
+<script src="app.js" defer></script>
 </head>
-<body>
+<body class="waiting">
 <canvas id="c" aria-hidden="true"></canvas>
 <button id="look" type="button" aria-label="Swirl style: Amber. Tap to change.">
   <span id="swatch" aria-hidden="true"></span>
 </button>
 <p id="look-name" aria-hidden="true"></p>
 <button id="tone" type="button" aria-pressed="false" aria-label="Soft tone (off)" title="Soft tone">&#9835;</button>
-<div id="cue" aria-live="polite"></div>
+<button id="words" type="button" aria-label="My words">
+  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" d="M14.1 4.4 19.6 9.9 8.8 20.7H3.3v-5.5L14.1 4.4z"/><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" d="M12.2 6.3 17.7 11.8"/></svg>
+</button>
+<div id="cue" aria-live="polite">tap anywhere</div>
 <div id="line" role="status" aria-hidden="true"></div>
 <div id="actions" aria-hidden="true">
   <p id="note" role="status"></p>
   <button id="share" type="button">Share</button>
 </div>
 <div id="hint">tap to breathe again</div>
+<aside id="install" hidden aria-hidden="true">
+  <p id="install-copy">Keep it on your Home Screen: tap <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" d="M12 3.2v9.2M8.4 6.6 12 3.2l3.6 3.4M6 10.2H5.2A1.8 1.8 0 0 0 3.4 12v7.6A1.8 1.8 0 0 0 5.2 21.4h13.6a1.8 1.8 0 0 0 1.8-1.8V12a1.8 1.8 0 0 0-1.8-1.8H18"/></svg> Share, then Add to Home Screen</p>
+  <button id="install-android" type="button" hidden>Add to Home Screen</button>
+  <button id="install-dismiss" type="button">Not now</button>
+</aside>
+<div id="sheet" hidden>
+  <div id="sheet-card" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+    <div id="sheet-head">
+      <h2 id="sheet-title">My words</h2>
+      <button id="sheet-close" type="button">Done</button>
+    </div>
+    <p id="preview-note" class="sheet-lead" hidden>Birthday preview is on.</p>
+    <p class="sheet-lead">Write the lines you want to see. One shows each day, then the next, until they start again. They stay on this phone.</p>
+    <div id="word-list"></div>
+    <button id="word-add" type="button">Add a line</button>
+    <h3>Opening sound</h3>
+    <p class="sheet-lead">A soft chime when a minute begins.</p>
+    <button id="chime" type="button" aria-pressed="true">Opening sound is on</button>
+    <h3>Your birthday</h3>
+    <p class="sheet-lead">The month and day stay on this phone. That day, the swirl turns golden and rose.</p>
+    <label class="sheet-field">Month
+      <select id="bday-month">
+        <option value="">Not set</option>
+        <option value="1">January</option>
+        <option value="2">February</option>
+        <option value="3">March</option>
+        <option value="4">April</option>
+        <option value="5">May</option>
+        <option value="6">June</option>
+        <option value="7">July</option>
+        <option value="8">August</option>
+        <option value="9">September</option>
+        <option value="10">October</option>
+        <option value="11">November</option>
+        <option value="12">December</option>
+      </select>
+    </label>
+    <label class="sheet-field">Day
+      <select id="bday-day"><option value="">Not set</option></select>
+    </label>
+    <h3>A copy</h3>
+    <p class="sheet-lead">Copy these words somewhere safe, or paste a copy back into this phone.</p>
+    <button id="word-export" type="button">Copy my words</button>
+    <label class="sheet-field" for="word-backup">Your words, one on each line</label>
+    <textarea id="word-backup" readonly></textarea>
+    <label class="sheet-field" for="word-import">Paste words here</label>
+    <textarea id="word-import"></textarea>
+    <button id="word-import-btn" type="button">Replace with pasted words</button>
+    <p id="sheet-note" role="status"></p>
+  </div>
+</div>
 <p id="look-live" class="sr" aria-live="polite"></p>
 <noscript><p id="noscript">A minute of warm light needs JavaScript turned on. This page still doesn’t track you.</p></noscript>
-<script src="app.js"></script>
 </body>
 </html>
