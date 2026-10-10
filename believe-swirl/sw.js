@@ -1,7 +1,7 @@
 // Believe Swirl — offline cache. Only touches caches named "bswirl-*".
 // Bump CACHE whenever a precached file changes (including after pasting TIP_URL
 // in app.js). Activate deletes older bswirl-* caches so an installed copy updates.
-var CACHE = "bswirl-v2";
+var CACHE = "bswirl-v3";
 var FILES = [
   "./",
   "index.html",

@@ -2,7 +2,7 @@
 
 A minute of warm light, and one kind line for today. No account and no tracking. It works offline, and it can be added to an iPhone home screen from Safari: Share, then Add to Home Screen.
 
-The swirl style someone picks is saved only on that device (`localStorage` key `believe-swirl-look`).
+The swirl style someone picks is saved only on that device (`localStorage` key `believe-swirl-look`). On an iPhone, Safari shows a short Home Screen hint once; closing it is remembered on that device (`believe-swirl-install-hint`).
 
 ## Paste Jennifer's support link
 
@@ -28,13 +28,13 @@ Replace `https://example.com/her-link` with her real page. Leave the quotes empt
 4. Open `sw.js` and bump the cache name so phones that already installed the app pick up the change. For example, change:
 
 ```javascript
-var CACHE = "bswirl-v2";
+var CACHE = "bswirl-v3";
 ```
 
 to:
 
 ```javascript
-var CACHE = "bswirl-v3";
+var CACHE = "bswirl-v4";
 ```
 
 The app never contacts that address on its own. The link is only opened if someone taps it.

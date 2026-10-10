@@ -10,6 +10,7 @@
   var SHARE_URL = "https://tigerwillca.github.io/believe-swirl/";
   var SHARE_TEXT = "A minute of warm light, and one kind line for today.";
   var LOOK_KEY = "believe-swirl-look";
+  var INSTALL_KEY = "believe-swirl-install-hint";
   var BG = "#0b0916";
 
   // One warm line per day. Plain, kind words. No questions, nothing to do.
@@ -110,6 +111,8 @@
   var reduce = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : null;
   var lookIndex = 0;
   var start = 0;
+  var begun = false;
+  var opened = 0;
   var revealed = false;
   var lastCue = "";
   var lastOpacity = "";
@@ -621,8 +624,30 @@
   }
 
   function update(now) {
-    var t = (now - start) / 1000;
     var still = wantsStill();
+    if (!begun) {
+      var idle = (now - opened) / 1000;
+      if (!still || dirty) {
+        renderer.paint({
+          time: still ? 8 : idle,
+          breath: still ? 0.55 : (0.42 + 0.12 * Math.sin(idle * 0.8)),
+          dim: 1,
+          spin: still ? 0.35 : idle * LOOKS[lookIndex].spin * 0.7,
+          still: still ? 1 : 0,
+          dpr: view.dpr,
+          look: LOOKS[lookIndex]
+        });
+        if (still) dirty = false;
+      }
+      if (lastCue !== "tap anywhere") {
+        cueEl.textContent = "tap anywhere";
+        lastCue = "tap anywhere";
+      }
+      if (cueEl.getAttribute("aria-hidden")) cueEl.removeAttribute("aria-hidden");
+      setCueOpacity(1);
+      return;
+    }
+    var t = (now - start) / 1000;
     var done = t >= TOTAL;
     var breath = still ? 0.62 : (done ? 0.55 + 0.08 * Math.sin(t * 0.5) : breathAt(t));
     var dim = 1;
@@ -764,6 +789,8 @@
   }
 
   function replay() {
+    begun = true;
+    document.body.classList.remove("waiting");
     start = performance.now();
     revealed = false;
     lastCue = "";
@@ -773,6 +800,9 @@
     ensureLoop();
     update(start);
   }
+  function beginIfNeeded() {
+    if (!begun) replay();
+  }
   function isControl(node) {
     return !!(node && node.closest && node.closest("button, a"));
   }
@@ -780,6 +810,7 @@
   lookBtn.addEventListener("click", function (e) {
     e.stopPropagation();
     e.preventDefault();
+    beginIfNeeded();
     lookIndex = (lookIndex + 1) % LOOKS.length;
     saveLook();
     applyLook(true);
@@ -787,6 +818,7 @@
   });
   toneBtn.addEventListener("click", function (e) {
     e.stopPropagation();
+    beginIfNeeded();
     if (tone.on) tone.disable(); else tone.enable();
     toneBtn.setAttribute("aria-pressed", tone.on ? "true" : "false");
     toneBtn.setAttribute("aria-label", "Soft tone (" + (tone.on ? "on" : "off") + ")");
@@ -810,13 +842,15 @@
 
   document.addEventListener("click", function (e) {
     if (isControl(e.target)) return;
-    replay();
+    if (!begun) beginIfNeeded();
+    else replay();
   });
   document.addEventListener("keydown", function (e) {
     if (e.key !== " " && e.key !== "Enter") return;
     if (isControl(e.target)) return;
     e.preventDefault();
-    replay();
+    if (!begun) beginIfNeeded();
+    else replay();
   });
 
   window.addEventListener("resize", function () { fit(); dirty = true; update(performance.now()); });
@@ -837,12 +871,102 @@
   applyLook(false);
   if ("inert" in actionsEl) actionsEl.inert = true;
   fit();
-  start = performance.now();
+  opened = performance.now();
   ensureLoop();
-  if (wantsStill()) update(start);
+  if (wantsStill()) update(opened);
   setInterval(function () {
     if (wantsStill()) update(performance.now());
   }, 250);
+
+  (function setupInstall() {
+    var installEl = document.getElementById("install");
+    var installCopy = document.getElementById("install-copy");
+    var installAndroid = document.getElementById("install-android");
+    var installDismiss = document.getElementById("install-dismiss");
+    var deferredInstall = null;
+    if (!installEl) return;
+
+    function installDismissed() {
+      try { return localStorage.getItem(INSTALL_KEY) === "1"; } catch (e) { return false; }
+    }
+    function rememberInstall() {
+      try { localStorage.setItem(INSTALL_KEY, "1"); } catch (e) {}
+    }
+    function standalone() {
+      if (window.navigator.standalone === true) return true;
+      try {
+        if (window.matchMedia("(display-mode: standalone)").matches) return true;
+        if (window.matchMedia("(display-mode: fullscreen)").matches) return true;
+      } catch (e) {}
+      return false;
+    }
+    function iosDevice() {
+      var ua = navigator.userAgent || "";
+      if (/iPhone|iPad|iPod/.test(ua)) return true;
+      return navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1;
+    }
+    function iosSafari() {
+      if (!iosDevice()) return false;
+      var ua = navigator.userAgent || "";
+      if (/CriOS|FxiOS|EdgiOS|OPiOS|DuckDuckGo|GSA\/|FBAN|FBAV/.test(ua)) return false;
+      return /Safari/.test(ua);
+    }
+    function android() {
+      return /Android/i.test(navigator.userAgent || "");
+    }
+    function placeInstall() {
+      if (installEl.hidden) return;
+      var h = installEl.offsetHeight || 0;
+      document.documentElement.style.setProperty("--install-space", (h + 18) + "px");
+    }
+    function hideInstall(remember) {
+      if (remember) rememberInstall();
+      installEl.hidden = true;
+      installEl.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("install-open");
+      deferredInstall = null;
+    }
+    function showInstall(mode) {
+      if (standalone() || installDismissed()) return;
+      installEl.hidden = false;
+      installEl.setAttribute("aria-hidden", "false");
+      document.body.classList.add("install-open");
+      var ios = mode === "ios";
+      installCopy.hidden = !ios;
+      installDismiss.hidden = !ios;
+      installAndroid.hidden = ios;
+      placeInstall();
+    }
+    window.addEventListener("resize", placeInstall);
+
+    installEl.addEventListener("click", function (e) { e.stopPropagation(); });
+    installDismiss.addEventListener("click", function (e) {
+      e.stopPropagation();
+      e.preventDefault();
+      hideInstall(true);
+    });
+    installAndroid.addEventListener("click", function (e) {
+      e.stopPropagation();
+      e.preventDefault();
+      if (!deferredInstall || !deferredInstall.prompt) return;
+      var promptEvent = deferredInstall;
+      deferredInstall = null;
+      try { promptEvent.prompt(); } catch (err) { hideInstall(true); return; }
+      var choice = promptEvent.userChoice;
+      if (choice && choice.then) {
+        choice.then(function () { hideInstall(true); }, function () { hideInstall(true); });
+      } else hideInstall(true);
+    });
+
+    if (iosSafari()) showInstall("ios");
+    window.addEventListener("beforeinstallprompt", function (e) {
+      if (!android() || standalone() || installDismissed()) return;
+      e.preventDefault();
+      deferredInstall = e;
+      showInstall("android");
+    });
+    window.addEventListener("appinstalled", function () { hideInstall(true); });
+  })();
 
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", function () {
@@ -855,7 +979,10 @@
   window.__believe = {
     line: todaysLine,
     count: LINES.length,
-    skip: function () { start -= TOTAL * 1000; },
+    skip: function () {
+      if (!begun) replay();
+      start -= TOTAL * 1000;
+    },
     engine: renderer.kind,
     looks: LOOKS.length,
     tip: supportHref,
