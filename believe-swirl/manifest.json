@@ -1,16 +1,39 @@
 {
+  "id": "/believe-swirl/",
   "name": "Believe Swirl",
   "short_name": "Believe Swirl",
   "description": "A minute of warm light, and one kind line for today.",
-  "start_url": "./",
-  "scope": "./",
+  "lang": "en",
+  "start_url": "/believe-swirl/",
+  "scope": "/believe-swirl/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#0b0916",
   "theme_color": "#0b0916",
   "icons": [
-    { "src": "icon-180.png", "sizes": "180x180", "type": "image/png" },
-    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+    {
+      "src": "/believe-swirl/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/believe-swirl/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/believe-swirl/icon-180.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/believe-swirl/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ]
 }
