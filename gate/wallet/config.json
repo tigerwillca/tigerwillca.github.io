@@ -1,0 +1,5 @@
+{
+  "enabled": false,
+  "signEndpoint": null,
+  "note": "Flip enabled to true and set signEndpoint (an HTTPS URL that returns application/vnd.apple.pkpass) only after the Pass Type ID cert + signing server exist."
+}
