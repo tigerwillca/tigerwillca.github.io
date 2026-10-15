@@ -509,7 +509,11 @@ This is our stamp.<br><b id="dad">Dad</b></div>
   let rafQ = []; const raf = fn => { rafQ.push(fn); };   // one requestAnimationFrame loop drives everything
   let master = null; const acOut = () => master || ac.destination, beatT = () => ac.currentTime + toBeat()/1000;   // every ping lands on the next 830 ms beat, scheduled on the audio clock
   function unlockAudio(){ try{ ac = ac || new (window.AudioContext||window.webkitAudioContext)(); if (!master){ master = ac.createDynamicsCompressor(); master.threshold.value = -10; master.knee.value = 4; master.ratio.value = 20; master.attack.value = .003; master.release.value = .25; master.connect(ac.destination); }   // limiter: nothing clips
-    if (ac.state==="suspended") ac.resume(); }catch(e){} }
+    try { if (navigator.audioSession) navigator.audioSession.type = "playback"; } catch(e){}
+    if (ac.state !== "running") ac.resume();
+    // silent blip inside a gesture so iPhone Soft Magic / Quiet sound starts on first tap
+    try { const b = ac.createBuffer(1, 1, ac.sampleRate), src = ac.createBufferSource(); src.buffer = b; src.connect(ac.destination); src.start(0); } catch(e){}
+  }catch(e){} }
   document.addEventListener("visibilitychange", () => { try { if (!ac) return; if (document.hidden) ac.suspend(); else ac.resume(); } catch(e){} });
   let tiltX = 0, tiltY = 0, tx = 0, ty = 0, motionAsked = false, tiltAt = -1e9;   // tiltAt: last real tilt (or mouse) reading; without one, Jennifer's door drifts gently on its own
   // permissions are asked once per session, on the entry tap, never on each tap: a session flag remembers the answer across reloads
@@ -841,6 +845,8 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     function closeSoftMagic(){ stopBow(); veilReset(); showTwo(false); const v = $("smv"); v.classList.remove("on"); v.setAttribute("aria-hidden", "true"); }
     function openTwoLights(){ showTwo(true); $("smcopy").textContent = dkey === "jen"
       ? "This is for you and Barbara. Two lights in one room. Stay with her. Nothing to remember. Nothing to get right."
+      : dkey === "billy"
+      ? "Barbara and Jennifer. Two lights. Sit with them. Nothing to remember. Nothing to get right."
       : "Barbara and Jennifer. Two lights in one room. Stay if you like. Nothing to remember. Nothing to get right."; }
     function harborPulse(){ if (matchMedia("(prefers-reduced-motion: reduce)").matches) return; try { if (navigator.vibrate) navigator.vibrate(8); else tick(); } catch(e){} }
     function openHarbor(){ if (dkey !== "jen") return; stopBow(); $("smhome").hidden = true; $("smtwo").hidden = true; const veil = $("smveil"); if (veil) veil.hidden = true; $("smember").hidden = false; harborPulse(); }
@@ -900,11 +906,11 @@ This is our stamp.<br><b id="dad">Dad</b></div>
     const smTap = (el, fn) => { if (!el) return; el.addEventListener("touchend", e => { if (e.cancelable) e.preventDefault(); e.stopPropagation(); lastTouch = Date.now(); fn(); }, {passive:false});
       el.addEventListener("click", e => { e.preventDefault(); e.stopPropagation(); if (Date.now() - lastTouch < 800) return; fn(); }); };
     smTap($("smx"), closeSoftMagic); smTap($("smback"), () => { stopBow(); veilReset(); showTwo(false); }); smTap($("smhback"), () => { veilReset(); showTwo(false); }); smTap($("smbarbara"), openTwoLights); smTap($("smharbor"), openHarbor);
-    smTap($("smbow"), () => { if (bow) stopBow(); else startBow(); }); smTap($("smfilm"), playFamilyFilm);
+    smTap($("smbow"), () => { unlockAudio(); if (bow) stopBow(); else startBow(); }); smTap($("smfilm"), playFamilyFilm);
     smTap($("smvback"), () => { const backToSoft = veilFromSoft; veilReset(); if (backToSoft){ $("smveil").hidden = true; showTwo(false); } else closeSoftMagic(); });
     let smTitleT = 0;
     const titleTap = once(() => { if (!$("smv").classList.contains("on") || $("smhome").hidden) return; const now = Date.now();
-      if (now - smTitleT < 320){ smTitleT = 0; openGreenVeil(true); } else smTitleT = now; });   // same two-tap, inside Soft Magic, for doors that never see the Legacy film card
+      if (now - smTitleT < 320){ smTitleT = 0; /* Soft Magic one-shot: Green Veil entry parked — spirit/presence first */ } else smTitleT = now; });
     const smTitle = $("smtitle"); if (smTitle){ smTitle.addEventListener("touchend", titleTap, {passive:false}); smTitle.addEventListener("click", titleTap); }
     const heart = $("smvheart");
     if (heart){
