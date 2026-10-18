@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Meditation — for Jennifer</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:#02061a;color:#eaf3ff;font-family:Georgia,serif}
+#stage{position:fixed;inset:0;transition:filter 1.2s ease}
+#bg{position:fixed;inset:0;background:radial-gradient(ellipse at 50% 42%,#12306e 0%,#081a46 42%,#02061a 100%);transition:background 1.6s ease}
+.dragon{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none;transition:opacity 1.4s ease}
+#cubeWrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:.22;transition:opacity 1.4s ease}
+#cubeWrap svg{width:min(84vmin,680px);height:min(84vmin,680px);animation:spin 160s linear infinite;filter:drop-shadow(0 0 18px rgba(190,210,255,.14))}
+@keyframes spin{to{transform:rotate(360deg)}}
+canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
+#hue{position:fixed;inset:0;pointer-events:none;mix-blend-mode:overlay;opacity:0;transition:opacity 1.6s ease;background:#0a2a6e}
+#glow{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 44%,rgba(190,210,255,.16),transparent 55%);opacity:.3;transition:opacity 1.4s ease}
+#vig{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 52%,rgba(0,0,10,.55) 100%)}
+/* meditation: only slow colour drift, ghost dragons, gentle luminance pulse, slowed paint */
+#wordTop{position:fixed;top:28px;left:0;right:0;text-align:center;z-index:3;pointer-events:none;
+ font-size:15px;letter-spacing:.34em;color:rgba(234,243,255,.82);text-shadow:0 0 16px rgba(160,200,255,.55);transition:opacity 1.4s ease}
+#wordSub{position:fixed;top:56px;left:0;right:0;text-align:center;z-index:3;pointer-events:none;
+ font-size:13px;font-style:italic;color:rgba(234,243,255,.55);transition:opacity 1.4s ease}
+/* controls — one row, big targets */
+#bar{position:fixed;left:0;right:0;bottom:18px;z-index:5;display:flex;justify-content:center;gap:10px;flex-wrap:wrap;padding:0 12px;transition:opacity 1.2s ease,transform 1.2s ease}
+button{background:rgba(6,14,38,.78);color:#eaf3ff;border:1px solid rgba(190,215,255,.42);border-radius:999px;
+ padding:14px 22px;font-family:Georgia,serif;font-size:16px;cursor:pointer;min-height:52px;min-width:52px;transition:background 1s ease,color 1s ease,border-color 1s ease}
+button.on{background:rgba(38,68,140,.88);color:#fff;border-color:rgba(220,235,255,.8)}
+button:focus-visible{outline:2px solid #cfe4ff;outline-offset:2px}
+body.uiHidden{cursor:none}
+body.uiHidden #bar,body.uiHidden #wordTop,body.uiHidden #wordSub{opacity:0;pointer-events:none;transform:translateY(6px)}
+#status{position:fixed;bottom:86px;left:0;right:0;text-align:center;z-index:4;pointer-events:none;font-size:12px;letter-spacing:.26em;text-transform:uppercase;color:rgba(220,235,255,.75);opacity:0;transition:opacity 1.2s ease}
+@media (prefers-reduced-motion:reduce){#cubeWrap svg{animation:none}*{transition:none!important}}
+</style></head><body>
+<div id="stage">
+  <div id="bg"></div>
+  <img class="dragon" id="dDim"  src="assets/background-protein-cloud-hills-v6-dim.png"  alt="" aria-hidden="true">
+  <img class="dragon" id="dMid"  src="assets/background-protein-cloud-hills-v6-mid.png"  alt="" aria-hidden="true" style="opacity:0">
+  <img class="dragon" id="dGlow" src="assets/background-protein-cloud-hills-v6-glow.png" alt="" aria-hidden="true" style="opacity:0">
+  <div id="cubeWrap" role="img" aria-label="A faint sacred geometry circle behind the light"><svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#cfe0ff"><circle cx="200" cy="200" r="185" stroke-opacity=".18"/><circle cx="200" cy="200" r="118" stroke-opacity=".12"/><g id="cubeLines"></g><g id="cubeCircles"></g></g></svg></div>
+  <canvas id="c"></canvas>
+  <div id="hue"></div><div id="glow"></div><div id="vig"></div>
+</div>
+<div id="wordTop">BE STILL</div>
+<div id="wordSub">a meditation, made for you, Jennifer</div>
+<div id="status"></div>
+<div id="bar" role="group" aria-label="Panel controls">
+  <button id="btnFlow" class="on" aria-pressed="true">Flow</button>
+  <button id="btnMed" aria-pressed="false">Meditate</button>
+  <button id="btnSound" aria-pressed="false">Sound</button>
+  <button id="btnDim" aria-label="Brightness down">Brightness −</button>
+  <button id="btnBright" aria-label="Brightness up">Brightness +</button>
+  <button id="btnHide">Hide UI</button>
+</div>
+<audio id="ambient" src="assets/soft7-ambient.mp3" loop preload="none"></audio>
+<script>
+(function(){
+"use strict";
+var cv=document.getElementById('c'),ctx=cv.getContext('2d');
+var DPR=Math.min(window.devicePixelRatio||1,1.5); /* gentle on low-end */
+var reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+var W=0,H=0,CX=0,CY=0;
+function rs(){W=cv.width=Math.floor(innerWidth*DPR);H=cv.height=Math.floor(innerHeight*DPR);CX=W/2;CY=H/2}
+addEventListener('resize',rs);rs();
+
+/* faint cube, built simply (13 points, lines + circles) */
+(function(){var NS='http://www.w3.org/2000/svg',L=document.getElementById('cubeLines'),C=document.getElementById('cubeCircles'),pts=[[200,200]],i,a;
+for(i=0;i<6;i++){a=Math.PI/6+i*Math.PI/3;pts.push([200+62*Math.cos(a),200+62*Math.sin(a)]);}
+for(i=0;i<6;i++){a=Math.PI/6+i*Math.PI/3;pts.push([200+124*Math.cos(a),200+124*Math.sin(a)]);}
+for(var p=0;p<pts.length;p++)for(var q=p+1;q<pts.length;q++){var ln=document.createElementNS(NS,'line');ln.setAttribute('x1',pts[p][0]);ln.setAttribute('y1',pts[p][1]);ln.setAttribute('x2',pts[q][0]);ln.setAttribute('y2',pts[q][1]);ln.setAttribute('stroke-opacity',(p===0||q===0)?'0.26':'0.09');L.appendChild(ln);}
+pts.forEach(function(pt,idx){var c=document.createElementNS(NS,'circle');c.setAttribute('cx',pt[0]);c.setAttribute('cy',pt[1]);c.setAttribute('r',idx===0?30:26);c.setAttribute('stroke-opacity','0.4');C.appendChild(c);});})();
+
+/* state */
+var q=new URLSearchParams(location.search);
+var mode='flow', brightness=1, soundOn=false;
+var audioLevel=0, breathAmt=.45, medPhase=0, lastTs=0, hidden=false;
+var start=performance.now();
+
+/* paint: 16 blobs, 4 parallax layers, screen-blend (pattern from Sparks 2, rewritten) */
+var paintBlobs=Array.from({length:16},function(_,i){return{x:Math.random(),y:Math.random(),layer:i%4,r:.14+Math.random()*.24,p:Math.random()*6.28,sp:(.03+Math.random()*.05)*(1+(i%4)*.55),gold:i%3!==1}});
+var moonDust=Array.from({length:34},function(){return{x:Math.random(),y:Math.random(),r:.6+Math.random()*1.1,p:Math.random()*6.28,sp:.15+Math.random()*.35}});
+var embers=Array.from({length:22},function(){return{x:Math.random(),y:Math.random(),r:.8+Math.random()*1.6,p:Math.random()*6.28,sp:.008+Math.random()*.014}});
+var stars=Array.from({length:130},function(){return{x:Math.random(),y:Math.random(),r:Math.random()*1.2+.3,p:Math.random()*6.28,s:.2+Math.random()*.6}});
+var mx=CX,my=CY;
+addEventListener('pointermove',function(e){mx=e.clientX*DPR;my=e.clientY*DPR;wakeUI();},{passive:true});
+addEventListener('pointerdown',function(){wakeUI();},{passive:true});
+
+/* breath helpers */
+function ez(x){return x*x*(3-2*x)}
+function flowBreath(t){var ph=t%10;return ph<4?ez(ph/4):1-ez((ph-4)/6)} /* 4 in / 6 out, ~0.1Hz fallback */
+/* meditation palette: deep blue -> teal -> soft gold -> violet, very slow */
+var PALETTE=[[10,42,110],[8,92,96],[122,92,28],[62,32,110]];
+function paletteAt(u){var n=PALETTE.length,s=((u%1)+1)%1*n,i=Math.floor(s),f=s-i,a=PALETTE[i],b=PALETTE[(i+1)%n];
+ return [Math.round(a[0]+(b[0]-a[0])*f),Math.round(a[1]+(b[1]-a[1])*f),Math.round(a[2]+(b[2]-a[2])*f)];}
+
+/* audio: analyser created only on user gesture (Sound button / S key) */
+var actx=null,analyser=null,freqArr=null,amb=document.getElementById('ambient');
+function ensureAnalyser(){if(actx)return;try{actx=new (window.AudioContext||window.webkitAudioContext)();analyser=actx.createAnalyser();analyser.fftSize=256;freqArr=new Uint8Array(analyser.frequencyBinCount);var src=actx.createMediaElementSource(amb);src.connect(analyser);analyser.connect(actx.destination);}catch(e){actx=null}}
+function sampleAudio(dt){
+ if(analyser&&freqArr&&soundOn){analyser.getByteFrequencyData(freqArr);var sm=0,i;for(i=2;i<40;i++)sm+=freqArr[i];
+   var target=Math.min(1,sm/38/170);audioLevel+=(target-audioLevel)*Math.min(1,dt*3); /* loose, never jumps */
+ }else{audioLevel*=Math.pow(.4,dt);} /* slow decay */
+}
+
+/* dragons: dim/mid/glow crossfade */
+var dDim=document.getElementById('dDim'),dMid=document.getElementById('dMid'),dGlow=document.getElementById('dGlow');
+var glowEl=document.getElementById('glow'),hueEl=document.getElementById('hue'),bgEl=document.getElementById('bg'),
+    statusEl=document.getElementById('status'),stageEl=document.getElementById('stage'),cubeEl=document.getElementById('cubeWrap');
+function setDragons(level,total){ /* level 0..1 dim->glow */
+ var mid=Math.max(0,1-Math.abs(level-.5)*2),glow=Math.max(0,(level-.5)*2),dim=Math.max(0,1-level*2);
+ dDim.style.opacity=String(total*dim);dMid.style.opacity=String(total*mid);dGlow.style.opacity=String(total*glow);}
+
+/* wake lock — attempt only, never claimed if it fails */
+var wakeLock=null,wakeState='not-requested';
+async function requestWakeLock(){try{if(!('wakeLock' in navigator)){wakeState='unsupported';return}
+ if(document.visibilityState!=='visible'){wakeState='not-visible';return}
+ wakeLock=await navigator.wakeLock.request('screen');wakeState='applied';
+ wakeLock.addEventListener('release',function(){wakeState='released'});}catch(e){wakeState='failed:'+(e&&e.name?e.name:'error')}}
+document.addEventListener('visibilitychange',function(){hidden=document.hidden;if(!hidden){requestWakeLock();lastTs=0;requestAnimationFrame(loop);}});
+
+/* UI idle hide */
+var idleTimer=null;
+function wakeUI(){document.body.classList.remove('uiHidden');clearTimeout(idleTimer);idleTimer=setTimeout(function(){document.body.classList.add('uiHidden')},4000);}
+function flash(t){statusEl.textContent=t;statusEl.style.opacity=1;clearTimeout(flash._t);flash._t=setTimeout(function(){statusEl.style.opacity=0},2400);}
+
+/* modes */
+var btnFlow=document.getElementById('btnFlow'),btnMed=document.getElementById('btnMed');
+function setMode(m){
+ mode=m;var med=(m==='meditation');
+ document.body.classList.toggle('meditation',med);
+ btnFlow.classList.toggle('on',!med);btnFlow.setAttribute('aria-pressed',String(!med));
+ btnMed.classList.toggle('on',med);btnMed.setAttribute('aria-pressed',String(med));
+ document.getElementById('wordTop').textContent='BE STILL';
+ document.getElementById('wordSub').textContent='a meditation, made for you, Jennifer';
+ if(med)medPhase=0;
+ flash(med?'meditation':'flow');wakeUI();
+}
+btnFlow.onclick=function(){setMode('flow')};
+btnMed.onclick=function(){setMode('meditation')};
+
+/* sound */
+var btnSound=document.getElementById('btnSound');
+function setSound(on){
+ soundOn=on;
+ if(on){ensureAnalyser();if(actx&&actx.state==='suspended')actx.resume();
+   amb.play().then(function(){},function(){});
+ }else{amb.pause();}
+ btnSound.classList.toggle('on',on);btnSound.setAttribute('aria-pressed',String(on));btnSound.textContent=on?'Sound on':'Sound';
+ flash(on?'sound on':'sound off');wakeUI();
+}
+btnSound.onclick=function(){setSound(!soundOn)};
+
+/* brightness + hide */
+function applyBrightness(){stageEl.style.filter='brightness('+brightness.toFixed(2)+')';flash('brightness '+Math.round(brightness*100)+'%');}
+document.getElementById('btnDim').onclick=function(){brightness=Math.max(.35,+(brightness-.15).toFixed(2));applyBrightness();wakeUI();};
+document.getElementById('btnBright').onclick=function(){brightness=Math.min(1.35,+(brightness+.15).toFixed(2));applyBrightness();wakeUI();};
+document.getElementById('btnHide').onclick=function(){document.body.classList.add('uiHidden');clearTimeout(idleTimer);};
+
+/* keyboard: F flow, M meditate, S sound, +/- brightness, H hide */
+addEventListener('keydown',function(e){
+ var k=e.key.toLowerCase();wakeUI();
+ if(k==='f')setMode('flow');else if(k==='m')setMode('meditation');
+ else if(k==='s')setSound(!soundOn);
+ else if(k==='h')document.body.classList.add('uiHidden');
+ else if(k==='+'||k==='='){brightness=Math.min(1.35,+(brightness+.15).toFixed(2));applyBrightness();}
+ else if(k==='-'||k==='_'){brightness=Math.max(.35,+(brightness-.15).toFixed(2));applyBrightness();}
+});
+
+/* main loop — paused when hidden */
+function loop(ts){
+ if(hidden)return; /* visibilitychange restarts us */
+ requestAnimationFrame(loop);
+ var now=ts||performance.now();if(!lastTs)lastTs=now;
+ var dt=Math.min(.05,(now-lastTs)/1000);lastTs=now;
+ var t=(now-start)/1000;
+ sampleAudio(dt);
+ var med=(mode==='meditation');
+
+ /* internal luminance pulse: meditation advances a slow smooth phase; music nudges rate +-15% loosely */
+ if(med){
+   var rate=1+(soundOn?(audioLevel-.3)*.3:0); /* 0.85..1.15, smoothed via audioLevel */
+   medPhase+=(dt*rate)/8; if(medPhase>=1)medPhase-=1;
+   var ph=medPhase*8; breathAmt=ph<4?ez(ph/4):1-ez((ph-4)/4);
+ }else{
+   breathAmt=flowBreath(t);
+ }
+ var energy=med?breathAmt:Math.max(0,Math.min(1,breathAmt*.75+audioLevel*.55));
+
+ /* dragons + glow + hue */
+ if(med){
+   setDragons(.25,.08); /* ghost-faint, <=10% */
+   var c=paletteAt(t/56); /* ~56s full drift */
+   hueEl.style.background='rgb('+c[0]+','+c[1]+','+c[2]+')';hueEl.style.opacity=String(.28+.22*breathAmt);
+   glowEl.style.opacity=String(.14+.34*breathAmt);
+   cubeEl.style.opacity='.10';
+ }else{
+   setDragons(energy,.88);
+   hueEl.style.opacity='0';
+   glowEl.style.opacity=String(.16+.36*energy);
+   cubeEl.style.opacity=String(.18+.10*energy);
+ }
+
+ /* meditation: gentle luminance pulse only */
+ /* canvas paint */
+ ctx.clearRect(0,0,W,H);
+ var speedFactor=med?.07:1, alphaFactor=med?.45:1;
+ ctx.save();ctx.globalCompositeOperation='screen';
+ for(var bi=0;bi<paintBlobs.length;bi++){var b=paintBlobs[bi],depth=b.layer/3;
+   var parX=((mx/Math.max(1,CX))-1)*(5+depth*16)*DPR,parY=((my/Math.max(1,CY))-1)*(3+depth*10)*DPR;
+   var px=(b.x+Math.sin(t*b.sp*speedFactor+b.p)*.04)*W+parX,py=(b.y+Math.cos(t*b.sp*.8*speedFactor+b.p)*.03)*H+parY;
+   var pr=b.r*Math.min(W,H)*(.72+depth*.45)*(.9+.18*energy);
+   var g=ctx.createRadialGradient(px,py,0,px,py,pr);
+   var a=(.032+.034*energy+depth*.012)*alphaFactor*(med?.7:1);
+   g.addColorStop(0,b.gold?('rgba(210,170,90,'+a+')'):('rgba(60,110,210,'+(a*1.25)+')'));
+   g.addColorStop(1,'rgba(0,0,0,0)');
+   ctx.beginPath();ctx.arc(px,py,pr,0,6.29);ctx.fillStyle=g;ctx.fill();}
+ ctx.restore();
+
+ /* stars */
+ for(var si=0;si<stars.length;si++){var st=stars[si];var sa=.22+.3*Math.sin(t*st.s+st.p);
+   ctx.beginPath();ctx.arc(st.x*W,st.y*H,st.r*DPR,0,6.29);ctx.fillStyle='rgba(200,220,255,'+Math.max(0,sa)+')';ctx.fill();}
+
+ /* Sirius: one calm blue-white point, upper right */
+ (function(){var sx=W*.78,sy=H*.18,tw=reduced?0:(.5+.5*Math.sin(t*.7));
+  var inten=Math.min(1.2,.62+.2*tw+.26*energy),R=(22+8*energy)*DPR;
+  var hg=ctx.createRadialGradient(sx,sy,0,sx,sy,R*2.6);hg.addColorStop(0,'rgba(210,230,255,'+(.5*inten)+')');hg.addColorStop(.35,'rgba(160,195,255,'+(.2*inten)+')');hg.addColorStop(1,'rgba(160,195,255,0)');
+  ctx.beginPath();ctx.arc(sx,sy,R*2.6,0,6.29);ctx.fillStyle=hg;ctx.fill();
+  ctx.save();ctx.translate(sx,sy);ctx.globalAlpha=Math.min(1,inten);ctx.strokeStyle='rgba(205,228,255,.8)';ctx.lineWidth=1.3*DPR;ctx.shadowColor='#bcd8ff';ctx.shadowBlur=9*DPR;
+  ctx.beginPath();ctx.moveTo(-R,0);ctx.lineTo(R,0);ctx.moveTo(0,-R);ctx.lineTo(0,R);ctx.stroke();ctx.restore();
+  ctx.beginPath();ctx.arc(sx,sy,(3+tw)*DPR,0,6.29);ctx.fillStyle='#f4f9ff';ctx.shadowColor='#cfe4ff';ctx.shadowBlur=16*DPR;ctx.fill();ctx.shadowBlur=0;})();
+
+ /* moon dust + slow embers */
+ for(var mi=0;mi<moonDust.length;mi++){var md=moonDust[mi];var ma=.10+.20*(.5+.5*Math.sin(t*md.sp*(med?.4:1)+md.p));
+   ctx.beginPath();ctx.arc(md.x*W,md.y*H,md.r*DPR,0,6.29);ctx.fillStyle='rgba(205,225,255,'+ma+')';ctx.fill();}
+ if(!med){for(var ei=0;ei<embers.length;ei++){var em=embers[ei];
+   var ex=(em.x+Math.sin(t*.25+em.p)*.01)*W,ey=H-(((t*em.sp+em.y)%1)*(H*.75))-H*.04;
+   var etw=.5+.5*Math.sin(t*.9+em.p);ctx.globalAlpha=.10+.22*etw;ctx.fillStyle='#d9b06a';
+   ctx.beginPath();ctx.arc(ex,ey,em.r*DPR,0,6.29);ctx.fill();}ctx.globalAlpha=1;}
+}
+
+/* init from URL (for opening / verification): ?mode=meditation */
+if(q.get('mode')==='meditation'||q.get('mode')==='meditate')setMode('meditation');else setMode('flow');
+if(q.get('brightness')){var bv=parseFloat(q.get('brightness'));if(bv>=.35&&bv<=1.35){brightness=bv;stageEl.style.filter='brightness('+bv+')';}}
+wakeUI();requestWakeLock();
+requestAnimationFrame(loop);
+
+/* verification / control hook (same page, no network) */
+window.__panel={
+ getState:function(){return{mode:mode,brightness:brightness,soundOn:soundOn,audioLevel:+audioLevel.toFixed(3),breath:+breathAmt.toFixed(3),wakeLock:wakeState,dpr:DPR,reduced:reduced,
+   dragonOpacity:{dim:dDim.style.opacity,mid:dMid.style.opacity,glow:dGlow.style.opacity}}},
+ setMode:setMode,setSound:setSound,
+ setBrightness:function(v){brightness=Math.max(.35,Math.min(1.35,+v||1));applyBrightness();return brightness;}
+};
+})();
+</script></body></html>
