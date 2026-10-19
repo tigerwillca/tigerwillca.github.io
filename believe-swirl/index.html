@@ -367,6 +367,57 @@
     color: #f6eadc;
   }
   #preview-note { color: #ffd7a4; }
+  #own {
+    color: #ead9c2;
+    background: transparent;
+    border: 0;
+    font-size: 1.05rem;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-decoration-color: rgba(234, 217, 194, 0.55);
+    text-underline-offset: 0.28em;
+    min-height: 48px;
+    padding: 10px 16px;
+  }
+  #offer {
+    position: fixed;
+    inset: 0;
+    z-index: 9;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    background: rgba(11, 9, 22, 0.78);
+    padding: 16px 16px calc(20px + env(safe-area-inset-bottom));
+    box-sizing: border-box;
+  }
+  #offer[hidden] { display: none; }
+  #offer-card {
+    width: 100%;
+    max-width: 30rem;
+    background: #14111f;
+    border: 1px solid rgba(243, 217, 176, 0.38);
+    border-radius: 24px;
+    padding: 26px 20px 18px;
+    text-align: center;
+    color: #f6eadc;
+  }
+  #offer-mark {
+    width: 64px; height: 64px; margin: 0 auto 12px; border-radius: 50%;
+    background: radial-gradient(circle at 50% 50%, #fff2d6 0, #ffdc82 22%, rgba(255, 170, 110, 0.5) 48%, rgba(11, 9, 22, 0) 72%);
+  }
+  #offer h2 { margin: 0 0 8px; font-size: 1.7rem; font-weight: normal; }
+  #offer p { margin: 0 0 14px; font-size: 1.1rem; line-height: 1.45; color: #ead9c2; }
+  #offer-list { list-style: none; margin: 0 0 16px; padding: 0; font-size: 1.05rem; line-height: 1.7; color: #f6eadc; }
+  #offer-price { font-size: 1.25rem; color: #ffd7a4; margin: 0 0 4px; }
+  #offer-price-note { font-size: 0.95rem; margin: 0 0 16px; }
+  #offer button {
+    display: block; width: 100%; margin: 0 0 10px; min-height: 50px;
+    font-size: 1.0625rem; color: #f6eadc; border-radius: 999px;
+    background: rgba(255, 220, 170, 0.08); border: 1px solid rgba(243, 217, 176, 0.4);
+  }
+  #offer-soon { background: rgba(255, 220, 170, 0.16) !important; }
+  #offer-close { border-color: transparent !important; background: transparent !important; color: #ead9c2 !important; }
+  #offer-note { min-height: 1.4em; margin: 4px 0 0 !important; font-size: 1rem !important; }
   #noscript {
     position: fixed;
     left: 10vw;
@@ -415,6 +466,7 @@
 <div id="actions" aria-hidden="true">
   <p id="note" role="status"></p>
   <button id="share" type="button">Share</button>
+  <button id="own" type="button">Get your own Swirl</button>
 </div>
 <div id="hint">tap to breathe again</div>
 <aside id="install" hidden aria-hidden="true">
@@ -468,6 +520,25 @@
     <p id="sheet-note" role="status"></p>
   </div>
 </div>
+<div id="offer" hidden>
+  <div id="offer-card" role="dialog" aria-modal="true" aria-labelledby="offer-title">
+    <div id="offer-mark" aria-hidden="true"></div>
+    <h2 id="offer-title">Get your own Swirl</h2>
+    <p>One minute of warm light, and one kind line for the day. That&rsquo;s all it does.</p>
+    <ul id="offer-list">
+      <li>Your own words, one each day</li>
+      <li>Calm colors and a soft opening sound</li>
+      <li>Works offline. No account, no ads, no tracking</li>
+    </ul>
+    <p id="offer-price">Price coming soon</p>
+    <p id="offer-price-note">Not for sale yet. Nothing is charged here.</p>
+    <button id="offer-soon" type="button">Tell me when it&rsquo;s ready</button>
+    <button id="offer-gift" type="button">Gift a Swirl to someone</button>
+    <button id="offer-close" type="button">Close</button>
+    <p id="offer-note" role="status"></p>
+  </div>
+</div>
+<script src="offer.js" defer></script>
 <p id="look-live" class="sr" aria-live="polite"></p>
 <noscript><p id="noscript">A minute of warm light needs JavaScript turned on. This page still doesn’t track you.</p></noscript>
 </body>
