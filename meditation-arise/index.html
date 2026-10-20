@@ -307,4 +307,71 @@ const steps=[['INHALE',4,3.2],['HOLD',4,3.2],['EXHALE',6,1]],mantras=['I arise i
 function step(){const s=steps[i];c.textContent=s[0];b.style.transitionDuration=s[1]+'s';b.style.transform='scale('+s[2]+')';i=(i+1)%3;if(i===0&&++k%4===0){m.style.opacity=0;setTimeout(()=>{m.textContent=mantras[(k/4)%mantras.length|0];m.style.opacity=1},3000)}setTimeout(step,s[1]*1000)}step();
 // pause heavy layers when hidden
 document.addEventListener('visibilitychange',()=>{document.querySelectorAll('#arAur,#arRing').forEach(e=>e.style.display=document.hidden?'none':'')});})();</script>
+<!-- ARISE TOOLS: push/pull light, threads, mantras, learn-a-mantra, coloring, camera, tones -->
+<style>
+#arFx{position:fixed;inset:0;z-index:2;pointer-events:none;mix-blend-mode:screen}
+#arPaint{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.8}
+body.paint #arPaint{pointer-events:auto;cursor:crosshair}
+#arCam{position:fixed;left:18px;top:18px;width:200px;border-radius:50%;aspect-ratio:1;object-fit:cover;z-index:6;opacity:.75;display:none;filter:sepia(.3) hue-rotate(200deg) saturate(1.3);box-shadow:0 0 30px rgba(201,162,255,.6);transform:scaleX(-1)}
+#arTogg{position:fixed;left:18px;bottom:96px;z-index:7;min-height:40px;padding:8px 14px;font-size:14px}
+#arPanel{position:fixed;left:18px;bottom:144px;z-index:7;width:min(340px,90vw);max-height:62vh;overflow:auto;background:rgba(6,14,38,.86);border:1px solid rgba(255,220,170,.35);border-radius:16px;padding:12px 14px;color:#ffeccf;font:14px Georgia,serif;display:none}
+#arPanel h4{margin:10px 0 4px;font-weight:normal;letter-spacing:.2em;font-size:12px;color:#ffd59a}
+#arPanel button{min-height:32px;padding:5px 10px;font-size:13px;margin:2px}
+#arPanel ol{padding-left:18px;margin:4px 0}#arPanel p{margin:4px 0;font-style:italic}
+.sw{display:inline-block;width:22px;height:22px;border-radius:50%;margin:2px;cursor:pointer;border:1px solid #fff4}
+</style>
+<canvas id="arFx"></canvas><canvas id="arPaint"></canvas><video id="arCam" autoplay muted playsinline></video>
+<button id="arTogg">✦ Tools</button>
+<div id="arPanel">
+<h4>LIGHT</h4><button id="lPush" class="on">Push light</button><button id="lPull">Pull light</button><div style="font-size:12px;opacity:.7">Click or drag on the screen.</div>
+<h4>MANTRAS TO READ</h4>
+<p>I arise in light. I rise in love.</p><p>I am held by Michael, healed by Raphael, guided by Gabriel.</p><p>Light above me, light within me, light around me.</p><p>I release what is not mine. I keep what is true.</p><p>Breathe in peace. Breathe out fear.</p>
+<h4>LEARN: THE RISING MANTRA</h4>
+<p style="color:#fff">"I AM the light that rises. I AM the love that stays. I AM."</p>
+<ol><li>Sit tall; three slow breaths.</li><li>Inhale: whisper "I AM the light that rises."</li><li>Hold: picture the cube glowing at your heart.</li><li>Exhale: "I AM the love that stays."</li><li>Pause in silence: simply "I AM."</li><li>Repeat 7 rounds aloud, then 7 silently.</li><li>Close with thanks to the archangels.</li></ol>
+<h4>COLORING</h4><button id="pOn">Brush: off</button><button id="pClr">Clear</button><div id="sws"></div>
+<h4>TONES (headphones for binaural)</h4>
+<button data-t="432">432 Hz</button><button data-t="528">528 Hz</button><button data-t="theta">Theta 6 Hz binaural</button><button data-t="off">Stop</button>
+<div>Volume <input id="vol" type="range" min="0" max="0.3" step="0.01" value="0.08"></div>
+<h4>MUSIC</h4><button id="mus">Play soft ambient</button>
+<h4>CAMERA (local only, never uploaded)</h4><button id="cam">Camera: off</button>
+</div>
+<script>(function(){
+const F=document.getElementById('arFx'),fx=F.getContext('2d'),P=document.getElementById('arPaint'),px=P.getContext('2d');
+function sz(){const d=P.toDataURL();F.width=P.width=innerWidth;F.height=P.height=innerHeight;const im=new Image();im.onload=()=>px.drawImage(im,0,0);im.src=d}sz();addEventListener('resize',sz);
+const panel=document.getElementById('arPanel');document.getElementById('arTogg').onclick=()=>panel.style.display=panel.style.display==='block'?'none':'block';
+let mode=1;const bP=document.getElementById('lPush'),bL=document.getElementById('lPull');
+bP.onclick=()=>{mode=1;bP.classList.add('on');bL.classList.remove('on')};bL.onclick=()=>{mode=-1;bL.classList.add('on');bP.classList.remove('on')};
+// particles capped at 60
+const ps=[];let hue=40,down=false,mx=innerWidth/2,my=innerHeight/2;
+function burst(x,y){hue=(hue+23)%360;for(let i=0;i<10&&ps.length<60;i++){const a=Math.random()*6.28,r=mode>0?0:120+Math.random()*80;ps.push({x:x+Math.cos(a)*r,y:y+Math.sin(a)*r,a,s:1.5+Math.random()*2,l:1,h:hue+Math.random()*40})}document.documentElement.style.setProperty('--arH',hue);document.getElementById('arPulse')&&(document.getElementById('arPulse').style.filter='hue-rotate('+hue+'deg)')}
+addEventListener('pointerdown',e=>{if(document.body.classList.contains('paint')||e.target.closest('button,#arPanel,#bar,#arTimer'))return;down=true;burst(e.clientX,e.clientY)});
+addEventListener('pointerup',()=>down=false);addEventListener('pointermove',e=>{mx=e.clientX;my=e.clientY;if(down&&Math.random()<.4)burst(mx,my)});
+function loop(t){if(!document.hidden){fx.clearRect(0,0,F.width,F.height);
+ // threads: soft lines from focus to cursor
+ const cx=F.width/2,cy=F.height*.46;fx.lineWidth=1;for(let k=0;k<5;k++){fx.strokeStyle=`hsla(${(hue+k*50)%360},90%,75%,${.10+.06*Math.sin(t/900+k)})`;fx.beginPath();fx.moveTo(cx,cy);fx.quadraticCurveTo(cx+Math.sin(t/1500+k)*160,cy+Math.cos(t/1700+k)*160,mx,my);fx.stroke()}
+ for(let i=ps.length-1;i>=0;i--){const p=ps[i];if(mode>0){p.x+=Math.cos(p.a)*p.s;p.y+=Math.sin(p.a)*p.s}else{p.x+=(mx-p.x)*.06;p.y+=(my-p.y)*.06}p.l-=.015;if(p.l<=0){ps.splice(i,1);continue}
+  fx.fillStyle=`hsla(${p.h},90%,72%,${p.l})`;fx.beginPath();fx.arc(p.x,p.y,2+3*p.l,0,7);fx.fill()}}
+ requestAnimationFrame(loop)}requestAnimationFrame(loop);
+// coloring
+const cols=['#ffd59a','#c9a2ff','#7fe3ff','#9cf5c4','#ffb3d1','#fff6e0'];let col=cols[0],drawing=false;const sw=document.getElementById('sws');
+cols.forEach(c=>{const s=document.createElement('span');s.className='sw';s.style.background=c;s.onclick=()=>col=c;sw.appendChild(s)});
+const pOn=document.getElementById('pOn');pOn.onclick=()=>{const on=document.body.classList.toggle('paint');pOn.textContent='Brush: '+(on?'on':'off')};
+document.getElementById('pClr').onclick=()=>px.clearRect(0,0,P.width,P.height);
+P.addEventListener('pointerdown',e=>{drawing=true;px.beginPath();px.moveTo(e.clientX,e.clientY)});P.addEventListener('pointerup',()=>drawing=false);
+P.addEventListener('pointermove',e=>{if(!drawing)return;px.strokeStyle=col;px.lineWidth=10;px.lineCap='round';px.shadowColor=col;px.shadowBlur=14;px.globalAlpha=.5;px.lineTo(e.clientX,e.clientY);px.stroke()});
+// tones
+let ac,nodes=[],gain;const vol=document.getElementById('vol');
+function stop(){nodes.forEach(n=>{try{n.stop()}catch(e){}});nodes=[]}
+document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{ac=ac||new AudioContext();if(!gain){gain=ac.createGain();gain.connect(ac.destination)}gain.gain.value=+vol.value;stop();const t=b.dataset.t;if(t==='off')return;
+ const mk=(f,pan)=>{const o=ac.createOscillator(),p=ac.createStereoPanner();o.frequency.value=f;p.pan.value=pan;o.connect(p).connect(gain);o.start();nodes.push(o)};
+ if(t==='theta'){mk(200,-1);mk(206,1)}else mk(+t,0)});
+vol.oninput=()=>{if(gain)gain.gain.value=+vol.value};
+// music: reuse existing ambient asset
+const au=new Audio('../meditation-jennifer/assets/soft7-ambient.mp3');au.loop=true;au.volume=.4;const mb=document.getElementById('mus');mb.onclick=()=>{if(au.paused){au.play();mb.textContent='Pause music'}else{au.pause();mb.textContent='Play soft ambient'}};
+// camera, off by default, local only
+let st=null;const v=document.getElementById('arCam'),cb=document.getElementById('cam');
+cb.onclick=async()=>{if(st){st.getTracks().forEach(t=>t.stop());st=null;v.style.display='none';cb.textContent='Camera: off';return}try{st=await navigator.mediaDevices.getUserMedia({video:{width:320,height:320}});v.srcObject=st;v.style.display='block';cb.textContent='Camera: on'}catch(e){cb.textContent='Camera unavailable'}};
+document.addEventListener('visibilitychange',()=>{if(document.hidden)stop()});
+})();</script>
 </body></html>
