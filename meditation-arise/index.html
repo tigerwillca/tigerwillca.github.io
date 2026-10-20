@@ -278,9 +278,9 @@ addEventListener('pointermove',e=>{mx=e.clientX/innerWidth;my=e.clientY/innerHei
 // aurora + motes
 const A=document.getElementById('arAur'),ax=A.getContext('2d'),Rg=document.getElementById('arRing'),rx=Rg.getContext('2d');
 function sz(){A.width=Rg.width=innerWidth;A.height=Rg.height=innerHeight}sz();addEventListener('resize',sz);
-const motes=Array.from({length:70},()=>({x:Math.random(),y:Math.random(),v:.0002+Math.random()*.0006,h:[38,270,190,320][Math.random()*4|0],r:.6+Math.random()*1.8,p:Math.random()*6}));
+const motes=Array.from({length:36},()=>({x:Math.random(),y:Math.random(),v:.0002+Math.random()*.0006,h:[38,270,190,320][Math.random()*4|0],r:.6+Math.random()*1.8,p:Math.random()*6}));
 const red=matchMedia('(prefers-reduced-motion:reduce)').matches;
-function frame(t){const W=A.width,H=A.height;ax.clearRect(0,0,W,H);
+function frame(t){if(document.hidden){requestAnimationFrame(frame);return}const W=A.width,H=A.height;ax.clearRect(0,0,W,H);
  for(let k=0;k<3;k++){const gr=ax.createLinearGradient(0,0,W,0),h=(t/400+k*90)%360;gr.addColorStop(0,`hsla(${h},80%,60%,0)`);gr.addColorStop(.5,`hsla(${(h+60)%360},80%,65%,.10)`);gr.addColorStop(1,`hsla(${(h+120)%360},80%,60%,0)`);ax.fillStyle=gr;ax.beginPath();ax.moveTo(0,H);for(let x=0;x<=W;x+=20)ax.lineTo(x,H*(.35+k*.12)+Math.sin(x/220+t/(3000+k*900))*60);ax.lineTo(W,H);ax.fill()}
  motes.forEach(m=>{m.y-=m.v;if(m.y<0){m.y=1;m.x=Math.random()}const a=.4+.4*Math.sin(t/900+m.p);ax.fillStyle=`hsla(${m.h},90%,75%,${a})`;ax.beginPath();ax.arc(m.x*W+Math.sin(t/2000+m.p)*12,m.y*H,m.r,0,7);ax.fill()});
  // soft magic pulse rings
@@ -298,4 +298,13 @@ document.getElementById('arRs').onclick=()=>{run=false;left=1800;go.textContent=
 setInterval(()=>{if(!run)return;const n=performance.now();left=Math.max(0,left-(n-last)/1000);last=n;show();if(left<=0){run=false;go.textContent='Complete';chime()}},250);show();
 })();
 </script>
+<style>#arBreath{position:fixed;left:50%;top:46%;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;z-index:3;pointer-events:none;background:radial-gradient(circle,#fff6e0,#ffd59a 45%,rgba(201,162,255,.0) 72%);box-shadow:0 0 30px rgba(255,215,160,.6);transition:transform 4s ease-in-out}
+#arCue{position:fixed;left:0;right:0;top:calc(46% + 60px);text-align:center;z-index:3;pointer-events:none;font:15px Georgia,serif;letter-spacing:.4em;color:rgba(255,236,207,.85)}
+#arMantra{position:fixed;left:0;right:0;bottom:96px;text-align:center;z-index:3;pointer-events:none;font:italic 15px Georgia,serif;color:rgba(234,243,255,.6);transition:opacity 3s}</style>
+<div id="arBreath"></div><div id="arCue">INHALE</div><div id="arMantra">I arise in light. I rise in love.</div>
+<script>(function(){const b=document.getElementById('arBreath'),c=document.getElementById('arCue'),m=document.getElementById('arMantra');
+const steps=[['INHALE',4,3.2],['HOLD',4,3.2],['EXHALE',6,1]],mantras=['I arise in light. I rise in love.','Breathe in peace. Breathe out fear.','I am guided, guarded, and held.','Light above me, light within me.'];let i=0,k=0;
+function step(){const s=steps[i];c.textContent=s[0];b.style.transitionDuration=s[1]+'s';b.style.transform='scale('+s[2]+')';i=(i+1)%3;if(i===0&&++k%4===0){m.style.opacity=0;setTimeout(()=>{m.textContent=mantras[(k/4)%mantras.length|0];m.style.opacity=1},3000)}setTimeout(step,s[1]*1000)}step();
+// pause heavy layers when hidden
+document.addEventListener('visibilitychange',()=>{document.querySelectorAll('#arAur,#arRing').forEach(e=>e.style.display=document.hidden?'none':'')});})();</script>
 </body></html>
