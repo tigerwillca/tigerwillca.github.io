@@ -25,7 +25,7 @@ input.typed{width:100%;box-sizing:border-box;font-size:20px;padding:10px;margin-
 <p>Deploy page · Robinhood Chain (4663)<br><small>SOFT777-DEPLOY-PAGE · build 202610022020 · deployed · gift Primes</small></p>
 
 <div id="gate" class="gate" data-ok="0">LOCKED. Tap "Connect wallet". Only wallet 0xe53b…677a on Robinhood Chain (4663) can use this page.</div>
-<div class="box"><button id="bc" class="alt">Connect wallet</button><div class="s" id="sc"></div></div>
+<div class="box"><button id="bc" class="alt">Connect wallet</button><button id="bwc" class="alt">Connect with WalletConnect (QR)</button><div class="s" id="sc"></div></div>
 
 <div class="box"><b>Signature 1 of 2 · Deploy</b> <span class="tag">DONE</span>
 <div class="done">DONE Fri Oct 2, 8:07 PM PT. Contract 0xd402…DFDF is live and owned by you (0xe53b…677a). Cards 0-4 are in your wallet. <b>Do not deploy again.</b> These buttons stay off.</div>
@@ -127,6 +127,8 @@ function locks(){for(const n of [1,2,3]){$("k"+n).disabled=!gateOK||busy;$("w"+n
  $("k5").disabled=!gateOK||busy||giftsDone;const g5=gateOK&&!busy&&!giftsDone&&$("k5").checked;$("y5").disabled=!g5;$("y5b").disabled=!g5;}
 function relock(n){$("k"+n).checked=false;$("w"+n).value="";locks();}
 for(const n of [1,2,3]){$("k"+n).onchange=locks;$("w"+n).oninput=locks;}
+// ---- WalletConnect v2 (QR): becomes the provider P, so every request goes through it exactly like the injected wallet ----
+window.s777UseProvider=async eth=>{P=eth;const g=await refresh();if(!eth._s777){eth._s777=1;if(eth.on){eth.on("accountsChanged",refresh);eth.on("chainChanged",refresh);eth.on("disconnect",refresh);}}return g;};
 $("bc").onclick=async()=>{const out=t=>$("sc").textContent=t;try{const eth=await getP();if(!eth)throw new Error("No wallet found. Open this page in your wallet app's browser.");
  await eth.request({method:"eth_requestAccounts"});
  try{await eth.request({method:"wallet_switchEthereumChain",params:[{chainId:CHAIN}]});}catch(e){try{await eth.request({method:"wallet_addEthereumChain",params:[{chainId:CHAIN,chainName:"Robinhood Chain",nativeCurrency:{name:"Ether",symbol:"ETH",decimals:18},rpcUrls:["https://rpc.mainnet.chain.robinhood.com"],blockExplorerUrls:["https://robinhoodchain.blockscout.com"]}]});}catch(_){}}
@@ -188,4 +190,16 @@ async function giftRun(fixed){const out=t=>$("s5").textContent=t;if(busy)return;
 $("k5").onchange=locks;$("y5").onclick=()=>giftRun(false);$("y5b").onclick=()=>giftRun(true);
 renderGifts();
 getP().then(eth=>{if(eth){refresh();if(eth.on&&!eth._s777){eth._s777=1;eth.on("accountsChanged",refresh);eth.on("chainChanged",refresh);}}});
+</script>
+<script type="module">
+const WC_PID="576399d578860d0f7fa9c0d27503f6a9",RPC_WC="https://rpc.mainnet.chain.robinhood.com";
+let wc=null;
+document.getElementById("bwc").onclick=async()=>{const out=t=>document.getElementById("sc").textContent=t;
+ try{if(!wc){out("Loading WalletConnect…");const {EthereumProvider}=await import("https://esm.sh/@walletconnect/ethereum-provider@2.21.8");
+  wc=await EthereumProvider.init({projectId:WC_PID,chains:[4663],optionalChains:[4663],rpcMap:{4663:RPC_WC},showQrModal:true,
+   methods:["eth_sendTransaction","eth_accounts","eth_requestAccounts","eth_chainId","wallet_switchEthereumChain","wallet_addEthereumChain"],
+   metadata:{name:"Reynard Soft7 777",description:"Soft7 777 deploy / gift page",url:location.origin,icons:[]}});}
+  if(!wc.session){out("Scan the QR with Robinhood Wallet on your iPhone…");await wc.connect();}
+  const g=await window.s777UseProvider(wc);out(g.ok?"Connected (WalletConnect).":"");
+ }catch(e){out("Stopped: "+(e.message||e));}};
 </script></body></html>
