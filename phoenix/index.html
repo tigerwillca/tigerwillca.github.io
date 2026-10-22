@@ -445,7 +445,8 @@ var SOFT7_DRIP = [
       if (mode==='fade') fade=Math.max(0, fade-0.05);
       // tail-tip emitter: same transform as the bird (rotate * skewX * scale) applied to the SVG's own tail tip (0,+15.75 from centre)
       var skewNow=Math.max(reduce?-6:-16, Math.min(reduce?6:16, tilt)), rad=(heading*180/Math.PI+90)*Math.PI/180;
-      var ly=15.75*linkScale, lx=Math.tan(skewNow*Math.PI/180)*ly;
+      var EMIT_OFFSET_Y=19; // px below bird centre along its body axis (tail tip ~15.75); raise to emit lower
+      var ly=EMIT_OFFSET_Y*linkScale, lx=Math.tan(skewNow*Math.PI/180)*ly;
       var trailX=bx+lx*Math.cos(rad)-ly*Math.sin(rad), trailY=by+lx*Math.sin(rad)+ly*Math.cos(rad);
       if ((mode==='mouse'||mode==='touch') && spd>(reduce?2.4:1.05) && ts-last>(reduce?80:34)){
         emit(trailX, trailY, bursts[bi++%3], reduce?0.08:0.18, false);
