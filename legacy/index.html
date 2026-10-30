@@ -261,6 +261,7 @@
   #famsvg line,#famsvg path{stroke:rgba(233,200,140,.26);stroke-width:1;fill:none;vector-effect:non-scaling-stroke} #famsvg .br{stroke:rgba(255,206,120,.75);stroke-width:1.6}
   .fn.soon,.sn.soon,.cn.soon{font-size:0!important;color:transparent!important;text-shadow:none!important} .fn.soon,.sn.soon{width:12px;height:12px;padding:0;border:0;border-radius:50%;background:radial-gradient(circle,rgba(255,246,226,.95) 0 28%,rgba(255,222,160,.35) 55%,rgba(255,222,160,0) 72%)}   /* a light whose name is still coming */
   #hint{transition:opacity 1.6s}
+  #hint.memory{font-style:italic;font-size:clamp(15px,4.2vw,18px);letter-spacing:.03em;text-transform:none;line-height:1.45;color:rgba(243,231,204,.82);padding:0 28px}
 
   /* Jennifer and Billy: big targets, plain words, one step at a time. Soft7 stays off these doors. */
   html.door-jen #brand, html.door-billy #brand,
@@ -628,7 +629,7 @@ This is our stamp.<br><b id="dad">Dad</b></div>
   }
   logVisit(door ? door.name + "'s door" : "Someone");
   // a one-time whisper on the very first visit; it fades and never returns on this device
-  if (!localStorage.getItem("shaffer-hinted")){ $("hint").textContent = SIMPLE && door && door.hint ? door.hint : "Touch the light. Send a ping."; setTimeout(() => { $("hint").style.opacity = .85; try { localStorage.setItem("shaffer-hinted", "1"); } catch(e){} setTimeout(() => { $("hint").style.opacity = 0; }, 7000); }, 2600); } else $("hint").textContent = "";
+  if (!localStorage.getItem("shaffer-hinted")){ const doorHint = SIMPLE && door && door.hint; $("hint").textContent = doorHint || "What is legacy? A memory."; if (!doorHint) $("hint").classList.add("memory"); setTimeout(() => { $("hint").style.opacity = .85; try { localStorage.setItem("shaffer-hinted", "1"); } catch(e){} setTimeout(() => { $("hint").style.opacity = 0; }, 7000); }, 2600); } else $("hint").textContent = "";
   // ONE TIME ONLY: the family word is asked for once per device. After the first correct entry,
   // a key is kept on this device (local storage, with a one-year cookie as backup) and the gate never shows again here.
   const ck = (document.cookie.match(/(?:^|; )shaffer-key=([^;]+)/) || [])[1];
