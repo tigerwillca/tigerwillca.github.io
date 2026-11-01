@@ -197,6 +197,7 @@ let wc=null;
 document.getElementById("bwc").onclick=async()=>{const out=t=>document.getElementById("sc").textContent=t;
  try{if(!wc){out("Loading WalletConnect…");const {EthereumProvider}=await import("https://esm.sh/@walletconnect/ethereum-provider@2.21.8");
   wc=await EthereumProvider.init({projectId:WC_PID,chains:[4663],optionalChains:[4663],rpcMap:{4663:RPC_WC},showQrModal:true,
+   qrModalOptions:{themeMode:"light",themeVariables:{"--wcm-accent-color":"#111111","--wcm-background-color":"#ffffff"}},
    methods:["eth_sendTransaction","eth_accounts","eth_requestAccounts","eth_chainId","wallet_switchEthereumChain","wallet_addEthereumChain"],
    metadata:{name:"Reynard Soft7 777",description:"Soft7 777 deploy / gift page",url:location.origin,icons:[]}});}
   if(!wc.session){out("Scan the QR with Robinhood Wallet on your iPhone…");await wc.connect();}
