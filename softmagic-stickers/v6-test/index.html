@@ -6,7 +6,7 @@
 <meta property="og:image" content="https://tigerwillca.github.io/softmagic-stickers/v6-test/og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Soft Seven: a glowing eye opening on a phoenix">
 <meta property="og:url" content="https://tigerwillca.github.io/softmagic-stickers/v6-test/"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#07040f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Soft Seven"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="apple-touch-icon" href="../apple-touch-icon.png"><link rel="icon" href="../favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" href="favicon-32.png">
 <style>
 :root{--a:#c9a7ff;--bg:#07040f;--fg:#f5ecff;--beat:10s}
 *{box-sizing:border-box}[hidden]{display:none!important}
@@ -95,7 +95,7 @@ dialog::backdrop{background:rgba(5,2,12,.92);backdrop-filter:blur(10px);-webkit-
 <canvas id="sky" aria-hidden="true"></canvas><div class="glow" aria-hidden="true"></div>
 <main>
 <div class="hero">
-<button class="orb" id="orb" aria-label="Tap to reveal your Soft Seven sticker"><span class="sw"></span><span class="in"><picture><img src="s/m/soft-magic-quiet-eye.gif?v=t5" width="320" height="320" alt="A phoenix inside a slowly opening eye"></picture></span></button>
+<button class="orb" id="orb" aria-label="Tap to reveal your Soft Seven sticker"><span class="sw"></span><span class="in"><picture><img src="s/m/soft-magic-quiet-eye.gif?v=t6" width="320" height="320" alt="A phoenix inside a slowly opening eye"></picture></span></button>
 <p class="word" id="reveal" role="button" tabindex="0">Tap</p>
 <button class="howl" id="howl">How to add</button>
 <button class="hbtn" id="hpull">✦ Holo Pull</button>
@@ -114,7 +114,7 @@ dialog::backdrop{background:rgba(5,2,12,.92);backdrop-filter:blur(10px);-webkit-
 <p id="pr" hidden style="margin:0"><span class="hint">Print it, stick it, pass it on.</span></p>
 <button class="snd" id="snd" aria-pressed="false" aria-label="Chime off">♪ Chime off</button><p class="hint">Pass the spark. Press and hold the sticker to copy or save it.</p></div></dialog>
 <script>
-const S=[{"f": "soft-magic-william", "n": "William", "a": 1}, {"f": "soft-magic-quiet-eye", "n": "Quiet Eye", "a": 1}, {"f": "soft-magic-metatrons-cube", "n": "Metatron's Cube", "a": 1}, {"f": "soft-magic-seed-of-life", "n": "Seed of Life", "a": 1}, {"f": "soft-magic-flower-of-life", "n": "Flower of Life", "a": 1}, {"f": "soft-magic-phoenix-rising", "n": "Phoenix Rising", "a": 1}, {"f": "soft-magic-hooded-tiger", "n": "Hooded Tiger", "a": 1}, {"f": "soft-magic-dawn-fox", "n": "Dawn Fox", "a": 1}, {"f": "soft-magic-golden-owl", "n": "Golden Owl", "a": 1}, {"f": "soft-magic-gucci-glasses", "n": "Gold Glasses", "a": 1}, {"f": "soft-magic-starlight-raccoon", "n": "Starlight Raccoon", "a": 1}, {"f": "soft-magic-golden-wolf", "n": "Golden Wolf", "a": 1}, {"f": "soft-magic-rose-cube", "n": "Rose Cube", "a": 1}, {"f": "soft-magic-aurora-cube", "n": "Aurora Cube", "a": 1}],LINE="Seven soft lights, one quiet story \u2014 may it find you gently.",SECRET={f:"soft-magic-seventh-gate",n:"Seventh Gate",a:1},URL0="tigerwillca.github.io/softmagic-stickers",BEAT=10000,VER='t5';
+const S=[{"f": "soft-magic-william", "n": "William", "a": 1}, {"f": "soft-magic-quiet-eye", "n": "Quiet Eye", "a": 1}, {"f": "soft-magic-metatrons-cube", "n": "Metatron's Cube", "a": 1}, {"f": "soft-magic-seed-of-life", "n": "Seed of Life", "a": 1}, {"f": "soft-magic-flower-of-life", "n": "Flower of Life", "a": 1}, {"f": "soft-magic-phoenix-rising", "n": "Phoenix Rising", "a": 1}, {"f": "soft-magic-hooded-tiger", "n": "Hooded Tiger", "a": 1}, {"f": "soft-magic-dawn-fox", "n": "Dawn Fox", "a": 1}, {"f": "soft-magic-golden-owl", "n": "Golden Owl", "a": 1}, {"f": "soft-magic-gucci-glasses", "n": "Gold Glasses", "a": 1}, {"f": "soft-magic-starlight-raccoon", "n": "Starlight Raccoon", "a": 1}, {"f": "soft-magic-golden-wolf", "n": "Golden Wolf", "a": 1}, {"f": "soft-magic-rose-cube", "n": "Rose Cube", "a": 1}, {"f": "soft-magic-aurora-cube", "n": "Aurora Cube", "a": 1}],LINE="Seven soft lights, one quiet story \u2014 may it find you gently.",SECRET={f:"soft-magic-seventh-gate",n:"Seventh Gate",a:1},URL0="tigerwillca.github.io/softmagic-stickers",BEAT=10000,VER='t6';
 const MQ=matchMedia('(prefers-reduced-motion: reduce)');let RM=MQ.matches;
 const $=i=>document.getElementById(i),g=$('g'),d=$('d');let cur=null,snd=false,ac=null;
 const src=s=>(s.a?'s/m/'+s.f+'.gif':'s/f/'+s.f+'.png')+'?v='+VER,ext=s=>s.a?'.gif':'.png';
