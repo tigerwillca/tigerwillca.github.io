@@ -1,0 +1,17 @@
+{
+  "name": "soft7-scan",
+  "private": true,
+  "description": "Headless tests for the Soft 7 read-only scan page. No signing, no transactions.",
+  "scripts": {
+    "test": "node test-run.mjs"
+  },
+  "devDependencies": {
+    "@zxing/library": "0.21.3",
+    "bwip-js": "4.5.1",
+    "js-sha3": "0.9.3",
+    "jsqr": "1.4.0",
+    "pngjs": "7.0.0",
+    "playwright-core": "1.65.0",
+    "qrcode": "1.5.4"
+  }
+}
