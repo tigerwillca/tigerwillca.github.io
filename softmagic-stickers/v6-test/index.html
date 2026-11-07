@@ -95,12 +95,12 @@ dialog::backdrop{background:rgba(5,2,12,.92);backdrop-filter:blur(10px);-webkit-
 <canvas id="sky" aria-hidden="true"></canvas><div class="glow" aria-hidden="true"></div>
 <main>
 <div class="hero">
-<button class="orb" id="orb" aria-label="Tap to reveal your Soft Seven sticker"><span class="sw"></span><span class="in"><picture><img src="s/m/soft-magic-quiet-eye.gif?v=t6" width="320" height="320" alt="A phoenix inside a slowly opening eye"></picture></span></button>
+<button class="orb" id="orb" aria-label="Tap to reveal your Soft Seven sticker"><span class="sw"></span><span class="in"><picture><img src="s/m/soft-magic-quiet-eye.gif?v=t7" width="320" height="320" alt="A phoenix inside a slowly opening eye"></picture></span></button>
 <p class="word" id="reveal" role="button" tabindex="0">Tap</p>
 <button class="howl" id="howl">How to add</button>
 <button class="hbtn" id="hpull">✦ Holo Pull</button>
 </div>
-<div id="more" hidden><section><h2>The pack</h2><div class="grid" id="g"></div>
+<div id="more" hidden><section><h2>The pack · 13 stickers</h2><div class="grid" id="g"></div>
 <details class="how" id="how"><summary>Add these to your texts</summary>
 <h3>Send one now:</h3><ol><li>Tap a sticker to open it big, then press and hold it.</li><li>Tap Copy.</li><li>Open Messages, press and hold where you type, and tap Paste. The moving ones stay moving.</li></ol>
 <h3>Keep it as a sticker (iPhone with iOS 17 or later):</h3><ol><li>Press and hold a sticker and tap Save to Photos.</li><li>Open it in Photos, then press and hold the picture until it glows.</li><li>Tap Add Sticker. It now shows in Messages when you tap + and then Stickers.</li></ol>
@@ -114,7 +114,7 @@ dialog::backdrop{background:rgba(5,2,12,.92);backdrop-filter:blur(10px);-webkit-
 <p id="pr" hidden style="margin:0"><span class="hint">Print it, stick it, pass it on.</span></p>
 <button class="snd" id="snd" aria-pressed="false" aria-label="Chime off">♪ Chime off</button><p class="hint">Pass the spark. Press and hold the sticker to copy or save it.</p></div></dialog>
 <script>
-const S=[{"f": "soft-magic-william", "n": "William", "a": 1}, {"f": "soft-magic-quiet-eye", "n": "Quiet Eye", "a": 1}, {"f": "soft-magic-metatrons-cube", "n": "Metatron's Cube", "a": 1}, {"f": "soft-magic-seed-of-life", "n": "Seed of Life", "a": 1}, {"f": "soft-magic-flower-of-life", "n": "Flower of Life", "a": 1}, {"f": "soft-magic-phoenix-rising", "n": "Phoenix Rising", "a": 1}, {"f": "soft-magic-hooded-tiger", "n": "Hooded Tiger", "a": 1}, {"f": "soft-magic-dawn-fox", "n": "Dawn Fox", "a": 1}, {"f": "soft-magic-golden-owl", "n": "Golden Owl", "a": 1}, {"f": "soft-magic-gucci-glasses", "n": "Gold Glasses", "a": 1}, {"f": "soft-magic-starlight-raccoon", "n": "Starlight Raccoon", "a": 1}, {"f": "soft-magic-golden-wolf", "n": "Golden Wolf", "a": 1}, {"f": "soft-magic-rose-cube", "n": "Rose Cube", "a": 1}, {"f": "soft-magic-aurora-cube", "n": "Aurora Cube", "a": 1}],LINE="Seven soft lights, one quiet story \u2014 may it find you gently.",SECRET={f:"soft-magic-seventh-gate",n:"Seventh Gate",a:1},URL0="tigerwillca.github.io/softmagic-stickers",BEAT=10000,VER='t6';
+const S=[{"f": "soft-magic-william", "n": "William", "a": 1}, {"f": "soft-magic-quiet-eye", "n": "Quiet Eye", "a": 1}, {"f": "soft-magic-metatrons-cube", "n": "Metatron's Cube", "a": 1}, {"f": "soft-magic-seed-of-life", "n": "Seed of Life", "a": 1}, {"f": "soft-magic-flower-of-life", "n": "Flower of Life", "a": 1}, {"f": "soft-magic-phoenix-rising", "n": "Phoenix Rising", "a": 1}, {"f": "soft-magic-hooded-tiger", "n": "Hooded Tiger", "a": 1}, {"f": "soft-magic-dawn-fox", "n": "Dawn Fox", "a": 1}, {"f": "soft-magic-golden-owl", "n": "Golden Owl", "a": 1}, {"f": "soft-magic-gucci-glasses", "n": "Gold Glasses", "a": 1}, {"f": "soft-magic-starlight-raccoon", "n": "Starlight Raccoon", "a": 1}, {"f": "soft-magic-golden-wolf", "n": "Golden Wolf", "a": 1}, {"f": "soft-magic-rose-cube", "n": "Rose Cube", "a": 1}],LINE="Seven soft lights, one quiet story \u2014 may it find you gently.",SECRET={f:"soft-magic-seventh-gate",n:"Seventh Gate",a:1},URL0="tigerwillca.github.io/softmagic-stickers",BEAT=10000,VER='t7';
 const MQ=matchMedia('(prefers-reduced-motion: reduce)');let RM=MQ.matches;
 const $=i=>document.getElementById(i),g=$('g'),d=$('d');let cur=null,snd=false,ac=null;
 const src=s=>(s.a?'s/m/'+s.f+'.gif':'s/f/'+s.f+'.png')+'?v='+VER,ext=s=>s.a?'.gif':'.png';
