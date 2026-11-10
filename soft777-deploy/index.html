@@ -1,5 +1,5 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
-<meta name="soft777-build" content="202611101539">
+<meta name="soft777-build" content="202611101548">
 <title>Reynard Soft7 777 · deploy</title>
 <style>
 body{background:#0b0b10;color:#eee;font:19px/1.5 system-ui,sans-serif;margin:0;padding:20px 14px;text-align:center;letter-spacing:.01em}
@@ -23,7 +23,7 @@ input.typed{width:100%;box-sizing:border-box;font-size:20px;padding:10px;margin-
 .tag{display:inline-block;background:#7a6a3a;color:#111;font-weight:700;border-radius:6px;padding:1px 8px;font-size:15px}
 </style></head><body>
 <h2>Reynard Soft7 777</h2>
-<p>Deploy page · Robinhood Chain (4663)<br><small>SOFT777-DEPLOY-PAGE · build 202611101539 · ?v=7774 · deployed · gift Primes</small></p>
+<p>Deploy page · Robinhood Chain (4663)<br><small>SOFT777-DEPLOY-PAGE · build 202611101548 · ?v=7777 · deployed · gift Primes</small></p>
 
 <div id="gate" class="gate" data-ok="0">LOCKED. Tap "Connect wallet". Only wallet 0xe53b…677a on Robinhood Chain (4663) can use this page.</div>
 <div class="box"><button id="bc" class="alt">Connect wallet</button><button id="bwc" class="alt">Connect with WalletConnect (QR)</button><div class="s" id="sc"></div><div id="wcqr" hidden></div></div>
@@ -211,27 +211,33 @@ let wc=null,wcLoad=null;
 function wcCtor(mod){return (mod&&(mod.EthereumProvider||(mod.default&&(mod.default.EthereumProvider||mod.default))))||null;}
 async function initWC(){if(wc)return wc;if(wcLoad)return wcLoad;
  wcLoad=(async()=>{let last;for(const url of WC_SRCS){try{
-  const mod=await Promise.race([import(url),new Promise((_,rej)=>setTimeout(()=>rej(new Error("WalletConnect script timed out")),20000))]);
+  const mod=await Promise.race([import(url),new Promise((_,rej)=>setTimeout(()=>rej(new Error("WalletConnect script timed out")),10000))]);
   const EthereumProvider=wcCtor(mod);if(!EthereumProvider||typeof EthereumProvider.init!=="function")throw new Error("WalletConnect provider missing");
-  return await EthereumProvider.init({projectId:WC_PID,chains:[4663],optionalChains:[4663],rpcMap:{4663:RPC_WC},showQrModal:true,
-   qrModalOptions:{themeMode:"light",themeVariables:{"--wcm-accent-color":"#111111","--wcm-background-color":"#ffffff"}},
+  return await EthereumProvider.init({projectId:WC_PID,chains:[4663],optionalChains:[4663],rpcMap:{4663:RPC_WC},showQrModal:false,
    methods:["eth_sendTransaction","eth_accounts","eth_requestAccounts","eth_chainId","wallet_switchEthereumChain","wallet_addEthereumChain"],
    events:["chainChanged","accountsChanged"],
    metadata:{name:"Reynard Soft7 777",description:"Soft7 777 deploy / gift page",url:location.origin,icons:[]}});
  }catch(e){last=e;}}throw last||new Error("Could not load WalletConnect");})();
  try{wc=await wcLoad;return wc;}catch(e){wcLoad=null;wc=null;throw e;}}
 async function showUri(uri){const box=document.getElementById("wcqr");if(!box)return;box.hidden=false;box.replaceChildren();const canvas=document.createElement("canvas");box.appendChild(canvas);
- try{const QR=await import("https://esm.sh/qrcode@1.5.4");await QR.toCanvas(canvas,uri,{width:280,margin:2,color:{dark:"#111111",light:"#ffffff"}});}
- catch(e){const d=document.createElement("div");d.style.cssText="word-break:break-all;font:13px ui-monospace,monospace";d.textContent=uri;box.appendChild(d);}}
+ const srcs=["https://esm.sh/qrcode@1.5.4","https://cdn.jsdelivr.net/npm/qrcode@1.5.4/+esm"];let ok=false;
+ for(const src of srcs){try{const QR=await import(src);const fn=QR.toCanvas||(QR.default&&QR.default.toCanvas);if(typeof fn==="function"){await fn(canvas,uri,{width:280,margin:2,color:{dark:"#111111",light:"#ffffff"}});ok=true;break;}}catch(_){}}
+ if(!ok){const d=document.createElement("div");d.style.cssText="word-break:break-all;font:13px ui-monospace,monospace";d.textContent=uri;box.appendChild(d);}}
 function hideUri(){const box=document.getElementById("wcqr");if(box){box.hidden=true;box.replaceChildren();}}
 document.getElementById("bwc").onclick=async()=>{const btn=document.getElementById("bwc");if(btn.dataset.busy==="1")return;btn.dataset.busy="1";
  window.__s777ConnectGen=window.__s777ConnectGen||0;const token=++window.__s777ConnectGen;
  const out=t=>{if(token!==window.__s777ConnectGen)return;document.getElementById("sc").textContent=t;};
+ const ffHint=" If you are in Firefox, click the shield icon in the address bar, turn off Enhanced Tracking Protection for this site, and try again.";
  try{out("Loading WalletConnect…");hideUri();
-  const p=await Promise.race([initWC(),new Promise((_,rej)=>setTimeout(()=>rej(new Error("WalletConnect is taking too long. Check the network and try again.")),25000))]);
+  const p=await Promise.race([initWC(),new Promise((_,rej)=>setTimeout(()=>rej(new Error("WalletConnect is taking too long."+ffHint)),10000))]);
   if(token!==window.__s777ConnectGen)return;
-  if(p&&p.on)p.on("display_uri",uri=>{out("Scan the QR with Robinhood Wallet on your iPhone…");showUri(uri);});
-  if(!p.session){out("Scan the QR with Robinhood Wallet on your iPhone…");await p.connect({chains:[4663],optionalChains:[4663]});}
+  let gotUri=false;
+  if(p&&p.on)p.on("display_uri",uri=>{gotUri=true;out("Scan the QR with Robinhood Wallet on your iPhone…");showUri(uri);});
+  if(!p.session){out("Waiting for a QR…");
+   const connected=p.connect({chains:[4663],optionalChains:[4663]});
+   await new Promise((resolve,reject)=>{const iv=setInterval(()=>{if(gotUri){clearInterval(iv);resolve();}},100);
+    setTimeout(()=>{clearInterval(iv);if(!gotUri)reject(new Error("No QR appeared."+ffHint));},10000);});
+   await connected;}
   if(token!==window.__s777ConnectGen)return;
   const g=await window.s777UseProvider(p);out(g.ok?"Connected (WalletConnect).":(g.msg||""));hideUri();
   try{p.modal&&p.modal.close&&p.modal.close();}catch(_){}}
