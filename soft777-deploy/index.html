@@ -1,5 +1,5 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
-<meta name="soft777-build" content="2026110507772">
+<meta name="soft777-build" content="202611101535">
 <title>Reynard Soft7 777 · deploy</title>
 <style>
 body{background:#0b0b10;color:#eee;font:19px/1.5 system-ui,sans-serif;margin:0;padding:20px 14px;text-align:center;letter-spacing:.01em}
@@ -8,6 +8,7 @@ h2{margin:.2em 0}.box{max-width:470px;margin:18px auto;padding:16px;border:1px s
 button{display:block;margin:12px auto 0;width:100%;font-size:22px;padding:18px 12px;border-radius:14px;border:0;background:#e0a526;color:#111;font-weight:700}
 button.alt{background:#333;color:#eee;font-size:17px;padding:12px}button:disabled{opacity:.3}
 .s{margin-top:12px;white-space:pre-wrap;word-break:break-all;font-size:16px;color:#ffd27a}
+#wcqr{margin-top:12px;text-align:center}#wcqr canvas{display:inline-block;background:#fff;padding:10px;border-radius:12px}
 .gate{max-width:470px;margin:0 auto;padding:12px;border-radius:12px;background:#3a1010;border:1px solid #a33;color:#ffb3b3;font-size:17px;text-align:left}
 .gate.ok{background:#0f2a17;border-color:#2e9b4f;color:#b9f5c8}
 .what{background:#15151c;border:1px solid #444;border-radius:10px;padding:10px 12px;margin-top:10px;font-size:17px}
@@ -22,10 +23,10 @@ input.typed{width:100%;box-sizing:border-box;font-size:20px;padding:10px;margin-
 .tag{display:inline-block;background:#7a6a3a;color:#111;font-weight:700;border-radius:6px;padding:1px 8px;font-size:15px}
 </style></head><body>
 <h2>Reynard Soft7 777</h2>
-<p>Deploy page · Robinhood Chain (4663)<br><small>SOFT777-DEPLOY-PAGE · build 2026110507772 · ?v=7772 · deployed · gift Primes</small></p>
+<p>Deploy page · Robinhood Chain (4663)<br><small>SOFT777-DEPLOY-PAGE · build 202611101535 · ?v=7773 · deployed · gift Primes</small></p>
 
 <div id="gate" class="gate" data-ok="0">LOCKED. Tap "Connect wallet". Only wallet 0xe53b…677a on Robinhood Chain (4663) can use this page.</div>
-<div class="box"><button id="bc" class="alt">Connect wallet</button><button id="bwc" class="alt">Connect with WalletConnect (QR)</button><div class="s" id="sc"></div></div>
+<div class="box"><button id="bc" class="alt">Connect wallet</button><button id="bwc" class="alt">Connect with WalletConnect (QR)</button><div class="s" id="sc"></div><div id="wcqr" hidden></div></div>
 
 <div class="box"><b>Signature 1 of 2 · Deploy</b> <span class="tag">DONE</span>
 <div class="done">DONE Fri Oct 2, 8:07 PM PT. Contract 0xd402…DFDF is live and owned by you (0xe53b…677a). Cards 0-4 are in your wallet. <b>Do not deploy again.</b> These buttons stay off.</div>
@@ -131,11 +132,12 @@ function relock(n){$("k"+n).checked=false;$("w"+n).value="";locks();}
 for(const n of [1,2,3]){$("k"+n).onchange=locks;$("w"+n).oninput=locks;}
 // ---- WalletConnect v2 (QR): becomes the provider P, so every request goes through it exactly like the injected wallet ----
 window.s777UseProvider=async eth=>{P=eth;const g=await refresh();if(!eth._s777){eth._s777=1;if(eth.on){eth.on("accountsChanged",refresh);eth.on("chainChanged",refresh);eth.on("disconnect",refresh);}}return g;};
-$("bc").onclick=async()=>{const out=t=>$("sc").textContent=t;try{const eth=await getP();if(!eth)throw new Error("No wallet found. Open this page in your wallet app's browser.");
- await eth.request({method:"eth_requestAccounts"});
+window.__s777ConnectGen=window.__s777ConnectGen||0;
+$("bc").onclick=async()=>{const out=t=>$("sc").textContent=t;const token=++window.__s777ConnectGen;try{out("Looking for a wallet…");const eth=await getP();if(token!==window.__s777ConnectGen)return;if(!eth)throw new Error("No wallet found. Use \"Connect with WalletConnect (QR)\" or open this page in your wallet app's browser.");
+ await eth.request({method:"eth_requestAccounts"});if(token!==window.__s777ConnectGen)return;
  try{await eth.request({method:"wallet_switchEthereumChain",params:[{chainId:CHAIN}]});}catch(e){try{await eth.request({method:"wallet_addEthereumChain",params:[{chainId:CHAIN,chainName:"Robinhood Chain",nativeCurrency:{name:"Ether",symbol:"ETH",decimals:18},rpcUrls:["https://rpc.mainnet.chain.robinhood.com"],blockExplorerUrls:["https://robinhoodchain.blockscout.com"]}]});}catch(_){}}
- const g=await refresh();out(g.ok?"Connected.":"");
- if(!eth._s777){eth._s777=1;if(eth.on){eth.on("accountsChanged",refresh);eth.on("chainChanged",refresh);}}}catch(e){out("Stopped: "+(e.message||e));}};
+ if(token!==window.__s777ConnectGen)return;const g=await refresh();if(token!==window.__s777ConnectGen)return;out(g.ok?"Connected.":(g.msg||""));
+ if(!eth._s777){eth._s777=1;if(eth.on){eth.on("accountsChanged",refresh);eth.on("chainChanged",refresh);}}}catch(e){if(token!==window.__s777ConnectGen)return;out("Stopped: "+(e.message||e));}};
 async function sendChecked(n,tx,out){const g=await refresh();if(!g.ok||!armed(n))throw new Error("Locked. Check the wallet, the network and the confirm box.");
  const eth=await getP();busy=true;locks();try{out("Confirm in your wallet…");return await eth.request({method:"eth_sendTransaction",params:[{from:g.a,...tx}]});}finally{busy=false;relock(n);}}
 async function call(eth,to,data){return await eth.request({method:"eth_call",params:[{to,data},"latest"]});}
@@ -218,11 +220,21 @@ async function initWC(){if(wc)return wc;if(wcLoad)return wcLoad;
    metadata:{name:"Reynard Soft7 777",description:"Soft7 777 deploy / gift page",url:location.origin,icons:[]}});
  }catch(e){last=e;}}throw last||new Error("Could not load WalletConnect");})();
  try{wc=await wcLoad;return wc;}catch(e){wcLoad=null;wc=null;throw e;}}
+async function showUri(uri){const box=document.getElementById("wcqr");if(!box)return;box.hidden=false;box.replaceChildren();const canvas=document.createElement("canvas");box.appendChild(canvas);
+ try{const QR=await import("https://esm.sh/qrcode@1.5.4");await QR.toCanvas(canvas,uri,{width:280,margin:2,color:{dark:"#111111",light:"#ffffff"}});}
+ catch(e){const d=document.createElement("div");d.style.cssText="word-break:break-all;font:13px ui-monospace,monospace";d.textContent=uri;box.appendChild(d);}}
+function hideUri(){const box=document.getElementById("wcqr");if(box){box.hidden=true;box.replaceChildren();}}
 document.getElementById("bwc").onclick=async()=>{const btn=document.getElementById("bwc");if(btn.dataset.busy==="1")return;btn.dataset.busy="1";
- const out=t=>document.getElementById("sc").textContent=t;
- try{out("Loading WalletConnect…");const p=await initWC();
+ const token=++(window.__s777ConnectGen=window.__s777ConnectGen||0);
+ const out=t=>{if(token!==window.__s777ConnectGen)return;document.getElementById("sc").textContent=t;};
+ try{out("Loading WalletConnect…");hideUri();
+  const p=await Promise.race([initWC(),new Promise((_,rej)=>setTimeout(()=>rej(new Error("WalletConnect is taking too long. Check the network and try again.")),25000))]);
+  if(token!==window.__s777ConnectGen)return;
+  if(p&&p.on)p.on("display_uri",uri=>{out("Scan the QR with Robinhood Wallet on your iPhone…");showUri(uri);});
   if(!p.session){out("Scan the QR with Robinhood Wallet on your iPhone…");await p.connect({chains:[4663],optionalChains:[4663]});}
-  const g=await window.s777UseProvider(p);out(g.ok?"Connected (WalletConnect).":"");}
- catch(e){if(!wc||!wc.session){wc=null;wcLoad=null;}out("Stopped: "+(e.message||e));}
- finally{btn.dataset.busy="";}};
+  if(token!==window.__s777ConnectGen)return;
+  const g=await window.s777UseProvider(p);out(g.ok?"Connected (WalletConnect).":(g.msg||""));hideUri();
+  try{p.modal&&p.modal.close&&p.modal.close();}catch(_){}}
+ catch(e){if(token!==window.__s777ConnectGen)return;if(!wc||!wc.session){wc=null;wcLoad=null;}out("Stopped: "+(e.message||e));}
+ finally{if(token===window.__s777ConnectGen)btn.dataset.busy="";}};
 </script></body></html>
