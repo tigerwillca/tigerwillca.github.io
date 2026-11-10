@@ -1,5 +1,5 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
-<meta name="soft777-build" content="202611101535">
+<meta name="soft777-build" content="202611101539">
 <title>Reynard Soft7 777 · deploy</title>
 <style>
 body{background:#0b0b10;color:#eee;font:19px/1.5 system-ui,sans-serif;margin:0;padding:20px 14px;text-align:center;letter-spacing:.01em}
@@ -23,7 +23,7 @@ input.typed{width:100%;box-sizing:border-box;font-size:20px;padding:10px;margin-
 .tag{display:inline-block;background:#7a6a3a;color:#111;font-weight:700;border-radius:6px;padding:1px 8px;font-size:15px}
 </style></head><body>
 <h2>Reynard Soft7 777</h2>
-<p>Deploy page · Robinhood Chain (4663)<br><small>SOFT777-DEPLOY-PAGE · build 202611101535 · ?v=7773 · deployed · gift Primes</small></p>
+<p>Deploy page · Robinhood Chain (4663)<br><small>SOFT777-DEPLOY-PAGE · build 202611101539 · ?v=7774 · deployed · gift Primes</small></p>
 
 <div id="gate" class="gate" data-ok="0">LOCKED. Tap "Connect wallet". Only wallet 0xe53b…677a on Robinhood Chain (4663) can use this page.</div>
 <div class="box"><button id="bc" class="alt">Connect wallet</button><button id="bwc" class="alt">Connect with WalletConnect (QR)</button><div class="s" id="sc"></div><div id="wcqr" hidden></div></div>
@@ -225,7 +225,7 @@ async function showUri(uri){const box=document.getElementById("wcqr");if(!box)re
  catch(e){const d=document.createElement("div");d.style.cssText="word-break:break-all;font:13px ui-monospace,monospace";d.textContent=uri;box.appendChild(d);}}
 function hideUri(){const box=document.getElementById("wcqr");if(box){box.hidden=true;box.replaceChildren();}}
 document.getElementById("bwc").onclick=async()=>{const btn=document.getElementById("bwc");if(btn.dataset.busy==="1")return;btn.dataset.busy="1";
- const token=++(window.__s777ConnectGen=window.__s777ConnectGen||0);
+ window.__s777ConnectGen=window.__s777ConnectGen||0;const token=++window.__s777ConnectGen;
  const out=t=>{if(token!==window.__s777ConnectGen)return;document.getElementById("sc").textContent=t;};
  try{out("Loading WalletConnect…");hideUri();
   const p=await Promise.race([initWC(),new Promise((_,rej)=>setTimeout(()=>rej(new Error("WalletConnect is taking too long. Check the network and try again.")),25000))]);
