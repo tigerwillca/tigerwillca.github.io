@@ -1,0 +1,949 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#07060a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Family photos">
+<link rel="icon" href="/legacy/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/legacy/apple-touch-icon.png">
+<title>Family photos · House of Shaffer</title>
+<style>
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  html,body{margin:0;background:#07060a;color:#efe6d2;
+    font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    font-size:20px;line-height:1.55;-webkit-text-size-adjust:100%}
+  body{background:radial-gradient(120% 80% at 50% 18%,#1a1320 0%,#0b0910 46%,#050407 100%) fixed;
+    padding:calc(env(safe-area-inset-top) + 18px) calc(env(safe-area-inset-right) + 18px) calc(env(safe-area-inset-bottom) + 48px) calc(env(safe-area-inset-left) + 18px)}
+  body:not(.open){overflow:hidden;height:100%}
+  main{max-width:40rem;margin:0 auto;opacity:0;transition:opacity .6s ease}
+  body.open main{opacity:1}
+  a.back{min-height:44px;display:inline-flex;align-items:center;margin:0 0 16px;padding:8px 2px;
+    color:#f0d9a6;text-decoration:underline;text-underline-offset:3px;font-size:20px}
+  a.back:focus,nav a:focus,.pic:focus-visible,#big button:focus{outline:3px solid #e9c88c;outline-offset:3px}
+  h1{margin:0 0 8px;font-weight:400;font-size:clamp(32px,8vw,44px);letter-spacing:.02em;line-height:1.15}
+  h2{margin:8px 0 4px;font-weight:400;font-size:clamp(28px,7vw,36px);line-height:1.2}
+  h3{margin:14px 0 4px;font-weight:400;font-size:26px;line-height:1.25}
+  .kicker{margin:0 0 18px;font-size:15px;letter-spacing:.18em;text-transform:uppercase;color:rgba(233,200,140,.78)}
+  .intro{margin:0 0 18px}
+  .key{list-style:none;margin:0 0 22px;padding:0;display:flex;flex-direction:column;gap:8px}
+  .key li{padding:10px 14px;border-radius:14px;background:rgba(14,10,18,.72);border:1px solid rgba(233,200,140,.16)}
+  .key b{font-weight:400;color:#f0d9a6}
+  nav{display:flex;flex-direction:column;gap:10px;margin:0 0 28px}
+  nav a{display:flex;flex-direction:column;justify-content:center;min-height:64px;padding:12px 16px;border-radius:16px;
+    text-decoration:none;color:#efe6d2;background:rgba(14,10,18,.78);border:1px solid rgba(233,200,140,.28)}
+  nav a small{color:#f0d9a6;font-size:18px}
+  section,h2,.card{scroll-margin-top:16px}
+  section{margin:0 0 18px}
+  .years{margin:0 0 6px;color:#f0d9a6;font-size:22px}
+  .lead{margin:0 0 18px}
+  .card{margin:0 0 28px;padding:0 0 22px;border-bottom:1px solid rgba(233,200,140,.18)}
+  .pic{display:block;width:100%;margin:0;padding:0;border:0;background:#100c14;border-radius:16px;cursor:zoom-in}
+  .pic img{display:block;width:100%;height:auto;max-height:70vh;object-fit:contain;border-radius:16px;background:#100c14}
+  .when{margin:0 0 8px;font-size:22px;color:#f0d9a6}
+  .tag{display:inline-block;margin:0 0 10px;padding:4px 10px;border-radius:999px;border:1px solid rgba(233,200,140,.45);
+    color:#f0d9a6;font-size:18px}
+  .card[data-strength="LIKELY"] .tag{border-style:dashed}
+  .honest{margin:0 0 12px;padding:12px 14px;border-radius:14px;background:rgba(233,200,140,.1);
+    border:1px solid rgba(233,200,140,.35);font-size:22px;line-height:1.4}
+  .cap{margin:0 0 14px}
+  .k{margin:12px 0 2px;font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:rgba(233,200,140,.75)}
+  .who{margin:0;padding:0;list-style:none}
+  .who li{margin:0 0 2px}
+  .cap,.who,.meta{overflow-wrap:anywhere}
+  .meta{margin:0;font-size:18px;line-height:1.45}
+  .meta a{color:#f0d9a6}
+  .nophoto{margin:0;padding:18px 16px;border-radius:16px;background:rgba(14,10,18,.72);border:1px dashed rgba(233,200,140,.35);color:#f0d9a6}
+  .foot{margin-top:8px}
+  .foot a{color:#f0d9a6}
+  #gate{position:fixed;inset:0;z-index:10;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+    background:radial-gradient(120% 80% at 50% 45%,#1a1320 0%,#07060a 70%);padding:24px;text-align:center}
+  #gate.on{display:flex}
+  #gate h2{margin:0;font-weight:400;font-size:clamp(28px,8vw,40px);letter-spacing:.04em}
+  #gate p{margin:0;font-size:18px}
+  #gate form{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:8px}
+  #gate input{font:20px Georgia,serif;padding:14px 16px;border-radius:14px;border:1px solid rgba(233,200,140,.4);
+    background:rgba(255,255,255,.04);color:#efe6d2;width:min(70vw,260px);text-align:center}
+  #gate button{font:20px Georgia,serif;min-height:52px;padding:12px 18px;border-radius:14px;border:1px solid rgba(233,200,140,.5);
+    background:rgba(233,200,140,.12);color:#efe6d2}
+  #big{border:0;padding:0;background:rgba(5,4,8,.94);color:#efe6d2;max-width:none;max-height:none;width:100%;height:100%}
+  #big::backdrop{background:rgba(5,4,8,.94)}
+  #big img{display:block;margin:64px auto 24px;max-width:calc(100vw - 24px);max-height:calc(100vh - 110px);object-fit:contain}
+  #big button{position:fixed;top:calc(env(safe-area-inset-top) + 10px);right:10px;min-width:64px;min-height:48px;
+    border-radius:14px;border:1px solid rgba(233,200,140,.5);background:rgba(12,9,16,.85);color:#efe6d2;font:20px Georgia,serif}
+  @media (min-width:800px){nav{display:grid;grid-template-columns:1fr 1fr 1fr}}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto} main{transition:none}}
+</style>
+</head>
+<body>
+<a class="back" href="/legacy/">Back to Legacy</a>
+<main inert>
+  <p class="kicker">House of Shaffer</p>
+  <h1>Family photos</h1>
+  <p class="intro">Three people. Big type. A short note under each photo. The label says how sure the note is.</p>
+  <ul class="key">
+    <li><b>Official.</b> From a record.</li>
+    <li><b>Article.</b> From an article.</li>
+    <li><b>Confirmed.</b> The note under the photo is solid.</li>
+    <li><b>Likely.</b> A good guess. Not certain.</li>
+  </ul>
+  <nav aria-label="People">
+    <a href="#bill-sr">Bill Shaffer Sr.<small>1896–1986</small></a>
+    <a href="#bill-jr">William L. Shaffer Jr.<small>1921–1995</small></a>
+    <a href="#parents">William Daniel and Ida<small>His parents</small></a>
+  </nav>
+  <section id="bill-sr">
+      <h2>William Luman “Bill” Shaffer Sr.</h2>
+      <p class="years">1896–1986</p>
+      <p class="lead">Photos and notes that name him.</p>
+      <article class="card" data-strength="Official">
+        <button type="button" class="pic" data-full="wl-shaffer-sr-helen-headstone-fort-logan.jpg" aria-label="Make this photo bigger. Born in Greeley, buried at Fort Logan"><img src="wl-shaffer-sr-helen-headstone-fort-logan.jpg" alt="Born in Greeley, buried at Fort Logan" loading="lazy" decoding="async" width="1600" height="1200"></button>
+        <h3>Born in Greeley, buried at Fort Logan</h3>
+        <p class="when">5 June 1896</p>
+        <p class="tag">Official</p>
+        
+        <p class="cap">William Luman Shaffer was born 5 June 1896 in Greeley, Colorado, and died there on 14 April 1986, at age 89. He is buried at Fort Logan National Cemetery in Denver, Section U Site 3002, with his wife Helen.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li></ul>
+        <p class="k">Source</p>
+        <p class="meta"><a href="https://www.findagrave.com/memorial/36196961/william-luman-shaffer" rel="noopener noreferrer">Find a Grave memorial #36196961; Fort Logan National Cemetery / interment.net veterans burials</a></p>
+        <p class="k">Credit</p>
+        <p class="meta credit">Headstone photo added by Bill Shaffer, 4 Jul 2014, Find a Grave memorial #36196961</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="wm-d-ida-dorothy-wm-l-christmas-1897.jpg" aria-label="Make this photo bigger. Four Shaffers, Greeley, Christmas 1897"><img src="wm-d-ida-dorothy-wm-l-christmas-1897.jpg" alt="Four Shaffers, Greeley, Christmas 1897" loading="lazy" decoding="async" width="998" height="679"></button>
+        <h3>Four Shaffers, Greeley, Christmas 1897</h3>
+        <p class="when">December 1897</p>
+        <p class="tag">Confirmed</p>
+        
+        <p class="cap">A formal Marsh studio portrait from Greeley. The family file names William Daniel Shaffer, Ida, Dorothy H., and the toddler William L. Shaffer, at Christmas 1897.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Daniel Shaffer</li><li>Ida Shaffer</li><li>Dorothy H.</li><li>William Luman &quot;Bill&quot; Shaffer Sr.</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">William&#x27;s own photo, Alienware path C:\Users\willj\Pictures\02 Photos of W. L. Shaffer Sr &amp; Info\Misc Photos of W L. Shaffer\Jack&#x27;s collection\Wm. D., Wm. L., Dorothy H. and Ida Xmass 1897.bmp</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="wl-shaffer-age-2-3-colorized.jpg" aria-label="Make this photo bigger. Colorized portrait, about age 2 or 3"><img src="wl-shaffer-age-2-3-colorized.jpg" alt="Colorized portrait, about age 2 or 3" loading="lazy" decoding="async" width="616" height="798"></button>
+        <h3>Colorized portrait, about age 2 or 3</h3>
+        <p class="when">About 1898–1899</p>
+        <p class="tag">Confirmed</p>
+        
+        <p class="cap">A colorized close portrait the family titles as William L. Shaffer at about 2 or 3 years old.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">William&#x27;s own photo, Alienware path C:\Users\willj\Pictures\02 Photos of W. L. Shaffer Sr &amp; Info\W. L. Shaffer Photos and Misc Info\Wm. L. 2-3 yrs.jpg</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="wl-shaffer-1899-child-portrait-marsh-greeley.jpg" aria-label="Make this photo bigger. Child portrait, Greeley, 1899"><img src="wl-shaffer-1899-child-portrait-marsh-greeley.jpg" alt="Child portrait, Greeley, 1899" loading="lazy" decoding="async" width="640" height="983"></button>
+        <h3>Child portrait, Greeley, 1899</h3>
+        <p class="when">1899</p>
+        <p class="tag">Confirmed</p>
+        
+        <p class="cap">A studio portrait of William L. Shaffer as a small child, made at the C.M. Marsh studio in Greeley, Colorado. The family file is dated 1899, when he would have been about three.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">William&#x27;s own photo, Alienware path C:\Users\willj\Pictures\02 Photos of W. L. Shaffer Sr &amp; Info\W. L. Shaffer Photos and Misc Info\Wm. L. 1899 front.bmp</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="wm-l-and-dorothy-1901.jpg" aria-label="Make this photo bigger. With Dorothy, 1901"><img src="wm-l-and-dorothy-1901.jpg" alt="With Dorothy, 1901" loading="lazy" decoding="async" width="783" height="1104"></button>
+        <h3>With Dorothy, 1901</h3>
+        <p class="when">1901</p>
+        <p class="tag">Confirmed</p>
+        
+        <p class="cap">A Marsh studio portrait the family dates to 1901, showing William L. Shaffer as a small boy holding hands with Dorothy.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li><li>Dorothy H. Shaffer</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">William&#x27;s own photo, Alienware path C:\Users\willj\Pictures\02 Photos of W. L. Shaffer Sr &amp; Info\Misc Photos of W L. Shaffer\Peg&#x27;s Collection\Wm. L. and Dorothy 1901.jpg</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="wl-shaffer-1915-studio-portrait.jpg" aria-label="Make this photo bigger. Studio portrait, 1915"><img src="wl-shaffer-1915-studio-portrait.jpg" alt="Studio portrait, 1915" loading="lazy" decoding="async" width="752" height="1055"></button>
+        <h3>Studio portrait, 1915</h3>
+        <p class="when">1915</p>
+        <p class="tag">Confirmed</p>
+        
+        <p class="cap">A mounted studio portrait the family dates to 1915, showing a young William L. Shaffer in a suit and bow tie, about 19 years old.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">William&#x27;s own photo, Alienware path C:\Users\willj\Pictures\02 Photos of W. L. Shaffer Sr &amp; Info\W. L. Shaffer Photos and Misc Info\Wm. L. 1915 front.jpg</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="Official">
+        <button type="button" class="pic" data-full="kelly-field-1919-p125-1st-lt-william-l-shaffer.jpg" aria-label="Make this photo bigger. Kelly Field, 1st Lieutenant, Squadron A"><img src="kelly-field-1919-p125-1st-lt-william-l-shaffer.jpg" alt="Kelly Field, 1st Lieutenant, Squadron A" loading="lazy" decoding="async" width="1054" height="1600"></button>
+        <h3>Kelly Field, 1st Lieutenant, Squadron A</h3>
+        <p class="when">1918</p>
+        <p class="tag">Official</p>
+        
+        <p class="cap">The 1919 book Kelly Field in the Great World War lists 1st Lieut. William L. Shaffer among the officers who commanded the 2nd Aero Squadron and Squadron &quot;A&quot; at Kelly Field, San Antonio.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li></ul>
+        <p class="k">Source</p>
+        <p class="meta"><a href="https://archive.org/details/kellyfieldingrea00krol" rel="noopener noreferrer">Kelly Field in the Great World War (1919), Internet Archive</a></p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="Official">
+        <button type="button" class="pic" data-full="kelly-field-1919-p165-lieut-shaffer-acrobatic-instructor.jpg" aria-label="Make this photo bigger. Kelly Field acrobatic instructor"><img src="kelly-field-1919-p165-lieut-shaffer-acrobatic-instructor.jpg" alt="Kelly Field acrobatic instructor" loading="lazy" decoding="async" width="1054" height="1600"></button>
+        <h3>Kelly Field acrobatic instructor</h3>
+        <p class="when">1918</p>
+        <p class="tag">Official</p>
+        
+        <p class="cap">The same 1919 Kelly Field history names a Lieut. Shaffer among the officers on the acrobatic training stage, the unit that taught combat maneuvering. The line uses the surname only, but it fits his official Kelly Field record.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li></ul>
+        <p class="k">Source</p>
+        <p class="meta"><a href="https://archive.org/details/kellyfieldingrea00krol" rel="noopener noreferrer">Kelly Field in the Great World War (1919), Internet Archive</a></p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="kelly-field-professional-portrait.jpg" aria-label="Make this photo bigger. Kelly Field professional portrait, World War I"><img src="kelly-field-professional-portrait.jpg" alt="Kelly Field professional portrait, World War I" loading="lazy" decoding="async" width="1069" height="1600"></button>
+        <h3>Kelly Field professional portrait, World War I</h3>
+        <p class="when">About 1918</p>
+        <p class="tag">Confirmed</p>
+        
+        <p class="cap">A studio portrait of a young William L. Shaffer in a World War I Army tunic. The family file is named as his Kelly Field professional photograph.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">William&#x27;s own photo, Alienware path C:\Users\willj\Pictures\02 Photos of W. L. Shaffer Sr &amp; Info\WWI\Wm. L. Kelly Field professional photo front.jpg</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="kelly-field-standing-at-plane.jpg" aria-label="Make this photo bigger. Standing by a Kelly Field training plane"><img src="kelly-field-standing-at-plane.jpg" alt="Standing by a Kelly Field training plane" loading="lazy" decoding="async" width="935" height="1600"></button>
+        <h3>Standing by a Kelly Field training plane</h3>
+        <p class="when">About 1918</p>
+        <p class="tag">Confirmed</p>
+        
+        <p class="cap">William L. Shaffer in a flying coat, helmet and goggles, standing beside a biplane with KELLY FIELD painted on the fuselage.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">William&#x27;s own photo, Alienware path C:\Users\willj\Pictures\02 Photos of W. L. Shaffer Sr &amp; Info\WWI\Wm. L. Kelly Field standing at plane.jpg</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="kelly-field-in-cockpit.jpg" aria-label="Make this photo bigger. In the cockpit at Kelly Field"><img src="kelly-field-in-cockpit.jpg" alt="In the cockpit at Kelly Field" loading="lazy" decoding="async" width="1600" height="988"></button>
+        <h3>In the cockpit at Kelly Field</h3>
+        <p class="when">About 1918</p>
+        <p class="tag">Confirmed</p>
+        
+        <p class="cap">William L. Shaffer in the cockpit of a training biplane lettered KELLY FIELD, with his helmet and goggles pushed up.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">William&#x27;s own photo, Alienware path C:\Users\willj\Pictures\02 Photos of W. L. Shaffer Sr &amp; Info\W. L. Shaffer Photos and Misc Info\Wm. L. Kelly Field in plane f.jpg</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="kelly-field-in-uniform-outdoors.jpg" aria-label="Make this photo bigger. In uniform at Kelly Field"><img src="kelly-field-in-uniform-outdoors.jpg" alt="In uniform at Kelly Field" loading="lazy" decoding="async" width="985" height="1600"></button>
+        <h3>In uniform at Kelly Field</h3>
+        <p class="when">About 1918</p>
+        <p class="tag">Confirmed</p>
+        
+        <p class="cap">William L. Shaffer in an officer&#x27;s uniform and cap, wearing pilot wings, standing outdoors. The family file names this as Kelly Field.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">William&#x27;s own photo, Alienware path C:\Users\willj\Pictures\02 Photos of W. L. Shaffer Sr &amp; Info\WWI\Wm. L. Kelly Field smoking front.jpg</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="wl-shaffer-wwi-uniform-colorado.jpg" aria-label="Make this photo bigger. In his World War I uniform, in Colorado"><img src="wl-shaffer-wwi-uniform-colorado.jpg" alt="In his World War I uniform, in Colorado" loading="lazy" decoding="async" width="385" height="657"></button>
+        <h3>In his World War I uniform, in Colorado</h3>
+        <p class="when">About 1918</p>
+        <p class="tag">Confirmed</p>
+        
+        <p class="cap">A full-length photograph of William L. Shaffer in a World War I uniform with pilot wings, standing by a tree. The family file says this was taken in Colorado.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">William&#x27;s own photo, Alienware path C:\Users\willj\Pictures\02 Photos of W. L. Shaffer Sr &amp; Info\Misc Photos of W L. Shaffer\Jo Ann&#x27;s Collection\Wm. L. in  CO in WWI uniform.bmp</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="john-maude-hereford-wm-l-shaffer.jpg" aria-label="Make this photo bigger. With John and Maude Hereford, in uniform"><img src="john-maude-hereford-wm-l-shaffer.jpg" alt="With John and Maude Hereford, in uniform" loading="lazy" decoding="async" width="388" height="655"></button>
+        <h3>With John and Maude Hereford, in uniform</h3>
+        <p class="when">About 1918</p>
+        <p class="tag">Confirmed</p>
+        
+        <p class="cap">A period card named John H. Hereford, Maude Hereford, and William L. Shaffer. He stands on the right in a World War I uniform with pilot wings. The word “Bill” is written at the bottom of the card.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>John H. Hereford</li><li>Maude Hereford</li><li>William Luman &quot;Bill&quot; Shaffer Sr.</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">William&#x27;s own photo, Alienware path C:\Users\willj\Pictures\02 Photos of W. L. Shaffer Sr &amp; Info\WWI\John H Hereford, Maude Hereford, Wm. L. Shaffer.bmp</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="wm-l-wm-d-ida-hereford-family-group.jpg" aria-label="Make this photo bigger. Family group with the Herefords"><img src="wm-l-wm-d-ida-hereford-family-group.jpg" alt="Family group with the Herefords" loading="lazy" decoding="async" width="1600" height="993"></button>
+        <h3>Family group with the Herefords</h3>
+        <p class="when">About 1918</p>
+        <p class="tag">Confirmed</p>
+        
+        <p class="cap">A group photograph of nine people. William L. Shaffer is the man in the World War I uniform, third from the left. The family file also names William D., Ida, and J.H., Maude and Bob Hereford. Other people in the line are not separately labeled on this print.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li><li>William Daniel Shaffer</li><li>Ida</li><li>J.H., Maude and Bob Hereford, and others</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">William&#x27;s own photo, Alienware path C:\Users\willj\Pictures\02 Photos of W. L. Shaffer Sr &amp; Info\Misc Photos of W L. Shaffer\Peg&#x27;s Collection\Wm. L., Wm. D., Ida, J.H., Maude and Bob Hereford f.jpg</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="wl-shaffer-wwi-colored-portrait.jpg" aria-label="Make this photo bigger. Colorized World War I portrait"><img src="wl-shaffer-wwi-colored-portrait.jpg" alt="Colorized World War I portrait" loading="lazy" decoding="async" width="597" height="750"></button>
+        <h3>Colorized World War I portrait</h3>
+        <p class="when">About 1918</p>
+        <p class="tag">Confirmed</p>
+        
+        <p class="cap">A colorized version of William L. Shaffer’s World War I studio portrait.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">William&#x27;s own photo, Alienware path C:\Users\willj\Pictures\02 Photos of W. L. Shaffer Sr &amp; Info\WWI\Wm. L. colored WWI picture.jpg</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="wl-shaffer-wwi-squadron-photo-2.jpg" aria-label="Make this photo bigger. World War I squadron group photograph"><img src="wl-shaffer-wwi-squadron-photo-2.jpg" alt="World War I squadron group photograph" loading="lazy" decoding="async" width="1600" height="505"></button>
+        <h3>World War I squadron group photograph</h3>
+        <p class="when">About 1918</p>
+        <p class="tag">Confirmed</p>
+        
+        <p class="cap">A World War I squadron group photograph from the family file titled as William L. Shaffer’s squadron. He is in the group; this print does not carry a printed name key on the face of the photo.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">William&#x27;s own photo, Alienware path C:\Users\willj\Pictures\02 Photos of W. L. Shaffer Sr &amp; Info\WWI\Wm. L. WWI squadron photo 2.jpg</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="barnstormer-shaffer-lincoln-standard-jimmie-cox.jpg" aria-label="Make this photo bigger. Barnstormer: in a Lincoln Standard with Jimmie Cox"><img src="barnstormer-shaffer-lincoln-standard-jimmie-cox.jpg" alt="Barnstormer: in a Lincoln Standard with Jimmie Cox" loading="lazy" decoding="async" width="592" height="577"></button>
+        <h3>Barnstormer: in a Lincoln Standard with Jimmie Cox</h3>
+        <p class="when">About 1919–1921</p>
+        <p class="tag">Confirmed</p>
+        
+        <p class="cap">A newspaper photograph of a Lincoln Standard biplane. The printed caption says: “BARMSTORMER. Shaffer, in the cockpit of this Lincoln Standard, is pictured with Jimmie Cox, who owned the airplane.”</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">William&#x27;s own photo, Alienware path C:\Users\willj\Pictures\02 Photos of W. L. Shaffer Sr &amp; Info\Planes Flown By Bill\1919-1921 Barnstorming\003a Lincoln Standard with Bill as Pilot.JPG</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="wm-l-dorothy-betty-peg-curtiss-oriole-1921.jpg" aria-label="Make this photo bigger. With Dorothy, Betty and Peg beside his Curtiss Oriole"><img src="wm-l-dorothy-betty-peg-curtiss-oriole-1921.jpg" alt="With Dorothy, Betty and Peg beside his Curtiss Oriole" loading="lazy" decoding="async" width="1213" height="839"></button>
+        <h3>With Dorothy, Betty and Peg beside his Curtiss Oriole</h3>
+        <p class="when">About 1920–1921</p>
+        <p class="tag">Confirmed</p>
+        
+        <p class="cap">William L. Shaffer in flying gear, standing with Dorothy and two small children beside a Curtiss Oriole. The family caption on the reverse names them Mama, Dad, Betty and Peg, in Arkansas, late 1920 or early 1921.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li><li>Dorothy</li><li>Betty</li><li>Peg</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">William&#x27;s own photo, Alienware path C:\Users\willj\Pictures\02 Photos of W. L. Shaffer Sr &amp; Info\W. L. Shaffer Photos and Misc Info\Wm. L, Dorothy, Betty and Peg Shaffer 1921 f.bmp</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="betty-peg-at-wm-l-curtiss-oriole-hickman.jpg" aria-label="Make this photo bigger. Betty and Peg at his Curtiss Oriole"><img src="betty-peg-at-wm-l-curtiss-oriole-hickman.jpg" alt="Betty and Peg at his Curtiss Oriole" loading="lazy" decoding="async" width="1323" height="843"></button>
+        <h3>Betty and Peg at his Curtiss Oriole</h3>
+        <p class="when">About 1920–1921</p>
+        <p class="tag">Confirmed</p>
+        
+        <p class="cap">Two small children stand in front of a biplane at a hangar lettered HICKMAN AIR. The family file names them Betty and Peg at William L. Shaffer&#x27;s plane, about 1920-21. He is not clearly in the picture.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>Betty Shaffer</li><li>Peg Shaffer</li><li>plane belonging to William Luman &quot;Bill&quot; Shaffer Sr.</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">William&#x27;s own photo, Alienware path C:\Users\willj\Pictures\02 Photos of W. L. Shaffer Sr &amp; Info\Planes Flown By Bill\1919-1921 Barnstorming\002d  Curtiss Oriole Betty and Peg at Wm. L. Shaffer&#x27;s plane 1920-21.bmp</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="wl-shaffer-pilot-nov-1920-curtiss-oriole.jpg" aria-label="Make this photo bigger. At the controls of a Curtiss Oriole, November 1920"><img src="wl-shaffer-pilot-nov-1920-curtiss-oriole.jpg" alt="At the controls of a Curtiss Oriole, November 1920" loading="lazy" decoding="async" width="497" height="547"></button>
+        <h3>At the controls of a Curtiss Oriole, November 1920</h3>
+        <p class="when">November 1920</p>
+        <p class="tag">Confirmed</p>
+        
+        <p class="cap">A period print of a Curtiss Oriole in flight. On the same card, in handwritten ink: “Nov, 1920. W.L. Shaffer - pilot.”</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">William&#x27;s own photo, Alienware path C:\Users\willj\Pictures\02 Photos of W. L. Shaffer Sr &amp; Info\Planes Flown By Bill\1919-1921 Barnstorming\002e Wm. L. Pilot 11-1920 Curtiss Oriole.bmp</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="1928-los-angeles-examiner-air-race-judges-wl-shaffer.jpg" aria-label="Make this photo bigger. Named as an air-race judge, Los Angeles, 1928"><img src="1928-los-angeles-examiner-air-race-judges-wl-shaffer.jpg" alt="Named as an air-race judge, Los Angeles, 1928" loading="lazy" decoding="async" width="1205" height="1307"></button>
+        <h3>Named as an air-race judge, Los Angeles, 1928</h3>
+        <p class="when">September 1928</p>
+        <p class="tag">Confirmed</p>
+        
+        <p class="cap">A Los Angeles Examiner page from September 1928, headed “Flyers Sit as Judges in Race Contests.” A headshot in the top row is captioned W. L. Shaffer.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">William&#x27;s own photo, Alienware path C:\Users\willj\Pictures\01 WL Shaffer in the Newspaper\WL Shaffer Newspaper Clippings From Family Members\1928 09 Wm. L. Air Race Judge.jpg</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="Article">
+        <button type="button" class="pic" data-full="cahs-journal-winter-2018-2019-p2-william-shaffer.jpg" aria-label="Make this photo bigger. Western Air Express, ALPA, and the CAA"><img src="cahs-journal-winter-2018-2019-p2-william-shaffer.jpg" alt="Western Air Express, ALPA, and the CAA" loading="lazy" decoding="async" width="1236" height="1600"></button>
+        <h3>Western Air Express, ALPA, and the CAA</h3>
+        <p class="when">1929</p>
+        <p class="tag">Article</p>
+        
+        <p class="cap">The Colorado Aviation Historical Society wrote that William Shaffer had a long career with Western Air Express, later Western Air Lines, was a founding member of the Air Line Pilots Association, and assisted with the creation of the Civil Aeronautics Authority.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li></ul>
+        <p class="k">Source</p>
+        <p class="meta"><a href="https://coahs.org/wp-content/uploads/2022/05/Journal-Winter-2018-2019.pdf" rel="noopener noreferrer">CAHS Journal, Winter 2018-2019, page 2</a></p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="wl-shaffer-wae-loening-amphibian-catalina.jpg" aria-label="Make this photo bigger. His Western Air Express Loening at Catalina"><img src="wl-shaffer-wae-loening-amphibian-catalina.jpg" alt="His Western Air Express Loening at Catalina" loading="lazy" decoding="async" width="687" height="426"></button>
+        <h3>His Western Air Express Loening at Catalina</h3>
+        <p class="when">About 1929–1931</p>
+        <p class="tag">Confirmed</p>
+        
+        <p class="cap">A family photograph of a Loening amphibian taxiing on the water. The file is titled William L. Shaffer, Western Air Express Loening Amphibian at Catalina. The airplane is clearly shown; his face is not clearly visible. No Howard Hughes photograph was found with this or any other file.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">William&#x27;s own photo, Alienware path C:\Users\willj\Pictures\02 Photos of W. L. Shaffer Sr &amp; Info\Planes Flown By Bill\1929-1936 WAE &amp; TWA\001 Wm. L. Shaffer WAE Loening Amphiban at Catalina.bmp</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="LIKELY">
+        <button type="button" class="pic" data-full="wae-pilots-group-front.jpg" aria-label="Make this photo bigger. Western Air Express pilots, group photograph"><img src="wae-pilots-group-front.jpg" alt="Western Air Express pilots, group photograph" loading="lazy" decoding="async" width="1202" height="1499"></button>
+        <h3>Western Air Express pilots, group photograph</h3>
+        <p class="when">About 1929–1935</p>
+        <p class="tag">Likely</p>
+        <p class="honest">Likely. Not certain.</p>
+        <p class="cap">Three men in suits stand in front of a Western Air Express airplane. The family file is titled WAE pilots. The man on the right strongly resembles William L. Shaffer’s 1932 WAE portrait; the other two men are not named on this print.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">William&#x27;s own photo, Alienware path C:\Users\willj\Pictures\02 Photos of W. L. Shaffer Sr &amp; Info\W. L. Shaffer Photos and Misc Info\WAE pilots front.jpg</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="wl-shaffer-on-wing-of-plane-c1929.jpg" aria-label="Make this photo bigger. On the wing of a biplane, about 1929"><img src="wl-shaffer-on-wing-of-plane-c1929.jpg" alt="On the wing of a biplane, about 1929" loading="lazy" decoding="async" width="410" height="677"></button>
+        <h3>On the wing of a biplane, about 1929</h3>
+        <p class="when">About September 1929</p>
+        <p class="tag">Confirmed</p>
+        
+        <p class="cap">William L. Shaffer, named by the family file as the man standing on the wing of a cabin biplane, in white trousers and a bow tie. Another man, not named, is in the cockpit. A related print is faintly marked Sept 1929.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">William&#x27;s own photo, Alienware path C:\Users\willj\Pictures\02 Photos of W. L. Shaffer Sr &amp; Info\Misc Photos of W L. Shaffer\Jo Ann&#x27;s Collection\Wm. L. on wing of plane.bmp</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="loening-xhl-1-c2h-type-public-domain.jpg" aria-label="Make this photo bigger. Loening C-2H amphibian, same type he flew"><img src="loening-xhl-1-c2h-type-public-domain.jpg" alt="Loening C-2H amphibian, same type he flew" loading="lazy" decoding="async" width="550" height="344"></button>
+        <h3>Loening C-2H amphibian, same type he flew</h3>
+        <p class="when">About 1930</p>
+        <p class="tag">Confirmed</p>
+        <p class="honest">Same aircraft type. Not his plane.</p>
+        <p class="cap">A public-domain photo of a Loening XHL-1 / C-2H amphibian, the same aircraft type family and CAHS accounts say he flew for Western Air Express. This is not proven to be his personal airplane, and it does not show him or Howard Hughes.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">Wikimedia Commons / San Diego Air &amp; Space Museum Archives, public domain (PD-USGov-Military-Navy / PD-SDASM)</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">San Diego Air &amp; Space Museum Archives / U.S. Navy, public domain</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="loening-c2h-nc9773-wae.jpg" aria-label="Make this photo bigger. WAE Loening C-2H NC9773 (same type and route)"><img src="loening-c2h-nc9773-wae.jpg" alt="WAE Loening C-2H NC9773 (same type and route)" loading="lazy" decoding="async" width="1024" height="590"></button>
+        <h3>WAE Loening C-2H NC9773 (same type and route)</h3>
+        <p class="when">About 1930</p>
+        <p class="tag">Confirmed</p>
+        <p class="honest">Same aircraft type. Not his plane.</p>
+        <p class="cap">Western Air Express Loening C-2H, registration NC9773. Same type and airline as his Catalina run. Caption does not name Shaffer or Hughes.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">San Diego Air &amp; Space Museum Archives, Robert Mitchell Collection. https://www.flickr.com/photos/sdasmarchives/7091530099/. Flickr Commons, no known copyright (PD-SDASM).</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">San Diego Air &amp; Space Museum Archives, Robert Mitchell Collection</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="loening-c2h-nc9773-wae-avalon-a.jpg" aria-label="Make this photo bigger. WAE Loening C-2H NC9773 (same type and route)"><img src="loening-c2h-nc9773-wae-avalon-a.jpg" alt="WAE Loening C-2H NC9773 (same type and route)" loading="lazy" decoding="async" width="1024" height="746"></button>
+        <h3>WAE Loening C-2H NC9773 (same type and route)</h3>
+        <p class="when">About 1931</p>
+        <p class="tag">Confirmed</p>
+        <p class="honest">Same aircraft type. Not his plane.</p>
+        <p class="cap">WAE Loening C-2H NC9773 at Avalon, Catalina Island, about 1931. Same type and route he flew. Caption does not name him or Hughes.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">San Diego Air &amp; Space Museum Archives, Robert Mitchell Collection. https://www.flickr.com/photos/sdasmarchives/6948064600/. Flickr Commons, no known copyright (PD-SDASM).</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">San Diego Air &amp; Space Museum Archives, Robert Mitchell Collection</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="loening-c2h-nc9773-wae-avalon-b.jpg" aria-label="Make this photo bigger. WAE Loening C-2H NC9773 (same type and route)"><img src="loening-c2h-nc9773-wae-avalon-b.jpg" alt="WAE Loening C-2H NC9773 (same type and route)" loading="lazy" decoding="async" width="1023" height="717"></button>
+        <h3>WAE Loening C-2H NC9773 (same type and route)</h3>
+        <p class="when">About 1931</p>
+        <p class="tag">Confirmed</p>
+        <p class="honest">Same aircraft type. Not his plane.</p>
+        <p class="cap">Another view of WAE Loening C-2H NC9773 at Avalon, about 1931. Caption does not name him or Hughes.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">San Diego Air &amp; Space Museum Archives, Robert Mitchell Collection. https://www.flickr.com/photos/sdasmarchives/6948067440/. Flickr Commons, no known copyright (PD-SDASM).</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">San Diego Air &amp; Space Museum Archives, Robert Mitchell Collection</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="loening-c2h-nc9773-air-ferries-avalon.jpg" aria-label="Make this photo bigger. WAE Loening C-2H NC9773 (same type and route)"><img src="loening-c2h-nc9773-air-ferries-avalon.jpg" alt="WAE Loening C-2H NC9773 (same type and route)" loading="lazy" decoding="async" width="1024" height="739"></button>
+        <h3>WAE Loening C-2H NC9773 (same type and route)</h3>
+        <p class="when">About 1931</p>
+        <p class="tag">Confirmed</p>
+        <p class="honest">Same aircraft type. Not his plane.</p>
+        <p class="cap">Same airframe NC9773 at Avalon; caption names later operator Air Ferries. Caption does not name him or Hughes.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">San Diego Air &amp; Space Museum Archives, Robert Mitchell Collection. https://www.flickr.com/photos/sdasmarchives/6948067794/. Flickr Commons, no known copyright (PD-SDASM).</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">San Diego Air &amp; Space Museum Archives, Robert Mitchell Collection</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="wl-shaffer-wae-pilots-uniform-1932.jpg" aria-label="Make this photo bigger. In his Western Air Express uniform, 1932"><img src="wl-shaffer-wae-pilots-uniform-1932.jpg" alt="In his Western Air Express uniform, 1932" loading="lazy" decoding="async" width="1189" height="1600"></button>
+        <h3>In his Western Air Express uniform, 1932</h3>
+        <p class="when">1932</p>
+        <p class="tag">Confirmed</p>
+        
+        <p class="cap">A portrait of William L. Shaffer in an airline cap and jacket with pilot wings. The family file names this as his Western Air Express pilot uniform, 1932.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">William&#x27;s own photo, Alienware path C:\Users\willj\Pictures\02 Photos of W. L. Shaffer Sr &amp; Info\W. L. Shaffer Photos and Misc Info\Wm. L. Shaffer in WAE pilots uniform 1932.JPG</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="wl-shaffer-1935-transport-pilot-license-911.jpg" aria-label="Make this photo bigger. Transport Pilot&#x27;s License No. 911, 1935"><img src="wl-shaffer-1935-transport-pilot-license-911.jpg" alt="Transport Pilot&#x27;s License No. 911, 1935" loading="lazy" decoding="async" width="809" height="606"></button>
+        <h3>Transport Pilot&#x27;s License No. 911, 1935</h3>
+        <p class="when">4 June 1935</p>
+        <p class="tag">Confirmed</p>
+        
+        <p class="cap">A U.S. Department of Commerce Pilot’s License, No. 911, naming WILLIAM L SHAFFER as a transport pilot, Class 1A Land, signed by him, and dated to expire 31 May 1936.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">William&#x27;s own photo, Alienware path C:\Users\willj\Pictures\02 Photos of W. L. Shaffer Sr &amp; Info\W. L. Shaffer Photos and Misc Info\Misc Paperwork\1935 06 04 Wm. L. Pilot&#x27;s ID card #911  b.jpg</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="helen-and-william-1940s.jpg" aria-label="Make this photo bigger. With Helen, 1940s"><img src="helen-and-william-1940s.jpg" alt="With Helen, 1940s" loading="lazy" decoding="async" width="416" height="685"></button>
+        <h3>With Helen, 1940s</h3>
+        <p class="when">About the 1940s</p>
+        <p class="tag">Confirmed</p>
+        
+        <p class="cap">William L. Shaffer in an Army officer’s uniform, cap in hand, standing with Helen in front of a house. The family file is titled Helen and William, 1940s.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li><li>Helen</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">William&#x27;s own photo, Alienware path C:\Users\willj\Pictures\02 Photos of W. L. Shaffer Sr &amp; Info\WWII\Helen and William 1940s.jpg</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="wm-d-wm-l-ida-mae-1940s.jpg" aria-label="Make this photo bigger. With his parents, William D. and Ida Mae, 1940s"><img src="wm-d-wm-l-ida-mae-1940s.jpg" alt="With his parents, William D. and Ida Mae, 1940s" loading="lazy" decoding="async" width="399" height="693"></button>
+        <h3>With his parents, William D. and Ida Mae, 1940s</h3>
+        <p class="when">About the 1940s</p>
+        <p class="tag">Confirmed</p>
+        
+        <p class="cap">William L. Shaffer in uniform, standing between his father William D. Shaffer and his mother Ida Mae, in the 1940s.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Daniel Shaffer</li><li>William Luman &quot;Bill&quot; Shaffer Sr.</li><li>Ida Mae Shaffer</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">William&#x27;s own photo, Alienware path C:\Users\willj\Pictures\02 Photos of W. L. Shaffer Sr &amp; Info\WWII\Wm. D., Wm. L. and Ida Mae 1940s.jpg</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="Official">
+        <button type="button" class="pic" data-full="wl-shaffer-sr-helen-headstone-fort-logan.jpg" aria-label="Make this photo bigger. WWII Major, U.S. Army Air Corps"><img src="wl-shaffer-sr-helen-headstone-fort-logan.jpg" alt="WWII Major, U.S. Army Air Corps" loading="lazy" decoding="async" width="1600" height="1200"></button>
+        <h3>WWII Major, U.S. Army Air Corps</h3>
+        <p class="when">December 1941</p>
+        <p class="tag">Official</p>
+        
+        <p class="cap">His Fort Logan headstone is inscribed MAJ US ARMY AIR CORPS, WORLD WAR II. That officially confirms his rank and World War II service. It does not name individual missions or units.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li></ul>
+        <p class="k">Source</p>
+        <p class="meta"><a href="https://www.findagrave.com/memorial/36196961/william-luman-shaffer" rel="noopener noreferrer">Fort Logan National Cemetery headstone, Find a Grave memorial #36196961</a></p>
+        <p class="k">Credit</p>
+        <p class="meta credit">Headstone photo added by Bill Shaffer, 4 Jul 2014, Find a Grave memorial #36196961</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="wl-shaffer-wwii-portrait-no-cap.jpg" aria-label="Make this photo bigger. World War II portrait, Army Air Forces"><img src="wl-shaffer-wwii-portrait-no-cap.jpg" alt="World War II portrait, Army Air Forces" loading="lazy" decoding="async" width="588" height="896"></button>
+        <h3>World War II portrait, Army Air Forces</h3>
+        <p class="when">About 1942–1945</p>
+        <p class="tag">Confirmed</p>
+        
+        <p class="cap">A formal portrait of William L. Shaffer in a World War II Army Air Forces uniform, without a cap, wearing pilot wings and U.S. insignia.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">William&#x27;s own photo, Alienware path C:\Users\willj\Pictures\02 Photos of W. L. Shaffer Sr &amp; Info\WWII\Wm. L. WW II no cap.bmp</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="1942-05-07-the-barrage-father-and-son-in-air-corps.jpg" aria-label="Make this photo bigger. Father and son in the Air Corps, 7 May 1942"><img src="1942-05-07-the-barrage-father-and-son-in-air-corps.jpg" alt="Father and son in the Air Corps, 7 May 1942" loading="lazy" decoding="async" width="1163" height="1600"></button>
+        <h3>Father and son in the Air Corps, 7 May 1942</h3>
+        <p class="when">7 May 1942</p>
+        <p class="tag">Confirmed</p>
+        
+        <p class="cap">The Barrage, 7 May 1942, an American Legion bulletin. Under the heading “Father and Son In Air Corps,” it prints his portrait and says Captain William Luman Shaffer and William L. Shaffer, Jr. were both entering active service with the U.S. Army Air Corps.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li><li>William Luman &quot;Bill&quot; Shaffer Jr.</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">William&#x27;s own photo, Alienware path C:\Users\willj\Pictures\01 WL Shaffer in the Newspaper\WL Shaffer Newspaper Clippings From Family Members\1942 05 07 Wm. L. Shaffer Sr. and Jr..jpg</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="wl-shaffer-command-pilot-wings.jpg" aria-label="Make this photo bigger. His Command Pilot wings"><img src="wl-shaffer-command-pilot-wings.jpg" alt="His Command Pilot wings" loading="lazy" decoding="async" width="676" height="620"></button>
+        <h3>His Command Pilot wings</h3>
+        <p class="when">About 1943–1945</p>
+        <p class="tag">Confirmed</p>
+        
+        <p class="cap">A family photograph of command pilot wings, with a handwritten label: “COMMAND PILOT WINGS, MAJOR WILLIAM L. SHAFFER, WORLD WAR II, USAAF.”</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">William&#x27;s own photo, Alienware path C:\Users\willj\Pictures\02 Photos of W. L. Shaffer Sr &amp; Info\WWII\Wm. L. WW II Wings 1.bmp</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="1943-06-23-greeley-tribune-command-pilot-wings.jpg" aria-label="Make this photo bigger. Greeley Tribune: Command Pilot wings, 23 June 1943"><img src="1943-06-23-greeley-tribune-command-pilot-wings.jpg" alt="Greeley Tribune: Command Pilot wings, 23 June 1943" loading="lazy" decoding="async" width="486" height="1276"></button>
+        <h3>Greeley Tribune: Command Pilot wings, 23 June 1943</h3>
+        <p class="when">23 June 1943</p>
+        <p class="tag">Confirmed</p>
+        
+        <p class="cap">The Greeley Daily Tribune, 23 June 1943: “Capt. Shaffer Awarded Rare Pilot’s Honor.” It says Captain William L. Shaffer received Command Pilot wings, had flown well over 7,000 hours, had been an instructor at Kelly Field, and had flown the San Diego–Salt Lake City route for seven years. It also names his son, 1st Lt. William L. Shaffer Jr., then a flying instructor at Stockton, California, and his parents, Mr. and Mrs. W. D. Shaffer of 1218 Sixth Street.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li><li>William Luman &quot;Bill&quot; Shaffer Jr.</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">William&#x27;s own photo, Alienware path C:\Users\willj\Pictures\01 WL Shaffer in the Newspaper\1943 06 23 Capt Shaffer Awarded Command Pilot Wings.bmp</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="wl-shaffer-1944-war-department-id-card.jpg" aria-label="Make this photo bigger. War Department ID card, Major, 4 Dec 1944"><img src="wl-shaffer-1944-war-department-id-card.jpg" alt="War Department ID card, Major, 4 Dec 1944" loading="lazy" decoding="async" width="552" height="391"></button>
+        <h3>War Department ID card, Major, 4 Dec 1944</h3>
+        <p class="when">4 December 1944</p>
+        <p class="tag">Confirmed</p>
+        
+        <p class="cap">His War Department identification card, issued 4 December 1944, names WILLIAM L. SHAFFER, MAJOR, and carries his photograph and signature.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">William&#x27;s own photo, Alienware path C:\Users\willj\Pictures\02 Photos of W. L. Shaffer Sr &amp; Info\W. L. Shaffer Photos and Misc Info\Misc Paperwork\1944 12 04 Wm. L. War Dept. ID card f.jpg</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="wl-shaffer-1946-angora-industry-portrait.jpg" aria-label="Make this photo bigger. Named 1946 portrait: Prominent in Angora Industry"><img src="wl-shaffer-1946-angora-industry-portrait.jpg" alt="Named 1946 portrait: Prominent in Angora Industry" loading="lazy" decoding="async" width="1181" height="1484"></button>
+        <h3>Named 1946 portrait: Prominent in Angora Industry</h3>
+        <p class="when">1946</p>
+        <p class="tag">Confirmed</p>
+        
+        <p class="cap">A printed photograph of William L. Shaffer in uniform, with the overprint “W. L. SHAFFER, PROMINENT IN ANGORA INDUSTRY, STORY ON PAGE 3.” The family file is dated 1946.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">William&#x27;s own photo, Alienware path C:\Users\willj\Pictures\02 Photos of W. L. Shaffer Sr &amp; Info\WWII\Wm. L. Uniform 1946.bmp</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="minnie-wm-l-ida-shaffer-1947.jpg" aria-label="Make this photo bigger. With Minnie and Ida, 1947"><img src="minnie-wm-l-ida-shaffer-1947.jpg" alt="With Minnie and Ida, 1947" loading="lazy" decoding="async" width="368" height="538"></button>
+        <h3>With Minnie and Ida, 1947</h3>
+        <p class="when">1947</p>
+        <p class="tag">Confirmed</p>
+        
+        <p class="cap">A 1947 snapshot in a cornfield. The family file names Minnie, William L. Shaffer, and Ida Shaffer.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>Minnie</li><li>William Luman &quot;Bill&quot; Shaffer Sr.</li><li>Ida Shaffer</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">William&#x27;s own photo, Alienware path C:\Users\willj\Pictures\02 Photos of W. L. Shaffer Sr &amp; Info\Misc Photos of W L. Shaffer\Jack&#x27;s collection\Minnie, Wm. L. and Ida Shaffer 1947.bmp</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="1961-08-13-william-l-shaffer-ocdm-retiring.jpg" aria-label="Make this photo bigger. Retiring as OCDM Rural Work Chief, 13 Aug 1961"><img src="1961-08-13-william-l-shaffer-ocdm-retiring.jpg" alt="Retiring as OCDM Rural Work Chief, 13 Aug 1961" loading="lazy" decoding="async" width="1086" height="1132"></button>
+        <h3>Retiring as OCDM Rural Work Chief, 13 Aug 1961</h3>
+        <p class="when">13 August 1961</p>
+        <p class="tag">Confirmed</p>
+        
+        <p class="cap">A 13 August 1961 newspaper clipping, “William L. Shaffer, OCDM Rural Work Chief, Retiring,” with a photograph captioned WILLIAM L. SHAFFER. It says he was a flying officer in both world wars and an early-day air mail pilot, and that he would return to his farm near Greeley.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">William&#x27;s own photo, Alienware path C:\Users\willj\Pictures\01 WL Shaffer in the Newspaper\WL Shaffer Newspaper Clippings From Family Members\1961 08 13 Wm. L. Shaffer OCDM retiring.jpg</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="Article">
+        <button type="button" class="pic" data-full="wl-shaffer-sr-retreads-portrait-findagrave.jpg" aria-label="Make this photo bigger. Retreads National Commander, 1974-1975"><img src="wl-shaffer-sr-retreads-portrait-findagrave.jpg" alt="Retreads National Commander, 1974-1975" loading="lazy" decoding="async" width="414" height="545"></button>
+        <h3>Retreads National Commander, 1974-1975</h3>
+        <p class="when">1974</p>
+        <p class="tag">Article</p>
+        
+        <p class="cap">A public Find a Grave portrait of William L. Shaffer of Greeley is captioned as National Commander, 1974-1975, for the Retreads of WWI and WWII, Inc., an organization of veterans of both world wars.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li></ul>
+        <p class="k">Source</p>
+        <p class="meta"><a href="https://www.findagrave.com/memorial/36196961/william-luman-shaffer" rel="noopener noreferrer">Find a Grave memorial #36196961, portrait caption by Linda Davis, 16 Dec 2014</a></p>
+        <p class="k">Credit</p>
+        <p class="meta credit">Photo added by Linda Davis, 16 Dec 2014, Find a Grave memorial #36196961</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="wm-l-80th-birthday-with-children-1976.jpg" aria-label="Make this photo bigger. 80th birthday with his children, 1976"><img src="wm-l-80th-birthday-with-children-1976.jpg" alt="80th birthday with his children, 1976" loading="lazy" decoding="async" width="735" height="532"></button>
+        <h3>80th birthday with his children, 1976</h3>
+        <p class="when">5 June 1976</p>
+        <p class="tag">Confirmed</p>
+        
+        <p class="cap">A color photograph from William L. Shaffer Sr.’s 80th birthday in 1976. He is seated in front. A family caption card lists, standing left to right: William Luman “Bill” Shaffer Jr., Dorothy Elizabeth “Betty” Shaffer Swenson, Margaret Mae “Peggy” Shaffer Harper, Jo Ann Shaffer Fields, and John Robert “Jack” Shaffer.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li><li>William Luman &quot;Bill&quot; Shaffer Jr.</li><li>Dorothy Elizabeth “Betty” Shaffer Swenson</li><li>Margaret Mae “Peggy” Shaffer Harper</li><li>Jo Ann Shaffer Fields</li><li>John Robert “Jack” Shaffer</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">William&#x27;s own photo, Alienware path C:\Users\willj\Pictures\02 Photos of W. L. Shaffer Sr &amp; Info\W. L. Shaffer Photos and Misc Info\Wm. L. 80th BD with his kids f.bmp</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="Official">
+        <button type="button" class="pic" data-full="cahs-laureates-1984-shaffer-william-l.jpg" aria-label="Make this photo bigger. Colorado Aviation Hall of Fame, 1984"><img src="cahs-laureates-1984-shaffer-william-l.jpg" alt="Colorado Aviation Hall of Fame, 1984" loading="lazy" decoding="async" width="448" height="1600"></button>
+        <h3>Colorado Aviation Hall of Fame, 1984</h3>
+        <p class="when">1984</p>
+        <p class="tag">Official</p>
+        
+        <p class="cap">In 1984, Shaffer, William L was inducted into the Colorado Aviation Hall of Fame, the official laureates list of the Colorado Aviation Historical Society.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li></ul>
+        <p class="k">Source</p>
+        <p class="meta"><a href="https://coahs.org/heritagehall/laureates/" rel="noopener noreferrer">Colorado Aviation Historical Society, Colorado Aviation Hall of Fame laureates</a></p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="1984-colorado-aviation-hall-of-fame-plaque.jpg" aria-label="Make this photo bigger. His 1984 Colorado Aviation Hall of Fame plaque"><img src="1984-colorado-aviation-hall-of-fame-plaque.jpg" alt="His 1984 Colorado Aviation Hall of Fame plaque" loading="lazy" decoding="async" width="733" height="1052"></button>
+        <h3>His 1984 Colorado Aviation Hall of Fame plaque</h3>
+        <p class="when">1984</p>
+        <p class="tag">Confirmed</p>
+        
+        <p class="cap">A photograph of the Colorado Aviation Historical Society Hall of Fame plaque lettered WILLIAM L. SHAFFER, 1984.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">William&#x27;s own photo, Alienware path C:\Users\willj\Pictures\02 Photos of W. L. Shaffer Sr &amp; Info\W. L. Shaffer Photos and Misc Info\Misc Paperwork\1984 Wm. L. plaque Colorado Aviation Hall of Fame.bmp</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+    </section><section id="bill-jr">
+      <h2>William L. Shaffer Jr.</h2>
+      <p class="years">1921–1995</p>
+      <p class="lead">Photos and notes that name him.</p>
+      <article class="card" data-strength="Official">
+        <p class="nophoto">No photo with this note.</p>
+        <h3>Son of William L. Shaffer and Dorothy L. Hereford</h3>
+        <p class="when">22 September 1921</p>
+        <p class="tag">Official</p>
+        
+        <p class="cap">Social Security records name William Luman Shaffer Jr. as the son of William L. Shaffer and Dorothy L. Hereford. He was born in Greeley, Colorado, on 22 September 1921 (his Social Security application; the later death index says 23 September) and died on 10 September 1995. His last residence was in ZIP 91750, La Verne, California. Dorothy Hereford was the first wife of William Luman Shaffer Sr.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Jr.</li></ul>
+        <p class="k">Source</p>
+        <p class="meta"><a href="https://sortedbyname.com/letter_h/hereford/index_11.html" rel="noopener noreferrer">U.S. Social Security SS-5 and NUMIDENT / Death Master File, compiled at SortedByName (Hereford index)</a></p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="1942-05-07-the-barrage-father-and-son-in-air-corps.jpg" aria-label="Make this photo bigger. Father and son in the Air Corps, 7 May 1942"><img src="1942-05-07-the-barrage-father-and-son-in-air-corps.jpg" alt="Father and son in the Air Corps, 7 May 1942" loading="lazy" decoding="async" width="1163" height="1600"></button>
+        <h3>Father and son in the Air Corps, 7 May 1942</h3>
+        <p class="when">7 May 1942</p>
+        <p class="tag">Confirmed</p>
+        
+        <p class="cap">The Barrage, 7 May 1942, an American Legion bulletin. Under the heading “Father and Son In Air Corps,” it prints his portrait and says Captain William Luman Shaffer and William L. Shaffer, Jr. were both entering active service with the U.S. Army Air Corps.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li><li>William Luman &quot;Bill&quot; Shaffer Jr.</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">William&#x27;s own photo, Alienware path C:\Users\willj\Pictures\01 WL Shaffer in the Newspaper\WL Shaffer Newspaper Clippings From Family Members\1942 05 07 Wm. L. Shaffer Sr. and Jr..jpg</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="1943-06-23-greeley-tribune-command-pilot-wings.jpg" aria-label="Make this photo bigger. Greeley Tribune: Command Pilot wings, 23 June 1943"><img src="1943-06-23-greeley-tribune-command-pilot-wings.jpg" alt="Greeley Tribune: Command Pilot wings, 23 June 1943" loading="lazy" decoding="async" width="486" height="1276"></button>
+        <h3>Greeley Tribune: Command Pilot wings, 23 June 1943</h3>
+        <p class="when">23 June 1943</p>
+        <p class="tag">Confirmed</p>
+        
+        <p class="cap">The Greeley Daily Tribune, 23 June 1943: “Capt. Shaffer Awarded Rare Pilot’s Honor.” It says Captain William L. Shaffer received Command Pilot wings, had flown well over 7,000 hours, had been an instructor at Kelly Field, and had flown the San Diego–Salt Lake City route for seven years. It also names his son, 1st Lt. William L. Shaffer Jr., then a flying instructor at Stockton, California, and his parents, Mr. and Mrs. W. D. Shaffer of 1218 Sixth Street.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li><li>William Luman &quot;Bill&quot; Shaffer Jr.</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">William&#x27;s own photo, Alienware path C:\Users\willj\Pictures\01 WL Shaffer in the Newspaper\1943 06 23 Capt Shaffer Awarded Command Pilot Wings.bmp</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="wm-l-80th-birthday-with-children-1976.jpg" aria-label="Make this photo bigger. 80th birthday with his children, 1976"><img src="wm-l-80th-birthday-with-children-1976.jpg" alt="80th birthday with his children, 1976" loading="lazy" decoding="async" width="735" height="532"></button>
+        <h3>80th birthday with his children, 1976</h3>
+        <p class="when">5 June 1976</p>
+        <p class="tag">Confirmed</p>
+        
+        <p class="cap">A color photograph from William L. Shaffer Sr.’s 80th birthday in 1976. He is seated in front. A family caption card lists, standing left to right: William Luman “Bill” Shaffer Jr., Dorothy Elizabeth “Betty” Shaffer Swenson, Margaret Mae “Peggy” Shaffer Harper, Jo Ann Shaffer Fields, and John Robert “Jack” Shaffer.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li><li>William Luman &quot;Bill&quot; Shaffer Jr.</li><li>Dorothy Elizabeth “Betty” Shaffer Swenson</li><li>Margaret Mae “Peggy” Shaffer Harper</li><li>Jo Ann Shaffer Fields</li><li>John Robert “Jack” Shaffer</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">William&#x27;s own photo, Alienware path C:\Users\willj\Pictures\02 Photos of W. L. Shaffer Sr &amp; Info\W. L. Shaffer Photos and Misc Info\Wm. L. 80th BD with his kids f.bmp</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+    </section><section id="parents">
+      <h2>William Daniel and Ida Shaffer</h2>
+      <p class="years">His parents</p>
+      <p class="lead">Photos and notes that name them.</p>
+      <article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="wm-d-ida-dorothy-wm-l-christmas-1897.jpg" aria-label="Make this photo bigger. Four Shaffers, Greeley, Christmas 1897"><img src="wm-d-ida-dorothy-wm-l-christmas-1897.jpg" alt="Four Shaffers, Greeley, Christmas 1897" loading="lazy" decoding="async" width="998" height="679"></button>
+        <h3>Four Shaffers, Greeley, Christmas 1897</h3>
+        <p class="when">December 1897</p>
+        <p class="tag">Confirmed</p>
+        
+        <p class="cap">A formal Marsh studio portrait from Greeley. The family file names William Daniel Shaffer, Ida, Dorothy H., and the toddler William L. Shaffer, at Christmas 1897.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Daniel Shaffer</li><li>Ida Shaffer</li><li>Dorothy H.</li><li>William Luman &quot;Bill&quot; Shaffer Sr.</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">William&#x27;s own photo, Alienware path C:\Users\willj\Pictures\02 Photos of W. L. Shaffer Sr &amp; Info\Misc Photos of W L. Shaffer\Jack&#x27;s collection\Wm. D., Wm. L., Dorothy H. and Ida Xmass 1897.bmp</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="wm-l-wm-d-ida-hereford-family-group.jpg" aria-label="Make this photo bigger. Family group with the Herefords"><img src="wm-l-wm-d-ida-hereford-family-group.jpg" alt="Family group with the Herefords" loading="lazy" decoding="async" width="1600" height="993"></button>
+        <h3>Family group with the Herefords</h3>
+        <p class="when">About 1918</p>
+        <p class="tag">Confirmed</p>
+        
+        <p class="cap">A group photograph of nine people. William L. Shaffer is the man in the World War I uniform, third from the left. The family file also names William D., Ida, and J.H., Maude and Bob Hereford. Other people in the line are not separately labeled on this print.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Luman &quot;Bill&quot; Shaffer Sr.</li><li>William Daniel Shaffer</li><li>Ida</li><li>J.H., Maude and Bob Hereford, and others</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">William&#x27;s own photo, Alienware path C:\Users\willj\Pictures\02 Photos of W. L. Shaffer Sr &amp; Info\Misc Photos of W L. Shaffer\Peg&#x27;s Collection\Wm. L., Wm. D., Ida, J.H., Maude and Bob Hereford f.jpg</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="wm-d-wm-l-ida-mae-1940s.jpg" aria-label="Make this photo bigger. With his parents, William D. and Ida Mae, 1940s"><img src="wm-d-wm-l-ida-mae-1940s.jpg" alt="With his parents, William D. and Ida Mae, 1940s" loading="lazy" decoding="async" width="399" height="693"></button>
+        <h3>With his parents, William D. and Ida Mae, 1940s</h3>
+        <p class="when">About the 1940s</p>
+        <p class="tag">Confirmed</p>
+        
+        <p class="cap">William L. Shaffer in uniform, standing between his father William D. Shaffer and his mother Ida Mae, in the 1940s.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Daniel Shaffer</li><li>William Luman &quot;Bill&quot; Shaffer Sr.</li><li>Ida Mae Shaffer</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">William&#x27;s own photo, Alienware path C:\Users\willj\Pictures\02 Photos of W. L. Shaffer Sr &amp; Info\WWII\Wm. D., Wm. L. and Ida Mae 1940s.jpg</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="minnie-wm-l-ida-shaffer-1947.jpg" aria-label="Make this photo bigger. With Minnie and Ida, 1947"><img src="minnie-wm-l-ida-shaffer-1947.jpg" alt="With Minnie and Ida, 1947" loading="lazy" decoding="async" width="368" height="538"></button>
+        <h3>With Minnie and Ida, 1947</h3>
+        <p class="when">1947</p>
+        <p class="tag">Confirmed</p>
+        
+        <p class="cap">A 1947 snapshot in a cornfield. The family file names Minnie, William L. Shaffer, and Ida Shaffer.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>Minnie</li><li>William Luman &quot;Bill&quot; Shaffer Sr.</li><li>Ida Shaffer</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">William&#x27;s own photo, Alienware path C:\Users\willj\Pictures\02 Photos of W. L. Shaffer Sr &amp; Info\Misc Photos of W L. Shaffer\Jack&#x27;s collection\Minnie, Wm. L. and Ida Shaffer 1947.bmp</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">None listed.</p>
+      </article>
+<article class="card" data-strength="CONFIRMED">
+        <button type="button" class="pic" data-full="william-daniel-ida-may-headstone-linn-grove.jpg" aria-label="Make this photo bigger. William Daniel and Ida May Shaffer, Linn Grove headstone"><img src="william-daniel-ida-may-headstone-linn-grove.jpg" alt="William Daniel and Ida May Shaffer, Linn Grove headstone" loading="lazy" decoding="async" width="871" height="599"></button>
+        <h3>William Daniel and Ida May Shaffer, Linn Grove headstone</h3>
+        <p class="when">Date not listed</p>
+        <p class="tag">Confirmed</p>
+        
+        <p class="cap">A photograph of the Linn Grove Cemetery headstone in Greeley for William Daniel Shaffer and Ida May Spencer Shaffer.</p>
+        <p class="k">People</p>
+        <ul class="who"><li>William Daniel Shaffer</li><li>Ida May Spencer Shaffer</li></ul>
+        <p class="k">Source</p>
+        <p class="meta">William&#x27;s own copy, Alienware path C:\Users\willj\Pictures\Family\Family History\Great-Great-Grandpa William Daniel Shaffer\William-Daniel-and-Ida-May-Spencer-Shaffer-headstone-Linn-Grove-Greeley.jpg</p>
+        <p class="k">Credit</p>
+        <p class="meta credit">Family History folder on the Alienware (also circulated with Find a Grave family memorials)</p>
+      </article>
+    </section>
+  <p class="foot"><a href="/legacy/">Back to Legacy</a></p>
+</main>
+<dialog id="big"><button type="button">Close</button><img alt=""></dialog>
+<div id="gate" role="dialog" aria-modal="true" aria-label="Family word">
+  <h2>House of Shaffer</h2>
+  <p>The family word, if you would.</p>
+  <form id="gf">
+    <input id="pw" type="password" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Family word">
+    <button type="submit">Enter</button>
+  </form>
+  <p id="gm"></p>
+</div>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const HASH = "e396c33d99318aa669ce64d95283ab9720cfc2d9ee765b9e8860bf06085480e3", KEY = "shaffer-key", TOKH = "5718fd85d9c00483a8cb0959a15b0d6961dd50bfb94f11314e26ec588acf6472";
+  async function sha(s){ const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, "0")).join(""); }
+  function open(){ $("gate").classList.remove("on"); const main = document.querySelector("main"); if (main) main.inert = false; requestAnimationFrame(() => document.body.classList.add("open")); }
+  function gateCheck(){ const ck = (document.cookie.match(/(?:^|; )shaffer-key=([^;]+)/) || [])[1]; try { if (!localStorage.getItem(KEY) && ck) localStorage.setItem(KEY, decodeURIComponent(ck)); } catch(e){}
+    let saved = null; try { saved = localStorage.getItem(KEY); } catch(e){}
+    if (saved) sha(saved).then(h => { if (h === TOKH) open(); else $("gate").classList.add("on"); }); else $("gate").classList.add("on"); }
+  $("gf").addEventListener("submit", async e => { e.preventDefault(); const v = $("pw").value.trim().toUpperCase(); $("pw").value = "";
+    if (await sha(v) === HASH){ const k1 = await sha(v + "|house-of-shaffer"); try { localStorage.setItem(KEY, k1); } catch(e){} document.cookie = "shaffer-key=" + k1 + "; max-age=31536000; path=/legacy; SameSite=Lax; Secure"; open(); }
+    else $("gm").textContent = "I'm afraid I don't recognize you."; });
+  gateCheck();
+  const big = $("big"), img = big.querySelector("img");
+  document.querySelectorAll(".pic").forEach(btn => btn.addEventListener("click", () => {
+    const pic = btn.querySelector("img");
+    img.src = btn.dataset.full; img.alt = pic ? pic.alt : "";
+    big.showModal();
+  }));
+  big.querySelector("button").addEventListener("click", () => big.close());
+  big.addEventListener("click", e => { if (e.target === big) big.close(); });
+  big.addEventListener("close", () => { img.removeAttribute("src"); });
+})();
+</script>
+</body>
+</html>
