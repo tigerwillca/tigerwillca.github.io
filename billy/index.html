@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Billy stickers</title>
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #0b0b0f;
+      color: #f2f2f5;
+      padding: 24px 16px 48px;
+    }
+    main {
+      max-width: 560px;
+      margin: 0 auto;
+    }
+    h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .how {
+      text-align: center;
+      color: #b8b8c2;
+      font-size: 0.95rem;
+      line-height: 1.4;
+      margin-bottom: 24px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+    @media (min-width: 480px) {
+      .grid { grid-template-columns: repeat(4, 1fr); }
+    }
+    a.sticker {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: inherit;
+      background: #16161d;
+      border-radius: 20px;
+      padding: 14px 10px 12px;
+    }
+    a.sticker img {
+      width: 100%;
+      max-width: 140px;
+      height: auto;
+      aspect-ratio: 1;
+      object-fit: contain;
+      image-rendering: auto;
+    }
+    a.sticker span {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #d6d6de;
+    }
+    .download {
+      display: block;
+      width: 100%;
+      margin: 28px 0 0;
+      padding: 14px 18px;
+      text-align: center;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1rem;
+      color: #0b0b0f;
+      background: #f2f2f5;
+      border-radius: 14px;
+    }
+    footer {
+      margin-top: 32px;
+      text-align: center;
+      color: #8a8a96;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Billy stickers</h1>
+    <p class="how">Press and hold a sticker, tap Save or Copy, then paste it in iMessage.</p>
+    <div class="grid">
+      <a class="sticker" href="w.gif"><img src="w.gif" alt="W" width="140" height="140"><span>W</span></a>
+      <a class="sticker" href="l.gif"><img src="l.gif" alt="L" width="140" height="140"><span>L</span></a>
+      <a class="sticker" href="cooked.gif"><img src="cooked.gif" alt="Cooked" width="140" height="140"><span>Cooked</span></a>
+      <a class="sticker" href="npc.gif"><img src="npc.gif" alt="NPC" width="140" height="140"><span>NPC</span></a>
+      <a class="sticker" href="bro.gif"><img src="bro.gif" alt="Bro" width="140" height="140"><span>Bro</span></a>
+      <a class="sticker" href="say-less.gif"><img src="say-less.gif" alt="Say Less" width="140" height="140"><span>Say Less</span></a>
+      <a class="sticker" href="seven.gif"><img src="seven.gif" alt="Seven" width="140" height="140"><span>Seven</span></a>
+      <a class="sticker" href="third-eye.gif"><img src="third-eye.gif" alt="Third Eye" width="140" height="140"><span>Third Eye</span></a>
+    </div>
+    <a class="download" href="billy-stickers.zip">Download all</a>
+    <footer>made by Billy</footer>
+  </main>
+</body>
+</html>
