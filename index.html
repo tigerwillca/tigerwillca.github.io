@@ -40,9 +40,18 @@ body:has(.site-tabs) a.tune{top:calc(44px + .75rem)}
 @media (prefers-reduced-motion:no-preference){.globe i{animation:spin 22s linear infinite}}
 @media (prefers-reduced-motion:reduce){.globe.zoom{transform:none;transition:none}}
 @keyframes spin{to{transform:rotate(360deg)}}
+#lightshow-bg{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;display:block;opacity:.55;filter:blur(18px) saturate(1.05);transform:scale(1.08)}
+.ls-veil{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse 70% 60% at 50% 48%,rgba(11,9,8,.62),rgba(11,9,8,.38) 70%,rgba(11,9,8,.5))}
+main,footer{position:relative;z-index:2}
+.sound-toggle{position:fixed;right:12px;bottom:12px;z-index:20;min-height:40px;padding:8px 14px;border:1px solid rgba(255,176,112,.42);border-radius:999px;background:rgba(11,9,8,.72);color:#ffb070;font:14px Georgia,serif;letter-spacing:.02em;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;opacity:.85}
+.sound-toggle[aria-pressed="true"]{color:#F6DFA0;box-shadow:0 0 14px rgba(80,140,255,.35)}
+.sound-toggle:hover{opacity:1}
+.sound-toggle:focus-visible{outline:2px solid #ffb070;outline-offset:3px}
 </style>
 </head>
 <body>
+<canvas id="lightshow-bg" aria-hidden="true"></canvas>
+<div class="ls-veil" aria-hidden="true"></div>
 <nav class="site-tabs" aria-label="Site">
 <a href="/" aria-current="page">Family</a><span aria-hidden="true">·</span><a href="/watch/">Watch</a><span aria-hidden="true">·</span><a href="/pulse-light/">Pulse</a><span aria-hidden="true">·</span><a href="/soft7/">Soft7</a>
 </nav>
@@ -73,6 +82,29 @@ body:has(.site-tabs) a.tune{top:calc(44px + .75rem)}
     globe.classList.add('zoom');
     setTimeout(function(){ location.href='/ceres/'; }, 480);
   });
+})();
+</script>
+<button type="button" class="sound-toggle" id="sound-toggle" aria-pressed="false" aria-label="Ambient music">Ambient · Off</button>
+<audio id="ambient-audio" src="/assets/mystical-ambient.mp3" loop preload="auto" playsinline></audio>
+<script src="/assets/lightshow-bg.js" defer></script>
+<script>
+(function(){
+  var au=document.getElementById('ambient-audio'),btn=document.getElementById('sound-toggle');
+  if(!au||!btn) return;
+  var VOL=0.22,KEY='ambientOff',fadeT=null;
+  var off=false; try{off=localStorage.getItem(KEY)==='1';}catch(e){}
+  function label(on){btn.textContent='Ambient · '+(on?'On':'Off');btn.setAttribute('aria-pressed',on?'true':'false');}
+  function fade(to,done){clearInterval(fadeT);fadeT=setInterval(function(){var v=au.volume+(to>au.volume?.02:-.02);
+    if(Math.abs(to-au.volume)<=.02){au.volume=to;clearInterval(fadeT);if(done)done();}else au.volume=Math.max(0,Math.min(1,v));},60);}
+  function start(){au.volume=0;var p=au.play();if(p&&p.then){p.then(function(){label(true);fade(VOL);}).catch(function(){label(false);});}else{label(true);fade(VOL);}}
+  function stop(){fade(0,function(){au.pause();});label(false);}
+  function firstGesture(ev){if(ev&&ev.target===btn)return;drop();if(!off&&au.paused)start();}
+  function drop(){removeEventListener('pointerdown',firstGesture,true);removeEventListener('keydown',firstGesture,true);}
+  btn.addEventListener('click',function(){if(au.paused){off=false;try{localStorage.removeItem(KEY);}catch(e){}drop();start();}
+    else{off=true;try{localStorage.setItem(KEY,'1');}catch(e){}stop();}});
+  label(false);
+  if(!off){addEventListener('pointerdown',firstGesture,true);addEventListener('keydown',firstGesture,true);start();}
+  au.addEventListener('play',function(){drop();});
 })();
 </script>
 </body>
