@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="index,follow">
+<meta name="theme-color" content="#070b10">
+<meta name="color-scheme" content="dark">
+<title>About — Soft7 77</title>
+<meta name="description" content="The Circle, on-chain provenance, official socials, and the MIT License for Soft7 77, an independent art collection by TigerWillCA (Shaffer Network) on Robinhood Chain.">
+<link rel="canonical" href="https://tigerwillca.github.io/soft7/about.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="About — Soft7 77">
+<meta property="og:description" content="The Circle, on-chain provenance, official socials, and the MIT License for Soft7 77.">
+<meta property="og:image" content="https://tigerwillca.github.io/soft7/art/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://tigerwillca.github.io/soft7/about.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="About — Soft7 77">
+<meta name="twitter:description" content="The Circle, on-chain provenance, official socials, and the MIT License for Soft7 77.">
+<meta name="twitter:image" content="https://tigerwillca.github.io/soft7/art/og.jpg">
+<link rel="icon" type="image/png" sizes="32x32" href="art/favicon-32.png">
+<link rel="apple-touch-icon" href="art/apple-touch-icon.png" sizes="180x180">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #070b10;
+    --ivory: #f4efe6;
+    --muted: #c0b6a6;
+    --quiet: #8d8578;
+    --gold: #f3c96b;
+    --gold-soft: rgba(243, 201, 107, 0.22);
+    --emerald: #3cc98a;
+    --line: rgba(244, 239, 230, 0.10);
+    --glow-violet: rgba(128, 78, 196, 0.26);
+    --glow-gold: rgba(243, 201, 107, 0.12);
+    --glow-emerald: rgba(60, 201, 138, 0.10);
+    --serif: "Cormorant Garamond", "Iowan Old Style", Palatino, "Palatino Linotype", "Times New Roman", serif;
+    --sans: "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    --safe-x: max(22px, env(safe-area-inset-left));
+    --safe-r: max(22px, env(safe-area-inset-right));
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  html { background: var(--bg); scroll-behavior: smooth; }
+  body {
+    font-family: var(--sans);
+    background:
+      radial-gradient(900px 480px at 50% -8%, var(--glow-gold), transparent 58%),
+      radial-gradient(1100px 640px at 18% -10%, var(--glow-violet), transparent 62%),
+      radial-gradient(800px 420px at 92% 0%, var(--glow-emerald), transparent 55%),
+      var(--bg);
+    color: var(--ivory);
+    min-height: 100svh;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  a { color: inherit; }
+  .skip {
+    position: absolute;
+    left: 12px; top: -44px;
+    background: var(--ivory); color: var(--bg);
+    padding: 8px 12px; border-radius: 10px; z-index: 30;
+  }
+  .skip:focus { top: 12px; }
+  .site-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: min(1120px, calc(100% - var(--safe-x) - var(--safe-r)));
+    margin: 0 auto;
+    padding: calc(16px + env(safe-area-inset-top)) 0 10px;
+  }
+  .mark {
+    font-family: var(--serif);
+    font-size: 1.35rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    color: var(--ivory);
+  }
+  .mark:hover { color: var(--gold); }
+  .mark:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; border-radius: 4px; }
+  .site-nav {
+    display: flex;
+    align-items: center;
+    gap: 1.15rem;
+    font-size: 0.92rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+  .site-nav a {
+    text-decoration: none;
+    color: var(--muted);
+    border-bottom: 1px solid transparent;
+    padding-bottom: 1px;
+  }
+  .site-nav a:hover { color: var(--ivory); border-bottom-color: var(--gold-soft); }
+  .site-nav a[aria-current="page"] { color: var(--gold); border-bottom-color: rgba(243, 201, 107, 0.45); }
+  .site-nav a:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 2px; }
+  main {
+    width: min(760px, calc(100% - var(--safe-x) - var(--safe-r)));
+    margin: 0 auto;
+    padding: 1.6rem 0 0;
+  }
+  .page-kicker {
+    margin: 0 0 0.55rem;
+    color: var(--gold);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  h1 {
+    margin: 0;
+    font-family: var(--serif);
+    font-size: clamp(2.6rem, 7vw, 4.4rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 0.95;
+    background: linear-gradient(180deg, #fff8ea 10%, var(--gold) 78%, #c4a15a 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .intro {
+    margin: 1rem 0 0;
+    font-family: var(--serif);
+    font-size: clamp(1.16rem, 2.3vw, 1.36rem);
+    line-height: 1.5;
+    color: #ddd4c6;
+  }
+  .toc {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem 1.15rem;
+    margin: 1.35rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.92rem;
+    color: var(--quiet);
+  }
+  .toc a {
+    color: var(--muted);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(243, 201, 107, 0.28);
+  }
+  .toc a:hover { color: var(--ivory); }
+  .toc a:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 2px; }
+  section {
+    margin: 2.8rem 0 0;
+    padding-top: 0.2rem;
+  }
+  h2 {
+    margin: 0 0 0.9rem;
+    font-family: var(--serif);
+    font-size: clamp(1.7rem, 3.6vw, 2.15rem);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--ivory);
+  }
+  section p {
+    margin: 0 0 1rem;
+    color: var(--muted);
+    font-size: 1.05rem;
+    line-height: 1.7;
+  }
+  section p:last-child { margin-bottom: 0; }
+  .facts {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0.85rem;
+  }
+  .facts li {
+    padding: 0.95rem 1.05rem;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: rgba(244, 239, 230, 0.03);
+    color: var(--muted);
+    font-size: 1.02rem;
+    line-height: 1.55;
+  }
+  .facts strong {
+    display: block;
+    margin-bottom: 0.2rem;
+    color: var(--ivory);
+    font-weight: 600;
+    font-size: 0.86rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  code {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.86em;
+    word-break: break-all;
+    color: var(--ivory);
+  }
+  section a {
+    color: var(--gold);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(243, 201, 107, 0.28);
+  }
+  section a:hover { color: var(--ivory); border-bottom-color: rgba(244, 239, 230, 0.45); }
+  section a:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 2px; }
+  .socials {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem 1.4rem;
+    margin: 0.2rem 0 0;
+    font-size: 1.05rem;
+  }
+  .socials a { color: var(--muted); }
+  .license-note { color: var(--quiet) !important; font-size: 0.96rem !important; }
+  pre.license {
+    margin: 1.1rem 0 0;
+    padding: 1.15rem 1.2rem;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: rgba(5, 7, 10, 0.72);
+    color: #ddd4c6;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.78rem;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    overflow-x: auto;
+  }
+  footer {
+    width: min(760px, calc(100% - var(--safe-x) - var(--safe-r)));
+    margin: 3.2rem auto 0;
+    padding: 1.35rem 0 calc(2.3rem + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--line);
+    color: var(--quiet);
+    font-size: 0.86rem;
+    line-height: 1.6;
+  }
+  footer a { color: var(--gold); text-decoration: none; border-bottom: 1px solid rgba(243, 201, 107, 0.28); }
+  footer a:hover { color: var(--ivory); border-bottom-color: rgba(244, 239, 230, 0.45); }
+  footer a:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 2px; }
+  .note { margin: 0.85rem 0 0; color: var(--quiet); font-size: 0.86rem; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#content">Skip to content</a>
+<header class="site-header">
+  <a class="mark" href="./">Soft7 77</a>
+  <nav class="site-nav" aria-label="Soft7 77">
+    <a href="./">Front Page</a>
+    <a href="./about.html" aria-current="page">About</a>
+    <a href="https://opensea.io/collection/soft7-77" rel="noopener noreferrer" target="_blank">OpenSea</a>
+  </nav>
+</header>
+<main id="content">
+  <p class="page-kicker">Back Page</p>
+  <h1>The Circle</h1>
+  <p class="intro">We are Soft7 77. This page is where we explain ourselves: the lore of the circle, the on-chain proof, the official socials, and the license for these pages.</p>
+  <ul class="toc">
+    <li><a href="#lore">The Circle &amp; Lore</a></li>
+    <li><a href="#on-chain">On-Chain &amp; Provenance</a></li>
+    <li><a href="#socials">Official Socials</a></li>
+    <li><a href="#license">Open-Source MIT License</a></li>
+  </ul>
+
+  <section id="lore">
+    <h2>The Circle &amp; Lore</h2>
+    <p>We are seventy-seven painted fox and tiger wizards, gathered around glowing circle potions, each work carrying an embossed 777 seal. Token #001 is TigerWillCA. The other seventy-six are Fox Wizards.</p>
+    <p>We were crafted with Soft Magic — small, honest work, made slowly, with real heart, so the proof can speak louder than the noise. Soft7 77 is an independent art collection by TigerWillCA (Shaffer Network).</p>
+  </section>
+
+  <section id="on-chain">
+    <h2>On-Chain &amp; Provenance</h2>
+    <ul class="facts">
+      <li><strong>Mint status</strong> 77 / 77 minted. Fixed max supply 77.</li>
+      <li><strong>Network</strong> Robinhood Chain, Chain ID 4663.</li>
+      <li><strong>Verified contract</strong> <code>0x5db625c49b2a9DD40464069fc16B9a2f3B11bF3d</code> · <a href="https://robinhoodchain.blockscout.com/address/0x5db625c49b2a9DD40464069fc16B9a2f3B11bF3d" rel="noopener noreferrer" target="_blank">Blockscout</a> · <a href="https://repo.sourcify.dev/4663/0x5db625c49b2a9DD40464069fc16B9a2f3B11bF3d" rel="noopener noreferrer" target="_blank">Sourcify</a></li>
+      <li><strong>Creator royalty</strong> 7.5% ERC-2981 creator royalty.</li>
+      <li><strong>Art &amp; metadata</strong> 1024×1536 PNG artworks and metadata, CAR-pinned on IPFS.</li>
+      <li><strong>Distribution</strong> Owner-distributed, with zero public mint site and zero wallet-connect traps.</li>
+      <li><strong>Collection</strong> <a href="https://opensea.io/collection/soft7-77" rel="noopener noreferrer" target="_blank">OpenSea — Soft7 77</a></li>
+    </ul>
+  </section>
+
+  <section id="socials">
+    <h2>Official Socials</h2>
+    <p>These are our official X accounts. We will not message you first to ask for a seed phrase, a signature, or a claim.</p>
+    <p class="socials">
+      <a href="https://x.com/TigerwillcaX" rel="noopener noreferrer" target="_blank">@TigerwillcaX</a>
+      <a href="https://x.com/tigerwillca2" rel="noopener noreferrer" target="_blank">@tigerwillca2</a>
+      <a href="https://x.com/Metatronglight" rel="noopener noreferrer" target="_blank">@Metatronglight</a>
+    </p>
+  </section>
+
+  <section id="license">
+    <h2>Open-Source MIT License</h2>
+    <p>The Soft7 77 web pages and site code are licensed under the MIT License. Copyright (c) 2026 TigerWillCA. The full license text lives at <a href="./LICENSE">./LICENSE</a> and is reproduced below.</p>
+    <p class="license-note">Soft7 77 artworks and brand remain independently owned by the creator. The MIT License covers the Soft7 77 web pages and site code only — not the artworks, names, or marks.</p>
+    <pre class="license">MIT License
+
+Copyright (c) 2026 TigerWillCA
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.</pre>
+  </section>
+</main>
+
+<footer>
+  <p>Soft7 77 web pages and site code are licensed under the <a href="./LICENSE">MIT License</a>. Copyright (c) 2026 TigerWillCA. Soft7 77 artworks and brand remain independently owned by the creator. <a href="./">Back to the Front Page</a>.</p>
+  <p class="note">Built on Robinhood Chain, not a Robinhood product.</p>
+</footer>
+</body>
+</html>

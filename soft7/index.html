@@ -4,48 +4,57 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="index,follow">
-<meta name="theme-color" content="#07090a">
+<meta name="theme-color" content="#070b10">
 <meta name="color-scheme" content="dark">
 <title>Soft7 77</title>
-<meta name="description" content="77 singular pieces on Robinhood Chain: 001 TigerWillCA and 76 Fox Wizards. CAR-pinned on IPFS. 77 / 77 minted.">
+<meta name="description" content="Soft7 77 is an independent art collection by TigerWillCA (Shaffer Network): 77 painted fox and tiger wizards on Robinhood Chain (Chain ID 4663). Token #001 TigerWillCA and 76 Fox Wizards, crafted with Soft Magic, CAR-pinned on IPFS. 77 / 77 minted.">
 <link rel="canonical" href="https://tigerwillca.github.io/soft7/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Soft7 77">
-<meta property="og:description" content="77 singular pieces on Robinhood Chain: 001 TigerWillCA and 76 Fox Wizards. CAR-pinned on IPFS. 77 / 77 minted.">
+<meta property="og:description" content="An independent art collection by TigerWillCA (Shaffer Network). 77 painted fox and tiger wizards on Robinhood Chain. 77 / 77 minted.">
 <meta property="og:image" content="https://tigerwillca.github.io/soft7/art/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:url" content="https://tigerwillca.github.io/soft7/">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Soft7 77">
-<meta name="twitter:description" content="77 singular pieces on Robinhood Chain: 001 TigerWillCA and 76 Fox Wizards. CAR-pinned on IPFS. 77 / 77 minted.">
+<meta name="twitter:description" content="An independent art collection by TigerWillCA (Shaffer Network). 77 painted fox and tiger wizards on Robinhood Chain. 77 / 77 minted.">
 <meta name="twitter:image" content="https://tigerwillca.github.io/soft7/art/og.jpg">
 <link rel="icon" type="image/png" sizes="32x32" href="art/favicon-32.png">
 <link rel="apple-touch-icon" href="art/apple-touch-icon.png" sizes="180x180">
 <link rel="preload" as="image" href="art/hero-001.webp" type="image/webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #07090a;
+    --bg: #070b10;
+    --bg-deep: #05070a;
     --ivory: #f4efe6;
-    --muted: #b7ad9f;
-    --quiet: #8a8174;
-    --gold: #e6c27a;
+    --muted: #c0b6a6;
+    --quiet: #8d8578;
+    --gold: #f3c96b;
+    --gold-soft: rgba(243, 201, 107, 0.22);
     --emerald: #3cc98a;
-    --lime: #ccff00;
+    --violet: #9b7bff;
     --line: rgba(244, 239, 230, 0.10);
-    --glow-violet: rgba(128, 78, 196, 0.28);
-    --glow-emerald: rgba(60, 201, 138, 0.14);
-    --safe-x: max(20px, env(safe-area-inset-left));
-    --safe-r: max(20px, env(safe-area-inset-right));
+    --glow-violet: rgba(128, 78, 196, 0.30);
+    --glow-gold: rgba(243, 201, 107, 0.14);
+    --glow-emerald: rgba(60, 201, 138, 0.12);
+    --serif: "Cormorant Garamond", "Iowan Old Style", Palatino, "Palatino Linotype", "Times New Roman", serif;
+    --sans: "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    --safe-x: max(22px, env(safe-area-inset-left));
+    --safe-r: max(22px, env(safe-area-inset-right));
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
   html { background: var(--bg); }
   body {
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+    font-family: var(--sans);
     background:
-      radial-gradient(900px 520px at 50% -8%, var(--glow-emerald), transparent 58%),
-      radial-gradient(1200px 700px at 50% -10%, var(--glow-violet), transparent 62%),
+      radial-gradient(880px 520px at 50% -6%, var(--glow-gold), transparent 58%),
+      radial-gradient(1100px 680px at 50% -12%, var(--glow-violet), transparent 64%),
+      radial-gradient(900px 480px at 80% 8%, var(--glow-emerald), transparent 55%),
       var(--bg);
     color: var(--ivory);
     min-height: 100svh;
@@ -55,69 +64,126 @@
   a { color: inherit; }
   .skip {
     position: absolute;
-    left: 12px; top: -40px;
+    left: 12px; top: -44px;
     background: var(--ivory); color: var(--bg);
-    padding: 8px 12px; border-radius: 10px; z-index: 20;
+    padding: 8px 12px; border-radius: 10px; z-index: 30;
   }
   .skip:focus { top: 12px; }
+  .site-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: min(1120px, calc(100% - var(--safe-x) - var(--safe-r)));
+    margin: 0 auto;
+    padding: calc(16px + env(safe-area-inset-top)) 0 10px;
+  }
+  .mark {
+    font-family: var(--serif);
+    font-size: 1.35rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    color: var(--ivory);
+  }
+  .mark:hover { color: var(--gold); }
+  .mark:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; border-radius: 4px; }
+  .site-nav {
+    display: flex;
+    align-items: center;
+    gap: 1.15rem;
+    font-size: 0.92rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+  .site-nav a {
+    text-decoration: none;
+    color: var(--muted);
+    border-bottom: 1px solid transparent;
+    padding-bottom: 1px;
+  }
+  .site-nav a:hover { color: var(--ivory); border-bottom-color: var(--gold-soft); }
+  .site-nav a[aria-current="page"] { color: var(--gold); border-bottom-color: rgba(243, 201, 107, 0.45); }
+  .site-nav a:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 2px; }
   .hero {
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    padding: calc(22px + env(safe-area-inset-top)) var(--safe-r) 16px var(--safe-x);
+    padding: 10px var(--safe-r) 16px var(--safe-x);
     isolation: isolate;
   }
   .hero-glow {
     position: absolute;
-    inset: 4% 8% auto;
+    inset: 2% 8% auto;
     height: min(72vw, 640px);
-    background: radial-gradient(circle at 50% 45%, var(--glow-violet) 0%, rgba(230, 194, 122, 0.10) 34%, var(--glow-emerald) 52%, transparent 70%);
+    background: radial-gradient(circle at 50% 45%, var(--glow-violet) 0%, var(--glow-gold) 36%, var(--glow-emerald) 58%, transparent 72%);
     pointer-events: none;
     z-index: -1;
-    filter: blur(8px);
+    filter: blur(10px);
+  }
+  .hero-stage {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: min(92vw, 540px);
+  }
+  .ring {
+    position: absolute;
+    width: 128%;
+    height: auto;
+    aspect-ratio: 1;
+    z-index: -1;
+    opacity: 0.9;
+    animation: ring-breathe 9s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes ring-breathe {
+    0%, 100% { transform: scale(0.98); opacity: 0.72; }
+    50% { transform: scale(1.02); opacity: 1; }
   }
   .hero-art {
     margin: 0;
     line-height: 0;
+    position: relative;
   }
   .hero-art img {
     display: block;
     width: auto;
-    height: min(58svh, 700px);
-    max-width: min(92vw, 500px);
+    height: min(52svh, 640px);
+    max-width: min(88vw, 460px);
     border-radius: 22px;
     box-shadow:
       0 40px 90px rgba(0, 0, 0, 0.55),
-      0 0 80px rgba(110, 60, 190, 0.16),
-      0 0 40px rgba(60, 201, 138, 0.08),
-      0 0 0 1px rgba(230, 194, 122, 0.12);
+      0 0 80px rgba(110, 60, 190, 0.18),
+      0 0 40px rgba(243, 201, 107, 0.10),
+      0 0 0 1px rgba(243, 201, 107, 0.16);
   }
   .hero-copy {
-    max-width: 38rem;
-    margin: 1.85rem 0 0;
+    max-width: 42rem;
+    margin: 1.7rem 0 0;
   }
   .status {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 0.55rem;
-    margin: 0 0 1.15rem;
+    margin: 0 0 1.05rem;
   }
   .badge {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
     min-height: 34px;
-    padding: 0.28rem 0.9rem;
+    padding: 0.28rem 0.95rem;
     border-radius: 999px;
-    border: 1px solid rgba(230, 194, 122, 0.42);
-    background: linear-gradient(180deg, rgba(60, 201, 138, 0.10), rgba(230, 194, 122, 0.06));
+    border: 1px solid rgba(243, 201, 107, 0.46);
+    background: linear-gradient(180deg, rgba(60, 201, 138, 0.12), rgba(243, 201, 107, 0.07));
     color: var(--gold);
     font-size: 0.78rem;
-    font-weight: 650;
-    letter-spacing: 0.12em;
+    font-weight: 600;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
     font-variant-numeric: tabular-nums;
   }
@@ -137,28 +203,39 @@
   .chain a {
     color: var(--gold);
     text-decoration: none;
-    border-bottom: 1px solid rgba(230, 194, 122, 0.28);
+    border-bottom: 1px solid rgba(243, 201, 107, 0.28);
   }
   .chain a:hover { color: var(--ivory); border-bottom-color: rgba(244, 239, 230, 0.45); }
   .chain a:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 2px; }
   h1 {
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", system-ui, sans-serif;
-    font-size: clamp(2.6rem, 8vw, 5rem);
+    font-family: var(--serif);
+    font-size: clamp(3rem, 9vw, 5.4rem);
     font-weight: 600;
-    letter-spacing: -0.035em;
-    line-height: 0.95;
+    letter-spacing: -0.02em;
+    line-height: 0.92;
+    background: linear-gradient(180deg, #fff8ea 10%, var(--gold) 78%, #c4a15a 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
-  .lede {
+  .lede, .facts, .story {
     margin: 1.05rem auto 0;
-    font-size: clamp(1.05rem, 2.2vw, 1.22rem);
-    line-height: 1.55;
+    font-size: clamp(1.05rem, 2.1vw, 1.2rem);
+    line-height: 1.62;
     color: var(--muted);
     font-weight: 400;
-    max-width: 32rem;
+    max-width: 36rem;
+  }
+  .lede { font-family: var(--serif); font-size: clamp(1.18rem, 2.4vw, 1.38rem); line-height: 1.48; color: #ddd4c6; }
+  .facts {
+    margin-top: 0.95rem;
+    font-size: 0.96rem;
+    color: var(--quiet);
+    max-width: 34rem;
   }
   .cta {
-    margin: 1.55rem 0 0;
+    margin: 1.5rem 0 0;
     display: flex;
     flex-wrap: wrap;
     gap: 0.7rem;
@@ -169,7 +246,7 @@
     align-items: center;
     justify-content: center;
     min-height: 48px;
-    padding: 0.85rem 1.35rem;
+    padding: 0.85rem 1.4rem;
     border-radius: 999px;
     background: var(--ivory);
     color: #160e1c;
@@ -187,15 +264,15 @@
   .btn-ghost {
     background: transparent;
     color: var(--ivory);
-    border-color: rgba(244, 239, 230, 0.22);
+    border-color: rgba(243, 201, 107, 0.38);
     box-shadow: none;
   }
-  .btn-ghost:hover { background: rgba(244, 239, 230, 0.08); color: #fff; }
+  .btn-ghost:hover { background: rgba(243, 201, 107, 0.08); color: #fff; border-color: rgba(243, 201, 107, 0.62); }
   .socials {
-    margin: 1.2rem 0 0;
+    margin: 1.25rem 0 0;
     display: flex;
     flex-wrap: wrap;
-    gap: 0.85rem 1.35rem;
+    gap: 0.85rem 1.4rem;
     justify-content: center;
     font-size: 0.95rem;
     color: var(--quiet);
@@ -212,7 +289,7 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
     width: min(1120px, calc(100% - var(--safe-x) - var(--safe-r)));
-    margin: 2.4rem auto 0;
+    margin: 2.6rem auto 0;
     padding: 0;
     list-style: none;
   }
@@ -256,75 +333,19 @@
     pointer-events: none;
     font-variant-numeric: tabular-nums;
   }
-  .lore {
-    width: min(720px, calc(100% - var(--safe-x) - var(--safe-r)));
-    margin: 3.2rem auto 0;
-    color: var(--muted);
-    font-size: 1.02rem;
-    line-height: 1.65;
-  }
-  .lore p { margin: 0 0 1rem; }
-  .lore p:last-child { margin-bottom: 0; }
-  .token {
-    color: var(--lime);
-    font-weight: 600;
-    letter-spacing: 0.02em;
-  }
   footer {
     width: min(720px, calc(100% - var(--safe-x) - var(--safe-r)));
-    margin: 3.4rem auto 0;
-    padding: 0 0 calc(2.4rem + env(safe-area-inset-bottom));
-    color: var(--quiet);
-    font-size: 0.88rem;
-    line-height: 1.55;
-  }
-  footer details {
+    margin: 3.2rem auto 0;
+    padding: 1.35rem 0 calc(2.3rem + env(safe-area-inset-bottom));
     border-top: 1px solid var(--line);
-    padding-top: 1.1rem;
-  }
-  footer summary {
-    cursor: pointer;
-    list-style: none;
-    color: var(--muted);
-    font-size: 0.92rem;
-    letter-spacing: 0.01em;
-    user-select: none;
-  }
-  footer summary::-webkit-details-marker { display: none; }
-  footer summary::after {
-    content: "";
-    display: inline-block;
-    width: 6px; height: 6px;
-    margin-left: 8px;
-    border-right: 1.5px solid currentColor;
-    border-bottom: 1.5px solid currentColor;
-    transform: rotate(45deg) translateY(-2px);
-    vertical-align: middle;
-    transition: transform 0.2s ease;
-  }
-  footer details[open] summary::after {
-    transform: rotate(225deg) translateY(-1px);
-  }
-  footer summary:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 4px; }
-  .verify {
-    margin: 0.95rem 0 0;
-    padding: 0;
-    color: var(--muted);
-  }
-  .verify p { margin: 0 0 0.7rem; }
-  .verify a { color: var(--gold); text-decoration: none; }
-  .verify a:hover { text-decoration: underline; }
-  .verify code {
-    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-    font-size: 0.78rem;
-    word-break: break-all;
-    color: var(--ivory);
-  }
-  .note {
-    margin: 1.25rem 0 0;
     color: var(--quiet);
     font-size: 0.86rem;
+    line-height: 1.6;
   }
+  footer a { color: var(--gold); text-decoration: none; border-bottom: 1px solid rgba(243, 201, 107, 0.28); }
+  footer a:hover { color: var(--ivory); border-bottom-color: rgba(244, 239, 230, 0.45); }
+  footer a:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 2px; }
+  .note { margin: 0.85rem 0 0; color: var(--quiet); font-size: 0.86rem; }
   .lightbox {
     position: fixed;
     inset: 0;
@@ -374,17 +395,19 @@
   }
   @media (min-width: 900px) and (min-height: 700px) {
     .hero-art img {
-      height: min(46svh, 470px);
-      max-width: 380px;
+      height: min(44svh, 430px);
+      max-width: 360px;
     }
-    .hero-copy { margin-top: 1.25rem; }
-    .status { margin-bottom: 0.85rem; gap: 0.4rem; }
-    h1 { font-size: clamp(2.4rem, 5.5vw, 4.25rem); }
-    .lede { margin-top: 0.85rem; }
-    .cta { margin-top: 1.15rem; }
+    .hero-copy { margin-top: 1.15rem; }
+    .status { margin-bottom: 0.75rem; gap: 0.35rem; }
+    h1 { font-size: clamp(2.6rem, 5.4vw, 4.5rem); }
+    .lede { margin-top: 0.8rem; }
+    .facts { margin-top: 0.75rem; }
+    .cta { margin-top: 1.1rem; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .card img, .btn, footer summary::after { transition: none; }
+    .ring { animation: none; }
+    .card img, .btn { transition: none; }
     .card:hover img, .card:focus-visible img { transform: none; }
     .btn:hover { transform: none; }
   }
@@ -392,33 +415,53 @@
 </head>
 <body>
 <a class="skip" href="#content">Skip to content</a>
+<header class="site-header">
+  <a class="mark" href="./" aria-current="page">Soft7 77</a>
+  <nav class="site-nav" aria-label="Soft7 77">
+    <a href="./about.html">About</a>
+    <a href="https://opensea.io/collection/soft7-77" rel="noopener noreferrer" target="_blank">OpenSea</a>
+  </nav>
+</header>
 <main id="content">
   <section class="hero">
     <div class="hero-glow" aria-hidden="true"></div>
-    <figure class="hero-art">
-      <img src="art/hero-001.webp" width="600" height="900" alt="001 TigerWillCA: painted fox wizard in a tattered purple cloak, crouched, with glowing violet eyes, a violet amulet, and a green-gold potion vial at the belt.">
-    </figure>
+    <div class="hero-stage">
+      <svg class="ring" viewBox="0 0 400 400" aria-hidden="true" focusable="false">
+        <circle cx="200" cy="200" r="176" fill="none" stroke="rgba(243,201,107,0.22)" stroke-width="0.8"/>
+        <circle cx="200" cy="200" r="158" fill="none" stroke="rgba(155,123,255,0.16)" stroke-width="0.6"/>
+        <g fill="rgba(243,201,107,0.72)">
+          <circle cx="200" cy="24" r="2.4"/>
+          <circle cx="337.1" cy="91.3" r="2.4"/>
+          <circle cx="354.3" cy="247.1" r="2.4"/>
+          <circle cx="238.7" cy="370.4" r="2.4"/>
+          <circle cx="161.3" cy="370.4" r="2.4"/>
+          <circle cx="45.7" cy="247.1" r="2.4"/>
+          <circle cx="62.9" cy="91.3" r="2.4"/>
+        </g>
+      </svg>
+      <figure class="hero-art">
+        <img src="art/hero-001.webp" width="600" height="900" alt="001 TigerWillCA: painted fox wizard in a tattered purple cloak, crouched, with glowing violet eyes, a violet amulet, and a green-gold potion vial at the belt.">
+      </figure>
+    </div>
     <div class="hero-copy">
       <div class="status">
         <span class="badge">77 / 77 Minted</span>
         <p class="chain">
-          Robinhood Chain (4663) ·
-          <a href="https://robinhoodchain.blockscout.com/address/0x5db625c49b2a9DD40464069fc16B9a2f3B11bF3d" rel="noopener noreferrer">Contract</a>
-          ·
-          <a href="https://robinhoodchain.blockscout.com/tx/0x0fa82603c5f1f51b69accddb418d538d9a4598bde55457bacfe14c9c88042490" rel="noopener noreferrer">Mint transaction</a>
+          Robinhood Chain (Chain ID 4663) ·
+          <a href="https://robinhoodchain.blockscout.com/address/0x5db625c49b2a9DD40464069fc16B9a2f3B11bF3d" rel="noopener noreferrer" target="_blank">Contract</a>
         </p>
       </div>
       <h1>Soft7 77</h1>
-      <p class="lede">001 TigerWillCA and 76 Fox Wizards. Seventy-seven singular pieces, CAR-pinned on IPFS.</p>
+      <p class="lede">We are Soft7 77, an independent art collection by TigerWillCA (Shaffer Network). Seventy-seven painted fox and tiger wizards live on Robinhood Chain (Chain ID 4663): Token #001 TigerWillCA and 76 Fox Wizards, crafted with Soft Magic and CAR-pinned on IPFS.</p>
+      <p class="facts">Fixed max supply 77, owner-distributed, with zero public mint site and zero wallet-connect traps. 7.5% ERC-2981 creator royalty.</p>
       <p class="cta">
-        <a class="btn" href="https://opensea.io/collection/soft7-77" rel="noopener noreferrer">OpenSea collection</a>
-        <a class="btn btn-ghost" href="https://tigerwillca.github.io/stickers/">Stickers reveal</a>
-        <a class="btn btn-ghost" href="https://robinhoodchain.blockscout.com/address/0x5db625c49b2a9DD40464069fc16B9a2f3B11bF3d" rel="noopener noreferrer">Blockscout contract</a>
+        <a class="btn" href="https://opensea.io/collection/soft7-77" rel="noopener noreferrer" target="_blank">OpenSea collection</a>
+        <a class="btn btn-ghost" href="./about.html">The Circle &amp; lore</a>
       </p>
       <p class="socials">
-        <a href="https://x.com/TigerwillcaX" rel="noopener noreferrer">@TigerwillcaX</a>
-        <a href="https://x.com/tigerwillca2" rel="noopener noreferrer">@tigerwillca2</a>
-        <a href="https://x.com/Metatronglight" rel="noopener noreferrer">@Metatronglight</a>
+        <a href="https://x.com/TigerwillcaX" rel="noopener noreferrer" target="_blank">@TigerwillcaX</a>
+        <a href="https://x.com/tigerwillca2" rel="noopener noreferrer" target="_blank">@tigerwillca2</a>
+        <a href="https://x.com/Metatronglight" rel="noopener noreferrer" target="_blank">@Metatronglight</a>
       </p>
     </div>
   </section>
@@ -453,28 +496,10 @@
       <span class="tag">071</span>
     </button>
   </div>
-
-  <section class="lore">
-    <p>77 singular pieces on Robinhood Chain: <strong>001 TigerWillCA</strong> and 76 Fox Wizards (<strong>002–077</strong>), CAR-pinned on Filebase IPFS and indexing on OpenSea.</p>
-    <p>70 community seats (<strong>008–077</strong>) for qualifying <span class="token">#CCFF00</span> 7+ Square holders — 226 eligible wallets, 1 per wallet, direct owner distribution, zero wallet-connect claim sites. <strong>001–007</strong> vaulted.</p>
-  </section>
 </main>
 
 <footer>
-  <details>
-    <summary>Verify &amp; Details</summary>
-    <div class="verify">
-      <p>Contract<br><code>0x5db625c49b2a9DD40464069fc16B9a2f3B11bF3d</code></p>
-      <p>
-        <a href="https://robinhoodchain.blockscout.com/address/0x5db625c49b2a9DD40464069fc16B9a2f3B11bF3d" rel="noopener noreferrer">Blockscout</a>
-        ·
-        <a href="https://robinhoodchain.blockscout.com/tx/0x0fa82603c5f1f51b69accddb418d538d9a4598bde55457bacfe14c9c88042490" rel="noopener noreferrer">Mint transaction 0x0fa8…2490</a>
-        ·
-        <a href="https://repo.sourcify.dev/4663/0x5db625c49b2a9DD40464069fc16B9a2f3B11bF3d" rel="noopener noreferrer">Sourcify</a>
-      </p>
-      <p>7.5% ERC-2981 creator earnings</p>
-    </div>
-  </details>
+  <p>Soft7 77 web pages and site code are licensed under the <a href="./LICENSE">MIT License</a>. Copyright (c) 2026 TigerWillCA. See also <a href="./about.html#license">About — License</a>. Soft7 77 artworks and brand remain independently owned by the creator.</p>
   <p class="note">Built on Robinhood Chain, not a Robinhood product.</p>
 </footer>
 
