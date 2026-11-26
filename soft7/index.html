@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#070b10">
 <meta name="color-scheme" content="dark">
 <title>Soft7 77</title>
-<meta name="description" content="Soft7 77 is an independent art collection by TigerWillCA (Shaffer Network): 77 painted fox and tiger wizards on Robinhood Chain (Chain ID 4663). Token #001 TigerWillCA and 76 Fox Wizards, crafted with Soft Magic, CAR-pinned on IPFS. 77 / 77 minted.">
+<meta name="description" content="Soft7 77 is an independent art collection by TigerWillCA (Shaffer Network): 77 painted fox and tiger wizards on Robinhood Chain (Chain ID 4663). Token #001 TigerWillCA and 76 Fox and Tiger Wizards, crafted with Soft Magic, CAR-pinned on IPFS. 77 / 77 minted.">
 <link rel="canonical" href="https://tigerwillca.github.io/soft7/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Soft7 77">
@@ -48,7 +48,7 @@
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
-  html { background: var(--bg); }
+  html { background: var(--bg); scroll-behavior: smooth; }
   body {
     font-family: var(--sans);
     background:
@@ -406,11 +406,118 @@
     .cta { margin-top: 1.1rem; }
   }
   @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
     .ring { animation: none; }
     .card img, .btn { transition: none; }
     .card:hover img, .card:focus-visible img { transform: none; }
     .btn:hover { transform: none; }
   }
+
+  .checker {
+    width: min(720px, calc(100% - var(--safe-x) - var(--safe-r)));
+    margin: 3.2rem auto 0;
+    padding: 1.45rem 1.3rem 1.35rem;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    background: rgba(244, 239, 230, 0.03);
+    text-align: left;
+  }
+  .checker-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin: 0 0 0.65rem;
+    color: var(--quiet);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .checker-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 1.5px;
+    background: #ccff00;
+    box-shadow: 0 0 7px rgba(204, 255, 0, 0.28);
+    flex: 0 0 7px;
+  }
+  .checker h2 {
+    margin: 0;
+    font-family: var(--serif);
+    font-size: clamp(1.55rem, 3.2vw, 2.05rem);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--ivory);
+  }
+  .checker p {
+    margin: 0.85rem 0 0;
+    color: var(--muted);
+    font-size: 1.02rem;
+    line-height: 1.65;
+  }
+  .checker-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    margin-top: 1rem;
+  }
+  .checker label {
+    display: block;
+    margin-top: 1.05rem;
+    color: var(--ivory);
+    font-size: 0.86rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  .checker input[type="text"] {
+    flex: 1 1 240px;
+    min-width: 0;
+    appearance: none;
+    border: 1px solid rgba(244, 239, 230, 0.16);
+    border-radius: 999px;
+    background: rgba(5, 7, 10, 0.72);
+    color: var(--ivory);
+    padding: 0.85rem 1.1rem;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.92rem;
+    letter-spacing: 0.01em;
+  }
+  .checker input[type="text"]::placeholder { color: var(--quiet); }
+  .checker input[type="text"]:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+    border-color: rgba(243, 201, 107, 0.55);
+  }
+  .checker .btn {
+    flex: 0 0 auto;
+    box-shadow: none;
+  }
+  .checker-help {
+    margin: 0.65rem 0 0 !important;
+    color: var(--quiet) !important;
+    font-size: 0.86rem !important;
+  }
+  .checker-result {
+    margin-top: 1.05rem;
+    padding: 0.95rem 1.05rem;
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    background: rgba(5, 7, 10, 0.55);
+    color: var(--muted);
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  .checker-result[hidden] { display: none; }
+  .checker-result strong { color: var(--ivory); font-weight: 600; }
+  .checker-result .pending {
+    display: block;
+    margin-top: 0.55rem;
+    color: var(--quiet);
+    font-size: 0.92rem;
+  }
+  .checker-result.is-yes { border-color: rgba(243, 201, 107, 0.38); }
+  .checker-result.is-no { border-color: rgba(244, 239, 230, 0.14); }
+  .checker-result.is-error { border-color: rgba(232, 160, 140, 0.45); color: #edd4cc; }
 </style>
 </head>
 <body>
@@ -419,6 +526,7 @@
   <a class="mark" href="./" aria-current="page">Soft7 77</a>
   <nav class="site-nav" aria-label="Soft7 77">
     <a href="./about.html">About</a>
+    <a href="#eligibility">Eligibility</a>
     <a href="https://opensea.io/collection/soft7-77" rel="noopener noreferrer" target="_blank">OpenSea</a>
   </nav>
 </header>
@@ -448,15 +556,16 @@
         <span class="badge">77 / 77 Minted</span>
         <p class="chain">
           Robinhood Chain (Chain ID 4663) ·
-          <a href="https://robinhoodchain.blockscout.com/address/0x5db625c49b2a9DD40464069fc16B9a2f3B11bF3d" rel="noopener noreferrer" target="_blank">Contract</a>
+          <a href="https://robinhoodchain.blockscout.com/address/0x5db625c49b2a9DD40464069fc16B9a2f3B11bF3d" rel="noopener noreferrer" target="_blank">Blockscout verified</a>
         </p>
       </div>
       <h1>Soft7 77</h1>
-      <p class="lede">We are Soft7 77, an independent art collection by TigerWillCA (Shaffer Network). Seventy-seven painted fox and tiger wizards live on Robinhood Chain (Chain ID 4663): Token #001 TigerWillCA and 76 Fox Wizards, crafted with Soft Magic and CAR-pinned on IPFS.</p>
+      <p class="lede">We are Soft7 77, an independent art collection by TigerWillCA (Shaffer Network). Seventy-seven painted fox and tiger wizards live on Robinhood Chain (Chain ID 4663): Token #001 TigerWillCA and 76 Fox and Tiger Wizards, crafted with Soft Magic and CAR-pinned on IPFS.</p>
       <p class="facts">Fixed max supply 77, owner-distributed, with zero public mint site and zero wallet-connect traps. 7.5% ERC-2981 creator royalty.</p>
       <p class="cta">
         <a class="btn" href="https://opensea.io/collection/soft7-77" rel="noopener noreferrer" target="_blank">OpenSea collection</a>
         <a class="btn btn-ghost" href="./about.html">The Circle &amp; lore</a>
+        <a class="btn btn-ghost" href="#eligibility">Eligibility check</a>
       </p>
       <p class="socials">
         <a href="https://x.com/TigerwillcaX" rel="noopener noreferrer" target="_blank">@TigerwillcaX</a>
@@ -496,6 +605,22 @@
       <span class="tag">071</span>
     </button>
   </div>
+
+  <section class="checker" id="eligibility" aria-labelledby="eligibility-title">
+    <p class="checker-kicker"><span class="checker-dot" aria-hidden="true"></span> Read-only check</p>
+    <h2 id="eligibility-title">Hood Street Squares Eligibility</h2>
+    <p>Paste any wallet address to see how many Hood Street #CCFF00 Squares it holds. This check is read-only. It never connects a wallet, never asks for a signature, and never offers a claim link. Cubes are excluded.</p>
+    <p>Holding <strong>7 or more Squares</strong> makes a wallet eligible for one entry in the 70-seat deterministic draw for tokens #008–#077. Eligibility is not a guaranteed mint. The 7-day snapshot window dates are not yet locked and will be announced.</p>
+    <form id="eligibility-form" action="#eligibility" method="get">
+      <label for="eligibility-address">Wallet address</label>
+      <div class="checker-row">
+        <input id="eligibility-address" name="address" type="text" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="42" placeholder="0x…" aria-describedby="eligibility-help">
+        <button type="submit" class="btn" id="eligibility-submit">Check</button>
+      </div>
+      <p id="eligibility-help" class="checker-help">Enter a 42-character 0x address. No wallet connection is used.</p>
+    </form>
+    <div id="eligibility-result" class="checker-result" role="status" aria-live="polite" hidden></div>
+  </section>
 </main>
 
 <footer>
@@ -554,6 +679,86 @@
     if (e.key === "Escape") close();
     if (e.key === "ArrowLeft") openAt(index - 1);
     if (e.key === "ArrowRight") openAt(index + 1);
+  });
+})();
+</script>
+
+<script>
+(function () {
+  var RPC = "https://rpc.mainnet.chain.robinhood.com";
+  var SQUARES = "0x505a22ffed8d37ebe580ffd98d2cdb0021189146";
+  var ADDR = /^0x[0-9a-fA-F]{40}$/;
+  var form = document.getElementById("eligibility-form");
+  var input = document.getElementById("eligibility-address");
+  var result = document.getElementById("eligibility-result");
+  var submit = document.getElementById("eligibility-submit");
+  if (!form || !input || !result || !submit) return;
+
+  var PENDING = "The 7-day snapshot window dates are not yet locked and will be announced.";
+
+  function show(html, cls) {
+    result.hidden = false;
+    result.className = "checker-result" + (cls ? " " + cls : "");
+    result.innerHTML = html;
+  }
+
+  function padAddress(addr) {
+    return addr.slice(2).toLowerCase().padStart(64, "0");
+  }
+
+  function formatCount(n) {
+    try { return n.toLocaleString("en-US"); } catch (e) { return String(n); }
+  }
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var addr = (input.value || "").trim();
+    if (!ADDR.test(addr)) {
+      show("Enter a valid wallet address: 0x followed by 40 hexadecimal characters.", "is-error");
+      input.focus();
+      return;
+    }
+    submit.disabled = true;
+    show("Checking the live contract on Robinhood Chain (Chain ID 4663)…");
+    var body = JSON.stringify({
+      jsonrpc: "2.0",
+      id: 1,
+      method: "eth_call",
+      params: [
+        { to: SQUARES, data: "0x70a08231" + padAddress(addr) },
+        "latest"
+      ]
+    });
+    fetch(RPC, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: body
+    }).then(function (res) {
+      if (!res.ok) throw new Error("The chain could not be reached (" + res.status + ").");
+      return res.json();
+    }).then(function (json) {
+      if (json && json.error) {
+        var msg = (json.error && json.error.message) ? json.error.message : "The contract call did not succeed.";
+        throw new Error(msg);
+      }
+      if (!json || typeof json.result !== "string") {
+        throw new Error("The chain returned an unexpected response.");
+      }
+      var count = BigInt(json.result);
+      var n = Number(count);
+      var held = "This wallet holds <strong>" + formatCount(n) + "</strong> Hood Street #CCFF00 Square" + (n === 1 ? "" : "s") + ".";
+      var note = "<span class=\"pending\">" + PENDING + "</span>";
+      if (count >= 7n) {
+        show(held + " This meets the 7+ Squares eligibility rule for one entry in the 70-seat deterministic draw (tokens #008–#077). Cubes are excluded. Eligibility is not a guaranteed mint." + note, "is-yes");
+      } else {
+        show(held + " This is below the 7+ Squares eligibility threshold. Cubes are excluded." + note, "is-no");
+      }
+    }).catch(function (err) {
+      var raw = (err && err.message) ? err.message : "The check could not be completed.";
+      show("The read-only check could not be completed. " + raw.replace(/</g, "&lt;"), "is-error");
+    }).then(function () {
+      submit.disabled = false;
+    });
   });
 })();
 </script>

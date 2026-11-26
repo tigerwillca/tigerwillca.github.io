@@ -246,6 +246,43 @@
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
   }
+
+  .tier-list {
+    margin: 0.2rem 0 1.1rem;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0.7rem;
+  }
+  .tier-list li {
+    padding: 0.85rem 1.05rem;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: rgba(244, 239, 230, 0.03);
+    color: var(--muted);
+    font-size: 1.02rem;
+    line-height: 1.55;
+  }
+  .tier-list strong {
+    color: var(--ivory);
+    font-weight: 600;
+  }
+  .loop-line {
+    margin: 0 0 1rem;
+    font-family: var(--serif);
+    font-size: clamp(1.16rem, 2.3vw, 1.4rem);
+    line-height: 1.45;
+    color: #eee6d8;
+  }
+  .phase-note {
+    display: inline-block;
+    margin: 0 0 0.85rem;
+    color: var(--gold);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
 </style>
 </head>
 <body>
@@ -255,33 +292,64 @@
   <nav class="site-nav" aria-label="Soft7 77">
     <a href="./">Front Page</a>
     <a href="./about.html" aria-current="page">About</a>
+    <a href="./#eligibility">Eligibility</a>
     <a href="https://opensea.io/collection/soft7-77" rel="noopener noreferrer" target="_blank">OpenSea</a>
   </nav>
 </header>
 <main id="content">
   <p class="page-kicker">Back Page</p>
   <h1>The Circle</h1>
-  <p class="intro">We are Soft7 77. This page is where we explain ourselves: the lore of the circle, the on-chain proof, the official socials, and the license for these pages.</p>
+  <p class="intro">We are Soft7 77. This page is where we explain ourselves: the lore and tiers of the circle, what is live on-chain today, the planned Hold → Rise → Forge companion layer, the official socials, and the license for these pages.</p>
   <ul class="toc">
     <li><a href="#lore">The Circle &amp; Lore</a></li>
+    <li><a href="#tiers">Tiers</a></li>
+    <li><a href="#planned">Hold → Rise → Forge</a></li>
     <li><a href="#on-chain">On-Chain &amp; Provenance</a></li>
+    <li><a href="./#eligibility">Eligibility check</a></li>
     <li><a href="#socials">Official Socials</a></li>
     <li><a href="#license">Open-Source MIT License</a></li>
   </ul>
 
   <section id="lore">
     <h2>The Circle &amp; Lore</h2>
-    <p>We are seventy-seven painted fox and tiger wizards, gathered around glowing circle potions, each work carrying an embossed 777 seal. Token #001 is TigerWillCA. The other seventy-six are Fox Wizards.</p>
+    <p>We are seventy-seven painted fox and tiger wizards, gathered around glowing circle potions, each work carrying an embossed 777 seal. Token #001 is TigerWillCA. The other seventy-six are Fox and Tiger Wizards.</p>
     <p>We were crafted with Soft Magic — small, honest work, made slowly, with real heart, so the proof can speak louder than the noise. Soft7 77 is an independent art collection by TigerWillCA (Shaffer Network).</p>
+  </section>
+
+  <section id="tiers">
+    <h2>Tiers</h2>
+    <p>Every wizard enters the circle with a starting seat and level already set. These tiers describe creative standing in the circle — not a financial rank.</p>
+    <ul class="tier-list">
+      <li><strong>Crown Circle</strong> — 1 seat. Token #001 TigerWillCA, the 1/1 keystone, Level 4.</li>
+      <li><strong>Purple Mask Vanguard</strong> — 1 seat. Token #002, a 1/1 at Level 2.</li>
+      <li><strong>Founders</strong> — 5 seats. Tokens #003–#007, standing apart from the potion roster.</li>
+      <li><strong>Indigo Circle</strong> — 23 wizards at Level 3, across tokens #008–#077.</li>
+      <li><strong>Purple Mask Circle</strong> — 23 wizards at Level 2, across tokens #008–#077.</li>
+      <li><strong>Yellow Circle</strong> — 24 wizards at Level 1, across tokens #008–#077.</li>
+    </ul>
+    <p>Together, 72 potion-bearing wizards and 5 Founders complete the circle of seventy-seven.</p>
+  </section>
+
+  <section id="planned">
+    <h2>Hold → Rise → Forge</h2>
+    <p class="phase-note">Planned next-phase companion layer — not yet deployed</p>
+    <p class="loop-line">Seventy-seven painted wizards. Zero burns. Zero lockups. Hold to charge, rise in rank, forge what comes next.</p>
+    <p>What is live on Robinhood Chain today is the Soft7 77 collection itself. A later companion layer may add a creative and community journey — Hold, then Rise, then Forge — without ever taking a wizard out of its holder’s wallet.</p>
+    <ul class="tier-list">
+      <li><strong>Hold</strong> — Keep your wizard. Time held may one day charge creative standing and story placement. There are no lockups and no vault deposits.</li>
+      <li><strong>Rise</strong> — Starting levels stay on the origin card, as a birth record. Any later standing would live in a companion layer, never overwriting the original art.</li>
+      <li><strong>Forge</strong> — Origin wizards are makers, never fuel. A future companion forge may let qualifying wizards create separate relics and story artifacts. The seventy-seven origin works are never burned.</li>
+    </ul>
+    <p>This companion layer is not live on-chain today. It is a creative and community path only — it carries no financial yield, no APY, and no monetary return. You can also use the read-only <a href="./#eligibility">Hood Street Squares eligibility check</a> on the front page; it never connects a wallet, and the 7-day snapshot window dates are not yet locked.</p>
   </section>
 
   <section id="on-chain">
     <h2>On-Chain &amp; Provenance</h2>
     <ul class="facts">
       <li><strong>Mint status</strong> 77 / 77 minted. Fixed max supply 77.</li>
-      <li><strong>Network</strong> Robinhood Chain, Chain ID 4663.</li>
-      <li><strong>Verified contract</strong> <code>0x5db625c49b2a9DD40464069fc16B9a2f3B11bF3d</code> · <a href="https://robinhoodchain.blockscout.com/address/0x5db625c49b2a9DD40464069fc16B9a2f3B11bF3d" rel="noopener noreferrer" target="_blank">Blockscout</a> · <a href="https://repo.sourcify.dev/4663/0x5db625c49b2a9DD40464069fc16B9a2f3B11bF3d" rel="noopener noreferrer" target="_blank">Sourcify</a></li>
-      <li><strong>Creator royalty</strong> 7.5% ERC-2981 creator royalty.</li>
+      <li><strong>Network</strong> Robinhood Chain, Chain ID 4663. Built on Robinhood Chain, not a Robinhood product.</li>
+      <li><strong>Verified contract</strong> <code>0x5db625c49b2a9DD40464069fc16B9a2f3B11bF3d</code> · Blockscout verified · <a href="https://robinhoodchain.blockscout.com/address/0x5db625c49b2a9DD40464069fc16B9a2f3B11bF3d" rel="noopener noreferrer" target="_blank">Blockscout</a> · <a href="https://repo.sourcify.dev/4663/0x5db625c49b2a9DD40464069fc16B9a2f3B11bF3d" rel="noopener noreferrer" target="_blank">Sourcify</a></li>
+      <li><strong>Standards</strong> ERC-721, ERC-2981 (7.5% creator royalty), and ERC-4906.</li>
       <li><strong>Art &amp; metadata</strong> 1024×1536 PNG artworks and metadata, CAR-pinned on IPFS.</li>
       <li><strong>Distribution</strong> Owner-distributed, with zero public mint site and zero wallet-connect traps.</li>
       <li><strong>Collection</strong> <a href="https://opensea.io/collection/soft7-77" rel="noopener noreferrer" target="_blank">OpenSea — Soft7 77</a></li>
