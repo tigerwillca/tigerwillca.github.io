@@ -4,34 +4,37 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="index,follow">
-<meta name="theme-color" content="#0a0710">
+<meta name="theme-color" content="#07090a">
 <meta name="color-scheme" content="dark">
 <title>Soft7 77</title>
-<meta name="description" content="Seventy-seven painted fox wizards—each carrying a glowing potion and a role in the circle. Hand-finished art, permanently stored, zero gimmicks.">
+<meta name="description" content="77 singular pieces on Robinhood Chain: 001 TigerWillCA and 76 Fox Wizards. CAR-pinned on IPFS. 77 / 77 minted.">
 <link rel="canonical" href="https://tigerwillca.github.io/soft7/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Soft7 77">
-<meta property="og:description" content="Seventy-seven painted fox wizards—each carrying a glowing potion and a role in the circle. Hand-finished art, permanently stored, zero gimmicks.">
+<meta property="og:description" content="77 singular pieces on Robinhood Chain: 001 TigerWillCA and 76 Fox Wizards. CAR-pinned on IPFS. 77 / 77 minted.">
 <meta property="og:image" content="https://tigerwillca.github.io/soft7/art/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:url" content="https://tigerwillca.github.io/soft7/">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Soft7 77">
-<meta name="twitter:description" content="Seventy-seven painted fox wizards—each carrying a glowing potion and a role in the circle. Hand-finished art, permanently stored, zero gimmicks.">
+<meta name="twitter:description" content="77 singular pieces on Robinhood Chain: 001 TigerWillCA and 76 Fox Wizards. CAR-pinned on IPFS. 77 / 77 minted.">
 <meta name="twitter:image" content="https://tigerwillca.github.io/soft7/art/og.jpg">
 <link rel="icon" type="image/png" sizes="32x32" href="art/favicon-32.png">
 <link rel="apple-touch-icon" href="art/apple-touch-icon.png" sizes="180x180">
 <link rel="preload" as="image" href="art/hero-001.webp" type="image/webp">
 <style>
   :root {
-    --bg: #0a0710;
+    --bg: #07090a;
     --ivory: #f4efe6;
     --muted: #b7ad9f;
     --quiet: #8a8174;
     --gold: #e6c27a;
+    --emerald: #3cc98a;
+    --lime: #ccff00;
     --line: rgba(244, 239, 230, 0.10);
-    --glow: rgba(128, 78, 196, 0.34);
+    --glow-violet: rgba(128, 78, 196, 0.28);
+    --glow-emerald: rgba(60, 201, 138, 0.14);
     --safe-x: max(20px, env(safe-area-inset-left));
     --safe-r: max(20px, env(safe-area-inset-right));
   }
@@ -41,7 +44,8 @@
   body {
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
     background:
-      radial-gradient(1200px 700px at 50% -10%, rgba(88, 48, 140, 0.22), transparent 60%),
+      radial-gradient(900px 520px at 50% -8%, var(--glow-emerald), transparent 58%),
+      radial-gradient(1200px 700px at 50% -10%, var(--glow-violet), transparent 62%),
       var(--bg);
     color: var(--ivory);
     min-height: 100svh;
@@ -62,14 +66,14 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
-    padding: calc(28px + env(safe-area-inset-top)) var(--safe-r) 20px var(--safe-x);
+    padding: calc(22px + env(safe-area-inset-top)) var(--safe-r) 16px var(--safe-x);
     isolation: isolate;
   }
   .hero-glow {
     position: absolute;
     inset: 4% 8% auto;
     height: min(72vw, 640px);
-    background: radial-gradient(circle at 50% 45%, var(--glow) 0%, rgba(230, 194, 122, 0.08) 36%, transparent 68%);
+    background: radial-gradient(circle at 50% 45%, var(--glow-violet) 0%, rgba(230, 194, 122, 0.10) 34%, var(--glow-emerald) 52%, transparent 70%);
     pointer-events: none;
     z-index: -1;
     filter: blur(8px);
@@ -81,18 +85,62 @@
   .hero-art img {
     display: block;
     width: auto;
-    height: min(72svh, 820px);
-    max-width: min(92vw, 560px);
+    height: min(58svh, 700px);
+    max-width: min(92vw, 500px);
     border-radius: 22px;
     box-shadow:
       0 40px 90px rgba(0, 0, 0, 0.55),
-      0 0 80px rgba(110, 60, 190, 0.18),
-      0 0 0 1px rgba(230, 194, 122, 0.10);
+      0 0 80px rgba(110, 60, 190, 0.16),
+      0 0 40px rgba(60, 201, 138, 0.08),
+      0 0 0 1px rgba(230, 194, 122, 0.12);
   }
   .hero-copy {
-    max-width: 36rem;
-    margin: 2.1rem 0 0;
+    max-width: 38rem;
+    margin: 1.85rem 0 0;
   }
+  .status {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.55rem;
+    margin: 0 0 1.15rem;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 34px;
+    padding: 0.28rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid rgba(230, 194, 122, 0.42);
+    background: linear-gradient(180deg, rgba(60, 201, 138, 0.10), rgba(230, 194, 122, 0.06));
+    color: var(--gold);
+    font-size: 0.78rem;
+    font-weight: 650;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+  }
+  .badge::before {
+    content: "";
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--emerald);
+    box-shadow: 0 0 10px var(--emerald);
+  }
+  .chain {
+    margin: 0;
+    font-size: 0.86rem;
+    color: var(--quiet);
+    line-height: 1.5;
+  }
+  .chain a {
+    color: var(--gold);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(230, 194, 122, 0.28);
+  }
+  .chain a:hover { color: var(--ivory); border-bottom-color: rgba(244, 239, 230, 0.45); }
+  .chain a:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 2px; }
   h1 {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", system-ui, sans-serif;
@@ -109,7 +157,13 @@
     font-weight: 400;
     max-width: 32rem;
   }
-  .cta { margin: 1.55rem 0 0; }
+  .cta {
+    margin: 1.55rem 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    justify-content: center;
+  }
   .btn {
     display: inline-flex;
     align-items: center;
@@ -123,27 +177,36 @@
     font-weight: 600;
     font-size: 1rem;
     letter-spacing: -0.01em;
-    transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, color 0.2s ease;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
+    border: 1px solid transparent;
   }
   .btn:hover { background: #fff; transform: translateY(-1px); }
   .btn:active { transform: translateY(0); }
   .btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
-  .subtle {
-    margin: 1.05rem 0 0;
+  .btn-ghost {
+    background: transparent;
+    color: var(--ivory);
+    border-color: rgba(244, 239, 230, 0.22);
+    box-shadow: none;
+  }
+  .btn-ghost:hover { background: rgba(244, 239, 230, 0.08); color: #fff; }
+  .socials {
+    margin: 1.2rem 0 0;
     display: flex;
-    gap: 1.35rem;
+    flex-wrap: wrap;
+    gap: 0.85rem 1.35rem;
     justify-content: center;
     font-size: 0.95rem;
     color: var(--quiet);
   }
-  .subtle a {
+  .socials a {
     color: var(--quiet);
     text-decoration: none;
     border-bottom: 1px solid transparent;
   }
-  .subtle a:hover { color: var(--ivory); border-bottom-color: rgba(244, 239, 230, 0.35); }
-  .subtle a:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 2px; }
+  .socials a:hover { color: var(--ivory); border-bottom-color: rgba(244, 239, 230, 0.35); }
+  .socials a:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 2px; }
   .gallery {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -154,7 +217,7 @@
     list-style: none;
   }
   @media (min-width: 840px) {
-    .gallery { grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .gallery { grid-template-columns: repeat(7, 1fr); gap: 12px; }
   }
   .card {
     appearance: none;
@@ -177,6 +240,7 @@
     height: auto;
     aspect-ratio: 2 / 3;
     object-fit: cover;
+    object-position: center top;
     transform: scale(1);
     transition: transform 0.45s ease;
   }
@@ -192,9 +256,23 @@
     pointer-events: none;
     font-variant-numeric: tabular-nums;
   }
+  .lore {
+    width: min(720px, calc(100% - var(--safe-x) - var(--safe-r)));
+    margin: 3.2rem auto 0;
+    color: var(--muted);
+    font-size: 1.02rem;
+    line-height: 1.65;
+  }
+  .lore p { margin: 0 0 1rem; }
+  .lore p:last-child { margin-bottom: 0; }
+  .token {
+    color: var(--lime);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
   footer {
     width: min(720px, calc(100% - var(--safe-x) - var(--safe-r)));
-    margin: 4.2rem auto 0;
+    margin: 3.4rem auto 0;
     padding: 0 0 calc(2.4rem + env(safe-area-inset-bottom));
     color: var(--quiet);
     font-size: 0.88rem;
@@ -294,6 +372,17 @@
     font-size: 0.9rem;
     pointer-events: none;
   }
+  @media (min-width: 900px) and (min-height: 700px) {
+    .hero-art img {
+      height: min(46svh, 470px);
+      max-width: 380px;
+    }
+    .hero-copy { margin-top: 1.25rem; }
+    .status { margin-bottom: 0.85rem; gap: 0.4rem; }
+    h1 { font-size: clamp(2.4rem, 5.5vw, 4.25rem); }
+    .lede { margin-top: 0.85rem; }
+    .cta { margin-top: 1.15rem; }
+  }
   @media (prefers-reduced-motion: reduce) {
     .card img, .btn, footer summary::after { transition: none; }
     .card:hover img, .card:focus-visible img { transform: none; }
@@ -307,24 +396,34 @@
   <section class="hero">
     <div class="hero-glow" aria-hidden="true"></div>
     <figure class="hero-art">
-      <img src="art/hero-001.webp" width="600" height="900" alt="Painted fox wizard in a tattered purple cloak, crouched, with glowing violet eyes, a violet amulet, and a green-gold potion vial at the belt.">
+      <img src="art/hero-001.webp" width="600" height="900" alt="001 TigerWillCA: painted fox wizard in a tattered purple cloak, crouched, with glowing violet eyes, a violet amulet, and a green-gold potion vial at the belt.">
     </figure>
     <div class="hero-copy">
+      <div class="status">
+        <span class="badge">77 / 77 Minted</span>
+        <p class="chain">
+          Robinhood Chain (4663) ·
+          <a href="https://robinhoodchain.blockscout.com/address/0x5db625c49b2a9DD40464069fc16B9a2f3B11bF3d" rel="noopener noreferrer">Contract</a>
+          ·
+          <a href="https://robinhoodchain.blockscout.com/tx/0x0fa82603c5f1f51b69accddb418d538d9a4598bde55457bacfe14c9c88042490" rel="noopener noreferrer">Mint transaction</a>
+        </p>
+      </div>
       <h1>Soft7 77</h1>
-      <p class="lede">Seventy-seven painted fox wizards—each carrying a glowing potion and a role in the circle. Hand-finished art, permanently stored, zero gimmicks.</p>
-      <p class="cta"><a class="btn" href="https://opensea.io/collection/soft7-77" rel="noopener noreferrer">Explore on OpenSea →</a></p>
-      <p class="subtle">
-        <a href="https://tigerwillca.github.io/stickers/">Free Stickers</a>
-        <a href="https://x.com/TigerwillcaX" rel="noopener noreferrer">X</a>
+      <p class="lede">001 TigerWillCA and 76 Fox Wizards. Seventy-seven singular pieces, CAR-pinned on IPFS.</p>
+      <p class="cta">
+        <a class="btn" href="https://opensea.io/collection/soft7-77" rel="noopener noreferrer">OpenSea collection</a>
+        <a class="btn btn-ghost" href="https://tigerwillca.github.io/stickers/">Stickers reveal</a>
+        <a class="btn btn-ghost" href="https://robinhoodchain.blockscout.com/address/0x5db625c49b2a9DD40464069fc16B9a2f3B11bF3d" rel="noopener noreferrer">Blockscout contract</a>
+      </p>
+      <p class="socials">
+        <a href="https://x.com/TigerwillcaX" rel="noopener noreferrer">@TigerwillcaX</a>
+        <a href="https://x.com/tigerwillca2" rel="noopener noreferrer">@tigerwillca2</a>
+        <a href="https://x.com/Metatronglight" rel="noopener noreferrer">@Metatronglight</a>
       </p>
     </div>
   </section>
 
-  <div class="gallery" role="list" aria-label="Painted fox wizards">
-    <button type="button" class="card" role="listitem" data-full="art/hero-001.webp" data-caption="001 · TigerWillCA" aria-label="Enlarge 001, TigerWillCA">
-      <img src="art/001.webp" width="400" height="600" alt="001, TigerWillCA: crouched fox wizard in a tattered purple cloak with a glowing potion.">
-      <span class="tag">001</span>
-    </button>
+  <div class="gallery" role="list" aria-label="Fox Wizard preview">
     <button type="button" class="card" role="listitem" data-full="art/full-009.webp" data-caption="009 · Fox Wizard #009" aria-label="Enlarge 009, Fox Wizard 009">
       <img src="art/009.webp" width="400" height="600" alt="009: tiger wizard in a dark violet robe against a purple field, gold medallion at the chest.">
       <span class="tag">009</span>
@@ -354,6 +453,11 @@
       <span class="tag">071</span>
     </button>
   </div>
+
+  <section class="lore">
+    <p>77 singular pieces on Robinhood Chain: <strong>001 TigerWillCA</strong> and 76 Fox Wizards (<strong>002–077</strong>), CAR-pinned on Filebase IPFS and indexing on OpenSea.</p>
+    <p>70 community seats (<strong>008–077</strong>) for qualifying <span class="token">#CCFF00</span> 7+ Square holders — 226 eligible wallets, 1 per wallet, direct owner distribution, zero wallet-connect claim sites. <strong>001–007</strong> vaulted.</p>
+  </section>
 </main>
 
 <footer>
@@ -363,6 +467,8 @@
       <p>Contract<br><code>0x5db625c49b2a9DD40464069fc16B9a2f3B11bF3d</code></p>
       <p>
         <a href="https://robinhoodchain.blockscout.com/address/0x5db625c49b2a9DD40464069fc16B9a2f3B11bF3d" rel="noopener noreferrer">Blockscout</a>
+        ·
+        <a href="https://robinhoodchain.blockscout.com/tx/0x0fa82603c5f1f51b69accddb418d538d9a4598bde55457bacfe14c9c88042490" rel="noopener noreferrer">Mint transaction 0x0fa8…2490</a>
         ·
         <a href="https://repo.sourcify.dev/4663/0x5db625c49b2a9DD40464069fc16B9a2f3B11bF3d" rel="noopener noreferrer">Sourcify</a>
       </p>
