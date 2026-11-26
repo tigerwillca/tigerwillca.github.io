@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Stickers</title>
+  <meta name="description" content="Billy Stickers and SoftMagic Stickers — tap and hold to save, then add in iMessage.">
+  <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme: light)">
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #000000;
+      --bg-elevated: #1c1c1e;
+      --card: #1c1c1e;
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text: #f5f5f7;
+      --secondary: #86868b;
+      --seg-track: rgba(118, 118, 128, 0.24);
+      --seg-thumb: #2c2c2e;
+      --seg-text: #f5f5f7;
+      --seg-muted: rgba(245, 245, 247, 0.72);
+      --cta: #f5f5f7;
+      --cta-text: #000000;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+      --gold: #c9b27a;
+      --ink: #a8b0c0;
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #f5f5f7;
+        --bg-elevated: #ffffff;
+        --card: #ffffff;
+        --card-border: rgba(0, 0, 0, 0.06);
+        --text: #1d1d1f;
+        --secondary: #6e6e73;
+        --seg-track: rgba(118, 118, 128, 0.12);
+        --seg-thumb: #ffffff;
+        --seg-text: #1d1d1f;
+        --seg-muted: rgba(29, 29, 31, 0.64);
+        --cta: #1d1d1f;
+        --cta-text: #ffffff;
+        --shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.04);
+        --gold: #8a7340;
+        --ink: #5c6578;
+      }
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--bg); }
+    body {
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", sans-serif;
+      color: var(--text);
+      padding: 28px 16px calc(48px + env(safe-area-inset-bottom));
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    main {
+      max-width: 560px;
+      margin: 0 auto;
+    }
+    header { text-align: center; margin-bottom: 22px; }
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.035em;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+    .seg {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      max-width: 420px;
+      margin: 0 auto;
+      padding: 3px;
+      background: var(--seg-track);
+      border-radius: 11px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .seg button {
+      appearance: none;
+      position: relative;
+      z-index: 1;
+      border: 0;
+      background: transparent;
+      color: var(--seg-muted);
+      font: inherit;
+      font-size: 0.8125rem;
+      font-weight: 590;
+      letter-spacing: -0.01em;
+      padding: 7px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: color 160ms ease;
+    }
+    .seg button[aria-selected="true"] {
+      color: var(--seg-text);
+    }
+    .seg .thumb {
+      position: absolute;
+      top: 3px;
+      bottom: 3px;
+      left: 3px;
+      width: calc(50% - 3px);
+      background: var(--seg-thumb);
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18), 0 0 0 0.5px rgba(0, 0, 0, 0.04);
+      transition: transform 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
+      pointer-events: none;
+    }
+    .seg[data-active="softmagic"] .thumb {
+      transform: translateX(100%);
+    }
+    .tip {
+      margin: 14px auto 0;
+      max-width: 400px;
+      color: var(--secondary);
+      font-size: 0.8125rem;
+      line-height: 1.4;
+      letter-spacing: -0.01em;
+    }
+    .panel[hidden] { display: none; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+    @media (max-width: 360px) {
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (min-width: 520px) {
+      .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    }
+    .card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 10px 8px 10px;
+      box-shadow: var(--shadow);
+    }
+    .card a.art {
+      display: block;
+      width: 100%;
+      text-decoration: none;
+      -webkit-touch-callout: default;
+    }
+    .card img {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 1;
+      object-fit: contain;
+      border-radius: 14px;
+      -webkit-touch-callout: default;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    .set {
+      margin-top: 7px;
+      font-size: 0.58rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--secondary);
+    }
+    .card.gold .set { color: var(--gold); }
+    .card.ink .set { color: var(--ink); }
+    .name {
+      margin-top: 2px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      text-align: center;
+      color: var(--text);
+      line-height: 1.25;
+    }
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 4px;
+      margin-top: 7px;
+    }
+    .pill {
+      display: inline-block;
+      padding: 3px 8px;
+      font-size: 0.62rem;
+      font-weight: 650;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--secondary);
+      background: var(--seg-track);
+      border-radius: 999px;
+    }
+    .pill:active { opacity: 0.7; }
+    .zip {
+      display: block;
+      width: 100%;
+      margin: 22px 0 0;
+      padding: 14px 18px;
+      text-align: center;
+      text-decoration: none;
+      font-weight: 650;
+      font-size: 0.9375rem;
+      letter-spacing: -0.02em;
+      color: var(--cta-text);
+      background: var(--cta);
+      border-radius: 14px;
+    }
+    .zip span {
+      display: block;
+      margin-top: 2px;
+      font-size: 0.72rem;
+      font-weight: 500;
+      opacity: 0.55;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .seg .thumb, .seg button { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Stickers</h1>
+      <div class="seg" id="seg" role="tablist" aria-label="Sticker sets" data-active="billy">
+        <div class="thumb" aria-hidden="true"></div>
+        <button type="button" role="tab" id="tab-billy" aria-controls="panel-billy" aria-selected="true">Billy Stickers</button>
+        <button type="button" role="tab" id="tab-softmagic" aria-controls="panel-softmagic" aria-selected="false">SoftMagic Stickers</button>
+      </div>
+      <p class="tip">Tap &amp; hold any sticker → Save to Photos, then add in iMessage</p>
+    </header>
+
+    <section class="panel" id="panel-billy" role="tabpanel" aria-labelledby="tab-billy">
+      <div class="grid">
+        <div class="card gold">
+          <a class="art" href="../billy-stickers/01-reactions/bro.gif">
+            <img src="../billy-stickers/01-reactions/bro.gif" alt="Bro" width="160" height="160" loading="eager">
+          </a>
+          <span class="set">Midnight Gold</span>
+          <span class="name">Bro</span>
+          <div class="links">
+            <a class="pill" href="../billy-stickers/01-reactions/bro.gif" download>GIF</a>
+          </div>
+        </div>
+        <div class="card gold">
+          <a class="art" href="../billy-stickers/01-reactions/say-less.gif">
+            <img src="../billy-stickers/01-reactions/say-less.gif" alt="Say Less" width="160" height="160" loading="eager">
+          </a>
+          <span class="set">Midnight Gold</span>
+          <span class="name">Say Less</span>
+          <div class="links">
+            <a class="pill" href="../billy-stickers/01-reactions/say-less.gif" download>GIF</a>
+          </div>
+        </div>
+        <div class="card gold">
+          <a class="art" href="../billy-stickers/01-reactions/w.gif">
+            <img src="../billy-stickers/01-reactions/w.gif" alt="W" width="160" height="160" loading="eager">
+          </a>
+          <span class="set">Midnight Gold</span>
+          <span class="name">W</span>
+          <div class="links">
+            <a class="pill" href="../billy-stickers/01-reactions/w.gif" download>GIF</a>
+          </div>
+        </div>
+        <div class="card gold">
+          <a class="art" href="../billy-stickers/01-reactions/l.gif">
+            <img src="../billy-stickers/01-reactions/l.gif" alt="L" width="160" height="160" loading="eager">
+          </a>
+          <span class="set">Midnight Gold</span>
+          <span class="name">L</span>
+          <div class="links">
+            <a class="pill" href="../billy-stickers/01-reactions/l.gif" download>GIF</a>
+          </div>
+        </div>
+        <div class="card gold">
+          <a class="art" href="../billy-stickers/01-reactions/cooked.gif">
+            <img src="../billy-stickers/01-reactions/cooked.gif" alt="Cooked" width="160" height="160" loading="lazy">
+          </a>
+          <span class="set">Midnight Gold</span>
+          <span class="name">Cooked</span>
+          <div class="links">
+            <a class="pill" href="../billy-stickers/01-reactions/cooked.gif" download>GIF</a>
+          </div>
+        </div>
+        <div class="card gold">
+          <a class="art" href="../billy-stickers/01-reactions/npc.gif">
+            <img src="../billy-stickers/01-reactions/npc.gif" alt="NPC" width="160" height="160" loading="lazy">
+          </a>
+          <span class="set">Midnight Gold</span>
+          <span class="name">NPC</span>
+          <div class="links">
+            <a class="pill" href="../billy-stickers/01-reactions/npc.gif" download>GIF</a>
+          </div>
+        </div>
+        <div class="card gold">
+          <a class="art" href="../billy-stickers/01-reactions/seven.gif">
+            <img src="../billy-stickers/01-reactions/seven.gif" alt="Seven" width="160" height="160" loading="lazy">
+          </a>
+          <span class="set">Midnight Gold</span>
+          <span class="name">Seven</span>
+          <div class="links">
+            <a class="pill" href="../billy-stickers/01-reactions/seven.gif" download>GIF</a>
+          </div>
+        </div>
+        <div class="card gold">
+          <a class="art" href="../billy-stickers/01-reactions/third-eye.gif">
+            <img src="../billy-stickers/01-reactions/third-eye.gif" alt="Third Eye" width="160" height="160" loading="lazy">
+          </a>
+          <span class="set">Midnight Gold</span>
+          <span class="name">Third Eye</span>
+          <div class="links">
+            <a class="pill" href="../billy-stickers/01-reactions/third-eye.gif" download>GIF</a>
+          </div>
+        </div>
+        <div class="card ink">
+          <a class="art" href="../billy-stickers/02-swirl-eye/01-swirl.gif">
+            <img src="../billy-stickers/02-swirl-eye/01-swirl.gif" alt="Swirl" width="160" height="160" loading="lazy">
+          </a>
+          <span class="set">Swirl Ink</span>
+          <span class="name">Swirl</span>
+          <div class="links">
+            <a class="pill" href="../billy-stickers/02-swirl-eye/01-swirl.gif" download>GIF</a>
+            <a class="pill" href="../billy-stickers/02-swirl-eye/01-swirl.png" download>PNG</a>
+          </div>
+        </div>
+        <div class="card ink">
+          <a class="art" href="../billy-stickers/02-swirl-eye/02-wink.gif">
+            <img src="../billy-stickers/02-swirl-eye/02-wink.gif" alt="Wink" width="160" height="160" loading="lazy">
+          </a>
+          <span class="set">Swirl Ink</span>
+          <span class="name">Wink</span>
+          <div class="links">
+            <a class="pill" href="../billy-stickers/02-swirl-eye/02-wink.gif" download>GIF</a>
+            <a class="pill" href="../billy-stickers/02-swirl-eye/02-wink.png" download>PNG</a>
+          </div>
+        </div>
+        <div class="card ink">
+          <a class="art" href="../billy-stickers/02-swirl-eye/03-galaxy.gif">
+            <img src="../billy-stickers/02-swirl-eye/03-galaxy.gif" alt="Galaxy" width="160" height="160" loading="lazy">
+          </a>
+          <span class="set">Swirl Ink</span>
+          <span class="name">Galaxy</span>
+          <div class="links">
+            <a class="pill" href="../billy-stickers/02-swirl-eye/03-galaxy.gif" download>GIF</a>
+            <a class="pill" href="../billy-stickers/02-swirl-eye/03-galaxy.png" download>PNG</a>
+          </div>
+        </div>
+        <div class="card ink">
+          <a class="art" href="../billy-stickers/02-swirl-eye/04-heart.gif">
+            <img src="../billy-stickers/02-swirl-eye/04-heart.gif" alt="Heart" width="160" height="160" loading="lazy">
+          </a>
+          <span class="set">Swirl Ink</span>
+          <span class="name">Heart</span>
+          <div class="links">
+            <a class="pill" href="../billy-stickers/02-swirl-eye/04-heart.gif" download>GIF</a>
+            <a class="pill" href="../billy-stickers/02-swirl-eye/04-heart.png" download>PNG</a>
+          </div>
+        </div>
+        <div class="card ink">
+          <a class="art" href="../billy-stickers/02-swirl-eye/05-starburst.gif">
+            <img src="../billy-stickers/02-swirl-eye/05-starburst.gif" alt="Starburst" width="160" height="160" loading="lazy">
+          </a>
+          <span class="set">Swirl Ink</span>
+          <span class="name">Starburst</span>
+          <div class="links">
+            <a class="pill" href="../billy-stickers/02-swirl-eye/05-starburst.gif" download>GIF</a>
+            <a class="pill" href="../billy-stickers/02-swirl-eye/05-starburst.png" download>PNG</a>
+          </div>
+        </div>
+        <div class="card ink">
+          <a class="art" href="../billy-stickers/02-swirl-eye/06-orbit.gif">
+            <img src="../billy-stickers/02-swirl-eye/06-orbit.gif" alt="Orbit" width="160" height="160" loading="lazy">
+          </a>
+          <span class="set">Swirl Ink</span>
+          <span class="name">Orbit</span>
+          <div class="links">
+            <a class="pill" href="../billy-stickers/02-swirl-eye/06-orbit.gif" download>GIF</a>
+            <a class="pill" href="../billy-stickers/02-swirl-eye/06-orbit.png" download>PNG</a>
+          </div>
+        </div>
+        <div class="card ink">
+          <a class="art" href="../billy-stickers/03-drop-two/01-locked-in.gif">
+            <img src="../billy-stickers/03-drop-two/01-locked-in.gif" alt="Locked In" width="160" height="160" loading="lazy">
+          </a>
+          <span class="set">Swirl Ink</span>
+          <span class="name">Locked In</span>
+          <div class="links">
+            <a class="pill" href="../billy-stickers/03-drop-two/01-locked-in.gif" download>GIF</a>
+            <a class="pill" href="../billy-stickers/03-drop-two/01-locked-in.png" download>PNG</a>
+          </div>
+        </div>
+        <div class="card ink">
+          <a class="art" href="../billy-stickers/03-drop-two/02-wait-what.gif">
+            <img src="../billy-stickers/03-drop-two/02-wait-what.gif" alt="Wait What" width="160" height="160" loading="lazy">
+          </a>
+          <span class="set">Swirl Ink</span>
+          <span class="name">Wait What</span>
+          <div class="links">
+            <a class="pill" href="../billy-stickers/03-drop-two/02-wait-what.gif" download>GIF</a>
+            <a class="pill" href="../billy-stickers/03-drop-two/02-wait-what.png" download>PNG</a>
+          </div>
+        </div>
+        <div class="card ink">
+          <a class="art" href="../billy-stickers/03-drop-two/03-no-way.gif">
+            <img src="../billy-stickers/03-drop-two/03-no-way.gif" alt="No Way" width="160" height="160" loading="lazy">
+          </a>
+          <span class="set">Swirl Ink</span>
+          <span class="name">No Way</span>
+          <div class="links">
+            <a class="pill" href="../billy-stickers/03-drop-two/03-no-way.gif" download>GIF</a>
+            <a class="pill" href="../billy-stickers/03-drop-two/03-no-way.png" download>PNG</a>
+          </div>
+        </div>
+        <div class="card ink">
+          <a class="art" href="../billy-stickers/03-drop-two/04-chill.gif">
+            <img src="../billy-stickers/03-drop-two/04-chill.gif" alt="Chill" width="160" height="160" loading="lazy">
+          </a>
+          <span class="set">Swirl Ink</span>
+          <span class="name">Chill</span>
+          <div class="links">
+            <a class="pill" href="../billy-stickers/03-drop-two/04-chill.gif" download>GIF</a>
+            <a class="pill" href="../billy-stickers/03-drop-two/04-chill.png" download>PNG</a>
+          </div>
+        </div>
+        <div class="card gold">
+          <a class="art" href="../billy-stickers/03-drop-two/05-glowing-crown.gif">
+            <img src="../billy-stickers/03-drop-two/05-glowing-crown.gif" alt="Glowing Crown" width="160" height="160" loading="lazy">
+          </a>
+          <span class="set">Midnight Gold</span>
+          <span class="name">Glowing Crown</span>
+          <div class="links">
+            <a class="pill" href="../billy-stickers/03-drop-two/05-glowing-crown.gif" download>GIF</a>
+            <a class="pill" href="../billy-stickers/03-drop-two/05-glowing-crown.png" download>PNG</a>
+          </div>
+        </div>
+        <div class="card ink">
+          <a class="art" href="../billy-stickers/03-drop-two/06-swirl-shades.gif">
+            <img src="../billy-stickers/03-drop-two/06-swirl-shades.gif" alt="Swirl-Eye Shades" width="160" height="160" loading="lazy">
+          </a>
+          <span class="set">Swirl Ink</span>
+          <span class="name">Swirl-Eye Shades</span>
+          <div class="links">
+            <a class="pill" href="../billy-stickers/03-drop-two/06-swirl-shades.gif" download>GIF</a>
+            <a class="pill" href="../billy-stickers/03-drop-two/06-swirl-shades.png" download>PNG</a>
+          </div>
+        </div>
+        <div class="card gold">
+          <a class="art" href="../billy-stickers/03-drop-two/07-bet.gif">
+            <img src="../billy-stickers/03-drop-two/07-bet.gif" alt="BET" width="160" height="160" loading="lazy">
+          </a>
+          <span class="set">Midnight Gold</span>
+          <span class="name">BET</span>
+          <div class="links">
+            <a class="pill" href="../billy-stickers/03-drop-two/07-bet.gif" download>GIF</a>
+            <a class="pill" href="../billy-stickers/03-drop-two/07-bet.png" download>PNG</a>
+          </div>
+        </div>
+      </div>
+      <a class="zip" href="../billy-stickers/Billy-Stickers-All-21-2026-11-26.zip" download>
+        Download all 21 stickers
+        <span>ZIP · Midnight Gold + Swirl Ink</span>
+      </a>
+    </section>
+
+    <section class="panel" id="panel-softmagic" role="tabpanel" aria-labelledby="tab-softmagic" hidden>
+      <div class="grid">
+        <div class="card">
+          <a class="art" href="../softmagic-stickers/assets/SoftMagic-IG-Gucci.gif">
+            <img src="../softmagic-stickers/assets/SoftMagic-IG-Gucci.gif" alt="SoftMagic-IG-Gucci.gif" width="160" height="160" loading="lazy">
+          </a>
+          <span class="name">IG Gucci</span>
+          <div class="links"><a class="pill" href="../softmagic-stickers/assets/SoftMagic-IG-Gucci.gif" download>GIF</a></div>
+        </div>
+        <div class="card">
+          <a class="art" href="../softmagic-stickers/assets/SoftMagic-IG-Gucci.png">
+            <img src="../softmagic-stickers/assets/SoftMagic-IG-Gucci.png" alt="SoftMagic-IG-Gucci.png" width="160" height="160" loading="lazy">
+          </a>
+          <span class="name">IG Gucci</span>
+          <div class="links"><a class="pill" href="../softmagic-stickers/assets/SoftMagic-IG-Gucci.png" download>PNG</a></div>
+        </div>
+        <div class="card">
+          <a class="art" href="../softmagic-stickers/assets/SoftMagic-Hood-IG.gif">
+            <img src="../softmagic-stickers/assets/SoftMagic-Hood-IG.gif" alt="SoftMagic-Hood-IG.gif" width="160" height="160" loading="lazy">
+          </a>
+          <span class="name">Hood IG</span>
+          <div class="links"><a class="pill" href="../softmagic-stickers/assets/SoftMagic-Hood-IG.gif" download>GIF</a></div>
+        </div>
+        <div class="card">
+          <a class="art" href="../softmagic-stickers/assets/SoftMagic-Hood-IG.png">
+            <img src="../softmagic-stickers/assets/SoftMagic-Hood-IG.png" alt="SoftMagic-Hood-IG.png" width="160" height="160" loading="lazy">
+          </a>
+          <span class="name">Hood IG</span>
+          <div class="links"><a class="pill" href="../softmagic-stickers/assets/SoftMagic-Hood-IG.png" download>PNG</a></div>
+        </div>
+        <div class="card">
+          <a class="art" href="../softmagic-stickers/assets/SoftMagic-Owl-loop.gif">
+            <img src="../softmagic-stickers/assets/SoftMagic-Owl-loop.gif" alt="SoftMagic-Owl-loop.gif" width="160" height="160" loading="lazy">
+          </a>
+          <span class="name">Owl Loop</span>
+          <div class="links"><a class="pill" href="../softmagic-stickers/assets/SoftMagic-Owl-loop.gif" download>GIF</a></div>
+        </div>
+        <div class="card">
+          <a class="art" href="../softmagic-stickers/assets/SoftMagic-Phoenix-loop.gif">
+            <img src="../softmagic-stickers/assets/SoftMagic-Phoenix-loop.gif" alt="SoftMagic-Phoenix-loop.gif" width="160" height="160" loading="lazy">
+          </a>
+          <span class="name">Phoenix Loop</span>
+          <div class="links"><a class="pill" href="../softmagic-stickers/assets/SoftMagic-Phoenix-loop.gif" download>GIF</a></div>
+        </div>
+        <div class="card">
+          <a class="art" href="../softmagic-stickers/assets/SoftMagic-Tiger-loop.gif">
+            <img src="../softmagic-stickers/assets/SoftMagic-Tiger-loop.gif" alt="SoftMagic-Tiger-loop.gif" width="160" height="160" loading="lazy">
+          </a>
+          <span class="name">Tiger Loop</span>
+          <div class="links"><a class="pill" href="../softmagic-stickers/assets/SoftMagic-Tiger-loop.gif" download>GIF</a></div>
+        </div>
+        <div class="card">
+          <a class="art" href="../softmagic-stickers/assets/SoftMagic-Fox-pulse.png">
+            <img src="../softmagic-stickers/assets/SoftMagic-Fox-pulse.png" alt="SoftMagic-Fox-pulse.png" width="160" height="160" loading="lazy">
+          </a>
+          <span class="name">Fox Pulse</span>
+          <div class="links"><a class="pill" href="../softmagic-stickers/assets/SoftMagic-Fox-pulse.png" download>PNG</a></div>
+        </div>
+        <div class="card">
+          <a class="art" href="../softmagic-stickers/assets/SoftMagic-Merlin-pulse.png">
+            <img src="../softmagic-stickers/assets/SoftMagic-Merlin-pulse.png" alt="SoftMagic-Merlin-pulse.png" width="160" height="160" loading="lazy">
+          </a>
+          <span class="name">Merlin Pulse</span>
+          <div class="links"><a class="pill" href="../softmagic-stickers/assets/SoftMagic-Merlin-pulse.png" download>PNG</a></div>
+        </div>
+        <div class="card">
+          <a class="art" href="../softmagic-stickers/assets/SoftMagic-Metatron-pulse.png">
+            <img src="../softmagic-stickers/assets/SoftMagic-Metatron-pulse.png" alt="SoftMagic-Metatron-pulse.png" width="160" height="160" loading="lazy">
+          </a>
+          <span class="name">Metatron Pulse</span>
+          <div class="links"><a class="pill" href="../softmagic-stickers/assets/SoftMagic-Metatron-pulse.png" download>PNG</a></div>
+        </div>
+        <div class="card">
+          <a class="art" href="../softmagic-stickers/assets/SoftMagic-swirl-loop.png">
+            <img src="../softmagic-stickers/assets/SoftMagic-swirl-loop.png" alt="SoftMagic-swirl-loop.png" width="160" height="160" loading="lazy">
+          </a>
+          <span class="name">Swirl Loop</span>
+          <div class="links"><a class="pill" href="../softmagic-stickers/assets/SoftMagic-swirl-loop.png" download>PNG</a></div>
+        </div>
+        <div class="card">
+          <a class="art" href="../softmagic-stickers/assets/SoftMagic-spin.png">
+            <img src="../softmagic-stickers/assets/SoftMagic-spin.png" alt="SoftMagic-spin.png" width="160" height="160" loading="lazy">
+          </a>
+          <span class="name">Spin</span>
+          <div class="links"><a class="pill" href="../softmagic-stickers/assets/SoftMagic-spin.png" download>PNG</a></div>
+        </div>
+        <div class="card">
+          <a class="art" href="../softmagic-stickers/assets/SoftMagic-pattern-rainbow-pulse.png">
+            <img src="../softmagic-stickers/assets/SoftMagic-pattern-rainbow-pulse.png" alt="SoftMagic-pattern-rainbow-pulse.png" width="160" height="160" loading="lazy">
+          </a>
+          <span class="name">Rainbow Pulse</span>
+          <div class="links"><a class="pill" href="../softmagic-stickers/assets/SoftMagic-pattern-rainbow-pulse.png" download>PNG</a></div>
+        </div>
+        <div class="card">
+          <a class="art" href="../softmagic-stickers/assets/SoftMagic-pattern-gold-pulse.png">
+            <img src="../softmagic-stickers/assets/SoftMagic-pattern-gold-pulse.png" alt="SoftMagic-pattern-gold-pulse.png" width="160" height="160" loading="lazy">
+          </a>
+          <span class="name">Gold Pulse</span>
+          <div class="links"><a class="pill" href="../softmagic-stickers/assets/SoftMagic-pattern-gold-pulse.png" download>PNG</a></div>
+        </div>
+        <div class="card">
+          <a class="art" href="../softmagic-stickers/assets/SoftMagic-rgb-knot-01.png">
+            <img src="../softmagic-stickers/assets/SoftMagic-rgb-knot-01.png" alt="SoftMagic-rgb-knot-01.png" width="160" height="160" loading="lazy">
+          </a>
+          <span class="name">RGB Knot 01</span>
+          <div class="links"><a class="pill" href="../softmagic-stickers/assets/SoftMagic-rgb-knot-01.png" download>PNG</a></div>
+        </div>
+        <div class="card">
+          <a class="art" href="../softmagic-stickers/assets/SoftMagic-rgb-knot-02.png">
+            <img src="../softmagic-stickers/assets/SoftMagic-rgb-knot-02.png" alt="SoftMagic-rgb-knot-02.png" width="160" height="160" loading="lazy">
+          </a>
+          <span class="name">RGB Knot 02</span>
+          <div class="links"><a class="pill" href="../softmagic-stickers/assets/SoftMagic-rgb-knot-02.png" download>PNG</a></div>
+        </div>
+        <div class="card">
+          <a class="art" href="../softmagic-stickers/assets/SoftMagic-rgb-knot-03.png">
+            <img src="../softmagic-stickers/assets/SoftMagic-rgb-knot-03.png" alt="SoftMagic-rgb-knot-03.png" width="160" height="160" loading="lazy">
+          </a>
+          <span class="name">RGB Knot 03</span>
+          <div class="links"><a class="pill" href="../softmagic-stickers/assets/SoftMagic-rgb-knot-03.png" download>PNG</a></div>
+        </div>
+        <div class="card">
+          <a class="art" href="../softmagic-stickers/assets/SoftMagic-rgb-knot-04.png">
+            <img src="../softmagic-stickers/assets/SoftMagic-rgb-knot-04.png" alt="SoftMagic-rgb-knot-04.png" width="160" height="160" loading="lazy">
+          </a>
+          <span class="name">RGB Knot 04</span>
+          <div class="links"><a class="pill" href="../softmagic-stickers/assets/SoftMagic-rgb-knot-04.png" download>PNG</a></div>
+        </div>
+        <div class="card">
+          <a class="art" href="../softmagic-stickers/assets/SoftMagic-rgb-knot-05.png">
+            <img src="../softmagic-stickers/assets/SoftMagic-rgb-knot-05.png" alt="SoftMagic-rgb-knot-05.png" width="160" height="160" loading="lazy">
+          </a>
+          <span class="name">RGB Knot 05</span>
+          <div class="links"><a class="pill" href="../softmagic-stickers/assets/SoftMagic-rgb-knot-05.png" download>PNG</a></div>
+        </div>
+        <div class="card">
+          <a class="art" href="../softmagic-stickers/assets/SoftMagic-rgb-knot-spin.gif">
+            <img src="../softmagic-stickers/assets/SoftMagic-rgb-knot-spin.gif" alt="SoftMagic-rgb-knot-spin.gif" width="160" height="160" loading="lazy">
+          </a>
+          <span class="name">RGB Knot Spin</span>
+          <div class="links"><a class="pill" href="../softmagic-stickers/assets/SoftMagic-rgb-knot-spin.gif" download>GIF</a></div>
+        </div>
+        <div class="card">
+          <a class="art" href="../softmagic-stickers/assets/Soft7-Owl.png">
+            <img src="../softmagic-stickers/assets/Soft7-Owl.png" alt="Soft7-Owl.png" width="160" height="160" loading="lazy">
+          </a>
+          <span class="name">Soft7 Owl</span>
+          <div class="links"><a class="pill" href="../softmagic-stickers/assets/Soft7-Owl.png" download>PNG</a></div>
+        </div>
+        <div class="card">
+          <a class="art" href="../softmagic-stickers/assets/Soft7-Phoenix.png">
+            <img src="../softmagic-stickers/assets/Soft7-Phoenix.png" alt="Soft7-Phoenix.png" width="160" height="160" loading="lazy">
+          </a>
+          <span class="name">Soft7 Phoenix</span>
+          <div class="links"><a class="pill" href="../softmagic-stickers/assets/Soft7-Phoenix.png" download>PNG</a></div>
+        </div>
+        <div class="card">
+          <a class="art" href="../softmagic-stickers/assets/Soft7-Tiger.png">
+            <img src="../softmagic-stickers/assets/Soft7-Tiger.png" alt="Soft7-Tiger.png" width="160" height="160" loading="lazy">
+          </a>
+          <span class="name">Soft7 Tiger</span>
+          <div class="links"><a class="pill" href="../softmagic-stickers/assets/Soft7-Tiger.png" download>PNG</a></div>
+        </div>
+        <div class="card">
+          <a class="art" href="../softmagic-stickers/assets/SoftMagic-pattern-1-magenta.png">
+            <img src="../softmagic-stickers/assets/SoftMagic-pattern-1-magenta.png" alt="SoftMagic-pattern-1-magenta.png" width="160" height="160" loading="lazy">
+          </a>
+          <span class="name">Pattern Magenta</span>
+          <div class="links"><a class="pill" href="../softmagic-stickers/assets/SoftMagic-pattern-1-magenta.png" download>PNG</a></div>
+        </div>
+        <div class="card">
+          <a class="art" href="../softmagic-stickers/assets/SoftMagic-pattern-2-cyan.png">
+            <img src="../softmagic-stickers/assets/SoftMagic-pattern-2-cyan.png" alt="SoftMagic-pattern-2-cyan.png" width="160" height="160" loading="lazy">
+          </a>
+          <span class="name">Pattern Cyan</span>
+          <div class="links"><a class="pill" href="../softmagic-stickers/assets/SoftMagic-pattern-2-cyan.png" download>PNG</a></div>
+        </div>
+        <div class="card">
+          <a class="art" href="../softmagic-stickers/assets/SoftMagic-pattern-3-gold.png">
+            <img src="../softmagic-stickers/assets/SoftMagic-pattern-3-gold.png" alt="SoftMagic-pattern-3-gold.png" width="160" height="160" loading="lazy">
+          </a>
+          <span class="name">Pattern Gold</span>
+          <div class="links"><a class="pill" href="../softmagic-stickers/assets/SoftMagic-pattern-3-gold.png" download>PNG</a></div>
+        </div>
+        <div class="card">
+          <a class="art" href="../softmagic-stickers/assets/SoftMagic-pattern-8-rainbow-ring.png">
+            <img src="../softmagic-stickers/assets/SoftMagic-pattern-8-rainbow-ring.png" alt="SoftMagic-pattern-8-rainbow-ring.png" width="160" height="160" loading="lazy">
+          </a>
+          <span class="name">Rainbow Ring</span>
+          <div class="links"><a class="pill" href="../softmagic-stickers/assets/SoftMagic-pattern-8-rainbow-ring.png" download>PNG</a></div>
+        </div>
+      </div>
+      <a class="zip" href="../softmagic-stickers/SoftMagic-Apple-Simple.zip" download>
+        Download all SoftMagic stickers
+        <span>ZIP · Apple-simple pack</span>
+      </a>
+    </section>
+  </main>
+  <script>
+    (function () {
+      var seg = document.getElementById("seg");
+      var tabBilly = document.getElementById("tab-billy");
+      var tabSoft = document.getElementById("tab-softmagic");
+      var panelBilly = document.getElementById("panel-billy");
+      var panelSoft = document.getElementById("panel-softmagic");
+      if (!seg || !tabBilly || !tabSoft || !panelBilly || !panelSoft) return;
+
+      function show(tab, push) {
+        var isBilly = tab !== "softmagic";
+        var next = isBilly ? "billy" : "softmagic";
+        seg.dataset.active = next;
+        tabBilly.setAttribute("aria-selected", isBilly ? "true" : "false");
+        tabSoft.setAttribute("aria-selected", isBilly ? "false" : "true");
+        panelBilly.hidden = !isBilly;
+        panelSoft.hidden = isBilly;
+        var hash = "#" + next;
+        if (push) {
+          if (location.hash !== hash) history.replaceState(null, "", hash);
+        }
+      }
+
+      tabBilly.addEventListener("click", function () { show("billy", true); });
+      tabSoft.addEventListener("click", function () { show("softmagic", true); });
+
+      function fromHash() {
+        var h = (location.hash || "").replace(/^#/, "").toLowerCase();
+        show(h === "softmagic" ? "softmagic" : "billy", false);
+      }
+      window.addEventListener("hashchange", fromHash);
+      fromHash();
+    })();
+  </script>
+</body>
+</html>
