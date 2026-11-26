@@ -389,3 +389,99 @@ h2, h3, .rules .n, .tiers .name, .tier-top .name { font-variant-numeric: lining-
 .window .when { font-size: 1.08rem; }
 .hero { overflow-x: clip; overflow-y: visible; }
 @media (max-width: 900px) { .hero-stage .ring { width: min(118%, 96vw); } }
+
+/* =================== COSMIC LAYER =================== */
+body { position: relative; }
+.cosmos { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; background: #04060b; }
+.cosmos::before, .cosmos::after, .cosmos .stars-3 {
+  content: ""; position: absolute; inset: -50%; background-repeat: repeat;
+}
+.cosmos::before {
+  background-image:
+    radial-gradient(1px 1px at 20px 30px, rgba(255,255,255,0.9), transparent 60%),
+    radial-gradient(1px 1px at 140px 80px, rgba(255,248,230,0.75), transparent 60%),
+    radial-gradient(1.2px 1.2px at 90px 170px, rgba(255,255,255,0.8), transparent 60%),
+    radial-gradient(1px 1px at 210px 220px, rgba(220,230,255,0.7), transparent 60%),
+    radial-gradient(0.8px 0.8px at 260px 40px, rgba(255,255,255,0.6), transparent 60%),
+    radial-gradient(1px 1px at 40px 260px, rgba(255,240,210,0.7), transparent 60%);
+  background-size: 300px 300px;
+  opacity: 0.55;
+  animation: twinkle 7s ease-in-out infinite alternate;
+}
+.cosmos::after {
+  background-image:
+    radial-gradient(1.6px 1.6px at 70px 120px, rgba(255,236,190,0.95), transparent 60%),
+    radial-gradient(1.4px 1.4px at 380px 60px, rgba(255,255,255,0.85), transparent 60%),
+    radial-gradient(1.8px 1.8px at 250px 430px, rgba(214,255,120,0.75), transparent 60%),
+    radial-gradient(1.4px 1.4px at 480px 300px, rgba(200,190,255,0.8), transparent 60%);
+  background-size: 560px 560px;
+  opacity: 0.7;
+  animation: twinkle 11s ease-in-out infinite alternate-reverse;
+}
+.cosmos .nebula {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(700px 420px at 72% 18%, rgba(128, 78, 196, 0.30), transparent 65%),
+    radial-gradient(620px 380px at 18% 8%, rgba(243, 201, 107, 0.13), transparent 62%),
+    radial-gradient(560px 360px at 86% 62%, rgba(204, 255, 0, 0.045), transparent 60%),
+    radial-gradient(900px 600px at 30% 100%, rgba(70, 40, 140, 0.20), transparent 65%);
+  filter: saturate(120%);
+}
+.cosmos .horizon {
+  position: absolute; left: 50%; top: 0; width: 1400px; height: 760px; transform: translateX(-50%);
+  background: radial-gradient(ellipse at 50% 0%, rgba(243, 201, 107, 0.10), transparent 60%);
+}
+@keyframes twinkle { 0% { opacity: 0.35; } 100% { opacity: 0.8; } }
+body { background: transparent; }
+
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 0.6rem; margin: 0 0 0.9rem;
+  color: var(--gold); font-size: 0.74rem; font-weight: 600; letter-spacing: 0.32em; text-transform: uppercase;
+}
+.eyebrow::before, .eyebrow::after { content: ""; width: 26px; height: 1px; background: linear-gradient(90deg, transparent, var(--gold)); }
+.eyebrow::after { background: linear-gradient(90deg, var(--gold), transparent); }
+h1.display.cosmic {
+  font-size: clamp(3.4rem, 8vw, 6.4rem);
+  background: linear-gradient(180deg, #fffaf0 0%, #fbe3a6 45%, var(--gold) 72%, #b98d3e 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 0 28px rgba(243, 201, 107, 0.22));
+}
+.quiet-line { margin: 0.7rem 0 0; font-family: var(--serif); font-style: italic; font-size: 1.12rem; color: var(--gold); opacity: 0.9; }
+
+/* Countdown */
+.countdown {
+  display: grid; gap: 0.6rem; padding: 1rem 1.1rem; margin: 0 0 0.85rem;
+  border-radius: var(--radius-sm); border: 1px solid rgba(243, 201, 107, 0.34);
+  background: radial-gradient(120% 140% at 50% 0%, rgba(243, 201, 107, 0.10), rgba(5, 7, 10, 0.55) 70%);
+}
+.countdown .cd-label { display: flex; justify-content: space-between; align-items: center; gap: 0.6rem; flex-wrap: wrap; color: var(--gold); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; }
+.countdown .cd-label .live { color: var(--lime); display: inline-flex; align-items: center; gap: 0.4rem; }
+.countdown .cd-label .live::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 10px var(--lime); animation: pulse 1.6s ease-in-out infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+.cd-units { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; }
+.cd-units div { display: grid; justify-items: center; padding: 0.55rem 0.3rem 0.5rem; border-radius: 10px; background: rgba(5, 7, 10, 0.6); border: 1px solid var(--line); }
+.cd-units b { font-family: var(--serif); font-size: clamp(1.9rem, 3.6vw, 2.6rem); font-weight: 600; line-height: 1; color: var(--ivory); font-variant-numeric: lining-nums tabular-nums; text-shadow: 0 0 18px rgba(243, 201, 107, 0.25); }
+.cd-units span { margin-top: 0.3rem; color: var(--quiet); font-size: 0.66rem; letter-spacing: 0.18em; text-transform: uppercase; }
+.countdown.is-open { border-color: var(--lime-line); background: radial-gradient(120% 140% at 50% 0%, rgba(204, 255, 0, 0.09), rgba(5, 7, 10, 0.55) 70%); }
+.countdown.is-open .cd-label { color: var(--lime); }
+.countdown.is-closed .cd-units { display: none; }
+.countdown .cd-closed { display: none; font-family: var(--serif); font-size: 1.6rem; color: var(--ivory); }
+.countdown.is-closed .cd-closed { display: block; }
+.spotlight { padding: 1.5rem; margin-top: 0; }
+.spotlight .countdown .cd-units b { font-size: clamp(2.4rem, 5vw, 3.6rem); }
+.hero-stage .hero-art img { box-shadow: 0 40px 100px rgba(0,0,0,0.6), 0 0 120px rgba(128, 78, 196, 0.30), 0 0 60px rgba(243, 201, 107, 0.14), 0 0 0 1px rgba(243, 201, 107, 0.24); }
+@media (prefers-reduced-motion: reduce) { .cosmos::before, .cosmos::after { opacity: 0.6; } }
+.hero { padding-top: 1.6rem; }
+.hero h1.display.cosmic { font-size: clamp(3.2rem, 6.4vw, 5.4rem); }
+.hero .lede { margin-top: 0.7rem; font-size: clamp(1.15rem, 1.9vw, 1.3rem); }
+.hero .quiet-line { margin-top: 0.45rem; }
+.hero .checker { margin-top: 1.15rem; padding: 1.1rem 1.2rem 1.05rem; }
+.hero .checker-head { margin-bottom: 0.7rem; }
+.hero .countdown { padding: 0.75rem 0.9rem; margin-bottom: 0.65rem; }
+.hero .cd-units b { font-size: clamp(1.6rem, 2.8vw, 2.1rem); }
+.hero .cd-units div { padding: 0.4rem 0.3rem; }
+.hero .window { padding: 0.7rem 1rem; }
+.hero .checker label { margin-top: 0.75rem; }
+.hero .cta-row { margin-top: 1.1rem; }
+.cosmos::before { opacity: 0.75; }
+.cosmos::after { opacity: 0.9; }

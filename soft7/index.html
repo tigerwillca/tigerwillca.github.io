@@ -26,9 +26,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="soft7.css?v=20261126c">
+<link rel="stylesheet" href="soft7.css?v=20261126e">
 </head>
 <body>
+<div class="cosmos" aria-hidden="true"><div class="nebula"></div><div class="horizon"></div></div>
 <a class="skip" href="#content">Skip to content</a>
 <header class="site-header">
   <div class="bar">
@@ -65,13 +66,25 @@
         <span class="chip gold">77 / 77 Minted</span>
         <span class="meta">Robinhood Chain · Chain ID 4663 · <a href="https://robinhoodchain.blockscout.com/address/0x5db625c49b2a9DD40464069fc16B9a2f3B11bF3d" rel="noopener noreferrer" target="_blank">Blockscout verified</a></span>
       </div>
-      <h1 class="display" id="hero-title">Soft7 77</h1>
-      <p class="lede">Seventy-seven painted fox and tiger wizards by TigerWillCA, crafted with Soft Magic and CAR-pinned on IPFS.</p>
+      <p class="eyebrow">Thanksgiving weekend · The circle opens</p>
+      <h1 class="display cosmic" id="hero-title">Soft7 77</h1>
+      <p class="lede">Out of the quiet dark, seventy-seven painted fox and tiger wizards gather around their glowing potions — by TigerWillCA, <span style="white-space:nowrap">CAR-pinned</span> on IPFS.</p>
+      <p class="quiet-line">Quiet Magic — the proof speaks louder than the noise.</p>
 
       <section class="checker card-surface" id="eligibility" aria-labelledby="eligibility-title">
         <div class="checker-head">
           <h2 id="eligibility-title">Green Squares check</h2>
           <p class="kicker"><span class="sq" aria-hidden="true"></span>Read-only</p>
+        </div>
+        <div class="countdown" data-countdown role="timer" aria-live="off">
+          <div class="cd-label"><span data-cd-title>Open bell in</span><span class="live" data-cd-state>Snapshot locked</span></div>
+          <div class="cd-units">
+            <div><b data-cd-d>--</b><span>Days</span></div>
+            <div><b data-cd-h>--</b><span>Hours</span></div>
+            <div><b data-cd-m>--</b><span>Minutes</span></div>
+            <div><b data-cd-s>--</b><span>Seconds</span></div>
+          </div>
+          <div class="cd-closed">Snapshot closed. The Day 7 closing block is recorded.</div>
         </div>
         <div class="window" role="group" aria-label="Locked 7-day snapshot window">
         <div class="end">
@@ -113,8 +126,19 @@
     <div class="section-head">
       <p class="kicker"><span class="sq" aria-hidden="true"></span>Locked snapshot</p>
       <h2 id="snapshot-title">Seven days. Seventy seats.</h2>
-      <p class="sub">One 7-day #CCFF00 Green Squares snapshot decides the 70 seats for tokens #008–#077. The window is locked.</p>
+      <p class="sub">One 7-day #CCFF00 Green Squares snapshot decides the 70 seats for tokens #008–#077. The window is locked; the clock is running.</p>
     </div>
+    <div class="spotlight card-surface">
+    <div class="countdown" data-countdown role="timer" aria-live="off">
+          <div class="cd-label"><span data-cd-title>Open bell in</span><span class="live" data-cd-state>Snapshot locked</span></div>
+          <div class="cd-units">
+            <div><b data-cd-d>--</b><span>Days</span></div>
+            <div><b data-cd-h>--</b><span>Hours</span></div>
+            <div><b data-cd-m>--</b><span>Minutes</span></div>
+            <div><b data-cd-s>--</b><span>Seconds</span></div>
+          </div>
+          <div class="cd-closed">Snapshot closed. The Day 7 closing block is recorded.</div>
+        </div>
     <div class="window" role="group" aria-label="Locked 7-day snapshot window">
         <div class="end">
           <span class="lbl">Opens</span>
@@ -128,6 +152,7 @@
           <span class="utc"><b>12:00 PM PT</b> · 20:00 UTC</span>
         </div>
       </div>
+    </div>
     <ul class="rules">
       <li class="card-surface"><span class="n lime">7+</span><span class="t">#CCFF00 Squares only</span><span class="d">Contract <code>0x505a22ffed8d37ebe580ffd98d2cdb0021189146</code>. Cubes are excluded.</span></li>
       <li class="card-surface"><span class="n">1</span><span class="t">Entry per wallet</span><span class="d">Holding more than 7 Squares does not add entries.</span></li>
@@ -176,6 +201,7 @@
     <div class="section-head">
       <p class="kicker">From the circle</p>
       <h2 id="gallery-title">Seven of seventy-seven</h2>
+      <p class="sub">Painted slowly, in the Quiet Magic way. Tap any wizard to see it full size.</p>
     </div>
     <div class="gallery" role="list" aria-label="Soft7 77 preview">
     <button type="button" class="card" role="listitem" data-full="art/full-009.webp" data-caption="009 · Fox Wizard #009" aria-label="Enlarge 009, Fox Wizard 009">
@@ -376,6 +402,36 @@
     var q = new URLSearchParams(window.location.search).get("address");
     if (q && ADDR.test(q.trim())) { input.value = q.trim(); check(q.trim()); }
   } catch (e) {}
+})();
+</script>
+
+<script>
+(function () {
+  var OPEN = Date.UTC(2026, 10, 27, 20, 0, 0);   // Fri, Nov 27, 2026, 12:00 PM PT
+  var CLOSE = Date.UTC(2026, 11, 4, 20, 0, 0);   // Fri, Dec 4, 2026, 12:00 PM PT
+  var nodes = Array.prototype.slice.call(document.querySelectorAll("[data-countdown]"));
+  if (!nodes.length) return;
+  function pad(n) { return (n < 10 ? "0" : "") + n; }
+  function tick() {
+    var now = Date.now(), target, title, state, cls;
+    if (now < OPEN) { target = OPEN; title = "Open bell in"; state = "Snapshot locked"; cls = ""; }
+    else if (now < CLOSE) { target = CLOSE; title = "Window open — closes in"; state = "Live now"; cls = "is-open"; }
+    else { target = null; title = "Snapshot closed"; state = "Fri, Dec 4 · 12:00 PM PT"; cls = "is-closed"; }
+    var t = target ? Math.max(0, Math.floor((target - now) / 1000)) : 0;
+    var d = Math.floor(t / 86400), h = Math.floor(t % 86400 / 3600), m = Math.floor(t % 3600 / 60), s = t % 60;
+    nodes.forEach(function (el) {
+      el.classList.remove("is-open", "is-closed");
+      if (cls) el.classList.add(cls);
+      el.querySelector("[data-cd-title]").textContent = title;
+      el.querySelector("[data-cd-state]").textContent = state;
+      el.querySelector("[data-cd-d]").textContent = pad(d);
+      el.querySelector("[data-cd-h]").textContent = pad(h);
+      el.querySelector("[data-cd-m]").textContent = pad(m);
+      el.querySelector("[data-cd-s]").textContent = pad(s);
+    });
+  }
+  tick();
+  setInterval(tick, 1000);
 })();
 </script>
 </body>
