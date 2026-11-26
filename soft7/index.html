@@ -610,7 +610,7 @@
     <p class="checker-kicker"><span class="checker-dot" aria-hidden="true"></span> Read-only check</p>
     <h2 id="eligibility-title">Hood Street Squares Eligibility</h2>
     <p>Paste any wallet address to see how many Hood Street #CCFF00 Squares it holds. This check is read-only. It never connects a wallet, never asks for a signature, and never offers a claim link. Cubes are excluded.</p>
-    <p>Holding <strong>7 or more Squares</strong> makes a wallet eligible for one entry in the 70-seat deterministic draw for tokens #008–#077. Eligibility is not a guaranteed mint. The 7-day snapshot window dates are not yet locked and will be announced.</p>
+    <p>Holding <strong>7 or more Squares</strong> makes a wallet eligible for one entry in the 70-seat deterministic draw for tokens #008–#077. Eligibility is not a guaranteed mint. The 7-day snapshot window runs from Friday, November 27, 2026 at 12:00 PM PT (20:00 UTC) through Friday, December 4, 2026 at 12:00 PM PT (20:00 UTC). The exact closing block number on Robinhood Chain (Chain ID 4663) will be recorded at close.</p>
     <form id="eligibility-form" action="#eligibility" method="get">
       <label for="eligibility-address">Wallet address</label>
       <div class="checker-row">
@@ -694,7 +694,7 @@
   var submit = document.getElementById("eligibility-submit");
   if (!form || !input || !result || !submit) return;
 
-  var PENDING = "The 7-day snapshot window dates are not yet locked and will be announced.";
+  var WINDOW_NOTE = "The 7-day snapshot window runs from Friday, November 27, 2026 at 12:00 PM PT (20:00 UTC) through Friday, December 4, 2026 at 12:00 PM PT (20:00 UTC). The exact closing block number on Robinhood Chain (Chain ID 4663) will be recorded at close.";
 
   function show(html, cls) {
     result.hidden = false;
@@ -747,7 +747,7 @@
       var count = BigInt(json.result);
       var n = Number(count);
       var held = "This wallet holds <strong>" + formatCount(n) + "</strong> Hood Street #CCFF00 Square" + (n === 1 ? "" : "s") + ".";
-      var note = "<span class=\"pending\">" + PENDING + "</span>";
+      var note = "<span class=\"pending\">" + WINDOW_NOTE + "</span>";
       if (count >= 7n) {
         show(held + " This meets the 7+ Squares eligibility rule for one entry in the 70-seat deterministic draw (tokens #008–#077). Cubes are excluded. Eligibility is not a guaranteed mint." + note, "is-yes");
       } else {
