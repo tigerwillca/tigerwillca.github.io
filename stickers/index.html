@@ -223,12 +223,205 @@
     @media (prefers-reduced-motion: reduce) {
       .seg .thumb, .seg button { transition: none; }
     }
+
+    /* Spotlight reveal (auto-plays on load; staged upgrade, Core Team review) */
+    html.is-revealing,
+    body.is-revealing {
+      overflow: hidden;
+    }
+    #reveal-stage {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      background: #0a0a0f;
+      overflow: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+    #reveal-beam {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(
+        circle at var(--spot-x, 16%) var(--spot-y, 42%),
+        rgba(255, 252, 235, 0.96) 0,
+        rgba(255, 236, 180, 0.62) calc(var(--spot-r, 16vmin) * 0.18),
+        rgba(232, 200, 114, 0.28) calc(var(--spot-r, 16vmin) * 0.38),
+        rgba(201, 178, 122, 0.10) calc(var(--spot-r, 16vmin) * 0.58),
+        rgba(10, 10, 15, 0.82) calc(var(--spot-r, 16vmin) * 0.86),
+        #0a0a0f var(--spot-r, 16vmin)
+      );
+    }
+    #reveal-copy {
+      position: absolute;
+      left: 50%;
+      top: 46%;
+      width: 86%;
+      max-width: 420px;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      pointer-events: none;
+      opacity: 0;
+      z-index: 2;
+    }
+    #reveal-copy .eyebrow {
+      margin-bottom: 10px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #e8c872;
+      text-shadow: 0 0 18px rgba(232, 200, 114, 0.55);
+    }
+    #reveal-copy .headline {
+      font-size: clamp(1.6rem, 6vw, 2.15rem);
+      font-weight: 700;
+      letter-spacing: -0.035em;
+      line-height: 1.1;
+      color: #fff8e8;
+      text-shadow: 0 0 28px rgba(255, 236, 180, 0.55), 0 1px 2px rgba(0, 0, 0, 0.35);
+    }
+    .reveal-skip {
+      position: absolute;
+      top: calc(12px + env(safe-area-inset-top, 0px));
+      right: calc(14px + env(safe-area-inset-right, 0px));
+      z-index: 3;
+      appearance: none;
+      border: 0;
+      background: transparent;
+      color: rgba(245, 245, 247, 0.55);
+      font: inherit;
+      font-size: 0.75rem;
+      font-weight: 590;
+      letter-spacing: -0.01em;
+      padding: 8px 10px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+    .reveal-skip:active { opacity: 0.7; }
+    #reveal-stage.is-exit {
+      opacity: 0;
+      transform: translateY(-10px);
+      pointer-events: none;
+      transition: opacity 800ms cubic-bezier(0.22, 0.8, 0.2, 1),
+                  transform 800ms cubic-bezier(0.22, 0.8, 0.2, 1);
+    }
+    #reveal-stage.is-gone {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    #reveal-fx {
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      display: block;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    #reveal-fx.is-gone {
+      opacity: 0;
+      visibility: hidden;
+    }
+    header { position: relative; }
+    h1 { padding-inline: 4.75rem; }
+    .replay {
+      position: absolute;
+      top: 0.2rem;
+      right: 0;
+      appearance: none;
+      border: 0;
+      background: transparent;
+      color: var(--secondary);
+      font: inherit;
+      font-size: 0.75rem;
+      font-weight: 590;
+      letter-spacing: -0.01em;
+      padding: 6px 4px;
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      transition: opacity 240ms ease;
+    }
+    .replay.is-ready {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .replay:active { opacity: 0.7; }
+    .soft7-card {
+      margin: 36px 0 0;
+      padding: 18px 16px 16px;
+      text-align: center;
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+    }
+    .soft7-card .kicker {
+      font-size: 0.58rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+    .soft7-card p {
+      margin-top: 6px;
+      font-size: 0.8125rem;
+      color: var(--secondary);
+      letter-spacing: -0.01em;
+      line-height: 1.4;
+    }
+    .soft7-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px 14px;
+      margin-top: 12px;
+    }
+    .soft7-links a {
+      color: var(--text);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      text-decoration: none;
+    }
+    .soft7-links a:active { opacity: 0.7; }
+    @media (prefers-reduced-motion: reduce) {
+      #reveal-stage,
+      #reveal-fx,
+      .replay { display: none !important; }
+      #reveal-stage.is-exit { transition: none; }
+    }
+    html.reduce-motion #reveal-stage,
+    html.reduce-motion #reveal-fx,
+    html.reduce-motion .replay { display: none !important; }
   </style>
+  <script>
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      document.documentElement.classList.add("reduce-motion");
+    }
+  </script>
+  <noscript>
+    <style>#reveal-stage,#reveal-fx,.replay{display:none!important}</style>
+  </noscript>
 </head>
 <body>
+  <div id="reveal-stage" role="presentation" aria-label="Opening stickers">
+    <div id="reveal-beam" aria-hidden="true"></div>
+    <div id="reveal-copy" aria-hidden="true">
+      <p class="eyebrow">Happy Thanksgiving</p>
+      <p class="headline">SoftMagic Stickers</p>
+    </div>
+    <button type="button" class="reveal-skip" id="reveal-skip">Skip</button>
+  </div>
+  <canvas id="reveal-fx" aria-hidden="true"></canvas>
   <main>
     <header>
       <h1>Stickers</h1>
+      <button type="button" class="replay" id="replay-btn" aria-hidden="true">Replay ✨</button>
       <div class="seg" id="seg" role="tablist" aria-label="Sticker sets" data-active="billy">
         <div class="thumb" aria-hidden="true"></div>
         <button type="button" role="tab" id="tab-billy" aria-controls="panel-billy" aria-selected="true">Billy Stickers</button>
@@ -666,6 +859,15 @@
         <span>ZIP · Apple-simple pack</span>
       </a>
     </section>
+
+    <footer class="soft7-card">
+      <div class="kicker">Soft7 77</div>
+      <p>Seventy-seven painted fox and tiger wizards.</p>
+      <div class="soft7-links">
+        <a href="https://tigerwillca.github.io/soft7/">See Soft7 77</a>
+        <a href="https://opensea.io/collection/soft7-77">View on OpenSea</a>
+      </div>
+    </footer>
   </main>
   <script>
     (function () {
@@ -699,6 +901,499 @@
       }
       window.addEventListener("hashchange", fromHash);
       fromHash();
+    })();
+  </script>
+  <script>
+    (function () {
+      var reduceMQ = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)");
+      var stage = document.getElementById("reveal-stage");
+      var beam = document.getElementById("reveal-beam");
+      var copy = document.getElementById("reveal-copy");
+      var skip = document.getElementById("reveal-skip");
+      var canvas = document.getElementById("reveal-fx");
+      var replay = document.getElementById("replay-btn");
+      if (!stage || !beam || !canvas) return;
+      var ctx = canvas.getContext("2d");
+      if (!ctx) return;
+
+      var T_SPOT = 1100;
+      var T_FW = [1000, 1450, 1900];
+      var T_CONFETTI = 1000;
+      var T_LIFT = 2200;
+      var T_STAGE_GONE = 3000;
+      var T_END = 3400;
+
+      var PATH = [
+        { t: 0, x: 0.16, y: 0.42, r: 0.14 },
+        { t: 0.22, x: 0.70, y: 0.26, r: 0.16 },
+        { t: 0.44, x: 0.80, y: 0.60, r: 0.15 },
+        { t: 0.66, x: 0.32, y: 0.66, r: 0.17 },
+        { t: 0.82, x: 0.50, y: 0.47, r: 0.22 },
+        { t: 1.00, x: 0.50, y: 0.46, r: 1.40 }
+      ];
+
+      var GOLD = ["#f5d76e", "#e8c872", "#c9b27a", "#fff1b8"];
+      var CHAMPAGNE = ["#f7e7ce", "#e8d5a3", "#f3e5c2", "#ffe9c4"];
+      var LIME = ["#ccff00", "#e8ff6a", "#b6e800"];
+      var VIOLET = ["#c9b0ff", "#9b7bff", "#7b5ea7", "#e4d7ff"];
+      var TEAL = ["#3ecfc0", "#7ee8dc", "#2a9b94"];
+      var CONFETTI_COLORS = GOLD.concat(CHAMPAGNE, LIME, VIOLET, TEAL);
+      var FW_PALETTES = [
+        GOLD.concat(CHAMPAGNE),
+        LIME.concat(GOLD),
+        VIOLET.concat(CHAMPAGNE)
+      ];
+      var FW_POS = [
+        { x: 0.50, y: 0.32 },
+        { x: 0.28, y: 0.42 },
+        { x: 0.72, y: 0.36 }
+      ];
+
+      var running = false;
+      var raf = 0;
+      var startAt = 0;
+      var lastNow = 0;
+      var particles = [];
+      var width = 0;
+      var height = 0;
+      var dpr = 1;
+      var fired = [false, false, false];
+      var confettiCount = 0;
+      var lifted = false;
+      var gone = false;
+      var ending = false;
+
+      function prefersReduce() {
+        return !!(reduceMQ && reduceMQ.matches);
+      }
+
+      function lerp(a, b, t) { return a + (b - a) * t; }
+
+      function easeInOut(t) {
+        return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+      }
+
+      function easeOutCubic(t) {
+        return 1 - Math.pow(1 - t, 3);
+      }
+
+      function clamp(n, a, b) {
+        return n < a ? a : n > b ? b : n;
+      }
+
+      function rand(a, b) {
+        return a + Math.random() * (b - a);
+      }
+
+      function pick(arr) {
+        return arr[(Math.random() * arr.length) | 0];
+      }
+
+      function samplePath(t) {
+        if (t <= 0) return PATH[0];
+        if (t >= 1) return PATH[PATH.length - 1];
+        var i;
+        for (i = 0; i < PATH.length - 1; i++) {
+          if (t <= PATH[i + 1].t) {
+            var u = (t - PATH[i].t) / (PATH[i + 1].t - PATH[i].t);
+            if (i === PATH.length - 2) u = easeOutCubic(u);
+            else u = easeInOut(u);
+            return {
+              x: lerp(PATH[i].x, PATH[i + 1].x, u),
+              y: lerp(PATH[i].y, PATH[i + 1].y, u),
+              r: lerp(PATH[i].r, PATH[i + 1].r, u)
+            };
+          }
+        }
+        return PATH[PATH.length - 1];
+      }
+
+      function lockScroll() {
+        document.documentElement.classList.add("is-revealing");
+        document.body.classList.add("is-revealing");
+      }
+
+      function unlockScroll() {
+        document.documentElement.classList.remove("is-revealing");
+        document.body.classList.remove("is-revealing");
+      }
+
+      function setReplay(on) {
+        if (!replay) return;
+        if (on && !prefersReduce()) {
+          replay.classList.add("is-ready");
+          replay.setAttribute("aria-hidden", "false");
+        } else {
+          replay.classList.remove("is-ready");
+          replay.setAttribute("aria-hidden", "true");
+        }
+      }
+
+      function resize() {
+        var w = window.innerWidth;
+        var h = window.innerHeight;
+        var next = Math.min(window.devicePixelRatio || 1, 2);
+        if (w === width && h === height && next === dpr) return;
+        width = w;
+        height = h;
+        dpr = next;
+        canvas.width = Math.max(1, Math.round(w * dpr));
+        canvas.height = Math.max(1, Math.round(h * dpr));
+        canvas.style.width = w + "px";
+        canvas.style.height = h + "px";
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+
+      function applySpot(elapsed) {
+        var p = samplePath(clamp(elapsed / T_SPOT, 0, 1));
+        var r = p.r * Math.max(width, height);
+        beam.style.setProperty("--spot-x", (p.x * 100).toFixed(2) + "%");
+        beam.style.setProperty("--spot-y", (p.y * 100).toFixed(2) + "%");
+        beam.style.setProperty("--spot-r", Math.max(8, r).toFixed(1) + "px");
+        if (copy) {
+          var a = 0;
+          if (elapsed >= 620 && elapsed < 2000) {
+            a = clamp((elapsed - 620) / 280, 0, 1);
+          } else if (elapsed >= 2000 && elapsed < 2600) {
+            a = 1 - clamp((elapsed - 2000) / 500, 0, 1);
+          }
+          copy.style.opacity = String(a);
+        }
+      }
+
+      function spawnFirework(px, py, palette) {
+        var n = 42;
+        var i, ang, spd, c;
+        particles.push({
+          kind: "flash",
+          x: px,
+          y: py,
+          life: 0,
+          ttl: 280,
+          r: 16,
+          color: palette[0]
+        });
+        for (i = 0; i < n; i++) {
+          ang = (Math.PI * 2 * i) / n + rand(-0.12, 0.12);
+          spd = rand(110, 320);
+          c = pick(palette);
+          particles.push({
+            kind: "spark",
+            x: px,
+            y: py,
+            vx: Math.cos(ang) * spd,
+            vy: Math.sin(ang) * spd,
+            life: 0,
+            ttl: rand(560, 1100),
+            r: rand(1.2, 2.4),
+            color: c,
+            trail: []
+          });
+        }
+      }
+
+      function spawnConfettiPiece() {
+        var isRibbon = Math.random() < 0.22;
+        var cx = width * rand(0.22, 0.78);
+        var cy = -rand(8, 70);
+        if (isRibbon) {
+          particles.push({
+            kind: "ribbon",
+            x: cx,
+            y: cy,
+            vx: rand(-40, 40),
+            vy: rand(90, 180),
+            life: 0,
+            ttl: rand(1700, 2200),
+            rot: rand(0, Math.PI * 2),
+            vr: rand(-2.4, 2.4),
+            len: rand(18, 32),
+            thick: rand(1.6, 2.6),
+            phase: rand(0, Math.PI * 2),
+            freq: rand(4, 8),
+            amp: rand(5, 11),
+            color: pick(CONFETTI_COLORS)
+          });
+        } else {
+          particles.push({
+            kind: "confetti",
+            x: cx,
+            y: cy,
+            vx: rand(-55, 55),
+            vy: rand(80, 200),
+            life: 0,
+            ttl: rand(1700, 2200),
+            rot: rand(0, Math.PI * 2),
+            vr: rand(-6, 6),
+            w: rand(5, 9),
+            h: rand(7, 13),
+            sway: rand(10, 22),
+            swayFreq: rand(2.2, 4.2),
+            phase: rand(0, Math.PI * 2),
+            color: pick(CONFETTI_COLORS)
+          });
+        }
+      }
+
+      function emitConfetti(elapsed) {
+        var target = 0;
+        if (elapsed >= T_CONFETTI) {
+          target = Math.floor(110 * clamp((elapsed - T_CONFETTI) / 700, 0, 1));
+        }
+        while (confettiCount < target) {
+          spawnConfettiPiece();
+          confettiCount += 1;
+        }
+      }
+
+      function stepParticles(dt, elapsed) {
+        var i, p, t, fade, endFade;
+        endFade = elapsed > 3000 ? 1 - Math.max(0, Math.min(1, (elapsed - 3000) / 400)) : 1;
+        for (i = particles.length - 1; i >= 0; i--) {
+          p = particles[i];
+          p.life += dt * 1000;
+          if (p.life >= p.ttl) {
+            particles.splice(i, 1);
+            continue;
+          }
+          t = p.life / p.ttl;
+          fade = t > 0.72 ? 1 - (t - 0.72) / 0.28 : 1;
+          p.alpha = fade * endFade;
+          if (p.kind === "flash") {
+            p.r = 16 + 70 * easeOutCubic(clamp(p.life / p.ttl, 0, 1));
+            p.alpha = fade * (1 - t) * 0.55;
+          } else if (p.kind === "spark") {
+            if (p.trail.length > 6) p.trail.shift();
+            p.trail.push({ x: p.x, y: p.y });
+            p.vy += 280 * dt;
+            p.vx *= 0.992;
+            p.vy *= 0.992;
+            p.x += p.vx * dt;
+            p.y += p.vy * dt;
+          } else if (p.kind === "confetti") {
+            p.vy += 210 * dt;
+            p.x += p.vx * dt + Math.sin((p.life / 1000) * p.swayFreq + p.phase) * p.sway * dt;
+            p.y += p.vy * dt;
+            p.rot += p.vr * dt;
+          } else if (p.kind === "ribbon") {
+            p.vy += 170 * dt;
+            p.x += p.vx * dt;
+            p.y += p.vy * dt;
+            p.rot += p.vr * dt;
+            p.phase += dt * p.freq;
+          }
+        }
+      }
+
+      function drawRibbon(p) {
+        var steps = 8;
+        var i, u, dx, dy, curl, px, py;
+        ctx.beginPath();
+        for (i = 0; i <= steps; i++) {
+          u = i / steps;
+          dx = Math.cos(p.rot) * p.len * (u - 0.5);
+          dy = Math.sin(p.rot) * p.len * (u - 0.5);
+          curl = Math.sin(p.phase + u * 3.2) * p.amp;
+          px = p.x + dx + Math.cos(p.rot + Math.PI / 2) * curl;
+          py = p.y + dy + Math.sin(p.rot + Math.PI / 2) * curl;
+          if (i === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        }
+        ctx.strokeStyle = p.color;
+        ctx.globalAlpha = p.alpha;
+        ctx.lineWidth = p.thick;
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+      }
+
+      function drawParticles() {
+        var i, p, j, a;
+        ctx.clearRect(0, 0, width, height);
+        for (i = 0; i < particles.length; i++) {
+          p = particles[i];
+          a = p.alpha == null ? 1 : p.alpha;
+          if (p.kind === "flash") {
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            ctx.fillStyle = p.color;
+            ctx.globalAlpha = a;
+            ctx.fill();
+          } else if (p.kind === "spark") {
+            if (p.trail.length > 1) {
+              ctx.beginPath();
+              ctx.moveTo(p.trail[0].x, p.trail[0].y);
+              for (j = 1; j < p.trail.length; j++) ctx.lineTo(p.trail[j].x, p.trail[j].y);
+              ctx.strokeStyle = p.color;
+              ctx.globalAlpha = a * 0.45;
+              ctx.lineWidth = 1.4;
+              ctx.lineCap = "round";
+              ctx.stroke();
+            }
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r * 3.2, 0, Math.PI * 2);
+            ctx.fillStyle = p.color;
+            ctx.globalAlpha = a * 0.16;
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            ctx.globalAlpha = a;
+            ctx.fill();
+          } else if (p.kind === "confetti") {
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate(p.rot);
+            ctx.globalAlpha = a;
+            ctx.fillStyle = p.color;
+            ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+            ctx.fillStyle = "rgba(255,255,255,0.42)";
+            ctx.fillRect(-p.w / 2, -p.h / 2, p.w * 0.35, p.h);
+            ctx.restore();
+          } else if (p.kind === "ribbon") {
+            drawRibbon(p);
+          }
+        }
+        ctx.globalAlpha = 1;
+      }
+
+      function maybeFireworks(elapsed) {
+        var i, pos;
+        for (i = 0; i < T_FW.length; i++) {
+          if (!fired[i] && elapsed >= T_FW[i]) {
+            fired[i] = true;
+            pos = FW_POS[i];
+            spawnFirework(pos.x * width, pos.y * height, FW_PALETTES[i]);
+          }
+        }
+      }
+
+      function liftStage() {
+        if (lifted) return;
+        lifted = true;
+        stage.classList.add("is-exit");
+        stage.setAttribute("aria-hidden", "true");
+        unlockScroll();
+        setReplay(true);
+      }
+
+      function hideStage() {
+        if (gone) return;
+        gone = true;
+        stage.classList.add("is-gone");
+        stage.setAttribute("aria-hidden", "true");
+        unlockScroll();
+      }
+
+      function stopLoop() {
+        running = false;
+        if (raf) {
+          cancelAnimationFrame(raf);
+          raf = 0;
+        }
+      }
+
+      function clearFx() {
+        particles = [];
+        confettiCount = 0;
+        ctx.clearRect(0, 0, width, height);
+        canvas.classList.add("is-gone");
+      }
+
+      function finishNow() {
+        stopLoop();
+        ending = true;
+        hideStage();
+        clearFx();
+        if (copy) copy.style.opacity = "0";
+        unlockScroll();
+        setReplay(true);
+      }
+
+      function complete() {
+        stopLoop();
+        ending = true;
+        hideStage();
+        clearFx();
+        setReplay(true);
+      }
+
+      function tick(now) {
+        if (!running) return;
+        if (!startAt) startAt = now;
+        var elapsed = now - startAt;
+        var dt = lastNow ? Math.min(0.034, (now - lastNow) / 1000) : 0.016;
+        lastNow = now;
+        applySpot(elapsed);
+        maybeFireworks(elapsed);
+        emitConfetti(elapsed);
+        if (!lifted && elapsed >= T_LIFT) liftStage();
+        if (!gone && elapsed >= T_STAGE_GONE) hideStage();
+        stepParticles(dt, elapsed);
+        drawParticles();
+        if (elapsed >= T_END) {
+          complete();
+          return;
+        }
+        raf = requestAnimationFrame(tick);
+      }
+
+      function play() {
+        if (prefersReduce()) {
+          finishNow();
+          setReplay(false);
+          return;
+        }
+        stopLoop();
+        particles = [];
+        confettiCount = 0;
+        fired = [false, false, false];
+        lifted = false;
+        gone = false;
+        ending = false;
+        startAt = 0;
+        lastNow = 0;
+        setReplay(false);
+        stage.classList.remove("is-exit", "is-gone");
+        stage.setAttribute("aria-hidden", "false");
+        canvas.classList.remove("is-gone");
+        if (copy) copy.style.opacity = "0";
+        beam.style.setProperty("--spot-x", "16%");
+        beam.style.setProperty("--spot-y", "42%");
+        beam.style.setProperty("--spot-r", "16vmin");
+        lockScroll();
+        resize();
+        ctx.clearRect(0, 0, width, height);
+        running = true;
+        raf = requestAnimationFrame(tick);
+      }
+
+      window.addEventListener("resize", function () {
+        if (running) resize();
+      });
+
+      if (skip) {
+        skip.addEventListener("click", function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          finishNow();
+        });
+      }
+
+      if (replay) {
+        replay.addEventListener("click", function (e) {
+          e.preventDefault();
+          play();
+        });
+      }
+
+      if (prefersReduce()) {
+        document.documentElement.classList.add("reduce-motion");
+        finishNow();
+        setReplay(false);
+      } else {
+        play();
+      }
     })();
   </script>
 </body>
