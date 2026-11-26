@@ -4,168 +4,425 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="index,follow">
-<meta name="theme-color" content="#0b0812">
-<title>Reynard Soft7 (Soft 7) · Seven cards on Robinhood Chain</title>
-<meta name="description" content="Reynard Soft7 — seven cards on Robinhood Chain 4663. The original collection is complete. The separate 777 public mint is open at 0.01 ETH, not free. This page will not connect a wallet.">
+<meta name="theme-color" content="#0a0710">
+<meta name="color-scheme" content="dark">
+<title>Soft7 77</title>
+<meta name="description" content="Seventy-seven painted fox wizards—each carrying a glowing potion and a role in the circle. Hand-finished art, permanently stored, zero gimmicks.">
 <link rel="canonical" href="https://tigerwillca.github.io/soft7/">
-<meta property="og:title" content="Reynard Soft7 (Soft 7)">
-<meta property="og:description" content="Seven cards on Robinhood Chain 4663. The original collection is complete. The separate 777 public mint is open at 0.01 ETH, not free.">
-<meta property="og:image" content="https://tigerwillca.github.io/soft7/assets/og.jpg">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Soft7 77">
+<meta property="og:description" content="Seventy-seven painted fox wizards—each carrying a glowing potion and a role in the circle. Hand-finished art, permanently stored, zero gimmicks.">
+<meta property="og:image" content="https://tigerwillca.github.io/soft7/art/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta property="og:url" content="https://tigerwillca.github.io/soft7/">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%230b0812'/%3E%3Ctext x='32' y='43' font-size='30' text-anchor='middle' fill='%23F3C96B' font-family='Georgia'%3E7%3C/text%3E%3C/svg%3E">
-<link rel="apple-touch-icon" href="assets/apple-touch-icon.png" sizes="180x180">
-<link rel="stylesheet" href="assets/preview.css">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Soft7 77">
+<meta name="twitter:description" content="Seventy-seven painted fox wizards—each carrying a glowing potion and a role in the circle. Hand-finished art, permanently stored, zero gimmicks.">
+<meta name="twitter:image" content="https://tigerwillca.github.io/soft7/art/og.jpg">
+<link rel="icon" type="image/png" sizes="32x32" href="art/favicon-32.png">
+<link rel="apple-touch-icon" href="art/apple-touch-icon.png" sizes="180x180">
+<link rel="preload" as="image" href="art/hero-001.webp" type="image/webp">
+<style>
+  :root {
+    --bg: #0a0710;
+    --ivory: #f4efe6;
+    --muted: #b7ad9f;
+    --quiet: #8a8174;
+    --gold: #e6c27a;
+    --line: rgba(244, 239, 230, 0.10);
+    --glow: rgba(128, 78, 196, 0.34);
+    --safe-x: max(20px, env(safe-area-inset-left));
+    --safe-r: max(20px, env(safe-area-inset-right));
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  html { background: var(--bg); }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+    background:
+      radial-gradient(1200px 700px at 50% -10%, rgba(88, 48, 140, 0.22), transparent 60%),
+      var(--bg);
+    color: var(--ivory);
+    min-height: 100svh;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  a { color: inherit; }
+  .skip {
+    position: absolute;
+    left: 12px; top: -40px;
+    background: var(--ivory); color: var(--bg);
+    padding: 8px 12px; border-radius: 10px; z-index: 20;
+  }
+  .skip:focus { top: 12px; }
+  .hero {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: calc(28px + env(safe-area-inset-top)) var(--safe-r) 20px var(--safe-x);
+    isolation: isolate;
+  }
+  .hero-glow {
+    position: absolute;
+    inset: 4% 8% auto;
+    height: min(72vw, 640px);
+    background: radial-gradient(circle at 50% 45%, var(--glow) 0%, rgba(230, 194, 122, 0.08) 36%, transparent 68%);
+    pointer-events: none;
+    z-index: -1;
+    filter: blur(8px);
+  }
+  .hero-art {
+    margin: 0;
+    line-height: 0;
+  }
+  .hero-art img {
+    display: block;
+    width: auto;
+    height: min(72svh, 820px);
+    max-width: min(92vw, 560px);
+    border-radius: 22px;
+    box-shadow:
+      0 40px 90px rgba(0, 0, 0, 0.55),
+      0 0 80px rgba(110, 60, 190, 0.18),
+      0 0 0 1px rgba(230, 194, 122, 0.10);
+  }
+  .hero-copy {
+    max-width: 36rem;
+    margin: 2.1rem 0 0;
+  }
+  h1 {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", system-ui, sans-serif;
+    font-size: clamp(2.6rem, 8vw, 5rem);
+    font-weight: 600;
+    letter-spacing: -0.035em;
+    line-height: 0.95;
+  }
+  .lede {
+    margin: 1.05rem auto 0;
+    font-size: clamp(1.05rem, 2.2vw, 1.22rem);
+    line-height: 1.55;
+    color: var(--muted);
+    font-weight: 400;
+    max-width: 32rem;
+  }
+  .cta { margin: 1.55rem 0 0; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 0.85rem 1.35rem;
+    border-radius: 999px;
+    background: var(--ivory);
+    color: #160e1c;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    letter-spacing: -0.01em;
+    transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
+  }
+  .btn:hover { background: #fff; transform: translateY(-1px); }
+  .btn:active { transform: translateY(0); }
+  .btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+  .subtle {
+    margin: 1.05rem 0 0;
+    display: flex;
+    gap: 1.35rem;
+    justify-content: center;
+    font-size: 0.95rem;
+    color: var(--quiet);
+  }
+  .subtle a {
+    color: var(--quiet);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+  }
+  .subtle a:hover { color: var(--ivory); border-bottom-color: rgba(244, 239, 230, 0.35); }
+  .subtle a:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 2px; }
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    width: min(1120px, calc(100% - var(--safe-x) - var(--safe-r)));
+    margin: 2.4rem auto 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 840px) {
+    .gallery { grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  }
+  .card {
+    appearance: none;
+    -webkit-appearance: none;
+    display: block;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: zoom-in;
+    background: #120c18;
+    box-shadow: 0 0 0 1px var(--line);
+    position: relative;
+  }
+  .card img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 2 / 3;
+    object-fit: cover;
+    transform: scale(1);
+    transition: transform 0.45s ease;
+  }
+  .card:hover img, .card:focus-visible img { transform: scale(1.045); }
+  .card:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+  .card .tag {
+    position: absolute;
+    left: 10px; bottom: 8px;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    color: rgba(244, 239, 230, 0.86);
+    text-shadow: 0 1px 8px rgba(0,0,0,0.7);
+    pointer-events: none;
+    font-variant-numeric: tabular-nums;
+  }
+  footer {
+    width: min(720px, calc(100% - var(--safe-x) - var(--safe-r)));
+    margin: 4.2rem auto 0;
+    padding: 0 0 calc(2.4rem + env(safe-area-inset-bottom));
+    color: var(--quiet);
+    font-size: 0.88rem;
+    line-height: 1.55;
+  }
+  footer details {
+    border-top: 1px solid var(--line);
+    padding-top: 1.1rem;
+  }
+  footer summary {
+    cursor: pointer;
+    list-style: none;
+    color: var(--muted);
+    font-size: 0.92rem;
+    letter-spacing: 0.01em;
+    user-select: none;
+  }
+  footer summary::-webkit-details-marker { display: none; }
+  footer summary::after {
+    content: "";
+    display: inline-block;
+    width: 6px; height: 6px;
+    margin-left: 8px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg) translateY(-2px);
+    vertical-align: middle;
+    transition: transform 0.2s ease;
+  }
+  footer details[open] summary::after {
+    transform: rotate(225deg) translateY(-1px);
+  }
+  footer summary:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 4px; }
+  .verify {
+    margin: 0.95rem 0 0;
+    padding: 0;
+    color: var(--muted);
+  }
+  .verify p { margin: 0 0 0.7rem; }
+  .verify a { color: var(--gold); text-decoration: none; }
+  .verify a:hover { text-decoration: underline; }
+  .verify code {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.78rem;
+    word-break: break-all;
+    color: var(--ivory);
+  }
+  .note {
+    margin: 1.25rem 0 0;
+    color: var(--quiet);
+    font-size: 0.86rem;
+  }
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(5, 3, 8, 0.88);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 40;
+    padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
+  }
+  .lightbox.open { display: flex; }
+  .lightbox img {
+    max-width: min(92vw, 720px);
+    max-height: 86svh;
+    width: auto;
+    height: auto;
+    border-radius: 16px;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.55);
+  }
+  .lightbox .close, .lightbox .nav {
+    appearance: none;
+    border: 0;
+    background: rgba(244, 239, 230, 0.08);
+    color: var(--ivory);
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.35rem;
+    line-height: 1;
+    position: absolute;
+  }
+  .lightbox .close { top: max(12px, env(safe-area-inset-top)); right: max(12px, env(safe-area-inset-right)); }
+  .lightbox .prev { left: max(8px, env(safe-area-inset-left)); top: 50%; transform: translateY(-50%); }
+  .lightbox .next { right: max(8px, env(safe-area-inset-right)); top: 50%; transform: translateY(-50%); }
+  .lightbox .close:hover, .lightbox .nav:hover { background: rgba(244, 239, 230, 0.16); }
+  .lightbox .close:focus-visible, .lightbox .nav:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  .lightbox .caption {
+    position: absolute;
+    left: 0; right: 0;
+    bottom: max(14px, env(safe-area-inset-bottom));
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.9rem;
+    pointer-events: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .card img, .btn, footer summary::after { transition: none; }
+    .card:hover img, .card:focus-visible img { transform: none; }
+    .btn:hover { transform: none; }
+  }
+</style>
 </head>
 <body>
 <a class="skip" href="#content">Skip to content</a>
-
-<video class="bg-video" id="soft7-bg-video" autoplay muted loop playsinline poster="assets/hero/hero-poster.jpg" aria-hidden="true">
-  <source src="assets/hero/hero-loop.webm" type="video/webm">
-  <source src="assets/hero/hero-loop.mp4" type="video/mp4">
-</video>
-<div class="bg-veil" aria-hidden="true"></div>
-
 <main id="content">
-<header class="hero-block">
-  <div class="portrait">
-    <img src="assets/hero/soft7-mascot-hero.jpg" width="853" height="1280"
-         alt="Reynard Soft7 mascot — fox in a purple hooded robe and mask, glowing purple eyes, belt flask with lime-green portal energy. Banner on the art: REYNARD · MASK DEPTH.">
+  <section class="hero">
+    <div class="hero-glow" aria-hidden="true"></div>
+    <figure class="hero-art">
+      <img src="art/hero-001.webp" width="600" height="900" alt="Painted fox wizard in a tattered purple cloak, crouched, with glowing violet eyes, a violet amulet, and a green-gold potion vial at the belt.">
+    </figure>
+    <div class="hero-copy">
+      <h1>Soft7 77</h1>
+      <p class="lede">Seventy-seven painted fox wizards—each carrying a glowing potion and a role in the circle. Hand-finished art, permanently stored, zero gimmicks.</p>
+      <p class="cta"><a class="btn" href="https://opensea.io/collection/soft7-77" rel="noopener noreferrer">Explore on OpenSea →</a></p>
+      <p class="subtle">
+        <a href="https://tigerwillca.github.io/stickers/">Free Stickers</a>
+        <a href="https://x.com/TigerwillcaX" rel="noopener noreferrer">X</a>
+      </p>
+    </div>
+  </section>
+
+  <div class="gallery" role="list" aria-label="Painted fox wizards">
+    <button type="button" class="card" role="listitem" data-full="art/hero-001.webp" data-caption="001 · Tiger Will CA" aria-label="Enlarge 001, Tiger Will CA">
+      <img src="art/001.webp" width="400" height="600" alt="001, Tiger Will CA: crouched fox wizard in a tattered purple cloak with a glowing potion.">
+      <span class="tag">001</span>
+    </button>
+    <button type="button" class="card" role="listitem" data-full="art/full-009.webp" data-caption="009 · Fox Wizard #009" aria-label="Enlarge 009, Fox Wizard 009">
+      <img src="art/009.webp" width="400" height="600" alt="009: tiger wizard in a dark violet robe against a purple field, gold medallion at the chest.">
+      <span class="tag">009</span>
+    </button>
+    <button type="button" class="card" role="listitem" data-full="art/full-010.webp" data-caption="010 · Fox Wizard #010" aria-label="Enlarge 010, Fox Wizard 010">
+      <img src="art/010.webp" width="400" height="600" alt="010: fox wizard in a black robe, yellow potion flask, warm gold light.">
+      <span class="tag">010</span>
+    </button>
+    <button type="button" class="card" role="listitem" data-full="art/full-013.webp" data-caption="013 · Fox Wizard #013" aria-label="Enlarge 013, Fox Wizard 013">
+      <img src="art/013.webp" width="400" height="600" alt="013: tiger wizard in a black robe, looking back over one shoulder, yellow potion at the belt.">
+      <span class="tag">013</span>
+    </button>
+    <button type="button" class="card" role="listitem" data-full="art/full-014.webp" data-caption="014 · Fox Wizard #014" aria-label="Enlarge 014, Fox Wizard 014">
+      <img src="art/014.webp" width="400" height="600" alt="014: fox wizard in a soot-umber robe, one paw raised with faint spell-smoke.">
+      <span class="tag">014</span>
+    </button>
+    <button type="button" class="card" role="listitem" data-full="art/full-027.webp" data-caption="027 · Fox Wizard #027" aria-label="Enlarge 027, Fox Wizard 027">
+      <img src="art/027.webp" width="400" height="600" alt="027: tiger wizard in a soot-umber robe, holding a gnarled staff, yellow potion at the belt.">
+      <span class="tag">027</span>
+    </button>
+    <button type="button" class="card" role="listitem" data-full="art/full-042.webp" data-caption="042 · Fox Wizard #042" aria-label="Enlarge 042, Fox Wizard 042">
+      <img src="art/042.webp" width="400" height="600" alt="042: fox wizard in a dark violet robe, gold flask at the hip, purple backdrop.">
+      <span class="tag">042</span>
+    </button>
+    <button type="button" class="card" role="listitem" data-full="art/full-071.webp" data-caption="071 · Fox Wizard #071" aria-label="Enlarge 071, Fox Wizard 071">
+      <img src="art/071.webp" width="400" height="600" alt="071: tiger wizard in a soot-umber robe, both paws cupped around a glowing purple potion.">
+      <span class="tag">071</span>
+    </button>
   </div>
-  <p class="portrait-cap">Reynard · Mask Depth</p>
-
-  <svg class="motif" viewBox="0 0 100 100" role="img" aria-label="Soft7 seven-point star"><g fill="none" stroke-linejoin="round" stroke-linecap="round"><circle cx="50" cy="50" r="44" stroke="#a77bff" stroke-width="1.1"/><path d="M50,14L85.097,58.011L34.38,82.435L21.854,27.554L78.146,27.554L65.62,82.435L14.903,58.011Z" stroke="#f3c96b" stroke-width="1.5"/></g></svg>
-
-  <p class="kicker">Robinhood Chain · 4663</p>
-  <h1>Reynard Soft7 (Soft 7)</h1>
-  <p class="line1">Seven cards. One circle. The first door.</p>
-
-  <div class="purpose">
-    <p><b>Built for family, and for the people.</b> Not for me.</p>
-    <p>Reynard Soft7 is a small collection of seven cards. Each one shows a hooded Reynard wanderer — fox or tiger — holding a glowing vial against walls of gold and starlight. Together, the seven make one circle.</p>
-    <p>Soft7 is the first door. Pulse is the heartbeat. Project X is the bridge. You don't need to know crypto to enjoy the story — start with the cards.</p>
-  </div>
-</header>
-
-<div class="btns">
-  <a class="btn" href="#the-seven">See the seven cards</a>
-  <a class="btn ghost" href="holders/">Holders &amp; whitelist</a>
-  <button type="button" disabled aria-disabled="true">Mint is not on this page</button>
-</div>
-<p class="hint">This page will not ask you to connect a wallet or share a key. Soft7 itself is already complete — seven cards, all minted.</p>
-
-<div class="box" id="mint-status">
-  <p><strong>Original Soft7 (7 cards) is complete</strong> — all seven are already minted. There is no further Soft7 mint.</p>
-  <p><strong>The separate 777 public mint is open, at 0.01 ETH per card — not free.</strong> A read-only check on Robinhood Chain 4663 on 20 Nov 2026 at 10:39:52 AM PT (PST), block 119,269,494, read <code>mintOpen() = true</code> and <code>mintPrice() = 0.01 ETH</code> (10,000,000,000,000,000 wei) on contract <code>0xd402e72cad129c2E64A9b04B5e8Ec93D1d64DFDF</code>.</p>
-  <p>This page does not mint and will not connect a wallet. Verify on <a href="https://robinhoodchain.blockscout.com/token/0xd402e72cad129c2E64A9b04B5e8Ec93D1d64DFDF" target="_blank" rel="noopener noreferrer">Blockscout</a> or see the collection on <a href="https://opensea.io/collection/reynard-soft7-777" target="_blank" rel="noopener noreferrer">OpenSea</a>.</p>
-</div>
-
-
-<section class="globe-section" aria-labelledby="globe-heading">
-  <h2 id="globe-heading">The Globe</h2>
-  <p class="globe-lede">A slow-spinning celestial orb — official Soft7 links as gates. Touch a node to enter.</p>
-  <div class="globe-stage" role="group" aria-label="The Globe — Soft7 link nodes">
-    <div class="globe-mist" aria-hidden="true"></div>
-    <div class="ring outer" aria-hidden="true"></div>
-    <div class="ring mid" aria-hidden="true"></div>
-    <div class="globe-orb" aria-hidden="true"><div class="orb-glass"></div></div>
-    <nav class="globe-nodes" aria-label="Soft7 globe nodes">
-      <a class="globe-node n" href="https://opensea.io/collection/reynard-soft7" target="_blank" rel="noopener noreferrer" aria-label="OpenSea — Reynard Soft7 collection" title="OpenSea collection"><span>Open<br>Sea</span></a>
-      <a class="globe-node e" href="https://robinhoodchain.blockscout.com/token/0x73D7b2611509C14078e16f572bE5aC7D91879DC2" target="_blank" rel="noopener noreferrer" aria-label="Blockscout — Soft7 contract on Robinhood Chain" title="Blockscout contract"><span>Block<br>scout</span></a>
-      <a class="globe-node s" href="holders/" aria-label="Holders and whitelist page" title="Holders and whitelist"><span>Hold<br>ers</span></a>
-      <a class="globe-node w" href="https://x.com/tigerwillca" target="_blank" rel="noopener noreferrer" aria-label="X profile — @tigerwillca, as linked on the live Soft7 site" title="@tigerwillca on X"><span>X</span></a>
-    </nav>
-  </div>
-  <div class="globe-fallback" aria-label="Soft7 links (list)">
-    <a href="https://opensea.io/collection/reynard-soft7" target="_blank" rel="noopener noreferrer">OpenSea</a>
-    <a href="https://robinhoodchain.blockscout.com/token/0x73D7b2611509C14078e16f572bE5aC7D91879DC2" target="_blank" rel="noopener noreferrer">Blockscout</a>
-    <a href="holders/">Holders &amp; whitelist</a>
-    <a href="https://x.com/tigerwillca" target="_blank" rel="noopener noreferrer">X · @tigerwillca</a>
-  </div>
-  <p class="hint">The live Soft7 site links @tigerwillca. Official account for a later launch or X Spaces: <span class="confirm">To be announced</span></p>
-</section>
-
-<h2 id="the-seven">The seven</h2>
-<p class="hint">Art 033–039. Species: Tigers #1, #3, #5, #7 and Foxes #2, #4, #6. Verify links are under each card. This page does not read the chain.</p>
-<div class="grid">
-  <figure class="card"><img src="assets/cards/033.webp" alt="Soft7 #1, a tiger in a robe, art 033, 777 belt" width="439" height="660"><figcaption><h3>#1 · Tiger</h3><p>Art 033 · tokenId 1<br><a href="https://robinhoodchain.blockscout.com/token/0x73D7b2611509C14078e16f572bE5aC7D91879DC2/instance/1" target="_blank" rel="noopener noreferrer">Blockscout</a> · <a href="https://opensea.io/item/robinhood/0x73d7b2611509c14078e16f572be5ac7d91879dc2/1" target="_blank" rel="noopener noreferrer">OpenSea</a></p></figcaption></figure>
-  <figure class="card"><img src="assets/cards/034.webp" alt="Soft7 #2, a fox in a robe, art 034, 777 belt" width="439" height="660"><figcaption><h3>#2 · Fox</h3><p>Art 034 · tokenId 2<br><a href="https://robinhoodchain.blockscout.com/token/0x73D7b2611509C14078e16f572bE5aC7D91879DC2/instance/2" target="_blank" rel="noopener noreferrer">Blockscout</a> · <a href="https://opensea.io/item/robinhood/0x73d7b2611509c14078e16f572be5ac7d91879dc2/2" target="_blank" rel="noopener noreferrer">OpenSea</a></p></figcaption></figure>
-  <figure class="card"><img src="assets/cards/035.webp" alt="Soft7 #3, a tiger in a robe, art 035, 777 belt" width="439" height="660"><figcaption><h3>#3 · Tiger</h3><p>Art 035 · tokenId 3<br><a href="https://robinhoodchain.blockscout.com/token/0x73D7b2611509C14078e16f572bE5aC7D91879DC2/instance/3" target="_blank" rel="noopener noreferrer">Blockscout</a> · <a href="https://opensea.io/item/robinhood/0x73d7b2611509c14078e16f572be5ac7d91879dc2/3" target="_blank" rel="noopener noreferrer">OpenSea</a></p></figcaption></figure>
-  <figure class="card"><img src="assets/cards/036.webp" alt="Soft7 #4, a fox in a robe, art 036, 777 belt" width="439" height="660"><figcaption><h3>#4 · Fox</h3><p>Art 036 · tokenId 4<br><a href="https://robinhoodchain.blockscout.com/token/0x73D7b2611509C14078e16f572bE5aC7D91879DC2/instance/4" target="_blank" rel="noopener noreferrer">Blockscout</a> · <a href="https://opensea.io/item/robinhood/0x73d7b2611509c14078e16f572be5ac7d91879dc2/4" target="_blank" rel="noopener noreferrer">OpenSea</a></p></figcaption></figure>
-  <figure class="card"><img src="assets/cards/037.webp" alt="Soft7 #5, a tiger in a robe, art 037, 777 belt" width="439" height="660"><figcaption><h3>#5 · Tiger</h3><p>Art 037 · tokenId 5<br><a href="https://robinhoodchain.blockscout.com/token/0x73D7b2611509C14078e16f572bE5aC7D91879DC2/instance/5" target="_blank" rel="noopener noreferrer">Blockscout</a> · <a href="https://opensea.io/item/robinhood/0x73d7b2611509c14078e16f572be5ac7d91879dc2/5" target="_blank" rel="noopener noreferrer">OpenSea</a></p></figcaption></figure>
-  <figure class="card"><img src="assets/cards/038.webp" alt="Soft7 #6, a fox in a robe, art 038, 777 belt" width="439" height="660"><figcaption><h3>#6 · Fox</h3><p>Art 038 · tokenId 6<br><a href="https://robinhoodchain.blockscout.com/token/0x73D7b2611509C14078e16f572bE5aC7D91879DC2/instance/6" target="_blank" rel="noopener noreferrer">Blockscout</a> · <a href="https://opensea.io/item/robinhood/0x73d7b2611509c14078e16f572be5ac7d91879dc2/6" target="_blank" rel="noopener noreferrer">OpenSea</a></p></figcaption></figure>
-  <figure class="card"><img src="assets/cards/039.webp" alt="Soft7 #7, a tiger in a robe, art 039, 777 belt" width="439" height="660"><figcaption><h3>#7 · Tiger</h3><p>Art 039 · tokenId 7<br><a href="https://robinhoodchain.blockscout.com/token/0x73D7b2611509C14078e16f572bE5aC7D91879DC2/instance/7" target="_blank" rel="noopener noreferrer">Blockscout</a> · <a href="https://opensea.io/item/robinhood/0x73d7b2611509c14078e16f572be5ac7d91879dc2/7" target="_blank" rel="noopener noreferrer">OpenSea</a></p></figcaption></figure>
-</div>
-
-<h2>What Soft7 is</h2>
-<div class="box">
-  <p><strong>Soft7 is seven cards on Robinhood Chain (4663)</strong> — tokenIds 1–7, Art 033–039. The original collection is complete. Soft7’s own contract has no further mint path on this page.</p>
-  <p>Contract (verify, do not trust this page alone):<br><code>0x73D7b2611509C14078e16f572bE5aC7D91879DC2</code></p>
-  <p>Collection on OpenSea: <a href="https://opensea.io/collection/reynard-soft7" target="_blank" rel="noopener noreferrer">reynard-soft7</a>. Proof on <a href="https://robinhoodchain.blockscout.com/token/0x73D7b2611509C14078e16f572bE5aC7D91879DC2" target="_blank" rel="noopener noreferrer">Blockscout</a>. The earlier card gallery, with a live chain readout, remains at <a href="https://tigerwillca.github.io/soft7/seven.html">tigerwillca.github.io/soft7/seven.html</a>.</p>
-  <p><small>Holder counts, prices, and dates are not stated here. This page does not read the chain. Check Blockscout or OpenSea for the current holder picture. Holder distributions and staking are not open yet.</small></p>
-</div>
-<div class="btns">
-  <a class="btn ghost" href="seven.html">Card gallery</a>
-  <a class="btn ghost" href="https://opensea.io/collection/reynard-soft7" target="_blank" rel="noopener noreferrer">OpenSea</a>
-  <a class="btn ghost" href="https://robinhoodchain.blockscout.com/token/0x73D7b2611509C14078e16f572bE5aC7D91879DC2" target="_blank" rel="noopener noreferrer">Verify contract</a>
-</div>
-
-<h2>Whitelist — before what comes next</h2>
-<div class="box">
-  <p><strong>The whitelist opens before the public launch of what comes next.</strong> Soft7 itself is already complete. The qualify path is seven green #CCFF00 squares, or one CCFF00 cube, on Robinhood Chain. What the list grants, and the dates, are <span class="confirm">To be announced</span>.</p>
-  <p>How to check eligibility, collection links, and safety notes are on the holders page. This page has no sign-up form.</p>
-</div>
-<div class="btns">
-  <a class="btn" href="holders/">How the whitelist works</a>
-  <button type="button" disabled aria-disabled="true">Join the list — opens at launch review</button>
-  <button type="button" disabled aria-disabled="true">Mint is not on this page</button>
-</div>
-
-<h2>FAQ</h2>
-<details>
-  <summary>What is Soft7?</summary>
-  <p>Seven cards (tokenIds 1–7, Art 033–039) on Robinhood Chain 4663. Soft7 is the first door.</p>
-</details>
-<details>
-  <summary>Can I mint a Soft7 card here?</summary>
-  <p>No. The mint button on this page is disabled. The Soft7 collection is complete at supply 7, and all seven are already minted in the records used for this page. No price or mint date is offered here.</p>
-</details>
-<details>
-  <summary>What is the real Soft7 contract?</summary>
-  <p><code>0x73D7b2611509C14078e16f572bE5aC7D91879DC2</code> on Robinhood Chain 4663. Verify on Blockscout and OpenSea (collection <em>reynard-soft7</em>). Do not rely on a similarly named testnet page.</p>
-</details>
-<details>
-  <summary>What is Pulse / Project X?</summary>
-  <p>Pulse is the heartbeat. Project X is the bridge.</p>
-</details>
-<details>
-  <summary>Will this page ask for my wallet or seed phrase?</summary>
-  <p>No. A real Soft7 page will never ask for your seed phrase. This page has no wallet-connect and no working mint.</p>
-</details>
-
-<hr class="quiet">
-<p class="sub" style="font-style:italic">After launch, Soft7 will be explained live on X Spaces. The host is <span class="confirm">to be announced</span>.</p>
-<p class="sub">Bring 'em out, make 'em believe.</p>
-<p class="hint">Official Space time and account: <span class="confirm">To be announced</span></p>
-
-<nav class="pair"><span></span><a href="holders/">Holders &amp; whitelist →</a></nav>
-<footer>
-  <p>Published 20 Nov 2026, America/Los_Angeles. This page does not mint and will not connect a wallet.<br>
-  Soft7 contract (verify only): <code>0x73D7b2611509C14078e16f572bE5aC7D91879DC2</code> · 777 contract (verify only): <code>0xd402e72cad129c2E64A9b04B5e8Ec93D1d64DFDF</code> · Robinhood Chain 4663.</p>
-</footer>
 </main>
+
+<footer>
+  <details>
+    <summary>Verify &amp; Details</summary>
+    <div class="verify">
+      <p>Contract<br><code>0x5db625c49b2a9DD40464069fc16B9a2f3B11bF3d</code></p>
+      <p>
+        <a href="https://robinhoodchain.blockscout.com/address/0x5db625c49b2a9DD40464069fc16B9a2f3B11bF3d" rel="noopener noreferrer">Blockscout</a>
+        ·
+        <a href="https://repo.sourcify.dev/4663/0x5db625c49b2a9DD40464069fc16B9a2f3B11bF3d" rel="noopener noreferrer">Sourcify</a>
+      </p>
+      <p>7.5% ERC-2981 creator earnings</p>
+    </div>
+  </details>
+  <p class="note">Built on Robinhood Chain, not a Robinhood product.</p>
+</footer>
+
+<div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="Artwork viewer">
+  <button type="button" class="close" aria-label="Close">×</button>
+  <button type="button" class="nav prev" aria-label="Previous artwork">‹</button>
+  <img alt="">
+  <button type="button" class="nav next" aria-label="Next artwork">›</button>
+  <div class="caption"></div>
+</div>
+
 <script>
 (function () {
-  var vid = document.getElementById('soft7-bg-video');
-  if (vid && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    try { vid.pause(); } catch (e) {}
-    vid.removeAttribute('autoplay');
-    vid.style.display = 'none';
+  var cards = Array.prototype.slice.call(document.querySelectorAll(".card"));
+  var box = document.getElementById("lightbox");
+  var img = box.querySelector("img");
+  var cap = box.querySelector(".caption");
+  var closeBtn = box.querySelector(".close");
+  var prevBtn = box.querySelector(".prev");
+  var nextBtn = box.querySelector(".next");
+  var index = 0;
+  var lastFocus = null;
+
+  function openAt(i) {
+    index = (i + cards.length) % cards.length;
+    var card = cards[index];
+    lastFocus = document.activeElement;
+    img.src = card.getAttribute("data-full");
+    img.alt = card.querySelector("img").alt;
+    cap.textContent = card.getAttribute("data-caption") || "";
+    box.hidden = false;
+    box.classList.add("open");
+    document.body.style.overflow = "hidden";
+    closeBtn.focus();
   }
-  var orb = document.querySelector('.globe-orb');
-  if (!orb) return;
-  document.querySelectorAll('.globe-node').forEach(function (n) {
-    n.addEventListener('mouseenter', function () { orb.style.animationPlayState = 'paused'; });
-    n.addEventListener('mouseleave', function () { orb.style.animationPlayState = 'running'; });
+  function close() {
+    box.classList.remove("open");
+    box.hidden = true;
+    img.removeAttribute("src");
+    document.body.style.overflow = "";
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  cards.forEach(function (card, i) {
+    card.addEventListener("click", function () { openAt(i); });
+  });
+  closeBtn.addEventListener("click", close);
+  prevBtn.addEventListener("click", function (e) { e.stopPropagation(); openAt(index - 1); });
+  nextBtn.addEventListener("click", function (e) { e.stopPropagation(); openAt(index + 1); });
+  box.addEventListener("click", function (e) { if (e.target === box) close(); });
+  document.addEventListener("keydown", function (e) {
+    if (!box.classList.contains("open")) return;
+    if (e.key === "Escape") close();
+    if (e.key === "ArrowLeft") openAt(index - 1);
+    if (e.key === "ArrowRight") openAt(index + 1);
   });
 })();
 </script>
