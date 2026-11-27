@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Billy's Stickers</title>
 <meta property="og:title" content="Billy's Stickers">
 <meta property="og:type" content="website">
@@ -12,12 +12,564 @@
 <meta property="og:image:height" content="2100">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://tigerwillca.github.io/soft7/billy-stickers.jpg">
+<link rel="icon" type="image/webp" href="billy-assets/soft7-77-001.webp">
+<link rel="preload" as="image" href="billy-assets/soft7-77-001.webp">
+<link rel="preload" as="image" href="billy-assets/soft7-77-002.webp">
+<link rel="preload" as="image" href="billy-assets/soft7-77-003.webp">
+<link rel="preload" as="image" href="billy-assets/soft7-77-004.webp">
+<link rel="preload" as="image" href="billy-assets/soft7-77-005.webp">
+<link rel="preload" as="image" href="billy-assets/soft7-77-006.webp">
+<link rel="preload" as="image" href="billy-assets/soft7-77-007.webp">
+<link rel="preload" as="image" href="billy-assets/owl.webp">
 <style>
-  html, body { margin: 0; padding: 0; background: #07080d; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
-  img { display: block; max-width: 100vw; max-height: 100vh; width: auto; height: auto; object-fit: contain; }
+  @property --spot-x { syntax: '<percentage>'; inherits: false; initial-value: -20%; }
+  @property --spot-y { syntax: '<percentage>'; inherits: false; initial-value: 40%; }
+  :root{
+    --ink:#07080d; --gold:#F5D78E; --gold2:#E8C468; --deep:#B88A3A;
+    --lime:#CCFF00; --opal:#F4F1FF; --text:#ECE9F7;
+    --swirl-ms:1600ms; --graf-ms:1400ms; --spot-ms:1800ms; --owl-ms:1600ms;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--ink);color:var(--text);
+    font:700 16px/1.15 -apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Impact,Haettenschweiler,sans-serif;
+    min-height:100%;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;
+    overflow-x:hidden}
+  body{min-height:100dvh;
+    background:
+      radial-gradient(90vw 50vh at 50% -8%, rgba(245,215,142,.22), transparent 60%),
+      radial-gradient(70vw 45vh at 100% 110%, rgba(204,255,0,.08), transparent 58%),
+      radial-gradient(60vw 40vh at 0% 80%, rgba(120,70,210,.18), transparent 55%),
+      radial-gradient(50vw 30vh at 90% 20%, rgba(0,210,255,.10), transparent 50%),
+      linear-gradient(180deg,#151729 0%, var(--ink) 55%)}
+
+  .stage{position:relative;min-height:100dvh;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;padding:max(8px,env(safe-area-inset-top)) 10px max(10px,env(safe-area-inset-bottom));
+    isolation:isolate}
+
+  /* FX layers */
+  canvas#fx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:40}
+  .layer{position:absolute;inset:0;pointer-events:none;z-index:30;opacity:0}
+  .swirl-layer{
+    background:
+      repeating-conic-gradient(from var(--spin,0deg) at 50% 42%,
+        rgba(245,215,142,.0) 0deg 12deg,
+        rgba(245,215,142,.28) 16deg,
+        rgba(204,255,0,.22) 22deg,
+        rgba(160,90,255,.18) 30deg,
+        rgba(0,220,255,.16) 38deg,
+        rgba(245,215,142,0) 48deg);
+    filter:blur(6px) contrast(1.15);mix-blend-mode:screen;
+    -webkit-mask-image:radial-gradient(circle at 50% 42%, #000 18%, transparent 68%);
+            mask-image:radial-gradient(circle at 50% 42%, #000 18%, transparent 68%)}
+  .swirl-layer.play{opacity:1;animation:swirlSpin var(--swirl-ms) cubic-bezier(.2,.7,.2,1) forwards}
+  @keyframes swirlSpin{
+    0%{opacity:0;transform:scale(1.35) rotate(0deg);--spin:0deg;filter:blur(14px)}
+    18%{opacity:1}
+    70%{opacity:1;transform:scale(1) rotate(540deg);filter:blur(4px)}
+    100%{opacity:0;transform:scale(.55) rotate(720deg);filter:blur(18px)}
+  }
+  .graffiti-layer.play{opacity:1;animation:grafPulse var(--graf-ms) ease-out forwards}
+  .graffiti-layer svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+  .graffiti-layer path{fill:none;stroke-linecap:round;stroke-linejoin:round;
+    stroke-dasharray:1;stroke-dashoffset:1;filter:drop-shadow(0 0 8px currentColor)}
+  .graffiti-layer.play path{animation:grafDraw var(--graf-ms) cubic-bezier(.2,.85,.2,1) forwards}
+  .graffiti-layer path:nth-child(2){animation-delay:.08s}
+  .graffiti-layer path:nth-child(3){animation-delay:.14s}
+  .graffiti-layer path:nth-child(4){animation-delay:.2s}
+  .graffiti-layer path:nth-child(5){animation-delay:.1s}
+  @keyframes grafDraw{to{stroke-dashoffset:0}}
+  @keyframes grafPulse{0%{opacity:0}12%{opacity:1}80%{opacity:1}100%{opacity:.55}}
+  .spray{position:absolute;border-radius:50%;pointer-events:none;mix-blend-mode:screen;opacity:0}
+  .graffiti-layer.play .spray{animation:sprayPop .9s ease-out forwards}
+  .spray.s1{left:4%;top:42%;width:22vmin;height:22vmin;background:radial-gradient(circle,rgba(204,255,0,.7),transparent 68%);animation-delay:.15s}
+  .spray.s2{right:3%;top:36%;width:24vmin;height:24vmin;background:radial-gradient(circle,rgba(0,230,255,.6),transparent 68%);animation-delay:.22s}
+  .spray.s3{left:8%;bottom:18%;width:20vmin;height:20vmin;background:radial-gradient(circle,rgba(170,110,255,.55),transparent 68%);animation-delay:.3s}
+  .spray.s4{right:8%;bottom:16%;width:22vmin;height:22vmin;background:radial-gradient(circle,rgba(245,215,142,.6),transparent 68%);animation-delay:.18s}
+  .spray.s5{left:40%;top:10%;width:18vmin;height:18vmin;background:radial-gradient(circle,rgba(204,255,0,.45),transparent 68%);animation-delay:.35s}
+  @keyframes sprayPop{0%{opacity:0;transform:scale(.2)}40%{opacity:.9;transform:scale(1)}100%{opacity:.35;transform:scale(1.15)}}
+
+  .spotlight-layer{z-index:25;
+    background:radial-gradient(circle at var(--spot-x, -20%) var(--spot-y, 40%),
+      rgba(255,252,235,.92) 0,
+      rgba(255,236,180,.55) 8%,
+      rgba(245,215,142,.28) 16%,
+      rgba(204,255,0,.10) 24%,
+      rgba(7,8,13,.55) 42%,
+      rgba(7,8,13,.0) 68%);
+    mix-blend-mode:screen}
+  .spotlight-layer.play{opacity:1;animation:spotSweep var(--spot-ms) ease-in-out forwards}
+  .spotlight-layer.hold{opacity:1;animation:spotHold 3.4s ease-in-out infinite;
+    background:radial-gradient(ellipse 70% 60% at 50% 42%,
+      rgba(255,240,200,.28) 0,
+      rgba(245,215,142,.14) 28%,
+      rgba(204,255,0,.07) 50%,
+      transparent 72%)}
+  @keyframes spotSweep{
+    0%{opacity:0;--spot-x:-15%;--spot-y:30%}
+    12%{opacity:1}
+    50%{--spot-x:50%;--spot-y:42%}
+    100%{opacity:.85;--spot-x:115%;--spot-y:48%}
+  }
+  @keyframes spotHold{
+    0%,100%{opacity:.7;filter:brightness(1)}
+    50%{opacity:1;filter:brightness(1.15)}
+  }
+
+  /* Header + owl */
+  .top{position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;
+    width:min(1100px,100%);flex:0 0 auto;margin-bottom:.4vh}
+  .owl-wrap{position:absolute;left:50%;top:58%;transform:translate(-50%,-50%) scale(.28);
+    width:min(46vmin,300px);height:min(46vmin,300px);z-index:0;pointer-events:none;
+    filter:drop-shadow(0 0 12px rgba(245,215,142,.35));opacity:1}
+  .owl-wrap img{width:100%;height:100%;object-fit:contain;display:block;opacity:1;
+    clip-path:circle(48% at 50% 50%)}
+  .hero-core .hero-slang,.hero-core .wiz{position:relative;z-index:2}
+  .owl-wrap.play{animation:owlBloom var(--owl-ms) cubic-bezier(.2,.85,.2,1.05) forwards;z-index:0}
+  .owl-wrap.hold{transform:translate(-50%,-56%) scale(1.05);filter:drop-shadow(0 0 28px rgba(245,215,142,.85)) drop-shadow(0 0 60px rgba(204,255,0,.45))}
+  .owl-wrap.play::before,.owl-wrap.hold::before{content:"";position:absolute;inset:-38%;border-radius:50%;z-index:-1;
+    background:radial-gradient(circle,rgba(255,236,180,.85),rgba(245,215,142,.42) 36%,rgba(204,255,0,.22) 55%,transparent 74%)}
+  .owl-wrap.play::before{animation:aura 1.6s ease-out forwards}
+  .owl-wrap.hold::before{animation:auraHold 3s ease-in-out infinite}
+  @keyframes owlBloom{
+    0%{transform:translate(-50%,-50%) scale(.28);filter:drop-shadow(0 0 8px rgba(245,215,142,.3))}
+    60%{transform:translate(-50%,-58%) scale(1.18);filter:drop-shadow(0 0 36px rgba(245,215,142,.95)) drop-shadow(0 0 70px rgba(204,255,0,.55))}
+    100%{transform:translate(-50%,-56%) scale(1.05);filter:drop-shadow(0 0 28px rgba(245,215,142,.85)) drop-shadow(0 0 60px rgba(204,255,0,.45))}
+  }
+  @keyframes aura{0%{opacity:0;transform:scale(.4)}70%{opacity:1;transform:scale(1.05)}100%{opacity:.9;transform:scale(1)}}
+  @keyframes auraHold{0%,100%{opacity:.75;transform:scale(1)}50%{opacity:1;transform:scale(1.08)}}
+
+  h1{position:relative;z-index:5;margin:0;font-size:clamp(32px,7vw,76px);line-height:.9;
+    letter-spacing:.06em;font-weight:900;text-align:center;
+    background:linear-gradient(180deg,#FFF8E0 0%,#F5D78E 38%,#C99A3E 55%,#F5D78E 72%,#FFF1C4 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 0 2px rgba(255,240,200,.9)) drop-shadow(0 3px 0 #6b4a12) drop-shadow(0 0 22px rgba(245,215,142,.55))}
+
+  .pills{position:relative;z-index:5;display:flex;flex-wrap:wrap;justify-content:center;gap:5px 6px;
+    width:min(980px,100%);margin:.5vh 0 .3vh;padding:0 2px}
+  .pill{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;
+    padding:5px 11px;font-size:clamp(10px,2.4vw,13px);letter-spacing:.08em;font-weight:900;
+    color:#1a1404;background:linear-gradient(180deg,#FFF3C8,var(--gold) 55%,var(--gold2));
+    box-shadow:0 0 0 1px rgba(184,138,58,.65) inset,0 3px 8px rgba(0,0,0,.35);
+    text-transform:uppercase;white-space:nowrap;opacity:1}
+  .pill.lime{color:#102000;background:linear-gradient(180deg,#F3FFB0,var(--lime) 60%,#9FCB00);
+    box-shadow:0 0 0 1px rgba(80,120,0,.5) inset,0 3px 8px rgba(0,0,0,.35)}
+  .pill.ink{color:var(--gold);background:#12162a;box-shadow:0 0 0 2px var(--gold) inset,0 3px 8px rgba(0,0,0,.35)}
+
+  /* Sticker sheet — wizards + slang paired in one stage */
+  .sheet{position:relative;z-index:12;width:min(980px,100%);display:flex;flex-direction:column;gap:0.7vh;
+    padding:0 2px 4px}
+  .hero-band{display:grid;grid-template-columns:minmax(64px,1fr) auto minmax(64px,1fr);
+    align-items:center;gap:6px 8px;width:100%}
+  .side{display:flex;flex-direction:column;align-items:center;gap:8px;justify-content:center}
+  .hero-core{display:flex;flex-direction:column;align-items:center;gap:6px;position:relative}
+  .hero-slang{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap}
+  .rows{display:flex;flex-direction:column;gap:1.1vh}
+  .row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px 8px;width:100%}
+  .cell{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;min-width:0}
+
+  button.wiz,button.slang{appearance:none;background:transparent;border:0;padding:0;margin:0;
+    cursor:pointer;color:inherit;font:inherit;line-height:0;position:relative;opacity:1}
+  button.wiz:focus-visible,button.slang:focus-visible{outline:2px solid var(--lime);outline-offset:3px;border-radius:16px}
+  button.wiz img,button.slang img{display:block;height:auto;opacity:1;max-width:100%}
+  button.wiz img{filter:drop-shadow(0 18px 16px rgba(0,0,0,.8)) drop-shadow(0 0 16px rgba(245,215,142,.4))}
+  button.wiz.hero img{width:min(42vw,26vh,320px);filter:drop-shadow(0 26px 22px rgba(0,0,0,.85)) drop-shadow(0 0 26px rgba(245,215,142,.55)) drop-shadow(0 0 60px rgba(204,255,0,.18))}
+  button.wiz:not(.hero) img{width:min(28vw,16.5vh,200px)}
+  button.slang img{width:min(14vw,9.5vh,100px);filter:drop-shadow(0 8px 10px rgba(0,0,0,.7)) drop-shadow(0 0 8px rgba(245,215,142,.28))}
+  button.slang.lg img{width:min(17vw,11vh,118px)}
+  button.slang.sm img{width:min(12vw,8.5vh,84px)}
+  .cell .slang{position:absolute;z-index:3;top:-6%;left:2%;transform:rotate(-8deg)}
+  .cell:nth-child(2) .slang{left:auto;right:2%;transform:rotate(7deg)}
+  .cell:nth-child(3) .slang{left:auto;right:0;transform:rotate(8deg)}
+  .cell .tag{position:absolute;z-index:4;bottom:4%;right:4%;pointer-events:none;
+    font-size:clamp(8px,1.8vw,11px);padding:3px 8px}
+  .cell:nth-child(2) .tag{right:auto;left:4%}
+
+  /* Swirl entrance — transforms only, opacity stays 1 */
+  body.is-swirl .wiz img,body.is-swirl .slang img{
+    animation:swirlIn var(--swirl-ms) cubic-bezier(.15,.8,.2,1) both}
+  body.is-swirl .cell:nth-child(1) img{animation-delay:.04s}
+  body.is-swirl .cell:nth-child(2) img{animation-delay:.1s}
+  body.is-swirl .cell:nth-child(3) img{animation-delay:.16s}
+  @keyframes swirlIn{
+    0%{transform:rotate(-520deg) scale(.12)}
+    70%{transform:rotate(18deg) scale(1.06)}
+    100%{transform:rotate(0) scale(1)}
+  }
+  body.is-graffiti .wiz img{animation:grafBump .45s ease-out both}
+  @keyframes grafBump{0%{transform:scale(1)}40%{transform:scale(1.06)}100%{transform:scale(1)}}
+  body.is-spotlight .wiz{animation:lit 1.8s ease-in-out both}
+  @keyframes lit{0%{filter:brightness(.85)}45%{filter:brightness(1.25)}100%{filter:brightness(1)}}
+
+  /* Tap pop */
+  .pop[hidden]{display:none !important}
+  .pop{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:20px;
+    background:radial-gradient(60% 55% at 50% 40%, rgba(30,26,46,.45), rgba(5,5,10,.92));
+    opacity:0;visibility:hidden;transition:opacity .35s ease,visibility .35s;cursor:pointer}
+  .pop.open{opacity:1;visibility:visible}
+  .pop .beam{position:absolute;left:50%;top:-20%;width:140%;height:140%;transform:translateX(-50%);pointer-events:none;
+    background:
+      radial-gradient(45% 38% at 50% 58%, rgba(255,240,200,.55), rgba(245,215,142,.22) 45%, transparent 72%),
+      conic-gradient(from 180deg at 50% 0%, transparent 160deg, rgba(255,236,190,.28) 180deg, transparent 200deg);
+    filter:blur(2px);mix-blend-mode:screen;animation:beam 5s ease-in-out infinite}
+  @keyframes beam{0%,100%{opacity:.85}50%{opacity:1}}
+  .pop img{position:relative;z-index:1;max-width:min(520px,86vw);max-height:78vh;width:auto;height:auto;
+    filter:drop-shadow(0 22px 34px rgba(0,0,0,.6)) drop-shadow(0 0 22px rgba(245,215,142,.35));
+    opacity:1}
+
+  @media (max-width:700px){
+    h1{font-size:clamp(28px,11vw,48px)}
+    .pills{gap:4px;margin:.4vh 0 .2vh}
+    .pill{padding:4px 7px;font-size:9px;letter-spacing:.06em}
+    .hero-band{grid-template-columns:minmax(52px,22vw) minmax(0,1fr) minmax(52px,22vw);gap:2px 4px}
+    button.wiz.hero img{width:min(48vw,22vh,260px)}
+    button.wiz:not(.hero) img{width:min(30vw,15vh,150px)}
+    button.slang img{width:min(16vw,8.5vh,80px)}
+    button.slang.lg img{width:min(18vw,9.5vh,90px)}
+    button.slang.sm img{width:min(14vw,8vh,68px)}
+    .row{gap:12px 4px}
+    .rows{gap:1.6vh}
+    .owl-wrap{width:min(42vmin,210px);height:min(42vmin,210px)}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .swirl-layer.play,.graffiti-layer.play,.spotlight-layer.play,.owl-wrap.play,
+    body.is-swirl .wiz img,body.is-swirl .slang img,body.is-graffiti .wiz img,body.is-spotlight .wiz,
+    .graffiti-layer.play path,.graffiti-layer.play .spray,.pop .beam,.spotlight-layer.hold,.owl-wrap.hold::before{
+      animation-duration:.01ms !important;animation-delay:0s !important}
+  }
 </style>
 </head>
 <body>
-<img src="https://tigerwillca.github.io/soft7/billy-stickers.jpg" alt="Billy's Stickers">
+<div class="stage" id="stage">
+  <div class="layer swirl-layer" id="swirl"></div>
+  <div class="layer graffiti-layer" id="graffiti">
+    <span class="spray s1"></span><span class="spray s2"></span><span class="spray s3"></span><span class="spray s4"></span><span class="spray s5"></span>
+    <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M-4 58 C 22 38, 64 76, 104 46" stroke="rgba(204,255,0,.85)" stroke-width="1.6" pathLength="1"/>
+      <path d="M-4 62 C 28 48, 60 84, 104 56" stroke="rgba(204,255,0,.55)" stroke-width=".6" pathLength="1"/>
+      <path d="M104 28 C 70 52, 28 16, -4 42" stroke="rgba(170,110,255,.75)" stroke-width="1.2" pathLength="1"/>
+      <path d="M104 96 C 64 76, 30 104, -4 80" stroke="rgba(0,220,255,.7)" stroke-width="1.3" pathLength="1"/>
+      <path d="M-4 20 C 36 8, 70 28, 104 12" stroke="rgba(245,215,142,.7)" stroke-width=".9" pathLength="1"/>
+    </svg>
+  </div>
+  <div class="layer spotlight-layer" id="spotlight"></div>
+  <canvas id="fx" aria-hidden="true"></canvas>
+
+  <header class="top">
+    <h1>SOFT7 77</h1>
+    <div class="pills" aria-hidden="true">
+      <span class="pill">SAY LESS</span>
+      <span class="pill lime">W</span>
+      <span class="pill ink">L</span>
+      <span class="pill">BRO</span>
+      <span class="pill lime">COOKED</span>
+      <span class="pill ink">NPC</span>
+      <span class="pill">SEVEN</span>
+      <span class="pill lime">THIRD EYE</span>
+      <span class="pill">LOCKED IN</span>
+      <span class="pill ink">WAIT WHAT</span>
+      <span class="pill lime">NO WAY</span>
+      <span class="pill">CHILL</span>
+      <span class="pill lime">BET</span>
+    </div>
+  </header>
+
+  <div class="sheet" id="sheet">
+    <div class="hero-band">
+      <div class="side">
+        <button class="slang lg" type="button" data-pop="../billy-stickers/01-reactions/say-less.gif" aria-label="SAY LESS">
+          <img src="../billy-stickers/01-reactions/say-less.gif" width="408" height="408" alt="SAY LESS">
+        </button>
+        <button class="slang sm" type="button" data-pop="../billy-stickers/01-reactions/l.gif" aria-label="L">
+          <img src="../billy-stickers/01-reactions/l.gif" width="408" height="408" alt="L">
+        </button>
+        <button class="slang sm" type="button" data-pop="../billy-stickers/01-reactions/third-eye.gif" aria-label="THIRD EYE">
+          <img src="../billy-stickers/01-reactions/third-eye.gif" width="408" height="408" alt="THIRD EYE">
+        </button>
+      </div>
+      <div class="hero-core">
+        <div class="owl-wrap" id="owlBloom"><img src="billy-assets/owl.webp" width="512" height="512" alt=""></div>
+        <div class="hero-slang">
+          <button class="slang" type="button" data-pop="../billy-stickers/01-reactions/w.gif" aria-label="W">
+            <img src="../billy-stickers/01-reactions/w.gif" width="408" height="408" alt="W">
+          </button>
+          <button class="slang" type="button" data-pop="../billy-stickers/01-reactions/seven.gif" aria-label="SEVEN">
+            <img src="../billy-stickers/01-reactions/seven.gif" width="408" height="408" alt="SEVEN">
+          </button>
+          <button class="slang sm" type="button" data-pop="../billy-stickers/03-drop-two/05-glowing-crown.gif" aria-label="Crown">
+            <img src="../billy-stickers/03-drop-two/05-glowing-crown.gif" width="512" height="512" alt="">
+          </button>
+        </div>
+        <button class="wiz hero" type="button" data-pop="billy-assets/soft7-77-001.webp" aria-label="Soft7 wizard">
+          <img class="soft7" src="billy-assets/soft7-77-001.webp" width="512" height="512" alt="Soft7 wizard">
+        </button>
+      </div>
+      <div class="side">
+        <button class="slang" type="button" data-pop="../billy-stickers/03-drop-two/07-bet.gif" aria-label="BET">
+          <img src="../billy-stickers/03-drop-two/07-bet.gif" width="512" height="512" alt="BET">
+        </button>
+        <button class="slang" type="button" data-pop="../billy-stickers/03-drop-two/04-chill.gif" aria-label="CHILL">
+          <img src="../billy-stickers/03-drop-two/04-chill.gif" width="512" height="512" alt="CHILL">
+        </button>
+      </div>
+    </div>
+
+    <div class="rows">
+      <div class="row">
+        <div class="cell">
+          <button class="slang sm" type="button" data-pop="../billy-stickers/01-reactions/bro.gif" aria-label="BRO">
+            <img src="../billy-stickers/01-reactions/bro.gif" width="408" height="408" alt="BRO">
+          </button>
+          <button class="wiz" type="button" data-pop="billy-assets/soft7-77-002.webp" aria-label="Soft7 wizard">
+            <img class="soft7" src="billy-assets/soft7-77-002.webp" width="512" height="512" alt="Soft7 wizard">
+          </button>
+        </div>
+        <div class="cell">
+          <button class="slang sm" type="button" data-pop="../billy-stickers/01-reactions/cooked.gif" aria-label="COOKED">
+            <img src="../billy-stickers/01-reactions/cooked.gif" width="408" height="408" alt="COOKED">
+          </button>
+          <button class="wiz" type="button" data-pop="billy-assets/soft7-77-003.webp" aria-label="Soft7 wizard">
+            <img class="soft7" src="billy-assets/soft7-77-003.webp" width="512" height="512" alt="Soft7 wizard">
+          </button>
+        </div>
+        <div class="cell">
+          <button class="slang sm" type="button" data-pop="../billy-stickers/01-reactions/npc.gif" aria-label="NPC">
+            <img src="../billy-stickers/01-reactions/npc.gif" width="408" height="408" alt="NPC">
+          </button>
+          <button class="wiz" type="button" data-pop="billy-assets/soft7-77-004.webp" aria-label="Soft7 wizard">
+            <img class="soft7" src="billy-assets/soft7-77-004.webp" width="512" height="512" alt="Soft7 wizard">
+          </button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="cell">
+          <button class="slang sm" type="button" data-pop="../billy-stickers/03-drop-two/01-locked-in.gif" aria-label="LOCKED IN">
+            <img src="../billy-stickers/03-drop-two/01-locked-in.gif" width="512" height="512" alt="LOCKED IN">
+          </button>
+          <span class="pill tag">LOCKED IN</span>
+          <button class="wiz" type="button" data-pop="billy-assets/soft7-77-005.webp" aria-label="Soft7 wizard">
+            <img class="soft7" src="billy-assets/soft7-77-005.webp" width="512" height="512" alt="Soft7 wizard">
+          </button>
+        </div>
+        <div class="cell">
+          <button class="slang sm" type="button" data-pop="../billy-stickers/03-drop-two/02-wait-what.gif" aria-label="WAIT WHAT">
+            <img src="../billy-stickers/03-drop-two/02-wait-what.gif" width="512" height="512" alt="WAIT WHAT">
+          </button>
+          <span class="pill tag lime">WAIT WHAT</span>
+          <button class="wiz" type="button" data-pop="billy-assets/soft7-77-006.webp" aria-label="Soft7 wizard">
+            <img class="soft7" src="billy-assets/soft7-77-006.webp" width="512" height="512" alt="Soft7 wizard">
+          </button>
+        </div>
+        <div class="cell">
+          <button class="slang sm" type="button" data-pop="../billy-stickers/03-drop-two/03-no-way.gif" aria-label="NO WAY">
+            <img src="../billy-stickers/03-drop-two/03-no-way.gif" width="512" height="512" alt="NO WAY">
+          </button>
+          <span class="pill tag ink">NO WAY</span>
+          <button class="wiz" type="button" data-pop="billy-assets/soft7-77-007.webp" aria-label="Soft7 wizard">
+            <img class="soft7" src="billy-assets/soft7-77-007.webp" width="512" height="512" alt="Soft7 wizard">
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="pop" id="pop" hidden>
+  <div class="beam"></div>
+</div>
+
+<script>
+(() => {
+  'use strict';
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const swirl = document.getElementById('swirl');
+  const graffiti = document.getElementById('graffiti');
+  const spotlight = document.getElementById('spotlight');
+  const owl = document.getElementById('owlBloom');
+  const pop = document.getElementById('pop');
+  let popImg = null;
+  const cv = document.getElementById('fx');
+  const ctx = cv.getContext('2d');
+  let parts = [], raf = 0, dpr = 1, playing = false, popOpen = false, gen = 0;
+
+  window.__billySeqLog = [];
+  function seqLog(stage, event) {
+    window.__billySeqLog.push({stage, t: performance.now(), event});
+  }
+
+  function size() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    cv.width = innerWidth * dpr; cv.height = innerHeight * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  size(); addEventListener('resize', size);
+
+  const COLORS = ['#F5D78E','#E8C468','#FFF1C9','#CCFF00','#E4FF7A','#F4F1FF','#FFFFFF','#E9E2FF'];
+  function burst(opts = {}) {
+    if (reduce) return;
+    const x = opts.x ?? innerWidth / 2, y = opts.y ?? innerHeight * 0.42;
+    const count = opts.count ?? 160;
+    for (let i = 0; i < count; i++) {
+      const a = Math.random() * Math.PI * 2, sp = 4 + Math.random() * 9;
+      const shape = Math.random() < 0.18 ? 'star' : (Math.random() < 0.5 ? 'rect' : 'dot');
+      parts.push({
+        x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 5,
+        w: 5 + Math.random() * 7, h: 3 + Math.random() * 5,
+        r: Math.random() * Math.PI, vr: (Math.random() - .5) * .3,
+        c: COLORS[(Math.random() * COLORS.length) | 0], shape,
+        life: 0, max: 140 + Math.random() * 90, wob: Math.random() * 6.28
+      });
+    }
+    if (!raf) raf = requestAnimationFrame(tick);
+  }
+  function star(x, y, r) {
+    ctx.beginPath();
+    for (let i = 0; i < 8; i++) {
+      const rr = i % 2 ? r * .42 : r, a = i * Math.PI / 4;
+      ctx.lineTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr);
+    }
+    ctx.closePath(); ctx.fill();
+  }
+  function tick() {
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    parts = parts.filter(p => p.life < p.max && p.y < innerHeight + 40);
+    for (const p of parts) {
+      p.life++; p.vx *= .985; p.vy = p.vy * .985 + .16; p.wob += .08;
+      p.x += p.vx + Math.sin(p.wob) * .6; p.y += p.vy; p.r += p.vr;
+      const fade = Math.min(1, (p.max - p.life) / 40);
+      ctx.globalAlpha = fade; ctx.fillStyle = p.c;
+      if (p.shape === 'star') { ctx.shadowColor = p.c; ctx.shadowBlur = 8; star(p.x, p.y, p.w * .8); ctx.shadowBlur = 0; }
+      else if (p.shape === 'dot') { ctx.beginPath(); ctx.arc(p.x, p.y, p.h * .6, 0, 6.283); ctx.fill(); }
+      else { ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r); ctx.scale(1, Math.cos(p.wob)); ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); ctx.restore(); }
+    }
+    ctx.globalAlpha = 1;
+    raf = parts.length ? requestAnimationFrame(tick) : 0;
+    if (!raf) ctx.clearRect(0, 0, innerWidth, innerHeight);
+  }
+
+  function waitAnim(el, name, ms) {
+    return new Promise(resolve => {
+      let settled = false;
+      const finish = () => {
+        if (settled) return;
+        settled = true;
+        el.removeEventListener('animationend', done);
+        resolve();
+      };
+      const done = ev => {
+        if (ev.target !== el) return;
+        if (name && ev.animationName && ev.animationName !== name) return;
+        finish();
+      };
+      el.addEventListener('animationend', done);
+      const fallback = reduce ? 40 : (ms + 120);
+      setTimeout(finish, fallback);
+    });
+  }
+
+  function resetFx() {
+    playing = false;
+    document.body.classList.remove('is-swirl','is-graffiti','is-spotlight','is-owl');
+    swirl.classList.remove('play');
+    graffiti.classList.remove('play');
+    spotlight.classList.remove('play','hold');
+    owl.classList.remove('play','hold');
+    void swirl.offsetWidth; void graffiti.offsetWidth; void spotlight.offsetWidth; void owl.offsetWidth;
+  }
+
+  async function playSeq() {
+    const my = ++gen;
+    window.__billySeqLog = [];
+    resetFx();
+    playing = true;
+
+    // 1. Swirl
+    seqLog('swirl', 'start');
+    document.body.classList.add('is-swirl');
+    swirl.classList.add('play');
+    await waitAnim(swirl, 'swirlSpin', 1600);
+    if (my !== gen) return;
+    seqLog('swirl', 'end');
+    document.body.classList.remove('is-swirl');
+    swirl.classList.remove('play');
+
+    // 2. Graffiti — fires the exact moment swirl ends
+    seqLog('graffiti', 'start');
+    document.body.classList.add('is-graffiti');
+    graffiti.classList.add('play');
+    burst({count: 120, y: innerHeight * 0.45});
+    await waitAnim(graffiti, 'grafPulse', 1400);
+    if (my !== gen) return;
+    seqLog('graffiti', 'end');
+    document.body.classList.remove('is-graffiti');
+
+    // 3. Spotlight
+    seqLog('spotlight', 'start');
+    document.body.classList.add('is-spotlight');
+    spotlight.classList.add('play');
+    burst({count: 200, y: innerHeight * 0.38});
+    await waitAnim(spotlight, 'spotSweep', 1800);
+    if (my !== gen) return;
+    seqLog('spotlight', 'end');
+    spotlight.classList.remove('play');
+    spotlight.classList.add('hold');
+    document.body.classList.remove('is-spotlight');
+
+    // 4. Owl Bloom — spotlight shimmer stays alive
+    seqLog('owl_bloom', 'start');
+    document.body.classList.add('is-owl');
+    owl.classList.add('play');
+    burst({count: 90, x: innerWidth / 2, y: Math.max(80, innerHeight * 0.16)});
+    await waitAnim(owl, 'owlBloom', 1600);
+    if (my !== gen) return;
+    seqLog('owl_bloom', 'end');
+    owl.classList.remove('play');
+    owl.classList.add('hold');
+    document.body.classList.remove('is-owl');
+    playing = false;
+  }
+
+  // Tap a sticker to pop it in the spotlight; tap elsewhere to replay
+  document.querySelectorAll('button.wiz, button.slang').forEach(btn => {
+    btn.addEventListener('click', ev => {
+      ev.stopPropagation();
+      const src = btn.getAttribute('data-pop');
+      const label = btn.getAttribute('aria-label') || '';
+      if (!popImg) {
+        popImg = document.createElement('img');
+        popImg.alt = '';
+        pop.appendChild(popImg);
+      }
+      popImg.src = src; popImg.alt = label;
+      pop.hidden = false;
+      requestAnimationFrame(() => pop.classList.add('open'));
+      popOpen = true;
+    });
+  });
+  function closePop() {
+    pop.classList.remove('open');
+    popOpen = false;
+    setTimeout(() => { if (!popOpen) pop.hidden = true; }, 350);
+  }
+  pop.addEventListener('click', closePop);
+  addEventListener('keydown', e => { if (e.key === 'Escape' && popOpen) closePop(); });
+
+  document.getElementById('stage').addEventListener('click', ev => {
+    if (popOpen) return;
+    if (ev.target.closest('button.wiz, button.slang')) return;
+    playSeq();
+  });
+
+  function ready(fn) {
+    const imgs = [...document.querySelectorAll('img.soft7')];
+    Promise.all(imgs.map(img => {
+      if (img.decode) return img.decode().catch(() => {});
+      if (img.complete && img.naturalWidth) return Promise.resolve();
+      return new Promise(res => { img.onload = res; img.onerror = res; });
+    })).then(fn);
+  }
+  if (document.readyState === 'complete') ready(playSeq);
+  else addEventListener('load', () => ready(playSeq));
+})();
+</script>
 </body>
 </html>
