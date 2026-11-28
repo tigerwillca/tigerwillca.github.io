@@ -26,7 +26,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="soft7.css?v=20261126f">
+<link rel="stylesheet" href="soft7.css?v=20261128c">
 </head>
 <body>
 <div class="cosmos" aria-hidden="true"><div class="nebula"></div><div class="horizon"></div></div>
@@ -35,6 +35,7 @@
   <div class="bar">
     <a class="mark" href="./" aria-current="page">Soft7 77 <small>by TigerWillCA</small></a>
     <nav class="site-nav" aria-label="Soft7 77">
+      <a class="hide-sm" href="#frequencies">Frequency</a>
       <a class="hide-sm" href="#snapshot">Snapshot</a>
       <a class="hide-sm" href="#tiers">Tiers</a>
       <a href="./about.html">The Circle</a>
@@ -45,6 +46,7 @@
 </header>
 <main id="content">
   <section class="hero" aria-labelledby="hero-title">
+    <div class="living-banner" data-living-banner></div>
     <div class="hero-stage">
       <svg class="ring" viewBox="0 0 400 400" aria-hidden="true" focusable="false">
         <circle cx="200" cy="200" r="176" fill="none" stroke="rgba(243,201,107,0.22)" stroke-width="0.8"/>
@@ -59,6 +61,8 @@
         <img src="art/hero-001.webp" width="600" height="900" alt="001 TigerWillCA: painted fox wizard in a tattered purple cloak, crouched, with glowing violet eyes, a violet amulet, and a green-gold potion vial at the belt.">
         <figcaption><b>#001</b> TigerWillCA · Crown Circle</figcaption>
       </figure>
+      <button type="button" class="ring-hit" data-seven-ring aria-label="Living ring"></button>
+      <span class="tiger-blink" data-tiger-blink hidden></span>
     </div>
 
     <div class="hero-copy">
@@ -122,6 +126,27 @@
     </div>
   </section>
 
+  <section class="section" id="frequencies" aria-labelledby="freq-title">
+    <div class="section-head">
+      <p class="kicker">Frequencies</p>
+      <h2 id="freq-title">A fork for every piece</h2>
+      <p class="sub">Language is the wire. Space is the current. Each of the seventy-seven in Soft7&nbsp;77 carries its own tone, a tuning fork for the chain. Three. Six. Nine. The tiger keeps the heartbeat in the paint.</p>
+      <p class="mask-line">Above the Mask walks the fox; below the Gate, the tiger keeps its own name.</p>
+    </div>
+    <div class="freq-stage card-surface" data-freq-stage>
+      <div class="freq-bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <p class="fork-visual" data-fork-visual aria-hidden="true"></p>
+      <p class="fork-now" data-fork-now aria-live="polite"></p>
+      <div class="fork-row" data-fork-mount></div>
+      <p class="gate-line" data-gate tabindex="0">Soft Seven opens the gate.</p>
+      <p class="gate-more" data-gate-more hidden>The gate was always open.</p>
+      <p class="dust-line">From stars to dust. Dust to seed. Seed to gold.</p>
+      <p class="sub">Soft Magic is simple: make small, honest things with real heart, and let the proof speak louder than the noise. Sound stays off until you turn it on. The same forks sit with <a class="inline-link" href="./holders/#forks">holders</a>.</p>
+      <div class="glimpse" data-glimpse></div>
+      <button type="button" class="bridge-hit" data-bridge hidden>A span of light</button>
+    </div>
+  </section>
+
   <section class="section" id="snapshot" aria-labelledby="snapshot-title">
     <div class="section-head">
       <p class="kicker"><span class="sq" aria-hidden="true"></span>Snapshot window</p>
@@ -179,31 +204,31 @@
       <p class="sub">Painted slowly, in the Quiet Magic way. Tap any wizard to see it full size.</p>
     </div>
     <div class="gallery" role="list" aria-label="Soft7 77 preview">
-    <button type="button" class="card" role="listitem" data-full="art/full-009.webp" data-caption="009 · Fox Wizard #009" aria-label="Enlarge 009, Fox Wizard 009">
+    <button type="button" class="card" role="listitem" data-token="9" data-full="art/full-009.webp" data-caption="009 · Fox Wizard #009" aria-label="Enlarge 009, Fox Wizard 009">
       <img decoding="async" src="art/009.webp" width="400" height="600" alt="009: tiger wizard in a dark violet robe against a purple field, gold medallion at the chest.">
       <span class="tag">009</span>
     </button>
-    <button type="button" class="card" role="listitem" data-full="art/full-010.webp" data-caption="010 · Fox Wizard #010" aria-label="Enlarge 010, Fox Wizard 010">
+    <button type="button" class="card" role="listitem" data-token="10" data-full="art/full-010.webp" data-caption="010 · Fox Wizard #010" aria-label="Enlarge 010, Fox Wizard 010">
       <img decoding="async" src="art/010.webp" width="400" height="600" alt="010: fox wizard in a black robe, yellow potion flask, warm gold light.">
       <span class="tag">010</span>
     </button>
-    <button type="button" class="card" role="listitem" data-full="art/full-013.webp" data-caption="013 · Fox Wizard #013" aria-label="Enlarge 013, Fox Wizard 013">
+    <button type="button" class="card" role="listitem" data-token="13" data-full="art/full-013.webp" data-caption="013 · Fox Wizard #013" aria-label="Enlarge 013, Fox Wizard 013">
       <img decoding="async" src="art/013.webp" width="400" height="600" alt="013: tiger wizard in a black robe, looking back over one shoulder, yellow potion at the belt.">
       <span class="tag">013</span>
     </button>
-    <button type="button" class="card" role="listitem" data-full="art/full-014.webp" data-caption="014 · Fox Wizard #014" aria-label="Enlarge 014, Fox Wizard 014">
+    <button type="button" class="card" role="listitem" data-token="14" data-full="art/full-014.webp" data-caption="014 · Fox Wizard #014" aria-label="Enlarge 014, Fox Wizard 014">
       <img decoding="async" src="art/014.webp" width="400" height="600" alt="014: fox wizard in a soot-umber robe, one paw raised with faint spell-smoke.">
       <span class="tag">014</span>
     </button>
-    <button type="button" class="card" role="listitem" data-full="art/full-027.webp" data-caption="027 · Fox Wizard #027" aria-label="Enlarge 027, Fox Wizard 027">
+    <button type="button" class="card" role="listitem" data-token="27" data-full="art/full-027.webp" data-caption="027 · Fox Wizard #027" aria-label="Enlarge 027, Fox Wizard 027">
       <img decoding="async" src="art/027.webp" width="400" height="600" alt="027: tiger wizard in a soot-umber robe, holding a gnarled staff, yellow potion at the belt.">
       <span class="tag">027</span>
     </button>
-    <button type="button" class="card" role="listitem" data-full="art/full-042.webp" data-caption="042 · Fox Wizard #042" aria-label="Enlarge 042, Fox Wizard 042">
+    <button type="button" class="card" role="listitem" data-token="42" data-full="art/full-042.webp" data-caption="042 · Fox Wizard #042" aria-label="Enlarge 042, Fox Wizard 042">
       <img decoding="async" src="art/042.webp" width="400" height="600" alt="042: fox wizard in a dark violet robe, gold flask at the hip, purple backdrop.">
       <span class="tag">042</span>
     </button>
-    <button type="button" class="card" role="listitem" data-full="art/full-071.webp" data-caption="071 · Fox Wizard #071" aria-label="Enlarge 071, Fox Wizard 071">
+    <button type="button" class="card" role="listitem" data-token="71" data-full="art/full-071.webp" data-caption="071 · Fox Wizard #071" aria-label="Enlarge 071, Fox Wizard 071">
       <img decoding="async" src="art/071.webp" width="400" height="600" alt="071: tiger wizard in a soot-umber robe, both paws cupped around a glowing purple potion.">
       <span class="tag">071</span>
     </button>
@@ -222,6 +247,7 @@
       <ul>
         <li><a href="./">Front Page</a></li>
         <li><a href="./about.html">The Circle</a></li>
+        <li><a href="./#frequencies">Frequencies</a></li>
         <li><a href="./#eligibility">Squares check</a></li>
         <li><a href="https://opensea.io/collection/soft7-77" rel="noopener noreferrer" target="_blank">OpenSea</a></li>
       </ul>
@@ -420,5 +446,7 @@
   setInterval(tick, 1000);
 })();
 </script>
+<script src="tones/player.js" defer></script>
+<script src="soft7.js?v=20261128a" defer></script>
 </body>
 </html>

@@ -1,0 +1,705 @@
+{
+  "status": "STAGED \u2014 do not upload. Not applied to OpenSea, IPFS, or chain.",
+  "collection": "Soft7 77",
+  "contract": "0x5db625c49b2a9DD40464069fc16B9a2f3B11bF3d",
+  "chainId": 4663,
+  "trait_type": "Tone",
+  "value_template": "{hz} Hz \u00b7 {batchName}",
+  "formula": "hz = 16 * (15 + tokenId)",
+  "baseHz": 16,
+  "tokens": [
+    {
+      "tokenId": 1,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "256 Hz \u00b7 Threshold"
+        }
+      ]
+    },
+    {
+      "tokenId": 2,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "272 Hz \u00b7 Threshold"
+        }
+      ]
+    },
+    {
+      "tokenId": 3,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "288 Hz \u00b7 Threshold"
+        }
+      ]
+    },
+    {
+      "tokenId": 4,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "304 Hz \u00b7 Threshold"
+        }
+      ]
+    },
+    {
+      "tokenId": 5,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "320 Hz \u00b7 Threshold"
+        }
+      ]
+    },
+    {
+      "tokenId": 6,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "336 Hz \u00b7 Threshold"
+        }
+      ]
+    },
+    {
+      "tokenId": 7,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "352 Hz \u00b7 Threshold"
+        }
+      ]
+    },
+    {
+      "tokenId": 8,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "368 Hz \u00b7 Threshold"
+        }
+      ]
+    },
+    {
+      "tokenId": 9,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "384 Hz \u00b7 Threshold"
+        }
+      ]
+    },
+    {
+      "tokenId": 10,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "400 Hz \u00b7 Threshold"
+        }
+      ]
+    },
+    {
+      "tokenId": 11,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "416 Hz \u00b7 Threshold"
+        }
+      ]
+    },
+    {
+      "tokenId": 12,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "432 Hz \u00b7 Wire"
+        }
+      ]
+    },
+    {
+      "tokenId": 13,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "448 Hz \u00b7 Wire"
+        }
+      ]
+    },
+    {
+      "tokenId": 14,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "464 Hz \u00b7 Wire"
+        }
+      ]
+    },
+    {
+      "tokenId": 15,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "480 Hz \u00b7 Wire"
+        }
+      ]
+    },
+    {
+      "tokenId": 16,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "496 Hz \u00b7 Wire"
+        }
+      ]
+    },
+    {
+      "tokenId": 17,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "512 Hz \u00b7 Wire"
+        }
+      ]
+    },
+    {
+      "tokenId": 18,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "528 Hz \u00b7 Wire"
+        }
+      ]
+    },
+    {
+      "tokenId": 19,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "544 Hz \u00b7 Wire"
+        }
+      ]
+    },
+    {
+      "tokenId": 20,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "560 Hz \u00b7 Wire"
+        }
+      ]
+    },
+    {
+      "tokenId": 21,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "576 Hz \u00b7 Wire"
+        }
+      ]
+    },
+    {
+      "tokenId": 22,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "592 Hz \u00b7 Wire"
+        }
+      ]
+    },
+    {
+      "tokenId": 23,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "608 Hz \u00b7 Current"
+        }
+      ]
+    },
+    {
+      "tokenId": 24,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "624 Hz \u00b7 Current"
+        }
+      ]
+    },
+    {
+      "tokenId": 25,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "640 Hz \u00b7 Current"
+        }
+      ]
+    },
+    {
+      "tokenId": 26,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "656 Hz \u00b7 Current"
+        }
+      ]
+    },
+    {
+      "tokenId": 27,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "672 Hz \u00b7 Current"
+        }
+      ]
+    },
+    {
+      "tokenId": 28,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "688 Hz \u00b7 Current"
+        }
+      ]
+    },
+    {
+      "tokenId": 29,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "704 Hz \u00b7 Current"
+        }
+      ]
+    },
+    {
+      "tokenId": 30,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "720 Hz \u00b7 Current"
+        }
+      ]
+    },
+    {
+      "tokenId": 31,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "736 Hz \u00b7 Current"
+        }
+      ]
+    },
+    {
+      "tokenId": 32,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "752 Hz \u00b7 Current"
+        }
+      ]
+    },
+    {
+      "tokenId": 33,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "768 Hz \u00b7 Current"
+        }
+      ]
+    },
+    {
+      "tokenId": 34,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "784 Hz \u00b7 Paint"
+        }
+      ]
+    },
+    {
+      "tokenId": 35,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "800 Hz \u00b7 Paint"
+        }
+      ]
+    },
+    {
+      "tokenId": 36,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "816 Hz \u00b7 Paint"
+        }
+      ]
+    },
+    {
+      "tokenId": 37,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "832 Hz \u00b7 Paint"
+        }
+      ]
+    },
+    {
+      "tokenId": 38,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "848 Hz \u00b7 Paint"
+        }
+      ]
+    },
+    {
+      "tokenId": 39,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "864 Hz \u00b7 Paint"
+        }
+      ]
+    },
+    {
+      "tokenId": 40,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "880 Hz \u00b7 Paint"
+        }
+      ]
+    },
+    {
+      "tokenId": 41,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "896 Hz \u00b7 Paint"
+        }
+      ]
+    },
+    {
+      "tokenId": 42,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "912 Hz \u00b7 Paint"
+        }
+      ]
+    },
+    {
+      "tokenId": 43,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "928 Hz \u00b7 Paint"
+        }
+      ]
+    },
+    {
+      "tokenId": 44,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "944 Hz \u00b7 Paint"
+        }
+      ]
+    },
+    {
+      "tokenId": 45,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "960 Hz \u00b7 Lantern"
+        }
+      ]
+    },
+    {
+      "tokenId": 46,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "976 Hz \u00b7 Lantern"
+        }
+      ]
+    },
+    {
+      "tokenId": 47,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "992 Hz \u00b7 Lantern"
+        }
+      ]
+    },
+    {
+      "tokenId": 48,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "1008 Hz \u00b7 Lantern"
+        }
+      ]
+    },
+    {
+      "tokenId": 49,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "1024 Hz \u00b7 Lantern"
+        }
+      ]
+    },
+    {
+      "tokenId": 50,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "1040 Hz \u00b7 Lantern"
+        }
+      ]
+    },
+    {
+      "tokenId": 51,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "1056 Hz \u00b7 Lantern"
+        }
+      ]
+    },
+    {
+      "tokenId": 52,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "1072 Hz \u00b7 Lantern"
+        }
+      ]
+    },
+    {
+      "tokenId": 53,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "1088 Hz \u00b7 Lantern"
+        }
+      ]
+    },
+    {
+      "tokenId": 54,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "1104 Hz \u00b7 Lantern"
+        }
+      ]
+    },
+    {
+      "tokenId": 55,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "1120 Hz \u00b7 Lantern"
+        }
+      ]
+    },
+    {
+      "tokenId": 56,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "1136 Hz \u00b7 Span"
+        }
+      ]
+    },
+    {
+      "tokenId": 57,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "1152 Hz \u00b7 Span"
+        }
+      ]
+    },
+    {
+      "tokenId": 58,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "1168 Hz \u00b7 Span"
+        }
+      ]
+    },
+    {
+      "tokenId": 59,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "1184 Hz \u00b7 Span"
+        }
+      ]
+    },
+    {
+      "tokenId": 60,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "1200 Hz \u00b7 Span"
+        }
+      ]
+    },
+    {
+      "tokenId": 61,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "1216 Hz \u00b7 Span"
+        }
+      ]
+    },
+    {
+      "tokenId": 62,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "1232 Hz \u00b7 Span"
+        }
+      ]
+    },
+    {
+      "tokenId": 63,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "1248 Hz \u00b7 Span"
+        }
+      ]
+    },
+    {
+      "tokenId": 64,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "1264 Hz \u00b7 Span"
+        }
+      ]
+    },
+    {
+      "tokenId": 65,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "1280 Hz \u00b7 Span"
+        }
+      ]
+    },
+    {
+      "tokenId": 66,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "1296 Hz \u00b7 Span"
+        }
+      ]
+    },
+    {
+      "tokenId": 67,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "1312 Hz \u00b7 Gate"
+        }
+      ]
+    },
+    {
+      "tokenId": 68,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "1328 Hz \u00b7 Gate"
+        }
+      ]
+    },
+    {
+      "tokenId": 69,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "1344 Hz \u00b7 Gate"
+        }
+      ]
+    },
+    {
+      "tokenId": 70,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "1360 Hz \u00b7 Gate"
+        }
+      ]
+    },
+    {
+      "tokenId": 71,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "1376 Hz \u00b7 Gate"
+        }
+      ]
+    },
+    {
+      "tokenId": 72,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "1392 Hz \u00b7 Gate"
+        }
+      ]
+    },
+    {
+      "tokenId": 73,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "1408 Hz \u00b7 Gate"
+        }
+      ]
+    },
+    {
+      "tokenId": 74,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "1424 Hz \u00b7 Gate"
+        }
+      ]
+    },
+    {
+      "tokenId": 75,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "1440 Hz \u00b7 Gate"
+        }
+      ]
+    },
+    {
+      "tokenId": 76,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "1456 Hz \u00b7 Gate"
+        }
+      ]
+    },
+    {
+      "tokenId": 77,
+      "attributes_add": [
+        {
+          "trait_type": "Tone",
+          "value": "1472 Hz \u00b7 Gate"
+        }
+      ]
+    }
+  ]
+}

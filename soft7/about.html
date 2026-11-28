@@ -25,7 +25,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="soft7.css?v=20261126f">
+<link rel="stylesheet" href="soft7.css?v=20261128c">
 </head>
 <body>
 <div class="cosmos" aria-hidden="true"><div class="nebula"></div><div class="horizon"></div></div>
@@ -44,6 +44,10 @@
 </header>
 <main id="content">
   <section class="page-hero" aria-labelledby="page-title">
+    <div class="living-banner" data-living-banner>
+      <button type="button" class="ring-hit" data-seven-ring aria-label="Living ring"></button>
+      <span class="tiger-blink" data-tiger-blink hidden></span>
+    </div>
     <p class="eyebrow">About the Circle</p>
     <h1 class="display cosmic" id="page-title">The Circle</h1>
     <p class="lede">Seventy-seven wizards, one circle, and a quiet kind of magic. Here is who we are, how we are seated, what is live on-chain today, and what comes next.</p>
@@ -56,6 +60,25 @@
       <li><a href="#socials">Socials</a></li>
       <li><a href="#license">License</a></li>
     </ul>
+  </section>
+
+  <section class="section narrow" id="current" aria-labelledby="current-title">
+    <div class="section-head">
+      <p class="kicker">Soft Magic</p>
+      <h2 id="current-title">The other side of the gate</h2>
+      <p class="sub">Soft Magic is simple: make small, honest things with real heart, and let the proof speak louder than the noise. The tiger keeps the heartbeat. The same forks as the front page live here.</p>
+    </div>
+    <div class="freq-stage card-surface">
+      <div class="freq-bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <p class="fork-visual" data-fork-visual aria-hidden="true"></p>
+      <p class="fork-now" data-fork-now aria-live="polite"></p>
+      <div class="fork-row" data-fork-mount></div>
+      <p class="gate-line" data-gate tabindex="0">Soft Seven opens the gate.</p>
+      <p class="gate-more" data-gate-more hidden>The gate was always open.</p>
+      <p class="dust-line">From stars to dust. Dust to seed. Seed to gold.</p>
+      <div class="glimpse" data-glimpse></div>
+      <button type="button" class="bridge-hit" data-bridge hidden>A span of light</button>
+    </div>
   </section>
 
   <section class="section narrow" id="snapshot" aria-labelledby="snap-title">
@@ -105,7 +128,7 @@
     </div>
     <div class="prose">
     <p>Far from the noise, seventy-seven painted fox and tiger wizards gather around glowing circle potions, each carrying its own glowing potion and mark. Token #001 is TigerWillCA, the keystone; the other seventy-six are Fox and Tiger Wizards, each holding its own small light.</p>
-    <p><strong style="color:var(--gold);font-weight:600">Quiet Magic</strong> is how the circle was made: crafted with Soft Magic — small, honest work, made slowly, with real heart, so the proof speaks louder than the noise. No hype, no tricks, nothing to sign. Just the art, verified in daylight on Robinhood Chain.</p>
+    <p><strong style="color:var(--gold);font-weight:600">Quiet Magic</strong> is how the circle was made: crafted with Soft Magic — small, honest work, made slowly, with real heart, so the proof speaks louder than the noise. No hype, no tricks, nothing to sign. Just the art, verified in daylight on Robinhood Chain. Language is the wire. Space is the current.</p>
     <p>Soft7 77 is an independent art collection by TigerWillCA (Shaffer Network).</p>
     </div>
   </section>
@@ -224,6 +247,7 @@ SOFTWARE.</pre>
       <ul>
         <li><a href="./">Front Page</a></li>
         <li><a href="./about.html">The Circle</a></li>
+        <li><a href="./#frequencies">Frequencies</a></li>
         <li><a href="./#eligibility">Squares check</a></li>
         <li><a href="https://opensea.io/collection/soft7-77" rel="noopener noreferrer" target="_blank">OpenSea</a></li>
       </ul>
@@ -273,5 +297,7 @@ SOFTWARE.</pre>
   setInterval(tick, 1000);
 })();
 </script>
+<script src="tones/player.js" defer></script>
+<script src="soft7.js?v=20261128a" defer></script>
 </body>
 </html>
