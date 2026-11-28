@@ -226,6 +226,14 @@ footer{text-align:center;color:var(--mute);font-size:.82rem;margin-top:2.8rem}
 .lookup .ok{color:#b8f0a8}.lookup .bad{color:#ffb3b3}
 .lookup .out a{display:inline-block;margin:.2rem .4rem}
 
+.forks{display:flex;flex-wrap:wrap;gap:.45rem;justify-content:center;margin:.7rem 0}
+.forks button{min-width:3rem;min-height:44px;padding:.4rem .7rem;border-radius:999px;border:1px solid var(--line);background:rgba(10,6,20,.55);color:var(--gold);font:600 .85rem/1 ui-monospace,Menlo,monospace;cursor:pointer}
+.forks button:hover{border-color:var(--gold)}
+[data-sound-toggle]{min-height:44px;padding:.45rem .9rem;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--gold);font-weight:700;cursor:pointer}
+.motif.live{animation:forkpulse var(--fork-ms, 8s) ease-in-out infinite}
+@keyframes forkpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+.fork-visual{text-align:center;color:var(--gold);min-height:1.2em;margin:.4rem 0 0}
+
 @media (prefers-reduced-motion:reduce){
   *{animation:none!important;transition:none!important}
   .bg-video{display:none}

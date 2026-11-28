@@ -229,7 +229,7 @@ h3 { font-size: 1.45rem; letter-spacing: -0.005em; line-height: 1.1; }
   display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 3.2rem; align-items: center;
 }
 .hero-stage { position: relative; display: grid; place-items: center; isolation: isolate; }
-.hero-stage .ring { position: absolute; width: 118%; aspect-ratio: 1; z-index: -1; opacity: 0.9; animation: ring-breathe 9s ease-in-out infinite; pointer-events: none; }
+.hero-stage .ring { position: absolute; width: 118%; aspect-ratio: 1; z-index: -1; opacity: 0.9; animation: ring-breathe var(--fork-ms, 9s) ease-in-out infinite; pointer-events: none; }
 @keyframes ring-breathe { 0%, 100% { transform: scale(0.98); opacity: 0.72; } 50% { transform: scale(1.02); opacity: 1; } }
 .hero-art { margin: 0; position: relative; }
 .hero-art img {
@@ -581,3 +581,154 @@ h1.display.cosmic {
 }
 .cosmos::before { opacity: 0.75; }
 .cosmos::after { opacity: 0.9; }
+
+/* ---------- Living banner, forks, eggs ---------- */
+.living-banner {
+  position: relative;
+  height: 168px;
+  border-radius: 22px;
+  overflow: hidden;
+  border: 1px solid rgba(232, 194, 122, 0.28);
+  background: #1b1433;
+  box-shadow: inset 0 0 40px rgba(232, 194, 122, 0.08);
+  --fork-ms: 9s;
+}
+.hero .living-banner { grid-column: 1 / -1; }
+.living-banner canvas { display: block; width: 100%; height: 100%; }
+.living-banner .ring-hit {
+  inset: auto; left: 50%; top: 50%; width: 116px; height: 116px;
+  transform: translate(-50%, -50%);
+}
+.living-banner .tiger-blink { left: 50%; top: 46%; transform: translateX(-50%); }
+.page-hero .living-banner { margin: 0 0 1.1rem; }
+.hidden-clock {
+  position: absolute; right: 14px; top: 12px;
+  color: var(--gold); font-family: var(--serif); letter-spacing: 0.18em; font-size: 1.05rem;
+  text-shadow: 0 0 12px rgba(232, 194, 122, 0.45);
+}
+.ring-hit {
+  position: absolute; inset: 10% 14%; z-index: 2;
+  border: 0; border-radius: 50%; background: transparent; cursor: pointer;
+}
+.tiger-blink {
+  position: absolute; left: 22%; top: 18%; z-index: 3; width: 64px; height: 18px;
+  pointer-events: none; opacity: 0;
+  background:
+    radial-gradient(circle at 28% 50%, #f3c96b 0 2.5px, rgba(155, 123, 255, 0.95) 3.5px, transparent 8px),
+    radial-gradient(circle at 72% 50%, #f3c96b 0 2.5px, rgba(155, 123, 255, 0.95) 3.5px, transparent 8px);
+  filter: drop-shadow(0 0 6px rgba(243, 201, 107, 0.85));
+}
+.tiger-blink.show { animation: tiger-heart 1.6s ease-in-out 1; }
+.tiger-blink.show-still { opacity: 0.7; }
+@keyframes tiger-heart {
+  0% { opacity: 0; }
+  28% { opacity: 0.9; }
+  48% { opacity: 0.25; }
+  68% { opacity: 0.8; }
+  100% { opacity: 0; }
+}
+.freq-stage { padding: 1.15rem 1.15rem 1.2rem; }
+.freq-bars { display: flex; align-items: flex-end; justify-content: center; gap: 10px; height: 84px; margin: 0 0 0.8rem; }
+.freq-bars i {
+  flex: 0 0 14px; width: 14px; height: 100%; border-radius: 999px; transform-origin: center bottom;
+  background: linear-gradient(180deg, rgba(243, 201, 107, 0.95), rgba(155, 123, 255, 0.35));
+  animation: bar-breathe 7.5s ease-in-out infinite;
+  opacity: 0.75;
+}
+.freq-bars i:nth-child(2) { animation-duration: 8.4s; }
+.freq-bars i:nth-child(3) { animation-duration: 6.8s; }
+.freq-bars i:nth-child(4) { animation-duration: 9.2s; }
+.freq-bars i:nth-child(5) { animation-duration: 7.1s; }
+.freq-bars i:nth-child(6) { animation-duration: 8.8s; }
+.freq-bars i:nth-child(7) { animation-duration: 6.4s; }
+.freq-bars i.lit { opacity: 1; filter: drop-shadow(0 0 8px rgba(243, 201, 107, 0.75)); height: 100%; }
+@keyframes bar-breathe {
+  0%, 100% { transform: scaleY(0.45); }
+  50% { transform: scaleY(1); }
+}
+.fork-visual, .fork-now { min-height: 1.3em; margin: 0.2rem 0 0.55rem; color: var(--gold); font-variant-numeric: tabular-nums; }
+.fork-now { color: var(--muted); font-size: 0.92rem; }
+.fork-row, .forks { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+.fork, .forks button {
+  min-width: 3.1rem; min-height: 44px; padding: 0.4rem 0.7rem; border-radius: 999px;
+  border: 1px solid rgba(232, 194, 122, 0.35); background: rgba(27, 20, 51, 0.45);
+  color: var(--ivory); font-family: var(--mono); cursor: pointer;
+}
+.fork:hover, .forks button:hover { border-color: var(--gold); color: var(--gold); }
+.gate-line {
+  margin: 0.85rem 0 0; font-family: var(--serif); font-size: clamp(1.45rem, 3vw, 2rem);
+  color: #e8c27a; cursor: default;
+}
+.gate-more, .dust-line { margin: 0.35rem 0 0; font-family: var(--serif); font-style: italic; color: var(--muted); }
+.glimpse { display: grid; gap: 0.7rem; margin-top: 0.9rem; }
+.glimpse-pulse, .glimpse-bridge {
+  position: relative; min-height: 72px; padding: 0.8rem 0.9rem 0.7rem; border-radius: 14px;
+  border: 1px solid rgba(232, 194, 122, 0.2); overflow: hidden;
+}
+.glimpse p, .breadcrumb { margin: 0.35rem 0 0; font-family: var(--serif); font-size: 1.2rem; color: var(--ivory); }
+.door {
+  display: block; width: 36px; height: 52px; border: 1px solid rgba(232, 194, 122, 0.7);
+  border-radius: 18px 18px 4px 4px; box-shadow: inset 0 0 12px rgba(243, 201, 107, 0.25);
+}
+.heart {
+  position: absolute; left: 58px; top: 28px; width: 14px; height: 14px; border-radius: 50%;
+  background: rgba(204, 255, 0, 0.85); box-shadow: 0 0 12px rgba(204, 255, 0, 0.45);
+  animation: heart-swell 1.5s ease-in-out infinite;
+}
+@keyframes heart-swell { 0%, 100% { transform: scale(0.8); opacity: 0.45; } 50% { transform: scale(1.15); opacity: 1; } }
+.glimpse-bridge .span {
+  display: block; height: 2px; margin-top: 22px;
+  background: linear-gradient(90deg, transparent, rgba(232, 194, 122, 0.9), transparent);
+}
+.shade {
+  position: absolute; left: 28%; top: 10px; width: 18px; height: 28px; border-radius: 10px 10px 4px 4px;
+  background: rgba(244, 239, 230, 0.18);
+}
+.glint {
+  position: absolute; right: 18%; top: 16px; width: 7px; height: 7px; border-radius: 50%;
+  background: #f4efe6; box-shadow: 0 0 10px rgba(244, 239, 230, 0.8);
+}
+.bridge-hit {
+  margin-top: 0.8rem; min-height: 44px; padding: 0.45rem 0.9rem; border-radius: 999px;
+  border: 1px solid rgba(232, 194, 122, 0.35); background: transparent; color: var(--gold);
+  font-family: var(--serif); font-size: 1.05rem; cursor: pointer;
+}
+.sound-toggle {
+  position: fixed; z-index: 45;
+  top: calc(64px + env(safe-area-inset-top));
+  right: max(12px, env(safe-area-inset-right));
+  min-height: 44px; padding: 0.45rem 0.9rem; border-radius: 999px;
+  border: 1px solid rgba(232, 194, 122, 0.45); background: rgba(7, 11, 16, 0.82);
+  color: var(--gold); font-family: var(--sans); cursor: pointer;
+}
+.sound-toggle[aria-pressed="true"] { color: #f6dfa0; box-shadow: 0 0 16px rgba(155, 123, 255, 0.35); }
+.whisper {
+  position: fixed; z-index: 46; left: 50%; bottom: max(72px, calc(env(safe-area-inset-bottom) + 64px));
+  transform: translateX(-50%); width: min(520px, calc(100% - 28px));
+  margin: 0; padding: 0.75rem 0.95rem; text-align: center;
+  border-radius: 16px; border: 1px solid rgba(232, 194, 122, 0.35);
+  background: rgba(27, 20, 51, 0.9); color: var(--ivory);
+  font-family: var(--serif); font-size: 1.2rem;
+}
+.cursor-glow { position: fixed; inset: 0; z-index: 24; pointer-events: none; }
+.mars-horizon {
+  position: fixed; left: 0; right: 0; bottom: 0; height: 24vh; min-height: 120px; z-index: 6;
+  pointer-events: none; opacity: 0;
+  background:
+    linear-gradient(180deg, transparent, rgba(140, 52, 28, 0.18) 28%, rgba(92, 32, 16, 0.78)),
+    radial-gradient(80% 70% at 50% 100%, rgba(196, 106, 58, 0.45), transparent 70%);
+}
+.mars-horizon::before {
+  content: ""; position: absolute; left: 8%; right: 8%; bottom: 46%; height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(232, 194, 122, 0.7), transparent);
+}
+.mars-horizon.is-on { opacity: 1; transition: opacity 2.6s linear; }
+body.mars-open { padding-bottom: 12vh; }
+body.opal-wash::after {
+  content: ""; position: fixed; inset: 0; z-index: 7; pointer-events: none;
+  background: radial-gradient(circle at 50% 42%, rgba(255, 248, 240, 0.16), rgba(186, 168, 255, 0.08) 42%, transparent 72%);
+}
+.mask-line { margin: 0.8rem 0 0; font-family: var(--serif); font-style: italic; color: var(--gold); }
+@media (max-width: 900px) {
+  .living-banner, .hero .living-banner { height: 124px; }
+}
